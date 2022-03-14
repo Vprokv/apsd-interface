@@ -1,0 +1,3 @@
+[submodule "components_ocean"]
+	path = components_ocean
+	url = https://gitlab.com/yarproko/components_ocean.git
