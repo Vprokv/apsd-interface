@@ -1,16 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const VolumeItem = props => {
-  return (
-    <div>
+function VolumeItem(props) {
+  return <div></div>
+}
 
-    </div>
-  );
-};
+VolumeItem.propTypes = {}
 
-VolumeItem.propTypes = {
-  
-};
-
-export default VolumeItem;
+export default VolumeItem

@@ -1,13 +1,22 @@
-import axios from "axios";
-import  { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import {Navigate, Route, Routes, useLocation, useNavigate} from "react-router-dom";
-import Login from "./Pages/Login";
-import TaskItem from "./Pages/Tasks/item";
-import TaskList from "./Pages/Tasks/list";
-import VolumeItem from "./Pages/Volume";
+import axios from 'axios'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
+import Login from './Pages/Login'
+import ResetPassword from './Pages/ResetPassword'
+import TaskItem from './Pages/Tasks/item'
+import TaskList from './Pages/Tasks/list'
+import VolumeItem from './Pages/Volume'
 import * as routePath from './routePaths'
+import {MAIN_PATH, RESET_PASSWORD_PAGE_PATH} from "./routePaths";
+import Main from "./Pages/Main";
 
-const TOKEN_KEY = "user-token"
+const TOKEN_KEY = 'user-token'
 
 function App() {
   // const navigate = useNavigate()
@@ -117,44 +126,29 @@ function App() {
   return (
     <Suspense fallback={<div>Загрузка...</div>}>
       <Routes>
-        {
-          userState === null
-            ? (
-              <>
-                <Route
-                  path={routePath.LOGIN_PAGE_PATH}
-                  element={<Login />}
-                />
-                <Route
-                  path="*"
-                  element={<Navigate to={routePath.LOGIN_PAGE_PATH}/>}
-                />
-              </>
-            )
-            : (
-              <>
-                <Route
-                  path={routePath.TASK_ITEM_PATH}
-                  element={<TaskItem/>}
-                />
-                <Route
-                  path={routePath.TASK_LIST_PATH}
-                  element={<TaskList/>}
-                />
-                <Route
-                  path={routePath.VOLUME_ITEM_PATH}
-                  element={<VolumeItem/>}
-                />
-                <Route
-                  path="*"
-                  element={<Navigate to={routePath.TASK_LIST_PATH}/>}
-                />
-              </>
-            )
-        }
+        {userState !== null ? (
+          <>
+            <Route path={routePath.LOGIN_PAGE_PATH} element={<Login />} />
+            <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword />} />
+            <Route
+              path="*"
+              element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+            />
+          </>
+        ) : (
+          <Route element={<Main />}>
+            <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
+            <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
+            <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
+            <Route
+              path="*"
+              element={<Navigate to={routePath.TASK_LIST_PATH} />}
+            />
+          </Route>
+        )}
       </Routes>
     </Suspense>
-  );
+  )
 }
 
-export default App;
+export default App

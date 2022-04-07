@@ -11,10 +11,39 @@ html {
 
 body {
     height: 100%;
+    line-height: 16px;
+    letter-spacing: 0.2px;
+    color: #232832;
+    font-family: 'Rubik';
 }
 
 #root, .flex-container {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+:root {
+    --form--elements_height: 56px;
+    --form-elements-border-radius: 8px;
+    --form-elements-border-color: #E6EBF4;
+    --form-input-background-color: #F7F8FC;
+    --form-elements-indent: 24px;
+    --form-elements-error-color: #F0565A;
+
+
+    --secondary: #B8C7E4;
+    --red: #F0565A;
+    --light-gray: #F7F8FC;
+    --separator: #E6EBF4;
+    --text-secondary: #98A5BC;
+    --green: #3CE289;
+    --orange: #FA9312;
+    --notifications: #FAFBFF;
+    --blue-1: #1C60E0;
+    --light-blue: #8BD5FF;
+    --blue-hover: #1848BE;
+    --blue-4: #4980e6;
+
+
 }

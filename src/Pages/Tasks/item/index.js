@@ -1,16 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const TaskItem = props => {
-  return (
-    <div>
+function TaskItem(props) {
+  return <div></div>
+}
 
-    </div>
-  );
-};
+TaskItem.propTypes = {}
 
-TaskItem.propTypes = {
-  
-};
-
-export default TaskItem;
+export default TaskItem

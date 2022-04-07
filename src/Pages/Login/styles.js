@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const LoginContainer = styled.div`
   display: flex;
@@ -11,11 +11,12 @@ export const LoginFormContainer = styled.div`
   width: 100%;
   height: 100%;
   flex: 0 0 auto;
+  padding: 150px 100px 50px;
 `
 
 export const Background = styled.div`
   height: 100%;
   width: 100%;
-  background: url("./d67acfda04fca2473676bbd7ef137b44.png") center;
+  background: ${({ backgroundUrlPath }) => `url(${backgroundUrlPath})`} center;
   background-size: cover;
 `
