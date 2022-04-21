@@ -13,7 +13,7 @@ body {
     height: 100%;
     line-height: 16px;
     letter-spacing: 0.2px;
-    color: #232832;
+    color: var(--base);
     font-family: 'Rubik';
 }
 
@@ -24,14 +24,15 @@ body {
 }
 
 :root {
-    --form--elements_height: 56px;
+    --input-placeholder-color: var(--text-secondary);
+    --form--elements_height: 40px;
     --form-elements-border-radius: 8px;
     --form-elements-border-color: #E6EBF4;
     --form-input-background-color: #F7F8FC;
     --form-elements-indent: 24px;
     --form-elements-error-color: #F0565A;
 
-
+    --base: #232832;
     --secondary: #B8C7E4;
     --red: #F0565A;
     --light-gray: #F7F8FC;

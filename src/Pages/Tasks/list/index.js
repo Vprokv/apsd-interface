@@ -1,7 +1,11 @@
-import React from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
-import {useOutletContext} from "react-router-dom";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import ListTable from '@Components/Components/Tables/ListTable'
+import Select from '../../../Components/Inputs/Select'
+import Switch from '../../../Components/Inputs/Switch'
+import Icon from '@Components/Components/Icon'
+import searchIcon from "@/Icons/searchIcon"
 import UserCard, { sizes as useCardSizes } from "../../../Components/ListTableComponents/UserCard";
 import DocumentState, { sizes as DocumentStateSizes } from "../../../Components/ListTableComponents/DocumentState";
 import AlertComponent, { sizes as alertSizes } from "../../../Components/ListTableComponents/AlertComponent";
@@ -9,6 +13,13 @@ import VolumeState, { sizes as volumeStateSize } from "../../../Components/ListT
 import BaseCell, { sizes as baseCellSize } from "../../../Components/ListTableComponents/BaseCell";
 import VolumeStatus, { sizes as volumeStatusSize } from "../../../Components/ListTableComponents/VolumeStatus";
 import HeaderCell from "../../../Components/ListTableComponents/HeaderCell";
+import {FilterForm, SearchInput, TableActionButton} from "./styles";
+import documentIcon from "./icons/documentIcon"
+import filterIcon from "./icons/filterIcon"
+import sortIcon from "./icons/sortIcon"
+import volumeIcon from "./icons/volumeIcon"
+import Pagination from "../../../Components/Pagination";
+import RowComponent from "./Components/RowComponent";
 
 const mock = [
   {
@@ -274,16 +285,125 @@ const settings = {
   ]
 }
 
+const emptyWrapper = (({ children }) => children)
+
+const filterFormConfig = [
+  {
+    id: "1",
+    component: Switch,
+    label: "Непросмотренные"
+  },
+  {
+    id: "2",
+    component: Select,
+    placeholder: "Тип задания",
+    options: [
+      {
+        ID: "ASD",
+        SYS_NAME: "TT"
+      },
+      {
+        ID: "ASD1",
+        SYS_NAME: "TT2"
+      },
+    ]
+  },
+  {
+    id: "3",
+    component: Select,
+    placeholder: "Вид тома",
+    options: [
+      {
+        ID: "ASD",
+        SYS_NAME: "TT"
+      },
+      {
+        ID: "ASD1",
+        SYS_NAME: "TT2"
+      },
+    ]
+  },
+  {
+    id: "4",
+    component: Select,
+    placeholder: "Этап",
+    options: [
+      {
+        ID: "ASD",
+        SYS_NAME: "TT"
+      },
+      {
+        ID: "ASD1",
+        SYS_NAME: "TT2"
+      },
+    ]
+  },
+  {
+    id: "5",
+    component: Select,
+    placeholder: "Статус",
+    options: [
+      {
+        ID: "ASD",
+        SYS_NAME: "TT"
+      },
+      {
+        ID: "ASD1",
+        SYS_NAME: "TT2"
+      },
+    ]
+  },
+  {
+    id: "6",
+    component: SearchInput,
+    placeholder: "Поиск",
+    children: <Icon icon={searchIcon} size={10} className="color-text-secondary mr-2.5"/>
+  }
+]
+
 function TaskList(props) {
   const asd = useOutletContext();
+  const [a,b] = useState({})
+  const navigate = useNavigate()
+  const handleDoubleClick = useCallback(() => navigate("/task/1"), [navigate]);
 
-  return <div className="p-4 overflow-hidden">
+  const conf = useMemo(() => ({
+    ...settings,
+    rowComponent: (props) => <RowComponent onDoubleClick={handleDoubleClick} {...props}/>
+  }), [handleDoubleClick])
+
+  return <div className="px-4 pb-4 overflow-hidden flex-container">
+    <div className="flex items-center">
+      <FilterForm
+        fields={filterFormConfig}
+        inputWrapper={emptyWrapper}
+        value={a}
+        onInput={b}
+      />
+      <div className="flex items-center color-text-secondary ml-auto">
+        <TableActionButton className="mr-2">
+          <Icon icon={filterIcon}/>
+        </TableActionButton>
+        <TableActionButton className="mr-2">
+          <Icon icon={sortIcon}/>
+        </TableActionButton>
+        <TableActionButton className="mr-2">
+          <Icon icon={volumeIcon}/>
+        </TableActionButton>
+        <TableActionButton className="color-green">
+          <Icon icon={documentIcon}/>
+        </TableActionButton>
+      </div>
+    </div>
     <ListTable
-      settings={settings}
+      settings={conf}
       value={mock}
       headerCellComponent={HeaderCell}
     />
-  </div>
+    <Pagination className="mt-2">
+      Отображаются записи с 1 по 10, всего 120
+    </Pagination>
+  </div>;
 }
 
 TaskList.propTypes = {}

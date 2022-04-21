@@ -1,11 +1,11 @@
 import React, {useCallback, useState} from 'react'
 import PropTypes from 'prop-types'
 import { WithWithValidationForm } from '@Components/Components/Forms'
-import Input from '@/Components/Fields/Input'
 import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
 import Button from "@/Components/Button";
 import {VALIDATION_RULE_REQUIRED} from "@Components/Logic/Validator/constants";
 import {Link} from "react-router-dom";
+import { LoginInput } from './styles'
 
 import {RESET_PASSWORD_PAGE_PATH} from "../../routePaths";
 import LoginTemplate from "./LoginTemplate";
@@ -14,14 +14,14 @@ export const fieldMap = [
   {
     label: "Логин",
     id: "login",
-    component: Input,
+    component: LoginInput,
     placeholder: "Введите свой логин"
   },
   {
     label: "Пароль",
     id: "password",
     type: "password",
-    component: Input,
+    component: LoginInput,
     placeholder: "Введите свой пароль"
   }
 ]
@@ -32,12 +32,12 @@ const rules = {
 }
 
 
-function Login() {
+function Login({ setToken }) {
   const [state, setState] = useState({})
 
   const handleSubmit = useCallback(() => {
-
-  }, [])
+setToken(true)
+  }, [setToken])
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">

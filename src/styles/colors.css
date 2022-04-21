@@ -41,3 +41,19 @@
 .bg-text-secondary {
     background-color: var(--text-secondary);
 }
+
+.color-green {
+    color: var(--green);
+}
+
+.bg-green {
+    background-color: var(--green);
+}
+
+.color-red {
+    color: var(--red);
+}
+
+.bg-red {
+    background-color: var(--red);
+}

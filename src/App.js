@@ -126,10 +126,10 @@ function App() {
   return (
     <Suspense fallback={<div>Загрузка...</div>}>
       <Routes>
-        {userState !== null ? (
+        {userState === null ? (
           <>
-            <Route path={routePath.LOGIN_PAGE_PATH} element={<Login />} />
-            <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword />} />
+            <Route path={routePath.LOGIN_PAGE_PATH} element={<Login setToken={setUserState} />} />
+            <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword setToken={setUserState} />} />
             <Route
               path="*"
               element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
@@ -142,7 +142,7 @@ function App() {
             <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
             <Route
               path="*"
-              element={<Navigate to={routePath.TASK_LIST_PATH} />}
+              element={<Navigate to={routePath.TASK_LIST_PATH} replace/>}
             />
           </Route>
         )}
