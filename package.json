@@ -25,7 +25,8 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
+    "package": "tar -czf apsd-ui.tar.gz build",
+    "test": "craco test --watchAll=false",
     "eject": "craco eject"
   },
   "eslintConfig": {
