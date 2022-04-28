@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apsd/components": "file:src/components_ocean",
     "@craco/craco": "^6.4.3",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@apsd/components": "file:src/components_ocean",
     "@imaginary-cloud/eslint-config-react": "^2.0.1",
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.8",

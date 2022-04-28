@@ -1,0 +1,5 @@
+export const VALIDATION_RULE_BIG_DATE_THEN = "bigDateThen"
+export const VALIDATION_RULE_LESS_DATE_THEN = "lessDateThen"
+export const VALIDATION_RULE_SAME = "same"
+export const VALIDATION_RULE_PASSWORD = "password"
+export const VALIDATION_RULE_REQUIRED = "required"

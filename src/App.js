@@ -4,6 +4,8 @@ import {
   Navigate,
   Route,
   Routes,
+  
+  MemoryRouter,
   useLocation,
   useNavigate,
 } from 'react-router-dom'
@@ -13,7 +15,7 @@ import TaskItem from './Pages/Tasks/item'
 import TaskList from './Pages/Tasks/list'
 import VolumeItem from './Pages/Volume'
 import * as routePath from './routePaths'
-import {MAIN_PATH, RESET_PASSWORD_PAGE_PATH} from "./routePaths";
+import { MAIN_PATH, RESET_PASSWORD_PAGE_PATH } from "./routePaths";
 import Main from "./Pages/Main";
 
 const TOKEN_KEY = 'user-token'
@@ -125,28 +127,30 @@ function App() {
 
   return (
     <Suspense fallback={<div>Загрузка...</div>}>
-      <Routes>
-        {userState === null ? (
-          <>
-            <Route path={routePath.LOGIN_PAGE_PATH} element={<Login setToken={setUserState} />} />
-            <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword setToken={setUserState} />} />
-            <Route
-              path="*"
-              element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
-            />
-          </>
-        ) : (
-          <Route element={<Main />}>
-            <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
-            <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
-            <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
-            <Route
-              path="*"
-              element={<Navigate to={routePath.TASK_LIST_PATH} replace/>}
-            />
-          </Route>
-        )}
-      </Routes>
+      <MemoryRouter>
+        <Routes>
+          {userState === null ? (
+            <>
+              <Route path={routePath.LOGIN_PAGE_PATH} element={<Login setToken={setUserState} />} />
+              <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword setToken={setUserState} />} />
+              <Route
+                path="*"
+                element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+              />
+            </>
+          ) : (
+            <Route element={<Main />}>
+              <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
+              <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
+              <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
+              <Route
+                path="*"
+                element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
+              />
+            </Route>
+          )}
+        </Routes>
+      </MemoryRouter>
     </Suspense>
   )
 }
