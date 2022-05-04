@@ -2,6 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useNavigate, useOutletContext} from "react-router-dom";
 import ListTable from '@Components/Components/Tables/ListTable'
+import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import Select from '../../../Components/Inputs/Select'
 import Switch from '../../../Components/Inputs/Switch'
 import Icon from '@Components/Components/Icon'
@@ -20,6 +21,7 @@ import sortIcon from "./icons/sortIcon"
 import volumeIcon from "./icons/volumeIcon"
 import Pagination from "../../../Components/Pagination";
 import RowComponent from "./Components/RowComponent";
+import CheckBox from "../../../Components/Inputs/CheckBox";
 
 const mock = [
   {
@@ -230,9 +232,164 @@ const mock = [
       position: "Руководитель проекта"
     }
   },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
+  {
+    status: "Согласование",
+    dateStart: "03.09.2021",
+    dateEnd: "12.09.2021",
+    type: "Рабочий документ",
+    id: "700-11",
+    volume_name: "О согласовании ТЗ",
+    stage: "Подготовка документа",
+    volume_status: "На подписании",
+    maintainer: {
+      surname: "Пилипчук",
+      secondName: "Р",
+      name: "П",
+      position: "Начальник службы"
+    },
+    author: {
+      surname: "Корнейчу",
+      secondName: "Р",
+      name: "П",
+      position: "Руководитель проекта"
+    }
+  },
 ]
 
 const settings = {
+  selectPlugin: { driver: FlatSelect, component: CheckBox, style: { margin: "auto 0"} },
   columns: [
     {
       id: "task",
@@ -364,6 +521,7 @@ const filterFormConfig = [
 function TaskList(props) {
   const asd = useOutletContext();
   const [a,b] = useState({})
+  const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(() => navigate("/task/1"), [navigate]);
 
@@ -399,6 +557,9 @@ function TaskList(props) {
       settings={conf}
       value={mock}
       headerCellComponent={HeaderCell}
+      selectState={selectState}
+      onSelect={setSelectState}
+      valueKey="id"
     />
     <Pagination className="mt-2">
       Отображаются записи с 1 по 10, всего 120

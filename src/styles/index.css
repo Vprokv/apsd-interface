@@ -31,6 +31,7 @@ body {
     --form-input-background-color: #F7F8FC;
     --form-elements-indent: 24px;
     --form-elements-error-color: #F0565A;
+    --form-elements-disabled-border-color: #DDDDDD;
 
     --base: #232832;
     --secondary: #B8C7E4;

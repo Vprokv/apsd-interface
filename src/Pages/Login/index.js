@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithWithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
@@ -32,12 +32,8 @@ const rules = {
 }
 
 
-function Login({ setToken }) {
+function Login({ loginRequest }) {
   const [state, setState] = useState({})
-
-  const handleSubmit = useCallback(() => {
-setToken(true)
-  }, [setToken])
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">
@@ -48,7 +44,7 @@ setToken(true)
         fields={fieldMap}
         inputWrapper={DefaultWrapper}
         rules={rules}
-        onSubmit={handleSubmit}
+        onSubmit={loginRequest}
       >
         <div className="flex flex-col">
           <Link

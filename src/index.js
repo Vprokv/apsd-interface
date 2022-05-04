@@ -9,6 +9,7 @@ import './styles/fonts.css'
 import './styles/helpers.css'
 import 'normalize.css'
 import 'react-perfect-scrollbar/dist/css/styles.min.css'
+import './api'
 
 import App from './App'
 import history from './history'

@@ -11,7 +11,7 @@ const RowComponent = ({ id, className, children, style, onDoubleClick }) => <Gri
 
 RowComponent.propTypes = {
   onDoubleClick: PropTypes.func.isRequired,
-  id: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   style: PropTypes.object,

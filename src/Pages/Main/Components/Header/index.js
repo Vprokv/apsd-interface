@@ -9,10 +9,13 @@ import notificationIcon from "@/Icons/notificationIcon";
 import angleIcon from "@/Icons/angleIcon";
 import {Avatar, IconsGroup} from "./styles";
 import tempImg from './temp_avatar.png'
+import {useRecoilValue} from "recoil";
+import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 
 
 
 const Header = props => {
+  const {dss_first_name, dss_last_name, dsid_avatar } = useRecoilValue(userAtom)
   return (
     <div className="bg-blue-1 flex items-center py-4 pl-6 pr-5">
       <img src={MainLogo} className="mr-20"/>
@@ -29,8 +32,8 @@ const Header = props => {
       </IconsGroup>
       <div className="pl-10 text-white flex items-center">
         <div className="text-right mr-4 font-medium">
-          <div>Михаил</div>
-          <div>Медведев</div>
+          <div>{dss_first_name}</div>
+          <div>{dss_last_name}</div>
         </div>
         <Avatar className="mr-2" src={tempImg}/>
         <Icon icon={angleIcon} size={10}/>

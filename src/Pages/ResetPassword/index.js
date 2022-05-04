@@ -54,12 +54,8 @@ const rules = {
 }
 
 
-function Login({ setToken }) {
+function Login({ loginRequest }) {
   const [state, setState] = useState({})
-
-  const handleSubmit = useCallback(() => {
-    setToken(true)
-  }, [])
 
   return (
     <LoginTemplate backgroundUrlPath="./d67acfda04fca2473676bbd7ef137b44.png">
@@ -70,7 +66,7 @@ function Login({ setToken }) {
         fields={fieldMap}
         inputWrapper={DefaultWrapper}
         rules={rules}
-        onSubmit={handleSubmit}
+        onSubmit={loginRequest}
       >
         <div className="flex flex-col pt-9">
           <Button
