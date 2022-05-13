@@ -4,7 +4,7 @@ import PropTypes from "prop-types"
 import memoizeOne from "memoize-one"
 import AccumulateFunctionCall from "../../../Utils/FunctionCall/AccumulateFunctionCall";
 import Cell from "./Cell"
-import {CellContainer, GridContainer} from "./styles"
+import {CellContainer, FixedRowsContainer, GridContainer} from "./styles"
 // eslint-disable-next-line import/no-cycle
 import ListTable from "./index"
 //
@@ -89,8 +89,8 @@ class Row extends Component {
   render() {
     const {
       props: {
-        value, rowIndex, settings, subTable, collapsedColumnState, collapsedGroup, onCollapseColumn, style,
-        columnState: { styles, columns },
+        value, rowIndex, settings, subTable, collapsedColumnState, collapsedGroup, onCollapseColumn,
+        columnState: { normalColumnsState: {styles, columns}, fixedColumnsState: {styles: fStyles, columns: fColumns } },
         settings: { nestedDataKey, rowComponent: RowComponent = DefaultRowComponent }
       },
       state: { renderNestedBranch }
@@ -104,37 +104,74 @@ class Row extends Component {
         id={rowIndex}
         elementPadding={rowPadding}
         nestedDataKey={nestedDataKey}
-        className="grid py-2"
-        style={style}
+        className="flex py-2 relative overflow-x-hidden"
       >
-        {
-          columns.map(({
+        <div
+          className="grid"
+          style={fStyles}
+        >
+          {
+            fColumns.map(({
+               component: CellComponent = Cell, style, id, label, collapsibleGroup, props, className = "", keepNestingPadding,
+               collapseAble, keepArrowIndent
+             }, index) => (
+              <CellContainer
+                key={id}
+                className={`${className} flex items-baseline`}
+                style={style}
+              >
+                <CellComponent
+                  {...props}
+                  id={id}
+                  value={value[id]}
+                  rowIndex={rowIndex}
+                  renderNestedBranch={renderNestedBranch}
+                  expanded={collapsedColumnState[id]}
+                  rowValue={value}
+                  nestedDataKey={nestedDataKey}
+                  subTable={subTable}
+                  getParentValue={this.getValue}
+                  onInput={this.onInput}
+                  onDelete={this.onDelete}
+                  onToggleRenderNestedTable={this.onToggleRenderNestedTable}
+                />
+              </CellContainer>
+            ))
+          }
+        </div>
+        <div
+          className="grid row-scrollable-container overflow-hidden"
+          style={styles}
+        >
+          {
+            columns.map(({
             component: CellComponent = Cell, style, id, label, collapsibleGroup, props, className = "", keepNestingPadding,
-            collapseAble, keepArrowIndent
-          }, index) => (
-            <CellContainer
-              key={label}
-              className={`${className} flex items-baseline`}
-              style={style}
-            >
-              <CellComponent
-                {...props}
-                id={id}
-                value={value[id]}
-                rowIndex={rowIndex}
-                renderNestedBranch={renderNestedBranch}
-                expanded={collapsedColumnState[id]}
-                ParentValue={value}
-                nestedDataKey={nestedDataKey}
-                subTable={subTable}
-                getParentValue={this.getValue}
-                onInput={this.onInput}
-                onDelete={this.onDelete}
-                onToggleRenderNestedTable={this.onToggleRenderNestedTable}
-              />
-            </CellContainer>
-          ))
-        }
+             collapseAble, keepArrowIndent
+           }, index) => (
+              <CellContainer
+                key={id}
+                className={`${className} flex items-baseline`}
+                style={style}
+              >
+                <CellComponent
+                  {...props}
+                  id={id}
+                  value={value[id]}
+                  rowIndex={rowIndex}
+                  renderNestedBranch={renderNestedBranch}
+                  expanded={collapsedColumnState[id]}
+                  ParentValue={value}
+                  nestedDataKey={nestedDataKey}
+                  subTable={subTable}
+                  getParentValue={this.getValue}
+                  onInput={this.onInput}
+                  onDelete={this.onDelete}
+                  onToggleRenderNestedTable={this.onToggleRenderNestedTable}
+                />
+              </CellContainer>
+            ))
+          }
+        </div>
         {renderNestedBranch && (
           <ListTable
             settings={this.renderTableColumnConfig(settings, subTable)}

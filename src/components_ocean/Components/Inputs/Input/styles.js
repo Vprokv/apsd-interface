@@ -12,6 +12,7 @@ export const Container = styled.div`
 `
 
 export const BaseInputStyles = css`
+  background: inherit;
   width: 100%;
   text-align: var(--text-aling-input, left);
   caret-color: var(--input-carret-color, #333333);

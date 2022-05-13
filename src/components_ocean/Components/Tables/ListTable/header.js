@@ -1,42 +1,58 @@
-import React, {Component, useEffect, useLayoutEffect} from "react"
+import React, {Component, useEffect, useLayoutEffect, useRef} from "react"
 import PropTypes from "prop-types"
-import { ASC } from "../../../constants"
-import Icon from "../../Icon"
-import {HeaderCellComponent, HeaderContainer} from "./styles"
+import {FixedRowsContainer, HeaderContainer} from "./styles"
 import HeaderCell from "./HeaderCell";
 
 
 const Header = React.forwardRef(({
   collapsedColumnState, sortState, columnFilters, headerCellComponent,
-  onResize, horizontalScroll, onColumnStartMove, onMove, columnState: { styles, columns }
+  onResize, onColumnStartMove, onMove,
+  columnState: { normalColumnsState: {styles, columns}, fixedColumnsState: {styles: fStyles, columns: fColumns } }
 }, ref) => {
-
-  useLayoutEffect(() => {
-    ref.current.scrollLeft = horizontalScroll
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[horizontalScroll])
+  const refFixedContainer = useRef()
 
   return (
     <HeaderContainer
-      className="grid overflow-hidden"
-      style={styles}
+      className="overflow-hidden relative flex"
       ref={ref}
     >
-      {columns.map((columnSettings, index) => {
-        const {
-          id, label, props, collapseAble, withoutSort, filter,
-          headerCellComponent: CellComponent = headerCellComponent
-        } = columnSettings
+      <FixedRowsContainer
+        style={fStyles}
+        ref={refFixedContainer}
+      >
+        {fColumns.map((columnSettings, index) => {
+          const {
+            id, label, props, collapseAble, withoutSort, filter,
+            headerCellComponent: CellComponent = headerCellComponent
+          } = columnSettings
 
-        return (
-          <CellComponent
-            key={id}
-            label={label}
-            onResize={onResize(id)}
-            onMove={onMove(id, index)}
-          />
-        )
-      })}
+          return (
+            <CellComponent
+              key={id}
+              label={label}
+              onResize={onResize(id)}
+              onMove={onMove(id, index)}
+            />
+          )
+        })}
+      </FixedRowsContainer>
+      <div className="grid row-scrollable-container overflow-hidden" style={styles}>
+        {columns.map((columnSettings, index) => {
+          const {
+            id, label, props, collapseAble, withoutSort, filter,
+            headerCellComponent: CellComponent = headerCellComponent
+          } = columnSettings
+
+          return (
+            <CellComponent
+              key={id}
+              label={label}
+              onResize={onResize(id)}
+              onMove={onMove(id, index)}
+            />
+          )
+        })}
+      </div>
     </HeaderContainer>
   );
 });
@@ -48,7 +64,6 @@ Header.propTypes = {
   onResize: PropTypes.func.isRequired,
   onFilter: PropTypes.func,
   onSort: PropTypes.func,
-  horizontalScroll: PropTypes.number,
   settings: PropTypes.object,
   sortState: PropTypes.object,
   columnFilters: PropTypes.object,
@@ -58,7 +73,6 @@ Header.propTypes = {
 
 Header.defaultProps = {
   headerCellComponent: HeaderCell,
-  horizontalScroll: 0,
   settings: {},
   sortState: {},
   columnFilters: {},
