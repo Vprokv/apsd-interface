@@ -4,7 +4,6 @@ import {
   Navigate,
   Route,
   Routes,
-  
   useLocation,
   useNavigate,
 } from 'react-router-dom'
@@ -14,7 +13,8 @@ import TaskItem from './Pages/Tasks/item'
 import TaskList from './Pages/Tasks/list'
 import VolumeItem from './Pages/Volume'
 import * as routePath from './routePaths'
-import { MAIN_PATH, RESET_PASSWORD_PAGE_PATH } from "./routePaths";
+import createAxiosInstance from "./api"
+import {MAIN_PATH, RESET_PASSWORD_PAGE_PATH} from "./routePaths";
 import Main from "./Pages/Main";
 import {URL_LOGIN, URL_SYSTEM_META, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT} from "./ApiList";
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
@@ -93,7 +93,7 @@ function App() {
             <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
             <Route
               path="*"
-              element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
+              element={<Navigate to={routePath.TASK_LIST_PATH} replace/>}
             />
           </Route>
         )}
