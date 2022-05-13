@@ -5,7 +5,6 @@ import {
   Route,
   Routes,
   
-  MemoryRouter,
   useLocation,
   useNavigate,
 } from 'react-router-dom'
@@ -127,30 +126,28 @@ function App() {
 
   return (
     <Suspense fallback={<div>Загрузка...</div>}>
-      <MemoryRouter>
-        <Routes>
-          {userState === null ? (
-            <>
-              <Route path={routePath.LOGIN_PAGE_PATH} element={<Login setToken={setUserState} />} />
-              <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword setToken={setUserState} />} />
-              <Route
-                path="*"
-                element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
-              />
-            </>
-          ) : (
-            <Route element={<Main />}>
-              <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
-              <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
-              <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
-              <Route
-                path="*"
-                element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
-              />
-            </Route>
-          )}
-        </Routes>
-      </MemoryRouter>
+      <Routes>
+        {userState === null ? (
+          <>
+            <Route path={routePath.LOGIN_PAGE_PATH} element={<Login setToken={setUserState} />} />
+            <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword setToken={setUserState} />} />
+            <Route
+              path="*"
+              element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+            />
+          </>
+        ) : (
+          <Route element={<Main />}>
+            <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
+            <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
+            <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
+            <Route
+              path="*"
+              element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
+            />
+          </Route>
+        )}
+      </Routes>
     </Suspense>
   )
 }
