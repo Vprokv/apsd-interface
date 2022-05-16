@@ -29,6 +29,7 @@
     "build": "craco build",
     "package": "tar -czf apsd-ui.tar.gz build",
     "test": "craco test --watchAll=false",
+    "site": "export FETCH_LICENSE=true && cdxgen -o build/bom.json",
     "lint": "eslint --fix",
     "eject": "craco eject"
   },
@@ -52,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@appthreat/cdxgen": "^4.0.18",
     "@apsd/components": "file:src/components_ocean",
     "@imaginary-cloud/eslint-config-react": "^2.0.1",
     "autoprefixer": "^10.4.2",
