@@ -12,7 +12,7 @@ export default function ({ token, ...apiParams}) {
 
   if (token) {
     api.interceptors.request.use((config) => {
-      config.data = config.data ? { ...JSON.parse(config.data), token } : { token }
+      config.data = config.data ? { ...config.data, token } : { token }
       return config;
     }, function (error) {
       return Promise.reject(error);

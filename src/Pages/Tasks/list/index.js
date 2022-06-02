@@ -1,6 +1,6 @@
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
-import {useNavigate, useOutletContext} from "react-router-dom";
+import {useNavigate, useOutletContext, useLocation} from "react-router-dom";
 import ListTable from '@Components/Components/Tables/ListTable'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import Select from '../../../Components/Inputs/Select'
@@ -22,371 +22,11 @@ import volumeIcon from "./icons/volumeIcon"
 import Pagination from "../../../Components/Pagination";
 import RowComponent from "./Components/RowComponent";
 import CheckBox from "../../../Components/Inputs/CheckBox";
-
-const mock = [
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-1",
-    volume_name: "О согласовании работ",
-    stage: "Согласование служб",
-    volume_status: "На подготовке",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-3",
-    volume_name: "О согласовании работ",
-    stage: "Согласование служб",
-    volume_status: "На подготовке",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-4",
-    volume_name: "О согласовании работ",
-    stage: "Согласование служб",
-    volume_status: "На подготовке",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Подписание",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-5",
-    volume_name: "О согласовании работ",
-    stage: "Согласование служб",
-    volume_status: "На подготовке",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Подготовка",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Проектно-сметный документ",
-    id: "700-6",
-    volume_name: "О согласовании работ",
-    stage: "Согласование служб",
-    volume_status: "На согласовании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Доработка",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Техническое задание",
-    id: "700-7",
-    volume_name: "О согласовании работ",
-    stage: "Подписание куратора ИА",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-8",
-    volume_name: "О согласовании работ",
-    stage: "Подготовка документа",
-    volume_status: "Согласовано",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Исходно-разрешительная документация",
-    id: "700-9",
-    volume_name: "О согласовании ТЗ",
-    stage: "Согласование служб",
-    volume_status: "Согласовано",
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Проектно-сметный документ",
-    id: "700-10",
-    volume_name: "О согласовании работ",
-    stage: "Подписание куратора ИА",
-    volume_status: "На согласовании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-  {
-    status: "Согласование",
-    dateStart: "03.09.2021",
-    dateEnd: "12.09.2021",
-    type: "Рабочий документ",
-    id: "700-11",
-    volume_name: "О согласовании ТЗ",
-    stage: "Подготовка документа",
-    volume_status: "На подписании",
-    maintainer: {
-      surname: "Пилипчук",
-      secondName: "Р",
-      name: "П",
-      position: "Начальник службы"
-    },
-    author: {
-      surname: "Корнейчу",
-      secondName: "Р",
-      name: "П",
-      position: "Руководитель проекта"
-    }
-  },
-]
+import {URL_TASK_LIST} from "../../../ApiList";
+import {ApiContext, TASK_LIST} from "../../../contants";
+import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
+import usePagination from "../../../components_ocean/Logic/usePagination";
+import {TabNames} from "./constants";
 
 const settings = {
   selectPlugin: { driver: FlatSelect, component: CheckBox, style: { margin: "auto 0"} },
@@ -410,7 +50,7 @@ const settings = {
       sizes: volumeStateSize
     },
     {
-      id: "volume_name",
+      id: "documentTypeName",
       label: "Наименование тома",
       component: BaseCell,
       sizes: baseCellSize
@@ -422,7 +62,7 @@ const settings = {
       sizes: baseCellSize
     },
     {
-      id: "volume_status",
+      id: "taskType",
       label: "Статус тома",
       component: VolumeStatus,
       sizes: volumeStatusSize
@@ -430,13 +70,15 @@ const settings = {
     {
       id: "maintainer",
       label: "Назначенный исполнитель",
-      component: UserCard,
+      component: ({ParentValue: {performerFio, performerPosition, performerName}}) =>
+        UserCard({ name: performerName, fio: performerFio, position: performerPosition }),
       sizes: useCardSizes
     },
     {
       id: "author",
       label: "Автор",
-      component: UserCard,
+      component: ({ ParentValue: {creatorFio, creatorPosition, creatorName}}) =>
+        UserCard({ name: creatorName, fio: creatorFio, position: creatorPosition }),
       sizes: useCardSizes
     },
   ]
@@ -519,11 +161,53 @@ const filterFormConfig = [
 ]
 
 function TaskList(props) {
-  const asd = useOutletContext();
+  const api = useContext(ApiContext)
+  const { search } = useLocation()
+  const {
+    tabState,
+    setTabState,
+    shouldReloadDataFlag,
+    loadDataHelper,
+    tabState: { data }
+  } = useTabItem({
+    setTabName: useCallback(() => TabNames[search], [search]),
+    stateId: TASK_LIST,
+  })
+  const {
+    setLimit,
+    setPage,
+    paginationState
+  } = usePagination({stateId: TASK_LIST, state: tabState, setState: setTabState, defaultLimit: 10})
+
   const [a,b] = useState({})
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(() => navigate("/task/1"), [navigate]);
+
+  const loadDataFunction = useMemo(() => {
+    const { limit, offset } = paginationState
+    return loadDataHelper(async () => {
+      const {data} = await api.post(`${URL_TASK_LIST}?limit=${limit}&offset=${offset}`, {
+        filter: {
+          ...search ? search.replace("?", "").split("&").reduce((acc, p) => {
+            const [key, value] = p.split("=")
+            acc[key] = JSON.parse(value)
+            return acc
+          }, {}) : {}
+        }
+      })
+      return {data}
+    })
+  }, [api, loadDataHelper, paginationState, search]);
+
+  const refLoadDataFunction = useRef(loadDataFunction)
+
+  useEffect(() => {
+    if (shouldReloadDataFlag || loadDataFunction !== refLoadDataFunction.current) {
+      loadDataFunction()
+    }
+    refLoadDataFunction.current = loadDataFunction
+  },[loadDataFunction, shouldReloadDataFlag])
 
   const conf = useMemo(() => ({
     ...settings,
@@ -555,13 +239,19 @@ function TaskList(props) {
     </div>
     <ListTable
       settings={conf}
-      value={mock}
+      value={data}
       headerCellComponent={HeaderCell}
       selectState={selectState}
       onSelect={setSelectState}
       valueKey="id"
     />
-    <Pagination className="mt-2">
+    <Pagination
+      className="mt-2"
+      limit={paginationState.limit}
+      page={paginationState.page}
+      setLimit={setLimit}
+      setPage={setPage}
+    >
       Отображаются записи с 1 по 10, всего 120
     </Pagination>
   </div>;

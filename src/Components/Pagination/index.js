@@ -1,27 +1,43 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
 import {PaginationButton} from "./styles";
 import Icon from '@Components/Components/Icon'
 import angleIcon from "../../Icons/angleIcon";
 import doubleAngleIcon from "../../Icons/doubleAngleIcon";
 
-const Pagination = ({ children, className }) => {
+const Pagination = ({ children, className, setLimit, limit }) => {
+  const onSetLimit = useCallback((limit) => () => {
+    setLimit(limit)
+  }, [setLimit])
   return (
     <div className={`${className} flex item-center`}>
       <div className="flex item-center mr-auto">
         <PaginationButton
           className="mr-2"
-          active
+          active={limit === 10}
+          onClick={onSetLimit(10)}
         >
           10
         </PaginationButton>
-        <PaginationButton className="mr-2">
+        <PaginationButton
+          className="mr-2"
+          active={limit === 25}
+          onClick={onSetLimit(25)}
+        >
           25
         </PaginationButton>
-        <PaginationButton className="mr-2">
+        <PaginationButton
+          className="mr-2"
+          active={limit === 50}
+          onClick={onSetLimit(50)}
+        >
           50
         </PaginationButton>
-        <PaginationButton className="mr-2">
+        <PaginationButton
+          className="mr-2"
+          active={limit === 100}
+          onClick={onSetLimit(100)}
+        >
           100
         </PaginationButton>
       </div>

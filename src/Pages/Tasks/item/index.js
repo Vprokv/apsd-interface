@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {NavigationContainer, NavigationItem} from "../../../Components/DocumentNavigation";
 import {
@@ -15,6 +15,9 @@ import Subscription from "./Pages/Subscription";
 import Objects from "./Pages/Objects";
 import Contain from "./Pages/Contain";
 import History from "./Pages/History";
+import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
+import {TASK_ITEM_DOCUMENT} from "../../../contants";
+
 
 const pages = [
   {
@@ -42,11 +45,13 @@ const pages = [
     path: "history",
     Component: History
   },
-
 ]
 
 function TaskItem(props) {
-
+  const { data } = useTabItem({
+    setTabName: useCallback(() => "Документ", []),
+    stateId: TASK_ITEM_DOCUMENT
+  })
   return <div className="flex-container w-full overflow-hidden">
     <NavigationContainer>
       {pages.map(({label, path}) => (

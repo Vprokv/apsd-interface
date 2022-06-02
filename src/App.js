@@ -18,10 +18,11 @@ import {MAIN_PATH, RESET_PASSWORD_PAGE_PATH} from "./routePaths";
 import Main from "./Pages/Main";
 import {URL_LOGIN, URL_SYSTEM_META, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT} from "./ApiList";
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
+import {ApiContext} from "./contants";
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
-  const { data: { token } } = await axios.post(URL_LOGIN, data)
+  const {data: {token}} = await axios.post(URL_LOGIN, data)
   return token
 }
 
@@ -30,7 +31,7 @@ function App() {
   const [axiosInstanceParams, updateAxiosInstanceParams] = useState({})
   const apiInstance = useMemo(() => createAxiosInstance(axiosInstanceParams), [axiosInstanceParams])
   const userObjectRequest = useCallback(async () => {
-    const { data } = await apiInstance.post(URL_USER_OBJECT)
+    const {data} = await apiInstance.post(URL_USER_OBJECT)
     return data
   }, [apiInstance])
 
@@ -42,12 +43,12 @@ function App() {
   } = useTokenStorage({
     authorizationRequest,
     userObjectRequest,
-    addTokenToAxiosInstance: useCallback((token) => updateAxiosInstanceParams({ token }), []),
+    addTokenToAxiosInstance: useCallback((token) => updateAxiosInstanceParams({token}), []),
   })
 
-  const changePasswordRequest = useCallback(async ({ login, password, new_password }) => {
+  const changePasswordRequest = useCallback(async ({login, password, new_password}) => {
     const token = await loginRequest({login, password})
-    return apiInstance.post(URL_USER_CHANGE_PASSWORD, { password: new_password, token })
+    return apiInstance.post(URL_USER_CHANGE_PASSWORD, {password: new_password, token})
   }, [apiInstance, loginRequest])
 
   useEffect(() => {
@@ -64,7 +65,7 @@ function App() {
       // Do something with response data
       return response;
     }, function (error) {
-      const { status } = error
+      const {status} = error
       if (status === 415) {
         dropToken()
       }
@@ -75,30 +76,33 @@ function App() {
   }, [apiInstance, dropToken])
 
   return (
-    <Suspense fallback={<div>Загрузка...</div>}>
-      <Routes>
-        {userState === null ? (
-          <>
-            <Route path={routePath.LOGIN_PAGE_PATH} element={<Login loginRequest={loginRequest} />} />
-            <Route path={routePath.RESET_PASSWORD_PAGE_PATH} element={<ResetPassword loginRequest={changePasswordRequest} />} />
-            {!userObjectLoading && <Route
-              path="*"
-              element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
-            />}
-          </>
-        ) : (
-          <Route element={<Main />}>
-            <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
-            <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
-            <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem />} />
-            <Route
-              path="*"
-              element={<Navigate to={routePath.TASK_LIST_PATH} replace/>}
-            />
-          </Route>
-        )}
-      </Routes>
-    </Suspense>
+    <ApiContext.Provider value={apiInstance}>
+      <Suspense fallback={<div>Загрузка...</div>}>
+        <Routes>
+          {userState === null ? (
+            <>
+              <Route path={routePath.LOGIN_PAGE_PATH} element={<Login loginRequest={loginRequest}/>}/>
+              <Route path={routePath.RESET_PASSWORD_PAGE_PATH}
+                     element={<ResetPassword loginRequest={changePasswordRequest}/>}/>
+              {!userObjectLoading && <Route
+                path="*"
+                element={<Navigate to={routePath.LOGIN_PAGE_PATH}/>}
+              />}
+            </>
+          ) : (
+            <Route element={<Main/>}>
+              <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem/>}/>
+              <Route path={routePath.TASK_LIST_PATH} element={<TaskList/>}/>
+              <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem/>}/>
+              <Route
+                path="*"
+                element={<Navigate to={routePath.TASK_LIST_PATH} replace/>}
+              />
+            </Route>
+          )}
+        </Routes>
+      </Suspense>
+    </ApiContext.Provider>
   )
 }
 
