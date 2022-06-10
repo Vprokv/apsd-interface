@@ -34,7 +34,4 @@ DocumentState.propTypes = {
 
 export default DocumentState;
 
-export const sizes = {
-  min: "200px",
-  max: "2.7fr"
-}
+export const sizes = 200

@@ -39,7 +39,4 @@ UserCard.defaultProps = {};
 export default UserCard;
 
 // Компонент сдизайнен для компонента ListTable и это его пропорции
-export const sizes = {
-  min: "180px",
-  max: "2.2fr"
-}
+export const sizes = 180

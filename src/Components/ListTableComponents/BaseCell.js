@@ -21,7 +21,4 @@ BaseCell.defaultProps = {
 
 export default BaseCell;
 
-export const sizes = {
-  min: "150px",
-  max: "2fr"
-}
+export const sizes = 150

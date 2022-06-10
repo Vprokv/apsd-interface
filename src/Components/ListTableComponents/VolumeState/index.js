@@ -45,7 +45,4 @@ VolumeState.propTypes = {
 
 export default VolumeState;
 // Компонент сдизайнен для компонента ListTable и это его пропорции
-export const sizes = {
-  min: "200px",
-  max: "3.2fr"
-}
+export const sizes = 200

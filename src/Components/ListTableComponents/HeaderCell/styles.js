@@ -3,19 +3,18 @@ import styled from "styled-components";
 export const Resizer = styled.div`
   position: absolute;
   bottom: 0;
-  right: 2px;
+  right: 0;
   top: 0;
   z-index: 2;
   cursor: e-resize;
-  width: 2px;
+  width: 5px;
   &:hover {
     &::after {
+      display: block;
       content: "";
-      position: absolute;
-      top: 0;
-      left: -2px;
-      bottom: 0;
-      width: 6px;
+      height: 100%;
+      width: 5px;
+      background: var(--blue-1);
     }
   }
 `

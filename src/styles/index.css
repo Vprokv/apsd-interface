@@ -32,6 +32,8 @@ body {
     --form-elements-indent: 24px;
     --form-elements-error-color: #F0565A;
     --form-elements-disabled-border-color: #DDDDDD;
+    --elements-hover-color: #1848BE;
+    --elements-active-color: #4980e6;
 
     --base: #232832;
     --secondary: #B8C7E4;

@@ -27,9 +27,13 @@ import {ApiContext, TASK_LIST} from "../../../contants";
 import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import usePagination from "../../../components_ocean/Logic/usePagination";
 import {TabNames} from "./constants";
+import SortCellComponent from "../../../Components/ListTableComponents/SortCellComponent";
 
 const settings = {
-  selectPlugin: { driver: FlatSelect, component: CheckBox, style: { margin: "auto 0"} },
+  plugins: {
+    outerSortPlugin: { component: SortCellComponent },
+    selectPlugin: { driver: FlatSelect, component: CheckBox, style: { margin: "auto 0"} },
+  },
   columns: [
     {
       id: "task",
@@ -161,6 +165,7 @@ const filterFormConfig = [
 ]
 
 function TaskList(props) {
+  const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
   const { search } = useLocation()
   const {
@@ -187,18 +192,29 @@ function TaskList(props) {
   const loadDataFunction = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
-      const {data} = await api.post(`${URL_TASK_LIST}?limit=${limit}&offset=${offset}`, {
-        filter: {
-          ...search ? search.replace("?", "").split("&").reduce((acc, p) => {
-            const [key, value] = p.split("=")
-            acc[key] = JSON.parse(value)
-            return acc
-          }, {}) : {}
+      const {data} = await api.post(
+        URL_TASK_LIST,
+        {
+          filter: {
+            ...search ? search.replace("?", "").split("&").reduce((acc, p) => {
+              const [key, value] = p.split("=")
+              acc[key] = JSON.parse(value)
+              return acc
+            }, {}) : {}
+          }
+        },
+        {
+          params: {
+            limit,
+            offset,
+            orderBy: sortQuery.key,
+            sortType: sortQuery.direction
+          }
         }
-      })
+      )
       return {data}
     })
-  }, [api, loadDataHelper, paginationState, search]);
+  }, [sortQuery, api, loadDataHelper, paginationState, search]);
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -243,6 +259,8 @@ function TaskList(props) {
       headerCellComponent={HeaderCell}
       selectState={selectState}
       onSelect={setSelectState}
+      sortQuery={sortQuery}
+      onSort={onSort}
       valueKey="id"
     />
     <Pagination
