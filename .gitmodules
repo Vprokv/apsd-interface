@@ -1,0 +1,4 @@
+[submodule "components_ocean"]
+	path = src/components_ocean
+	url = git@gitlab.id-mt.ru:sedo/components_ocean.git
+	branch = main
