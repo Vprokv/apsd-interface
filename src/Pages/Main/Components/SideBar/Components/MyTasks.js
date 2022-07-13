@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
 import {NavigationHeaderIcon} from "../style";
 import NavigationDocumentIcon from "../icons/NavigationDocumentIcon";
 import WithToggleNavigationItem from "./withToggleNavigationItem";
 import angleIcon from "@/Icons/angleIcon";
 import Icon from '@Components/Components/Icon'
+import {TASK_LIST_PATH} from "../../../../../routePaths";
+import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8, TabNames} from "../../../../Tasks/list/constants";
 
-const MyTasks = () => {
+const MyTasks = ({ onOpenNewTab }) => {
+  const handleOpenNewTab = useCallback((path) => () => onOpenNewTab(path), [onOpenNewTab])
   return (
     <WithToggleNavigationItem id="Мои задания">
       {({ isDisplayed, toggleDisplayedFlag }) => (
@@ -21,30 +24,50 @@ const MyTasks = () => {
           </button>
           {isDisplayed && (
             <div className="font-size-12 mt-2">
-              <button type="button" className="flex w-full py-1.5 color-blue-1">
-                <span className="mr-auto">Все задания</span>
+              <button
+                type="button"
+                className="flex w-full py-1.5 color-blue-1"
+                onClick={handleOpenNewTab(TASK_LIST_PATH)}
+              >
+                <span className="mr-auto">{TabNames[""]}</span>
                 <span className="font-medium">23/45</span>
               </button>
-              <button type="button" className="flex w-full py-1.5">
-                <span className="mr-auto">Срок истек</span>
+              <button
+                type="button"
+                className="flex w-full py-1.5"
+                onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED}`)}
+              >
+                <span className="mr-auto">{TabNames[EXPIRED]}</span>
                 <span className="color-red font-medium">14/23</span>
               </button>
-              <button type="button" className="flex w-full py-1.5">
-                <span className="mr-auto">Срок через 1-3 дня</span>
+              <button
+                type="button"
+                className="flex w-full py-1.5"
+                onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED_1_3}`)}
+              >
+                <span className="mr-auto">{TabNames[EXPIRED_1_3]}</span>
                 <span>
                   <span className="font-medium">3</span>
                   <span className="color-text-secondary">/0</span>
                 </span>
               </button>
-              <button type="button" className="flex w-full py-1.5">
-                <span className="mr-auto">Срок через 4-7 дней</span>
+              <button
+                type="button"
+                className="flex w-full py-1.5"
+                onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED_4_7}`)}
+              >
+                <span className="mr-auto">{TabNames[EXPIRED_4_7]}</span>
                 <span>
                   <span className="font-medium">0</span>
                   <span className="color-text-secondary">/2</span>
                 </span>
               </button>
-              <button type="button" className="flex w-full py-1.5">
-                <span className="mr-auto">Срок больше недели</span>
+              <button
+                type="button"
+                className="flex w-full py-1.5"
+                onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED_8}`)}
+              >
+                <span className="mr-auto">{TabNames[EXPIRED_8]}</span>
                 <span>
                   <span className="font-medium">7</span>
                   <span className="color-text-secondary">/9</span>

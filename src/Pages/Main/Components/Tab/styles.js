@@ -1,7 +1,12 @@
 import styled, { css } from "styled-components";
 import Icon from '@Components/Components/Icon'
 
-export const Container = styled.div`
+export const Container = styled.button`
+  user-select: none;
+  padding: 5px 6px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
   ${(({ active}) => active
     ? css`
         background-color: #d2dff9;

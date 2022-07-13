@@ -5,7 +5,7 @@ module.exports = {
     configure: {
       moduleNameMapper: {
         "^@/(.+)": "<rootDir>/src/$1",
-        "^@Components/(.+)": "<rootDir>/src/components_ocean/$1"
+        "^@(Components|/component_ocean)/(.+)": "<rootDir>/src/components_ocean/$2"
       }
     }
   },
@@ -13,6 +13,7 @@ module.exports = {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@Components': path.resolve(__dirname, './src/components_ocean'),
+      '@/component_ocean': path.resolve(__dirname, './src/components_ocean'),
     },
   },
 };

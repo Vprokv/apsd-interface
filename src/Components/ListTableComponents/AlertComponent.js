@@ -22,4 +22,4 @@ AlertComponent.propTypes = {
 
 export default AlertComponent;
 
-export const sizes = "60px"
+export const sizes = 60

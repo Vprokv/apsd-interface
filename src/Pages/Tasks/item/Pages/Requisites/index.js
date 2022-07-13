@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import PropTypes from 'prop-types';
 import DocumentSelect from "@/Components/Inputs/DocumentSelect";
 import UserSelect from "@/Components/Inputs/UserSelect";
@@ -8,6 +8,9 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
 import DatePicker from "../../../../../Components/Inputs/DatePicker";
 import {RequisitesForm} from "./styles";
+import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
+import {TASK_ITEM_REQUISITES} from "../../../../../contants";
+
 
 const formConfig = [
   {
@@ -150,6 +153,9 @@ const formConfig = [
 ]
 
 const Requisites = props => {
+  const { data } = useTabItem({
+    stateId: TASK_ITEM_REQUISITES
+  })
   const [value, setValue] = useState({})
   return (
     <ScrollBar className="w-full">
