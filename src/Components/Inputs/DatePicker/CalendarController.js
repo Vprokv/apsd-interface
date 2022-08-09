@@ -1,7 +1,7 @@
 import React, {useCallback, useLayoutEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
-import Calendar from '@Components/Components/C'
-import useCalendarViewController, {MONTH, YEAR} from '@Components/Components/C/useCalendarViewController'
+import Calendar from '@Components/Components/Calendar'
+import useCalendarViewController, {MONTH, YEAR} from '@Components/Components/Calendar/useCalendarViewController'
 import MonthView from './View'
 import CalendarControlGroup from "./CalendarControlGroup"
 
