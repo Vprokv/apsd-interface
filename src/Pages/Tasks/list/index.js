@@ -2,17 +2,17 @@ import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} fr
 import PropTypes from 'prop-types'
 import {useNavigate, useOutletContext, useLocation} from "react-router-dom";
 import ListTable from '@Components/Components/Tables/ListTable'
-import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
+import {FlatSelect} from '@Components/Components/Tables/Plugins/selectable'
 import Select from '../../../Components/Inputs/Select'
 import Switch from '../../../Components/Inputs/Switch'
 import Icon from '@Components/Components/Icon'
 import searchIcon from "@/Icons/searchIcon"
-import UserCard, { sizes as useCardSizes } from "../../../Components/ListTableComponents/UserCard";
-import DocumentState, { sizes as DocumentStateSizes } from "../../../Components/ListTableComponents/DocumentState";
-import AlertComponent, { sizes as alertSizes } from "../../../Components/ListTableComponents/AlertComponent";
-import VolumeState, { sizes as volumeStateSize } from "../../../Components/ListTableComponents/VolumeState";
-import BaseCell, { sizes as baseCellSize } from "../../../Components/ListTableComponents/BaseCell";
-import VolumeStatus, { sizes as volumeStatusSize } from "../../../Components/ListTableComponents/VolumeStatus";
+import UserCard, {sizes as useCardSizes} from "../../../Components/ListTableComponents/UserCard";
+import DocumentState, {sizes as DocumentStateSizes} from "../../../Components/ListTableComponents/DocumentState";
+import AlertComponent, {sizes as alertSizes} from "../../../Components/ListTableComponents/AlertComponent";
+import VolumeState, {sizes as volumeStateSize} from "../../../Components/ListTableComponents/VolumeState";
+import BaseCell, {sizes as baseCellSize} from "../../../Components/ListTableComponents/BaseCell";
+import VolumeStatus, {sizes as volumeStatusSize} from "../../../Components/ListTableComponents/VolumeStatus";
 import HeaderCell from "../../../Components/ListTableComponents/HeaderCell";
 import {FilterForm, SearchInput, TableActionButton} from "./styles";
 import documentIcon from "./icons/documentIcon"
@@ -29,66 +29,65 @@ import usePagination from "../../../components_ocean/Logic/usePagination";
 import {TabNames} from "./constants";
 import SortCellComponent from "../../../Components/ListTableComponents/SortCellComponent";
 
-const settings = {
-  plugins: {
-    outerSortPlugin: { component: SortCellComponent },
-    selectPlugin: { driver: FlatSelect, component: CheckBox, style: { margin: "auto 0"} },
-  },
-  columns: [
-    {
-      id: "task",
-      label: "Задание",
-      component:DocumentState,
-      sizes: DocumentStateSizes
-    },
-    {
-      id: "important",
-      label: "Важно",
-      component: AlertComponent,
-      sizes: alertSizes
-    },
-    {
-      id: "volume",
-      label: "Том",
-      component:VolumeState,
-      sizes: volumeStateSize
-    },
-    {
-      id: "documentTypeName",
-      label: "Наименование тома",
-      component: BaseCell,
-      sizes: baseCellSize
-    },
-    {
-      id: "stage",
-      label: "Этап",
-      component: BaseCell,
-      sizes: baseCellSize
-    },
-    {
-      id: "taskType",
-      label: "Статус тома",
-      component: VolumeStatus,
-      sizes: volumeStatusSize
-    },
-    {
-      id: "maintainer",
-      label: "Назначенный исполнитель",
-      component: ({ParentValue: {performerFio, performerPosition, performerName}}) =>
-        UserCard({ name: performerName, fio: performerFio, position: performerPosition }),
-      sizes: useCardSizes
-    },
-    {
-      id: "author",
-      label: "Автор",
-      component: ({ ParentValue: {creatorFio, creatorPosition, creatorName}}) =>
-        UserCard({ name: creatorName, fio: creatorFio, position: creatorPosition }),
-      sizes: useCardSizes
-    },
-  ]
+const plugins = {
+  outerSortPlugin: {component: SortCellComponent},
+  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}},
 }
+const columns = [
+  {
+    id: "task",
+    label: "Задание",
+    component: DocumentState,
+    sizes: DocumentStateSizes
+  },
+  {
+    id: "important",
+    label: "Важно",
+    component: AlertComponent,
+    sizes: alertSizes
+  },
+  {
+    id: "volume",
+    label: "Том",
+    component: VolumeState,
+    sizes: volumeStateSize
+  },
+  {
+    id: "documentTypeName",
+    label: "Наименование тома",
+    component: BaseCell,
+    sizes: baseCellSize
+  },
+  {
+    id: "stage",
+    label: "Этап",
+    component: BaseCell,
+    sizes: baseCellSize
+  },
+  {
+    id: "taskType",
+    label: "Статус тома",
+    component: VolumeStatus,
+    sizes: volumeStatusSize
+  },
+  {
+    id: "maintainer",
+    label: "Назначенный исполнитель",
+    component: ({ParentValue: {performerFio, performerPosition, performerName}}) =>
+      UserCard({name: performerName, fio: performerFio, position: performerPosition}),
+    sizes: useCardSizes
+  },
+  {
+    id: "author",
+    label: "Автор",
+    component: ({ParentValue: {creatorFio, creatorPosition, creatorName}}) =>
+      UserCard({name: creatorName, fio: creatorFio, position: creatorPosition}),
+    sizes: useCardSizes
+  },
+]
 
-const emptyWrapper = (({ children }) => children)
+
+const emptyWrapper = (({children}) => children)
 
 const filterFormConfig = [
   {
@@ -167,13 +166,13 @@ const filterFormConfig = [
 function TaskList(props) {
   const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
-  const { search } = useLocation()
+  const {search} = useLocation()
   const {
     tabState,
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
-    tabState: { data }
+    tabState: {data}
   } = useTabItem({
     setTabName: useCallback(() => TabNames[search], [search]),
     stateId: TASK_LIST,
@@ -184,13 +183,13 @@ function TaskList(props) {
     paginationState
   } = usePagination({stateId: TASK_LIST, state: tabState, setState: setTabState, defaultLimit: 10})
 
-  const [a,b] = useState({})
+  const [a, b] = useState({})
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(() => navigate("/task/1"), [navigate]);
 
   const loadDataFunction = useMemo(() => {
-    const { limit, offset } = paginationState
+    const {limit, offset} = paginationState
     return loadDataHelper(async () => {
       const {data} = await api.post(
         URL_TASK_LIST,
@@ -212,7 +211,7 @@ function TaskList(props) {
           }
         }
       )
-      return {data}
+      return data
     })
   }, [sortQuery, api, loadDataHelper, paginationState, search]);
 
@@ -223,12 +222,8 @@ function TaskList(props) {
       loadDataFunction()
     }
     refLoadDataFunction.current = loadDataFunction
-  },[loadDataFunction, shouldReloadDataFlag])
+  }, [loadDataFunction, shouldReloadDataFlag])
 
-  const conf = useMemo(() => ({
-    ...settings,
-    rowComponent: (props) => <RowComponent onDoubleClick={handleDoubleClick} {...props}/>
-  }), [handleDoubleClick])
 
   return <div className="px-4 pb-4 overflow-hidden flex-container">
     <div className="flex items-center">
@@ -254,8 +249,12 @@ function TaskList(props) {
       </div>
     </div>
     <ListTable
-      settings={conf}
+      rowComponent={useMemo(() => (props) => <RowComponent
+        onDoubleClick={handleDoubleClick} {...props}
+      />, [handleDoubleClick])}
       value={data}
+      columns={columns}
+      plugins={plugins}
       headerCellComponent={HeaderCell}
       selectState={selectState}
       onSelect={setSelectState}
