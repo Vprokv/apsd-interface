@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {NavigationHeaderIcon} from "../style";
 import NavigationDocumentIcon from "../icons/NavigationDocumentIcon";
@@ -6,9 +6,20 @@ import WithToggleNavigationItem from "./withToggleNavigationItem";
 import angleIcon from "@/Icons/angleIcon";
 import Icon from '@Components/Components/Icon'
 import {TASK_LIST_PATH} from "../../../../../routePaths";
+import {URL_TASK_STATISTIC} from "../../../../../ApiList";
 import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8, TabNames} from "../../../../Tasks/list/constants";
+import {ApiContext} from "../../../../../contants";
+import {useStatistic} from "../../../../Tasks/helper";
 
 const MyTasks = ({ onOpenNewTab }) => {
+  const api = useContext(ApiContext)
+  const {statistic, setStatistic} = useStatistic()
+
+  useEffect(async()=>{
+    const {data: [data]} = await api.post(URL_TASK_STATISTIC)
+    setStatistic(data)
+  }, [])
+
   const handleOpenNewTab = useCallback((path) => () => onOpenNewTab(path), [onOpenNewTab])
   return (
     <WithToggleNavigationItem id="Мои задания">
@@ -30,7 +41,7 @@ const MyTasks = ({ onOpenNewTab }) => {
                 onClick={handleOpenNewTab(TASK_LIST_PATH)}
               >
                 <span className="mr-auto">{TabNames[""]}</span>
-                <span className="font-medium">23/45</span>
+                <span className="font-medium">{statistic[""]}</span>
               </button>
               <button
                 type="button"
@@ -38,7 +49,7 @@ const MyTasks = ({ onOpenNewTab }) => {
                 onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED}`)}
               >
                 <span className="mr-auto">{TabNames[EXPIRED]}</span>
-                <span className="color-red font-medium">14/23</span>
+                <span className="color-red font-medium">{statistic[EXPIRED]}</span>
               </button>
               <button
                 type="button"
@@ -47,8 +58,8 @@ const MyTasks = ({ onOpenNewTab }) => {
               >
                 <span className="mr-auto">{TabNames[EXPIRED_1_3]}</span>
                 <span>
-                  <span className="font-medium">3</span>
-                  <span className="color-text-secondary">/0</span>
+                  <span className="font-medium">{statistic[EXPIRED_1_3].unread}</span>
+                  <span className="color-text-secondary">/{statistic[EXPIRED_1_3].all}</span>
                 </span>
               </button>
               <button
@@ -58,8 +69,8 @@ const MyTasks = ({ onOpenNewTab }) => {
               >
                 <span className="mr-auto">{TabNames[EXPIRED_4_7]}</span>
                 <span>
-                  <span className="font-medium">0</span>
-                  <span className="color-text-secondary">/2</span>
+                  <span className="font-medium">{statistic[EXPIRED_4_7].unread}</span>
+                  <span className="color-text-secondary">/{statistic[EXPIRED_4_7].all}</span>
                 </span>
               </button>
               <button
@@ -69,8 +80,8 @@ const MyTasks = ({ onOpenNewTab }) => {
               >
                 <span className="mr-auto">{TabNames[EXPIRED_8]}</span>
                 <span>
-                  <span className="font-medium">7</span>
-                  <span className="color-text-secondary">/9</span>
+                  <span className="font-medium">{statistic[EXPIRED_8].unread}</span>
+                  <span className="color-text-secondary">/{statistic[EXPIRED_8].all}</span>
                 </span>
               </button>
             </div>

@@ -3,10 +3,7 @@ import PropTypes from 'prop-types'
 import {useNavigate, useOutletContext, useLocation} from "react-router-dom";
 import ListTable from '@Components/Components/Tables/ListTable'
 import {FlatSelect} from '@Components/Components/Tables/Plugins/selectable'
-import Select from '../../../Components/Inputs/Select'
-import Switch from '../../../Components/Inputs/Switch'
 import Icon from '@Components/Components/Icon'
-import searchIcon from "@/Icons/searchIcon"
 import UserCard, {sizes as useCardSizes} from "../../../Components/ListTableComponents/UserCard";
 import DocumentState, {sizes as DocumentStateSizes} from "../../../Components/ListTableComponents/DocumentState";
 import AlertComponent, {sizes as alertSizes} from "../../../Components/ListTableComponents/AlertComponent";
@@ -14,7 +11,7 @@ import VolumeState, {sizes as volumeStateSize} from "../../../Components/ListTab
 import BaseCell, {sizes as baseCellSize} from "../../../Components/ListTableComponents/BaseCell";
 import VolumeStatus, {sizes as volumeStatusSize} from "../../../Components/ListTableComponents/VolumeStatus";
 import HeaderCell from "../../../Components/ListTableComponents/HeaderCell";
-import {FilterForm, SearchInput, TableActionButton} from "./styles";
+import {TableActionButton} from "./styles";
 import documentIcon from "./icons/documentIcon"
 import filterIcon from "./icons/filterIcon"
 import sortIcon from "./icons/sortIcon"
@@ -28,6 +25,7 @@ import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import usePagination from "../../../components_ocean/Logic/usePagination";
 import {TabNames} from "./constants";
 import SortCellComponent from "../../../Components/ListTableComponents/SortCellComponent";
+import Filter from "./Components/Filter";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -86,82 +84,7 @@ const columns = [
   },
 ]
 
-
 const emptyWrapper = (({children}) => children)
-
-const filterFormConfig = [
-  {
-    id: "1",
-    component: Switch,
-    label: "Непросмотренные"
-  },
-  {
-    id: "2",
-    component: Select,
-    placeholder: "Тип задания",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  },
-  {
-    id: "3",
-    component: Select,
-    placeholder: "Вид тома",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  },
-  {
-    id: "4",
-    component: Select,
-    placeholder: "Этап",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  },
-  {
-    id: "5",
-    component: Select,
-    placeholder: "Статус",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  },
-  {
-    id: "6",
-    component: SearchInput,
-    placeholder: "Поиск",
-    children: <Icon icon={searchIcon} size={10} className="color-text-secondary mr-2.5"/>
-  }
-]
 
 function TaskList(props) {
   const [sortQuery, onSort] = useState({})
@@ -191,6 +114,7 @@ function TaskList(props) {
   const loadDataFunction = useMemo(() => {
     const {limit, offset} = paginationState
     return loadDataHelper(async () => {
+      console.log(search, 'search')
       const {data} = await api.post(
         URL_TASK_LIST,
         {
@@ -227,9 +151,7 @@ function TaskList(props) {
 
   return <div className="px-4 pb-4 overflow-hidden flex-container">
     <div className="flex items-center">
-      <FilterForm
-        fields={filterFormConfig}
-        inputWrapper={emptyWrapper}
+      <Filter
         value={a}
         onInput={b}
       />
@@ -269,7 +191,7 @@ function TaskList(props) {
       setLimit={setLimit}
       setPage={setPage}
     >
-      Отображаются записи с 1 по 10, всего 120
+      {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего 120`}
     </Pagination>
   </div>;
 }
