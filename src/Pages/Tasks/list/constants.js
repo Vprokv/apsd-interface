@@ -10,3 +10,11 @@ export const TabNames = {
   [EXPIRED_4_7]: "Срок через 4-7 дней",
   [EXPIRED_8]: "Срок больше недели",
 }
+
+export const TASK_TYPE = 'ddt_dict_task_type'
+export const DOCUMENT_TYPE = 'ddt_type_config'
+
+export const TasksPageRequestFilter = {
+[TASK_TYPE]: 'taskTypes', //array
+[DOCUMENT_TYPE]: 'docTypes' //array
+}
