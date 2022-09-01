@@ -29,7 +29,7 @@ const SideBar = ({ onOpenNewTab }) => {
       </div>
       <Storage/>
       <Archive/>
-      <Basket/>
+      <Basket onOpenNewTab={onOpenNewTab} />
     </SideBarContainer>
   );
 };
