@@ -109,7 +109,7 @@ function TaskList(props) {
   const [a, b] = useState({})
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
-  const handleDoubleClick = useCallback(() => navigate("/task/1"), [navigate]);
+  const handleDoubleClick = useCallback((id, type) => () => navigate(`/task/${id}/${type}`), [navigate]);
 
   const loadDataFunction = useMemo(() => {
     const {limit, offset} = paginationState

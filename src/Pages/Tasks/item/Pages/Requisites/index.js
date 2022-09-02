@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import DocumentSelect from "@/Components/Inputs/DocumentSelect";
 import UserSelect from "@/Components/Inputs/UserSelect";
@@ -9,7 +9,8 @@ import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
 import DatePicker from "../../../../../Components/Inputs/DatePicker";
 import {RequisitesForm} from "./styles";
 import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {TASK_ITEM_REQUISITES} from "../../../../../contants";
+import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
+import {useParams} from "react-router-dom";
 
 
 const formConfig = [
@@ -153,10 +154,22 @@ const formConfig = [
 ]
 
 const Requisites = props => {
-  const { data } = useTabItem({
+  const { type } = useParams()
+  const api = useContext(ApiContext)
+  const { tabState: { data }, setTabState } = useTabItem({
     stateId: TASK_ITEM_REQUISITES
   })
+  const {
+    tabState: { data: documentData }
+  } = useTabItem({
+    stateId: TASK_ITEM_DOCUMENT
+  })
   const [value, setValue] = useState({})
+  useEffect(async()=>{
+    const {data: {children} } = await api.post(`/sedo/type/config/${type}/design`)
+    setTabState({data: children})
+  }, [api, setTabState, type])
+  console.log(4, data, documentData)
   return (
     <ScrollBar className="w-full">
       <RequisitesForm
