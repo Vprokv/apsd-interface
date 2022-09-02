@@ -6,6 +6,7 @@ export const URL_USER_CHANGE_PASSWORD = "/sedo/user/password"
 
 //TASK
 export const URL_TASK_LIST = "/sedo/task/list"
+export const URL_TASK_ITEM = "/sedo/document/get"
 export const URL_TASK_LIST_V2 = "/sedo/task/list/v2"
 export const URL_TASK_LIST_FILTERS = "/apsd/task/filters"
 export const URL_TASK_STATISTIC = "/sedo/task/statistic"
