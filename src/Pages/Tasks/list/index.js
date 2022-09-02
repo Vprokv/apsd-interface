@@ -114,7 +114,6 @@ function TaskList(props) {
   const loadDataFunction = useMemo(() => {
     const {limit, offset} = paginationState
     return loadDataHelper(async () => {
-      console.log(search, 'search')
       const {data} = await api.post(
         URL_TASK_LIST,
         {

@@ -18,35 +18,37 @@ import History from "./Pages/History";
 import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import {ApiContext, TASK_ITEM_DOCUMENT} from "../../../contants";
 import {URL_TASK_ITEM, URL_TASK_LIST} from "../../../ApiList";
+import {URL_DOCUMENT_GET} from "../../../ApiList";
 
 
-const pages = [
-  {
+const pages = {  //TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
+  requisites: {
     label: "Реквизиты",
     path: "requisites",
+    fieldKey: "requisites",
     Component: Requisites
   },
-  {
+  subscriptions: {
     label: "Подписка",
     path: "subscriptions",
     Component: Subscription
   },
-  {
+  technical_objects: {
     label: "Технические объекты",
     path: "objects",
     Component: Objects
   },
-  {
+  contain: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
     label: "Состав титула",
     path: "contain",
     Component: Contain
   },
-  {
+  audit: {
     label: "История",
     path: "history",
     Component: History
-  },
-]
+  }
+}
 
 function TaskItem(props) {
   const { id, type } = useParams()
@@ -56,7 +58,7 @@ function TaskItem(props) {
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
-    tabState: {data}
+    tabState: {data = {documentTabs: []}}
   } = useTabItem({
     setTabName: useCallback(() => "Документ", []),
     stateId: TASK_ITEM_DOCUMENT
@@ -70,9 +72,10 @@ function TaskItem(props) {
           id, type
         }
       )
-      return data
+      return data ?? []
     })
   }, [id, type, api, loadDataHelper]);
+
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -83,24 +86,35 @@ function TaskItem(props) {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
-  console.log(data)
   return <div className="flex-container w-full overflow-hidden">
     <NavigationContainer>
-      {pages.map(({label, path}) => (
-        <NavigationItem to={path} key={path}>
-          {label}
-        </NavigationItem>
-      ))}
+      {
+        data.documentTabs.map(({name}) => {
+
+          if (pages[name]) {
+            const {path, label} = pages[name]
+            return <NavigationItem to={path} key={path}>
+              {label}
+            </NavigationItem>
+          }
+      })
+      }
     </NavigationContainer>
     <div className="flex h-full w-full overflow-hidden">
       <SideBar/>
       <Routes>
-        {pages.map(({Component, path}) => (
-          <Route key={path} path={path} element={<Component/>}/>
-        ))}
+        {
+          data.documentTabs.map(({name}, i) => {
+            console.log(1)
+
+            if (pages[name]) {
+              const {Component, path} = pages[name]
+              return <Route key={path} path={path} element={<Component/>}/>
+            }})
+        }
         <Route
           path="*"
-          element={<Navigate to={pages[0].path} replace/>}
+          element={<Navigate to={pages.requisites.path} replace/>}
         />
       </Routes>
     </div>
