@@ -1,4 +1,4 @@
-const design =[
+export const design =[
   {
     "type": "Classification",
     "col": 0,
@@ -712,7 +712,7 @@ const design =[
   }
 ]
 
-const docData = {
+export const docData = {
   "type": "ddt_ord_type_doc",
   "id": "77000014004cy9ig",
   "globalId": null,

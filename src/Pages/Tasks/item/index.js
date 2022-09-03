@@ -58,7 +58,7 @@ function TaskItem(props) {
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
-    tabState: {data = {documentTabs: []}}
+    tabState: { data: { documentTabs } = {} }
   } = useTabItem({
     setTabName: useCallback(() => "Документ", []),
     stateId: TASK_ITEM_DOCUMENT
@@ -72,10 +72,9 @@ function TaskItem(props) {
           id, type
         }
       )
-      return data ?? []
+      return data
     })
   }, [id, type, api, loadDataHelper]);
-
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -86,37 +85,35 @@ function TaskItem(props) {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
+  const {routes, headers } = useMemo(() => {
+    if (!documentTabs) {
+      return {}
+    }
+    return  documentTabs.reduce((acc, { name }) => {
+      if (pages[name]) {
+        const {path, label, Component} = pages[name]
+        acc.headers.push(<NavigationItem to={path} key={path}>
+          {label}
+        </NavigationItem>)
+        acc.routes.push(<Route key={path} path={path} element={<Component/>}/>)
+      }
+      return acc
+    }, { headers: [], routes: [] })
+  },[documentTabs])
+
   return <div className="flex-container w-full overflow-hidden">
     <NavigationContainer>
-      {
-        data.documentTabs.map(({name}) => {
-
-          if (pages[name]) {
-            const {path, label} = pages[name]
-            return <NavigationItem to={path} key={path}>
-              {label}
-            </NavigationItem>
-          }
-      })
-      }
+      {headers}
     </NavigationContainer>
     <div className="flex h-full w-full overflow-hidden">
       <SideBar/>
-      <Routes>
-        {
-          data.documentTabs.map(({name}, i) => {
-            console.log(1)
-
-            if (pages[name]) {
-              const {Component, path} = pages[name]
-              return <Route key={path} path={path} element={<Component/>}/>
-            }})
-        }
+      {documentTabs && <Routes>
+        {routes}
         <Route
           path="*"
           element={<Navigate to={pages.requisites.path} replace/>}
         />
-      </Routes>
+      </Routes>}
     </div>
   </div>
 }
