@@ -10,15 +10,17 @@ export const URL_TASK_ITEM = "/sedo/document/get"
 export const URL_TASK_LIST_V2 = "/sedo/task/list/v2"
 export const URL_TASK_LIST_FILTERS = "/apsd/task/filters"
 export const URL_TASK_STATISTIC = "/sedo/task/statistic"
+//ITEM
+//SUBSCRIPTION
+export const URL_SUBSCRIPTION_LIST = "/apsd/subscription/list"
+export const URL_SUBSCRIPTION_CREATE = "/apsd/subscription/create"
+export const URL_SUBSCRIPTION_DELETE = "/apsd/subscription/delete"
+export const URL_SUBSCRIPTION_CHANNELS = "/apsd/subscription/channels"
+//OBJECTS
+export const URL_TECHNICAL_OBJECTS_LIST = "/apsd/title/technical_objects/list"
 
 //DOCUMENT
 export const URL_DOCUMENT_VIEWED = "/sedo/document/list/recently_viewed"
 
 //ENTITY
 export const URL_ENTITY_LIST = "/sedo/entity/list"
-
-//SUBSCRIPTION
-export const URL_SUBSCRIPTION_LIST = "/apsd/subscription/list"
-export const URL_SUBSCRIPTION_CREATE = "/apsd/subscription/create"
-export const URL_SUBSCRIPTION_DELETE = "/apsd/subscription/delete"
-export const URL_SUBSCRIPTION_CHANNELS = "/apsd/subscription/channels"

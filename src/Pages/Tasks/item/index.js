@@ -92,7 +92,7 @@ function TaskItem(props) {
     if (!documentTabs) {
       return {}
     }
-    return  documentTabs.reduce((acc, { name }) => {
+    return  [...documentTabs, {name: 'subscriptions'}, {name: 'technical_objects'}].reduce((acc, { name }) => {
       if (pages[name]) {
         const {path, label, Component} = pages[name]
         acc.headers.push(<NavigationItem to={path} key={path}>
