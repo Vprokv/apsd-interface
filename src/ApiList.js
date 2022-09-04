@@ -16,3 +16,9 @@ export const URL_DOCUMENT_VIEWED = "/sedo/document/list/recently_viewed"
 
 //ENTITY
 export const URL_ENTITY_LIST = "/sedo/entity/list"
+
+//SUBSCRIPTION
+export const URL_SUBSCRIPTION_LIST = "/apsd/subscription/list"
+export const URL_SUBSCRIPTION_CREATE = "/apsd/subscription/create"
+export const URL_SUBSCRIPTION_DELETE = "/apsd/subscription/delete"
+export const URL_SUBSCRIPTION_CHANNELS = "/apsd/subscription/channels"
