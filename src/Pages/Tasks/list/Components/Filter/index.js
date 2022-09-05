@@ -70,7 +70,6 @@ const getFilterFormConfig=(catalogs)=>{
 const emptyWrapper = (({children}) => children)
 
 function Filter({value, onInput}) {
-    console.log(value, 'value')
     const api = useContext(ApiContext)
     const [catalogs, setCatalogs] = useState({})
 

@@ -23,11 +23,15 @@
 }
 
 .bg-blue-2 {
-    background-color: var(--light-blue);
+    background-color: var(--light-blue) !important;
 }
 
 .color-light-gray {
     color: var(--light-gray);
+}
+
+.color-white {
+    color: var(--white);
 }
 
 .bg-light-gray {
@@ -48,6 +52,13 @@
 
 .bg-green {
     background-color: var(--green);
+}
+.color-secondary {
+    color: var(--secondary);
+}
+
+.bg-secondary {
+    background-color: var(--secondary);
 }
 
 .color-red {

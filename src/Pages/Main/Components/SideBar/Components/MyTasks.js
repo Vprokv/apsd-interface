@@ -11,11 +11,11 @@ import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8, TabNames} from "../../../.
 import {ApiContext} from "../../../../../contants";
 import {useStatistic} from "../../../../Tasks/helper";
 
-const MyTasks = ({ onOpenNewTab }) => {
+const MyTasks = ({onOpenNewTab}) => {
   const api = useContext(ApiContext)
   const {statistic, setStatistic} = useStatistic()
 
-  useEffect(async()=>{
+  useEffect(async () => {
     const {data: [data]} = await api.post(URL_TASK_STATISTIC)
     setStatistic(data)
   }, [])
@@ -23,7 +23,7 @@ const MyTasks = ({ onOpenNewTab }) => {
   const handleOpenNewTab = useCallback((path) => () => onOpenNewTab(path), [onOpenNewTab])
   return (
     <WithToggleNavigationItem id="Мои задания">
-      {({ isDisplayed, toggleDisplayedFlag }) => (
+      {({isDisplayed, toggleDisplayedFlag}) => (
         <div className="mb-4">
           <button className="flex items-center w-full" onClick={toggleDisplayedFlag}>
             <NavigationHeaderIcon
@@ -92,8 +92,6 @@ const MyTasks = ({ onOpenNewTab }) => {
   );
 };
 
-MyTasks.propTypes = {
-
-};
+MyTasks.propTypes = {};
 
 export default MyTasks;
