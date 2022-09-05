@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import PropTypes from 'prop-types';
 import {NavigationHeaderIcon, SideBarContainer} from "./style";
 import Button from "@/Components/Button";
 import Icon from '@Components/Components/Icon'
+
 import plusIcon from "@/Icons/plusIcon";
 import MyTasks from "./Components/MyTasks";
 import ViewedIcon from "./icons/ViewedIcon";
@@ -10,11 +11,18 @@ import CreatedByMeIcon from "./icons/CreatedByMeIcon";
 import Storage from "./Components/Storage";
 import Archive from "./Components/Archive";
 import Basket from "./Components/Basket";
+import CreateDocumentWindow from "./Components/CreateDocumentWindow";
 
 const SideBar = ({ onOpenNewTab }) => {
+  const [createDocumentWindow, setCreateDocumentWindowState] = useState(false)
+  const openCreateDocumentWindow = useCallback(() => setCreateDocumentWindowState(true), [])
+  const closeCreateDocumentWindow = useCallback(() => setCreateDocumentWindowState(false), [])
   return (
     <SideBarContainer className="px-2 py-4 bg-light-gray flex-container">
-      <Button className="text-white bg-blue-1 w-full flex items-center capitalize mb-4 rounded-lg">
+      <Button
+        className="text-white bg-blue-1 w-full flex items-center capitalize mb-4 rounded-lg"
+        onClick={openCreateDocumentWindow}
+      >
         <Icon className="mr-2 ml-auto" icon={plusIcon} size={14}/>
         <span className="mr-auto">Создать</span>
       </Button>
@@ -30,6 +38,10 @@ const SideBar = ({ onOpenNewTab }) => {
       <Storage/>
       <Archive/>
       <Basket onOpenNewTab={onOpenNewTab} />
+      <CreateDocumentWindow
+        open={createDocumentWindow}
+        onClose={closeCreateDocumentWindow}
+      />
     </SideBarContainer>
   );
 };

@@ -53,6 +53,13 @@
 .bg-green {
     background-color: var(--green);
 }
+.color-secondary {
+    color: var(--secondary);
+}
+
+.bg-secondary {
+    background-color: var(--secondary);
+}
 
 .color-red {
     color: var(--red);
