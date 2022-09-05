@@ -1,11 +1,11 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://sedo-test.devel"
+axios.defaults.baseURL = window.location.origin
 
 export default function ({ token, ...apiParams}) {
   const api = axios.create({
     // baseURL: env.API_URL,
-    baseURL: "http://sedo-test.devel",
+    baseURL: "http://192.168.42.105",
     timeout: 60000,
     ...apiParams
   });
