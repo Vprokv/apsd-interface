@@ -23,19 +23,20 @@ const columns = [
   {
     id: "event",
     label: "Событие",
-    component: ({ParentValue: {eventLabel}}) => <BaseCell value={eventLabel} className="items-center"/>,
+    component: ({ParentValue: {eventLabel}}) => <BaseCell value={eventLabel} className="flex items-center h-10"/>,
     sizes: 200
   },
   {
     id: "loop",
     label: "Внейшний цикл",
-    component: ({ParentValue: {stageIteration}}) => <BaseCell value={stageIteration?.toString() || ""}/>,
+    component: ({ParentValue: {stageIteration}}) => <BaseCell value={stageIteration?.toString() || ""}
+                                                              className="flex items-center h-full"/>,
     sizes: baseCellSize
   },
   {
     id: "state",
     label: "Состояние",
-    component: ({ParentValue: {eventStatus}}) => <BaseCell value={eventStatus}/>,
+    component: ({ParentValue: {eventStatus}}) => <BaseCell value={eventStatus} className="flex items-center h-full"/>,
     sizes: baseCellSize
   },
   {
@@ -50,26 +51,26 @@ const columns = [
   {
     id: "date",
     label: "Дата получения",
-    component: ({ParentValue: {eventDate}}) => <BaseCell value={eventDate}/>,
+    component: ({ParentValue: {eventDate}}) => <BaseCell value={eventDate} className="flex items-center h-full"/>,
     sizes: baseCellSize
   },
   {
     id: "description",
     label: "Описание",
-    component: ({ParentValue: {description}}) => <BaseCell value={description}/>,
+    component: ({ParentValue: {description}}) => <BaseCell value={description} className="flex items-center h-full"/>,
     sizes: 540
   }
 ]
 
 const filterFormConfig = [
   {
-    id: "1",
-    component: DatePickerComponent,
+    id: "fromDate",
+    component: (props) => <DatePickerComponent dateFormat={"DD-MM-YYYY "} {...props}/>,// HH:MM:SS
     placeholder: "Дата события",
   },
   {
-    id: "2",
-    component: Select,
+    id: "auditEventNames",
+    component: (props) => <Select multiple={true} {...props}/>,
     placeholder: "Событие",
     options: [
       {
@@ -83,7 +84,7 @@ const filterFormConfig = [
     ]
   },
   {
-    id: "3",
+    id: "performerId",
     component: Select,
     placeholder: "Исполнитель",
     options: [
@@ -104,6 +105,8 @@ const History = props => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
+  const [catalogs, setCatalogs] = useState({})
+  const [filter, b] = useState({}) //fromDate: '2022-09-01T06:10:44.395Z'
   const {tabState: {data}, setTabState} = useTabItem({
     stateId: TASK_ITEM_HISTORY
   })
@@ -112,21 +115,79 @@ const History = props => {
   } = useTabItem({
     stateId: TASK_ITEM_DOCUMENT
   })
+
+  const preparedFilterValues = useMemo(() => {
+    const {fromDate, ...item} = filter
+
+    if (!fromDate) {
+      return {item}
+    }
+
+    return {...item, fromDate, toDate: fromDate}
+    // return {...item, fromDate: '2022-09-01T06:10:44.395Z', toDate: '2022-09-04T06:10:44.395Z'}
+  }, [filter])
+
   useEffect(async () => {
-    const {data: {content}} = await api.post(`/sedo/audit/${id}`)
+    const {data: {content}} = await api.post(
+      `/sedo/audit/${id}`,
+      {filter: preparedFilterValues}
+    )
     setTabState({data: content})
-  }, [api, setTabState, id])
+    console.log(content, 'content')
+
+  }, [api, setTabState, id, preparedFilterValues])
+
 
   const emptyWrapper = (({children}) => children)
-  const [a, b] = useState({})
+
+  console.log(filter, 'filter val')
+
+  useEffect(async () => {
+    const {data: {auditEventNames, performerId}} = await api.post(`/sedo/audit/filters/${id}`)
+    setCatalogs({auditEventNames, performerId})
+  }, [api, id])
+
+  const catalogsData = useMemo(() => {
+    const {auditEventNames = [], performerId = []} = catalogs
+
+    return {
+      auditEventNames: auditEventNames.map(({dss_name, dss_label}) => {
+        return {
+          ID: dss_name,
+          SYS_NAME: dss_label
+        }
+      }),
+      performerId: performerId.map(({r_object_id, dss_last_name, dss_first_name, dss_middle_name}) => {
+        return {
+          ID: r_object_id,
+          SYS_NAME: `${dss_last_name} ${dss_first_name && `${dss_first_name[0]}.` || ""} ${dss_middle_name && `${dss_middle_name[0]}.` || ""}`
+        }
+      })
+    }
+
+  }, [catalogs])
+
+  const filterForm = useMemo(() => {
+    return filterFormConfig.map(({options, id, ...item}) => {
+      if (!options) {
+        return {...item, id}
+      }
+
+      return {
+        ...item,
+        id,
+        options: catalogsData[id]
+      }
+    })
+  }, [catalogsData])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center py-4">
         <FilterForm
-          fields={filterFormConfig}
+          fields={filterForm}
           inputWrapper={emptyWrapper}
-          value={a}
+          value={filter}
           onInput={b}
         >
         </FilterForm>

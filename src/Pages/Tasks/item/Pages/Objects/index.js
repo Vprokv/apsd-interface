@@ -23,31 +23,31 @@ const columns = [
   {
     id: "name",
     label: "Наименование",
-    component: ({ParentValue: {name}}) => <BaseCell value={name} className="items-center"/>,
+    component: ({ParentValue: {name}}) => <BaseCell value={name} className="flex items-center h-10"/>,
     sizes: 250
   },
   {
     id: "code",
     label: "Код",
-    component: ({ParentValue: {code}}) => <BaseCell value={code} className="items-center"/>,
+    component: ({ParentValue: {code}}) => <BaseCell value={code} className="flex items-center h-10"/>,
     sizes: 180
   },
   {
     id: "type",
     label: "Тип объекта",
-    component: ({ParentValue: {type}}) => <BaseCell value={type} className="items-center"/>,
+    component: ({ParentValue: {type}}) => <BaseCell value={type} className="flex items-center h-10"/>,
     sizes: 230
   },
   {
     id: "res",
     label: "РЭС",
-    component: ({ParentValue: {res}}) => <BaseCell value={res} className="items-center"/>,
+    component: ({ParentValue: {res}}) => <BaseCell value={res} className="flex items-center h-10"/>,
     sizes: 220
   },
   {
     id: "address",
     label: "Адрес",
-    component: ({ParentValue: {address}}) => <BaseCell value={address} className="items-center"/>,
+    component: ({ParentValue: {address}}) => <BaseCell value={address} className="flex items-center h-10"/>,
     sizes: 540
   }
 ]
