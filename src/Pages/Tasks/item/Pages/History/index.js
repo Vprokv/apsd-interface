@@ -65,7 +65,7 @@ const columns = [
 const filterFormConfig = [
   {
     id: "fromDate",
-    component: (props) => <DatePickerComponent dateFormat={"DD-MM-YYYY "} {...props}/>,// HH:MM:SS
+    component: (props) => <DatePickerComponent dateFormat={"DD-MM-YYYY"} {...props}/>,// HH:MM:SS
     placeholder: "Дата события",
   },
   {
@@ -133,14 +133,11 @@ const History = props => {
       {filter: preparedFilterValues}
     )
     setTabState({data: content})
-    console.log(content, 'content')
 
   }, [api, setTabState, id, preparedFilterValues])
 
 
   const emptyWrapper = (({children}) => children)
-
-  console.log(filter, 'filter val')
 
   useEffect(async () => {
     const {data: {auditEventNames, performerId}} = await api.post(`/sedo/audit/filters/${id}`)
