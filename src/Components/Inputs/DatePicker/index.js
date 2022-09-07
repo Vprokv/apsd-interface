@@ -4,6 +4,11 @@ import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import Icon from '@Components/Components/Icon'
 import calendarIcon from "@/Icons/calendarIcon"
 import {ThemedCalendar} from './styles'
+import ContextMenu from "@Components/Components/ContextMenu";
+
+const DropDownComponent = ({ isOpen, children, ...props }) => isOpen && <ContextMenu {...props}>
+  {children}
+</ContextMenu>
 
 
 const DatePicker = ({ onInput, id, value, ...props }) => {
@@ -24,6 +29,7 @@ const DatePicker = ({ onInput, id, value, ...props }) => {
         placeholder="От"
         onInput={handleInput}
         selectRestrictions={useMemo(() => ({ maxDate: value[1] }), [value])}
+        DropDownComponent={DropDownComponent}
         {...props}
       />
       <DatePickerComponent
@@ -34,6 +40,7 @@ const DatePicker = ({ onInput, id, value, ...props }) => {
         placeholder="До"
         onInput={handleInput}
         selectRestrictions={useMemo(() => ({ minDate: value[0] }), [value])}
+        DropDownComponent={DropDownComponent}
         {...props}
       />
     </div>
@@ -48,4 +55,8 @@ DatePicker.defaultProps = {
   value: []
 };
 
-export default DatePicker;
+export default ({ range, ...props }) => range ? <DatePicker {...props}/> : <DatePickerComponent
+  {...props}
+  CalendarComponent={ThemedCalendar}
+  DropDownComponent={DropDownComponent}
+/>;
