@@ -93,9 +93,9 @@ const CreateDocumentWindow = props => {
           <div className="separator rounded-md mb-6">
             <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">Атрибуты</h3>
             <div className="p-4">
-              <text className="font-size-14 bg-light-gray rounded-md p-2">
+              <div className="font-size-14 bg-light-gray rounded-md p-2">
                 Наименование тома = О согласовании ТЗ
-              </text>
+              </div>
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ const CreateDocumentWindow = props => {
         <Button
           className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
         >
-          Сохранить
+          Создать
         </Button>
       </div>
     </div>
