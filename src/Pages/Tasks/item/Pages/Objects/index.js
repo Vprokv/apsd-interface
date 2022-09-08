@@ -9,10 +9,14 @@ import {useParams} from "react-router-dom";
 import {ApiContext, TASK_ITEM_OBJECTS, TASK_ITEM_SUBSCRIPTION} from "../../../../../contants";
 import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
 import {URL_SUBSCRIPTION_LIST, URL_TECHNICAL_OBJECTS_LIST} from "../../../../../ApiList";
-import {FilterForm} from "../../styles";
+import {FilterForm, TableActionButton} from "../../styles";
 import ListTable from "../../../../../components_ocean/Components/Tables/ListTable";
 import RowComponent from "../../../list/Components/RowComponent";
 import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell";
+import Button from "../../../../../Components/Button";
+import Icon from "../../../../../components_ocean/Components/Icon";
+import filterIcon from "../../../list/icons/filterIcon";
+import editIcon from "../../../../../Icons/editIcon";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -23,31 +27,31 @@ const columns = [
   {
     id: "name",
     label: "Наименование",
-    component: ({ParentValue: {name}}) => <BaseCell value={name} className="items-center"/>,
+    component: ({ParentValue: {name}}) => <BaseCell value={name} className="flex items-center h-10"/>,
     sizes: 250
   },
   {
     id: "code",
     label: "Код",
-    component: ({ParentValue: {code}}) => <BaseCell value={code} className="items-center"/>,
+    component: ({ParentValue: {code}}) => <BaseCell value={code} className="flex items-center h-10"/>,
     sizes: 180
   },
   {
     id: "type",
     label: "Тип объекта",
-    component: ({ParentValue: {type}}) => <BaseCell value={type} className="items-center"/>,
+    component: ({ParentValue: {type}}) => <BaseCell value={type} className="flex items-center h-10"/>,
     sizes: 230
   },
   {
     id: "res",
     label: "РЭС",
-    component: ({ParentValue: {res}}) => <BaseCell value={res} className="items-center"/>,
+    component: ({ParentValue: {res}}) => <BaseCell value={res} className="flex items-center h-10"/>,
     sizes: 220
   },
   {
     id: "address",
     label: "Адрес",
-    component: ({ParentValue: {address}}) => <BaseCell value={address} className="items-center"/>,
+    component: ({ParentValue: {address}}) => <BaseCell value={address} className="flex items-center h-10"/>,
     sizes: 540
   }
 ]
@@ -159,6 +163,19 @@ const Objects = props => {
           onInput={b}
         >
         </FilterForm>
+        <div className="flex items-center color-text-secondary ml-auto">
+          <Button
+            className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+          >
+            Добавить
+          </Button>
+          <TableActionButton className="ml-2">
+            <Icon icon={filterIcon}/>
+          </TableActionButton>
+          <TableActionButton className="ml-2">
+            <Icon icon={editIcon}/>
+          </TableActionButton>
+        </div>
       </div>
       <ListTable
         rowComponent={useMemo(() => (props) => <RowComponent

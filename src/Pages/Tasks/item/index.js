@@ -49,6 +49,14 @@ const pages = {  //TODO проверить, всегда ли это поле е
   }
 }
 
+const mockDocumentTabs = [
+  {name: 'requisites'},
+  {name: 'subscriptions'},
+  {name: 'technical_objects'},
+  {name: 'contain'},
+  {name: 'audit'},
+]
+
 function TaskItem(props) {
   const { id, type } = useParams()
   const api = useContext(ApiContext)

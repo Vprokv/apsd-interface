@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router-dom";
-import {ApiContext, TASK_ITEM_HISTORY} from "../../../../../contants";
+import {ApiContext, TASK_ITEM_HISTORY, TASK_ITEM_SUBSCRIPTION} from "../../../../../contants";
 import BaseCell from "../../../../../Components/ListTableComponents/BaseCell";
 import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent";
 import CheckBox from "../../../../../Components/Inputs/CheckBox";
@@ -15,6 +15,9 @@ import searchIcon from "../../../../../Icons/searchIcon";
 import ListTable from "../../../../../components_ocean/Components/Tables/ListTable";
 import RowComponent from "../../../list/Components/RowComponent";
 import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell";
+import Button from "../../../../../Components/Button";
+import filterIcon from "../../../list/icons/filterIcon";
+import deleteIcon from "../../../../../Icons/deleteIcon";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -25,31 +28,31 @@ const columns = [
   {
     id: "subscriber",
     label: "Получатель",
-    component: ({ParentValue: {subscriber}}) => <BaseCell value={subscriber} className="items-center"/>,
+    component: ({ParentValue: {subscriber}}) => <BaseCell value={subscriber} className="flex items-center h-10"/>,
     sizes: 150
   },
   {
     id: "subscription",
     label: "Подписка на событие",
-    component: ({ParentValue: {subscription}}) => <BaseCell value={subscription} className="items-center"/>,
+    component: ({ParentValue: {subscription}}) => <BaseCell value={subscription} className="flex items-center h-10"/>,
     sizes: 450
   },
   {
     id: "author",
     label: "Автор подписки",
-    component: ({ParentValue: {author}}) => <BaseCell value={author} className="items-center"/>,
+    component: ({ParentValue: {author}}) => <BaseCell value={author} className="flex items-center h-10"/>,
     sizes: 170
   },
   {
     id: "startDate",
     label: "Дата начала",
-    component: ({ParentValue: {startDate}}) => <BaseCell value={startDate} className="items-center"/>,
+    component: ({ParentValue: {startDate}}) => <BaseCell value={startDate} className="flex items-center h-10"/>,
     sizes: 190
   },
   {
     id: "endDate",
     label: "Дата окончания",
-    component: ({ParentValue: {endDate}}) => <BaseCell value={endDate} className="items-center"/>,
+    component: ({ParentValue: {endDate}}) => <BaseCell value={endDate} className="flex items-center h-10"/>,
     sizes: 450
   },
 ]
@@ -127,7 +130,7 @@ const Subscription = props => {
     shouldReloadDataFlag,
     loadDataHelper
   } = useTabItem({
-    stateId: TASK_ITEM_HISTORY
+    stateId: TASK_ITEM_SUBSCRIPTION
   })
 
   const loadDataFunction = useMemo(() => {
@@ -165,6 +168,19 @@ const Subscription = props => {
           onInput={b}
         >
         </FilterForm>
+        <div className="flex items-center color-text-secondary ml-auto">
+          <Button
+            className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+          >
+            Добавить подписку
+          </Button>
+          <TableActionButton className="ml-2">
+            <Icon icon={filterIcon}/>
+          </TableActionButton>
+          <TableActionButton className="ml-2">
+            <Icon icon={deleteIcon}/>
+          </TableActionButton>
+        </div>
       </div>
       <ListTable
         rowComponent={useMemo(() => (props) => <RowComponent
