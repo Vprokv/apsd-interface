@@ -82,7 +82,7 @@ const CreateDocumentWindow = props => {
           </ScrollBar>
         </DocumentTypesContainer>
         <div className="pl-6 w-full h-full">
-          <h2 className="font-medium text-2xl color-blue-1 mb-4">Титул</h2>
+          <h2 className="font-medium text-2xl color-blue-1 mb-4">{selectedDocument.name}</h2>
           <div className="separator rounded-md mb-6">
             <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">Контент</h3>
             <div className="p-4">
