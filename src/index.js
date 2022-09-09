@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { RecoilRoot } from "recoil"
 import { createBrowserHistory } from 'history'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { HashRouter as Router } from 'react-router-dom'
 import './styles/index.css'
 import './styles/colors.css'
 import './styles/fonts.css'
