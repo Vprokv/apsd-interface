@@ -1,6 +1,6 @@
 ## Запуск проекта
-* git clone http://gitlab.id-mt.ru/sedo/apsd-ui.git
-* git submodule add https://gitlab.com/yarproko/components_ocean.git ./src/components_ocean
+* git clone git@gitlab.id-mt.ru:sedo/apsd-ui.git
+* git submodule add git@gitlab.id-mt.ru:sedo/components_ocean.git ./src/components_ocean
 * npm install
 * npm run start
 
