@@ -7,11 +7,12 @@ import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
 import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
 import {useParams} from "react-router-dom";
 import {fieldsDictionary, NoFieldType} from "./constants";
-import {visibleRules} from './rules'
+import {readOnlyRules, validationRules, visibleRules} from './rules'
 
 
 const regeGetRules = /[^&|]+|(&|\||.)\b/gm //rege to get rules and summ characters
-const getRuleParams = /[^:,[\]\s]+/gm // rege to get rule field and arguments
+const getRuleParams = /[^:,[\]\s$]+/gm // rege to get rule field and arguments
+const regExpGetValidationRules = /[^&|]+\b/gm // rege to get validation rule and arguments
 
 const Requisites = props => {
   const {type} = useParams()
@@ -20,18 +21,19 @@ const Requisites = props => {
     stateId: TASK_ITEM_REQUISITES
   })
   const {
-    tabState: {data: {values} = {}}, setTabState: setDocumentState
+    tabState: {data: documentData, data: {values} = {}}, setTabState: setDocumentState
   } = useTabItem({
     stateId: TASK_ITEM_DOCUMENT
   })
 
-  const onFormInput = useCallback((formData) => setDocumentState(formData), [setDocumentState])
+  const onFormInput = useCallback((formData) => setDocumentState({data: { ...documentData, values: formData}}), [documentData, setDocumentState])
 
   useEffect(async () => {
     const {data: {children}} = await api.post(`/sedo/type/config/${type}/design`)
     setTabState({data: children})
   }, [api, setTabState, type])
-  const {fields, rules} = useMemo(() => (data || []).reduce((acc, {
+
+  const parsedDesign = useMemo(() => (data || []).reduce((acc, {
     type,
     col,
     row,
@@ -51,20 +53,36 @@ const Requisites = props => {
           const {condition: ruleCondition, disabled} = visibleRules[rule](id, values)
 
           acc.condition = `${acc.condition} ${ruleCondition}`
-          acc.disabled = {...acc.disabled, ...disabled}
+          if (disabled) {
+            acc.disabled.push(disabled)
+          }
           acc.args.add(id)
         }
         return acc
-      }, {condition: "", disabled: {}, args: new Set()})
+      }, {condition: "", disabled: [], args: new Set()})
       // eslint-disable-next-line no-new-func
-      acc.visibility[dss_attr_name] = new Function(`{${[...args].join(",")}} = {}`, `return ${condition}`)
-      acc.disabled = {...acc.disabled, ...disabled}
+      acc.visibility.set(dss_attr_name, new Function(`{${[...args].join(",")}} = {}`, `return ${condition}`))
+      if (disabled.length > 0) {
+        disabled.forEach(d => acc.disabled.set(...d))
+      }
     }
 
     if (dss_readonly_rule) {
-      console.log(dss_readonly_rule)
+      const [rule, id, values] = dss_readonly_rule.match(getRuleParams)
+      // eslint-disable-next-line no-new-func
+      if (!acc.disabled.has(dss_attr_name)) {
+        acc.disabled.set(dss_attr_name,new Function(`{${id}} = {}`, `return ${readOnlyRules[rule](id, values)}`))
+      }
     }
-    acc.fields.push({
+
+    if (dss_validation_rule) {
+      acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
+        const [ruleName, ...args] = rule.match(getRuleParams)
+        return validationRules[ruleName](...args)
+      })
+    }
+
+    acc.fields.set(dss_attr_name, {
       id: dss_attr_name,
       component: fieldsDictionary[type] || NoFieldType,
       label: dss_attr_label,
@@ -76,9 +94,24 @@ const Requisites = props => {
         gridRow: `grid-row: ${row + 1}/${row + height + 1}`
       }
     })
-    // acc.rules[dss_attr_name] =
+
     return acc
-  }, {fields: [], rules: {}, visibility: {}, disabled: {}}), [data])
+  }, {fields: new Map(), rules: {}, visibility: new Map(), disabled: new Map()}), [data])
+
+  const { fields, rules } = useMemo(() => {
+    const { fields, visibility, disabled, rules } = parsedDesign
+    const fieldsCopy = new Map(fields)
+    disabled.forEach((condition, key) => {
+      fieldsCopy.set(key, {...fieldsCopy.get(key), disabled: condition(values) })
+    })
+    visibility.forEach((condition, key) => {
+      if (!condition(values)) {
+        fieldsCopy.delete(key)
+      }
+    })
+
+    return { fields: Array.from(fieldsCopy.values()), rules }
+  }, [values, parsedDesign])
 
   return (
     <ScrollBar className="w-full">
