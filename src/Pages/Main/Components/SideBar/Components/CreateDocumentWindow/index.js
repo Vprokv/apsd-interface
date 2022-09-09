@@ -1,4 +1,5 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {ApiContext} from "@/contants";
 import ScrollBar from '@Components/Components/ScrollBar'
@@ -13,6 +14,7 @@ import NavigationDocumentIcon from "../../icons/NavigationDocumentIcon";
 
 const FirstLevelHeaderComponent = ({children, selected}) => <div className="flex items-start font-size-14 w-full">
   <DocumentIcon
+    key={children.id}
     icon={NavigationDocumentIcon}
     size={22}
     selected={selected}
@@ -22,7 +24,7 @@ const FirstLevelHeaderComponent = ({children, selected}) => <div className="flex
 
 const DefaultHeaderComponent = ({children}) => <div className="font-size-12">{children}</div>
 
-const CreateDocumentWindow = props => {
+const CreateDocumentWindow = ({onClose}) => {
   const api = useContext(ApiContext)
   const [documents, setDocuments] = useState([])
   const [selectedDocument, setSelectedDocument] = useState({})
@@ -34,15 +36,20 @@ const CreateDocumentWindow = props => {
     })()
   }, [])
 
+  const navigate = useNavigate()
   const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
+  const handleCreateClick = useCallback(() => {
+    navigate(`/document/create/${selectedDocument.id}`)
+    onClose()
+  }, [selectedDocument, navigate, onClose]);
 
   const renderDocumentItem = useCallback((HeaderComponent) => ({data, data: {name, id}, children}) => {
     const selected = selectedDocument.name === name
     return children.length > 0
       ? (
-        <WithToggleNavigationItem id={id}>
+        <WithToggleNavigationItem id={id} key={id}>
           {({isDisplayed, toggleDisplayedFlag}) => (
-            <HeaderComponent>
+            <HeaderComponent key={id}>
               <div className={`flex flex-col w-full ${isDisplayed ? "" : "mb-4"}`}>
                 <button
                   type="button"
@@ -61,7 +68,7 @@ const CreateDocumentWindow = props => {
         </WithToggleNavigationItem>
       )
       : (
-        <HeaderComponent selected={selected}>
+        <HeaderComponent selected={selected} key={id}>
           <button
             type="button"
             className="mb-4 text-left"
@@ -103,11 +110,13 @@ const CreateDocumentWindow = props => {
       <div className="flex w-full items-center justify-end">
         <Button
           className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
+          onClick={onClose}
         >
           Закрыть
         </Button>
         <Button
           className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+          onClick={handleCreateClick}
         >
           Создать
         </Button>
@@ -116,14 +125,16 @@ const CreateDocumentWindow = props => {
   );
 };
 
-CreateDocumentWindow.propTypes = {};
+CreateDocumentWindow.propTypes = {
+  onClose: PropTypes.func
+};
 
 const CrateDocumentWrapper = (props) => (
   <CreateDocumentWindowContainer
     {...props}
     title="Создание нового документа"
   >
-    <CreateDocumentWindow/>
+    <CreateDocumentWindow {...props}/>
   </CreateDocumentWindowContainer>
 )
 

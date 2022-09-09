@@ -17,7 +17,7 @@ import Contain from "./Pages/Contain";
 import History from "./Pages/History";
 import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import {ApiContext, TASK_ITEM_DOCUMENT} from "../../../contants";
-import {URL_TASK_ITEM, URL_TASK_LIST} from "../../../ApiList";
+import {URL_TASK_ITEM, URL_TASK_LIST, URL_FROM_CLASSIFICATION} from "../../../ApiList";
 
 
 const pages = {  //TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
@@ -58,7 +58,7 @@ const mockDocumentTabs = [
 ]
 
 function TaskItem(props) {
-  const { id, type } = useParams()
+  const { id, type, classificationId } = useParams()
   const api = useContext(ApiContext)
 
   const {tabState: {data: {values: {dss_work_number = "Документ"} = {}} = {}}} = useTabItem(
@@ -66,11 +66,10 @@ function TaskItem(props) {
   )
 
   const {
-    tabState,
+    tabState: { data: { documentTabs } = {} },
     setTabState,
     shouldReloadDataFlag,
-    loadDataHelper,
-    tabState: { data: { documentTabs } = {} }
+    loadDataHelper
   } = useTabItem({
     setTabName: useCallback(() => dss_work_number, [dss_work_number]),
     stateId: TASK_ITEM_DOCUMENT
@@ -79,14 +78,12 @@ function TaskItem(props) {
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
       const {data} = await api.post(
-        URL_TASK_ITEM,
-        {
-          id, type
-        }
+        type ? URL_TASK_ITEM : URL_FROM_CLASSIFICATION,
+        type ? {id, type} : {classificationId}
       )
       return data
     })
-  }, [id, type, api, loadDataHelper]);
+  }, [id, type, classificationId, api, loadDataHelper]);
   const refLoadDataFunction = useRef(loadDataFunction)
 
   useEffect(() => {
@@ -100,7 +97,7 @@ function TaskItem(props) {
     if (!documentTabs) {
       return {}
     }
-    return  [...documentTabs, {name: 'subscriptions'}, {name: 'technical_objects'}].reduce((acc, { name }) => {
+    return  [...documentTabs].reduce((acc, { name }) => {
       if (pages[name]) {
         const {path, label, Component} = pages[name]
         acc.headers.push(<NavigationItem to={path} key={path}>

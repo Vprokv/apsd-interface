@@ -15,7 +15,6 @@ const getRuleParams = /[^:,[\]\s$]+/gm // rege to get rule field and arguments
 const regExpGetValidationRules = /[^&|]+\b/gm // rege to get validation rule and arguments
 
 const Requisites = props => {
-  const {type} = useParams()
   const api = useContext(ApiContext)
   const {tabState: {data}, setTabState} = useTabItem({
     stateId: TASK_ITEM_REQUISITES
@@ -29,9 +28,9 @@ const Requisites = props => {
   const onFormInput = useCallback((formData) => setDocumentState({data: { ...documentData, values: formData}}), [documentData, setDocumentState])
 
   useEffect(async () => {
-    const {data: {children}} = await api.post(`/sedo/type/config/${type}/design`)
+    const {data: {children}} = await api.post(`/sedo/type/config/${documentData.type}/design`)
     setTabState({data: children})
-  }, [api, setTabState, type])
+  }, [api, setTabState, documentData])
 
   const parsedDesign = useMemo(() => (data || []).reduce((acc, {
     type,

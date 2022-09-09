@@ -91,6 +91,7 @@ function App() {
             </>
           ) : (
             <Route element={<Main/>}>
+              <Route path={routePath.DOCUMENT_CREATE_PATH} element={<TaskItem/>}/>
               <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem/>}/>
               <Route path={routePath.TASK_LIST_PATH} element={<TaskList/>}/>
               <Route path={routePath.VOLUME_ITEM_PATH} element={<VolumeItem/>}/>
