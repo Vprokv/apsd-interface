@@ -4,7 +4,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
 import {RequisitesForm} from "./styles";
 import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
+import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
 import {useParams} from "react-router-dom";
 import {fieldsDictionary, NoFieldType} from "./constants";
 import {readOnlyRules, validationRules, visibleRules} from './rules'
@@ -16,6 +16,7 @@ const regExpGetValidationRules = /[^&|]+\b/gm // rege to get validation rule and
 
 const Requisites = props => {
   const {type} = useParams()
+  const documentType = useContext(DocumentTypeContext)
   const api = useContext(ApiContext)
   const {tabState: {data}, setTabState} = useTabItem({
     stateId: TASK_ITEM_REQUISITES
@@ -23,7 +24,7 @@ const Requisites = props => {
   const {
     tabState: {data: documentData, data: {values} = {}}, setTabState: setDocumentState
   } = useTabItem({
-    stateId: TASK_ITEM_DOCUMENT
+    stateId: documentType
   })
 
   const onFormInput = useCallback((formData) => setDocumentState({data: { ...documentData, values: formData}}), [documentData, setDocumentState])
@@ -74,13 +75,15 @@ const Requisites = props => {
         acc.disabled.set(dss_attr_name,new Function(`{${id}} = {}`, `return ${readOnlyRules[rule](id, values)}`))
       }
     }
-
-    if (dss_validation_rule) {
-      acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
-        const [ruleName, ...args] = rule.match(getRuleParams)
-        return validationRules[ruleName](...args)
-      })
-    }
+//TODO Разобраться с регуляркой с бека при создании нового документа
+    // if (dss_validation_rule) {
+    //   acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
+    //     const [ruleName, ...args] = rule.match(getRuleParams)
+    //     console.log(ruleName, 'ruleName')
+    //     console.log(args, 'args')
+    //     return validationRules[ruleName](...args)
+    //   })
+    // }
 
     acc.fields.set(dss_attr_name, {
       id: dss_attr_name,
