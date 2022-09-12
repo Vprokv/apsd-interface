@@ -79,8 +79,6 @@ const Requisites = props => {
     // if (dss_validation_rule) {
     //   acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
     //     const [ruleName, ...args] = rule.match(getRuleParams)
-    //     console.log(ruleName, 'ruleName')
-    //     console.log(args, 'args')
     //     return validationRules[ruleName](...args)
     //   })
     // }

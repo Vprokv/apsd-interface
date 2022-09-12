@@ -13,47 +13,61 @@ const pages = {  //TODO проверить, всегда ли это поле е
     label: "Реквизиты",
     path: "requisites",
     fieldKey: "requisites",
-    Component: Requisites
+    Component: Requisites,
+    weight: 1
   },
   subscriptions: {
     label: "Подписка",
     path: "subscriptions",
-    Component: Subscription
+    Component: Subscription,
+    weight: 2
   },
   technical_objects: {
     label: "Технические объекты",
     path: "objects",
-    Component: Objects
+    Component: Objects,
+    weight: 3
   },
   contain: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
     label: "Состав титула",
     path: "contain",
-    Component: Contain
+    Component: Contain,
+    weight: 4
   },
   audit: {
     label: "История",
     path: "history",
-    Component: History
+    Component: History,
+    weight: 5
   }
 }
 
-export const BaseItem = ({documentTabs}) =>{
-  const {routes, headers } = useMemo(() => {
+export const BaseItem = ({documentTabs}) => {
+  const {routes, headers} = useMemo(() => {
     if (!documentTabs) {
       return {}
     }
 
-    return  documentTabs.reduce((acc, { name }) => {
+    const {routes, headers} = documentTabs.reduce((acc, {name}) => {
       if (pages[name]) {
-        const {path, label, Component} = pages[name]
-        acc.headers.push(<NavigationItem to={path} key={path}>
-          {label}
-        </NavigationItem>)
-        acc.routes.push(<Route key={path} path={path} element={<Component/>}/>)
+        const {path, label, Component, weight} = pages[name]
+        acc.headers.push({
+          Component: <NavigationItem to={path} key={path}>{label}</NavigationItem>,
+          weight
+        })
+        acc.routes.push({
+          Component: <Route key={path} path={path} element={<Component/>}/>,
+          weight
+        })
       }
       return acc
-    }, { headers: [], routes: [] })
-  },[documentTabs])
+    }, {headers: [], routes: []})
+
+    return {
+      headers: headers.sort((a, b) => a?.weight - b?.weight).map(({Component}) => Component),
+      routes: routes.sort((a, b) => a?.weight - b?.weight).map(({Component}) => Component)
+    }
+  }, [documentTabs])
 
   return <div className="flex-container w-full overflow-hidden">
     <NavigationContainer>

@@ -23,7 +23,7 @@ const FirstLevelHeaderComponent = ({children, selected}) => <div className="flex
 
 const DefaultHeaderComponent = ({children}) => <div className="font-size-12">{children}</div>
 
-const CreateDocumentWindow = props => {
+const CreateDocumentWindow = ({onClose}) => {
   const api = useContext(ApiContext)
   const navigate = useNavigate()
   const [documents, setDocuments] = useState([])
@@ -54,13 +54,13 @@ const CreateDocumentWindow = props => {
   }, [selectedDocument])
 
   const toNewItem = useCallback(() => {
-    props.onClose()
-    return navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
+    navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
+    onClose()
   }, [navigate]);
   const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
 
   const renderAttributes = useMemo(() => {
-    const templates = !! newDocumentData?.attrTemplate && Object.values(newDocumentData?.attrTemplate) || []
+    const templates = !!newDocumentData?.attrTemplate && Object.values(newDocumentData?.attrTemplate) || []
 
     return <div className="flex flex-wrap">
       {
@@ -76,9 +76,9 @@ const CreateDocumentWindow = props => {
     const selected = selectedDocument.name === name
     return children.length > 0
       ? (
-        <WithToggleNavigationItem id={id}>
+        <WithToggleNavigationItem id={id} key={id}>
           {({isDisplayed, toggleDisplayedFlag}) => (
-            <HeaderComponent>
+            <HeaderComponent key={id}>
               <div className={`flex flex-col w-full ${isDisplayed ? "" : "mb-4"}`}>
                 <button
                   type="button"
@@ -97,7 +97,7 @@ const CreateDocumentWindow = props => {
         </WithToggleNavigationItem>
       )
       : (
-        <HeaderComponent selected={selected}>
+        <HeaderComponent selected={selected} key={id}>
           <button
             type="button"
             className="mb-4 text-left"
@@ -137,6 +137,7 @@ const CreateDocumentWindow = props => {
       <div className="flex w-full items-center justify-end">
         <Button
           className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
+          onClick={onClose}
         >
           Закрыть
         </Button>
@@ -151,7 +152,9 @@ const CreateDocumentWindow = props => {
   );
 };
 
-CreateDocumentWindow.propTypes = {};
+CreateDocumentWindow.propTypes = {
+  onClose: PropTypes.func
+};
 
 const CrateDocumentWrapper = (props) => (
   <CreateDocumentWindowContainer

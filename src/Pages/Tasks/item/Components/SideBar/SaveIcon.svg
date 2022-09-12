@@ -1,9 +1,14 @@
-<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="18" cy="18" r="18" fill="#3CE289"/>
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.00033 2.6665H4.66699V7.33317H11.3337V2.6665L13.1872 4.52006C13.281 4.61383 13.3337 4.741 13.3337 4.87361V11.9998C13.3337 12.8665 12.8003 13.3332 12.0003 13.3332H4.00033C3.1944 13.3332 2.66699 12.8665 2.66699 11.9998V3.99984C2.66699 3.13317 3.1944 2.6665 4.00033 2.6665Z" fill="white"/>
-        <rect x="8" y="2.6665" width="2" height="3.33333" rx="0.5" fill="white"/>
-    </svg>
-</svg>
+<!--<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--    <circle cx="18" cy="18" r="18" fill="#3CE289"/>-->
+<!--    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.00053 2.6665H4.66699V7.33317H11.3337V2.6665L13.1872 4.52006C13.281 4.61383 13.3337 4.741 13.3337 4.87361V11.9998C13.3337 12.8665 12.8003 13.3332 12.0003 13.3332H4.00033C3.1944 13.3332 2.66699 12.8665 2.66699 11.9998V3.99984C2.66699 3.13317 3.1944 2.6665 4.00033 2.6665Z" fill="white"/>-->
+<!--            <rect x="8" y="2.6665" width="2" height="3.33333" rx="0.5" fill="white"/>-->
+<!--</svg>-->
 
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="18" cy="18" r="18" fill="#3CE289"/>
+<!--    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.00033 2.6665H4.66699V7.33317H11.3337V2.6665L13.1872 4.52006C13.281 4.61383 13.3337 4.741 13.3337 4.87361V11.9998C13.3337 12.8665 12.8003 13.3332 12.0003 13.3332H4.00033C3.1944 13.3332 2.66699 12.8665 2.66699 11.9998V3.99984C2.66699 3.13317 3.1944 2.6665 4.00033 2.6665Z" fill="white"/>-->
+<!--        <rect x="8" y="2.6665" width="2" height="3.33333" rx="0.5" fill="white"/>-->
+<!--    </svg>-->
+</svg>
 
