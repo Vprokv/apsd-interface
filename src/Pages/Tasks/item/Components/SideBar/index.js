@@ -50,7 +50,7 @@ const SideBar = props => {
       console.log(values, 'data.values')
       const {data: {id, type}} = await api.post(documentType === TASK_ITEM_NEW_DOCUMENT ?
           URL_DOCUMENT_CREATE : URL_DOCUMENT_UPDATE,
-        {values: {values, dsid_stamp: "000000000000023q", dss_description: "Описание документа"}, type: typeDoc}
+        {values: {...values, dsid_stamp: "000000000000023q", dss_description: "Описание документа"}, type: typeDoc}
       )
 
       id && type && navigate(`/task/${id}/${type}`)
