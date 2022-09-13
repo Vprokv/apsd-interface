@@ -29,3 +29,6 @@ export const URL_DOCUMENT_UPDATE = "/sedo/document/update"
 
 //ENTITY
 export const URL_ENTITY_LIST = "/sedo/entity/list"
+
+//EMPLOYEE
+export const URL_EMPLOYEE_LIST = "/sedo/employee/query"

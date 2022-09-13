@@ -54,9 +54,9 @@ const CreateDocumentWindow = ({onClose}) => {
   }, [selectedDocument])
 
   const toNewItem = useCallback(() => {
-    navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
+    selectedDocument && navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
     onClose()
-  }, [navigate]);
+  }, [navigate, selectedDocument]);
   const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
 
   const renderAttributes = useMemo(() => {
