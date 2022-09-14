@@ -1,5 +1,4 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {ApiContext} from "@/contants";
 import ScrollBar from '@Components/Components/ScrollBar'
@@ -11,6 +10,7 @@ import Button from "@/Components/Button";
 import WithToggleNavigationItem from "../withToggleNavigationItem";
 import angleIcon from "@/Icons/angleIcon";
 import NavigationDocumentIcon from "../../icons/NavigationDocumentIcon";
+import {useNavigate} from "react-router-dom";
 
 const FirstLevelHeaderComponent = ({children, selected}) => <div className="flex items-start font-size-14 w-full">
   <DocumentIcon
@@ -26,8 +26,10 @@ const DefaultHeaderComponent = ({children}) => <div className="font-size-12">{ch
 
 const CreateDocumentWindow = ({onClose}) => {
   const api = useContext(ApiContext)
+  const navigate = useNavigate()
   const [documents, setDocuments] = useState([])
   const [selectedDocument, setSelectedDocument] = useState({})
+  const [newDocumentData, setNewDocumentData] = useState({})
 
   useEffect(() => {
     (async () => {
@@ -36,12 +38,40 @@ const CreateDocumentWindow = ({onClose}) => {
     })()
   }, [])
 
-  const navigate = useNavigate()
-  const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
-  const handleCreateClick = useCallback(() => {
-    navigate(`/document/create/${selectedDocument.id}`)
+  useEffect(() => {
+    selectedDocument.id && (async () => {
+      try {
+        const {data} = await api.post(`/sedo/classification/${selectedDocument.id}/template`)
+        if (data) {
+          setNewDocumentData(data)
+        } else {
+          setNewDocumentData({})
+        }
+      } catch (_) {
+        setNewDocumentData({})
+      }
+
+    })()
+  }, [selectedDocument])
+
+  const toNewItem = useCallback(() => {
+    selectedDocument && navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
     onClose()
-  }, [selectedDocument, navigate, onClose]);
+  }, [navigate, selectedDocument]);
+  const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
+
+  const renderAttributes = useMemo(() => {
+    const templates = !!newDocumentData?.attrTemplate && Object.values(newDocumentData?.attrTemplate) || []
+
+    return <div className="flex flex-wrap">
+      {
+        templates.map(({label, value}) => <text className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2">
+            {`${label} = ${value}`}
+          </text>
+        )
+      }
+    </div>
+  }, [newDocumentData])
 
   const renderDocumentItem = useCallback((HeaderComponent) => ({data, data: {name, id}, children}) => {
     const selected = selectedDocument.name === name
@@ -60,8 +90,8 @@ const CreateDocumentWindow = ({onClose}) => {
                   <Icon icon={angleIcon} size={10} className={`${isDisplayed ? "" : "rotate-180"} mt-1`}/>
                 </button>
                 {isDisplayed &&
-                  <div
-                    className="flex flex-col mt-4 pl-4">{children.map(renderDocumentItem(DefaultHeaderComponent))}</div>}
+                <div
+                  className="flex flex-col mt-4 pl-4">{children.map(renderDocumentItem(DefaultHeaderComponent))}</div>}
               </div>
             </HeaderComponent>
           )}
@@ -100,9 +130,7 @@ const CreateDocumentWindow = ({onClose}) => {
           <div className="separator rounded-md mb-6">
             <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">Атрибуты</h3>
             <div className="p-4">
-              <div className="font-size-14 bg-light-gray rounded-md p-2">
-                Наименование тома = О согласовании ТЗ
-              </div>
+              {renderAttributes}
             </div>
           </div>
         </div>
@@ -116,7 +144,7 @@ const CreateDocumentWindow = ({onClose}) => {
         </Button>
         <Button
           className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
-          onClick={handleCreateClick}
+          onClick={toNewItem}
         >
           Создать
         </Button>
