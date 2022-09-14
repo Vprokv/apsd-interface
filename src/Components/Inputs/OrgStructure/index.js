@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {OrgStructureWindowComponent, SelectedEmployeeContainer} from "./style";
 import {ApiContext} from "@/contants";
 import ScrollBar from '@Components/Components/ScrollBar'
@@ -10,7 +10,7 @@ import Select from "../Select";
 import Icon from '@Components/Components/Icon'
 import searchIcon from "@/Icons/searchIcon"
 import ListTable from "../../../components_ocean/Components/Tables/ListTable";
-import RowComponent from "../../../Pages/Tasks/list/Components/RowComponent";
+import RowComponent from "./Components/RowComponent";
 import HeaderCell from "../../ListTableComponents/HeaderCell";
 import SortCellComponent from "../../ListTableComponents/SortCellComponent";
 import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable";
@@ -18,20 +18,19 @@ import CheckBox from "../CheckBox";
 import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import {TASK_ITEM_SUBSCRIPTION, WINDOW_ADD_OBJECT} from "../../../contants";
 import {URL_EMPLOYEE_LIST, URL_SUBSCRIPTION_LIST} from "../../../ApiList";
-import UserCard, {sizes as useCardSizes} from "../../ListTableComponents/UserCard";
+import UserCard from "./Components/UserCard";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
-  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}},
+  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
 }
 
 const columns = [
   {
     id: "position",
     label: "ФИО, Должность",
-    component: ({ParentValue: {firstName, lastName, middleName, position}}) => {
-      // const fio = `${lastName} ${firstName && `${firstName[0]}.` || ""} ${middleName && `${middleName[0]}.` || ""}`
-      return UserCard({name: firstName ?? "asasa", fio: lastName, position})
+    component: ({ParentValue ={}} = {}) => {
+      return UserCard(ParentValue)
     },
     sizes: 250
   },
@@ -111,68 +110,10 @@ const filterFormConfig = [
 
 const emptyWrapper = (({children}) => children)
 
-const mockSelectedUser = [
-  {
-    "emplId": "77000014003ua82k",
-    "userName": "EgorovTest",
-    "position": "Главный научный сотрудник",
-    "department": "Департамент 5",
-    "organization": "ПАО \"ЛЕНЭНЕРГО\"",
-    "branch": "Тестовый Филиал",
-    "avatartId": null,
-    "firstName": "Test",
-    "lastName": "Egorov",
-    "middleName": "Testovich",
-    "email": "EgorovTest@EgorovTest.EgorovTest",
-    "phone": "",
-    "isFederated": false,
-    "positionLevel": 3,
-    "positionLevelName": "Начальник отдела",
-    "inactive": false
-  },
-  {
-    "emplId": "77000014000cmmcw",
-    "userName": "Autor",
-    "position": "Начальник отдела ",
-    "department": "Департамент 1",
-    "organization": "ПАО \"ЛЕНЭНЕРГО\"",
-    "branch": "Тестовый Филиал",
-    "avatartId": null,
-    "firstName": "Андрей",
-    "lastName": "Авторов",
-    "middleName": "Андреевич",
-    "email": "asud_trash@nwenergo.com",
-    "phone": "342343",
-    "isFederated": false,
-    "positionLevel": 5,
-    "positionLevelName": "Директор",
-    "inactive": false
-  },
-  {
-    "emplId": "770000140022rezs",
-    "userName": "Autotest10",
-    "position": "Сотрудник",
-    "department": "Департамент 1",
-    "organization": "ПАО \"ЛЕНЭНЕРГО\"",
-    "branch": "Тестовый Филиал",
-    "avatartId": null,
-    "firstName": null,
-    "lastName": "Автотест10",
-    "middleName": null,
-    "email": "a.ilyuschenkov@id-mt.ru",
-    "phone": "",
-    "isFederated": false,
-    "positionLevel": 5,
-    "positionLevelName": "Директор",
-    "inactive": false
-  }
-]
-
-
-const OrgStructureWindow = ({onClose}) => {
+const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({branchId: "770000140005s24p"}) //TODO разобраться со стартовым значением
-  const [selectState, setSelectState] = useState(mockSelectedUser)
+  const [selectState, setSelectState] = useState(value)
   const [sortQuery, onSort] = useState({})
 
   const {
@@ -190,18 +131,11 @@ const OrgStructureWindow = ({onClose}) => {
         URL_EMPLOYEE_LIST,
         {filter}
       )
-      console.log(data, 'data')
       return data
     })
   }, [api, loadDataHelper]);
 
   const refLoadDataFunction = useRef(loadDataFunction)
-
-  const renderEmployee = useMemo(() => (selectState|| []).map(({firstName, lastName, middleName, position}) =>
-    <div className="background-grey flex mb-2" key={`${lastName}${firstName}`}>
-      <UserCard name ={firstName ?? "asasa"} fio ={lastName} position={position}/>
-    </div>
-), [selectState])
 
   useEffect(() => {
     if (shouldReloadDataFlag || loadDataFunction !== refLoadDataFunction.current) {
@@ -210,6 +144,20 @@ const OrgStructureWindow = ({onClose}) => {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
+  const renderEmployee = useMemo(() => content
+    .filter(({emplId}) => (Array.isArray(selectState) && selectState || [selectState]).includes(emplId))
+    .map((value) =>
+      <div className="background-grey flex mb-2" key={value.emplId}>
+        <UserCard{...value}/>
+      </div>
+    ), [selectState])
+
+  const handleClick = useCallback(() => {
+    onInput(selectState)
+    onClose()
+  }, [onInput, onClose, selectState])
+
+  const handleSelectClick = useCallback((id) => () => setSelectState(id), [setSelectState])
 
   return <div className="flex flex-col overflow-hidden h-full">
     <div className="flex overflow-hidden mb-6 h-full">
@@ -230,11 +178,11 @@ const OrgStructureWindow = ({onClose}) => {
         </div>
         <ListTable
           rowComponent={useMemo(() => (props) => <RowComponent
-            onDoubleClick={() => null} {...props}
+            onClick={handleSelectClick} {...props}
           />, [])}
           value={content}
           columns={columns}
-          plugins={plugins}
+          plugins={multiply && plugins}
           headerCellComponent={HeaderCell}
           selectState={selectState}
           onSelect={setSelectState}
@@ -253,7 +201,7 @@ const OrgStructureWindow = ({onClose}) => {
       </Button>
       <Button
         className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
-        onClick={() => null}
+        onClick={handleClick}
       >
         Выбрать
       </Button>
@@ -265,7 +213,7 @@ const OrgStructureWindowWrapper = props => <OrgStructureWindowComponent
   {...props}
   title="Добавление Сотрудника"
 >
-  <OrgStructureWindow/>
+  <OrgStructureWindow {...props}/>
 </OrgStructureWindowComponent>
 
 export default OrgStructureWindowWrapper;
