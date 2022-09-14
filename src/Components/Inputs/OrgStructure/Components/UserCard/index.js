@@ -4,15 +4,14 @@ import {UserCircle} from "./styles";
 import colorFromString from "@Components/Utils/colorFromString";
 
 const UserCard = ({firstName = "", lastName = "", middleName = "", position} = {}) => {
-  const fio = useMemo(() => `${lastName} ${firstName && `${firstName[0]}.` || ""} ${middleName && `${middleName[0]}.` || "aaa"}`, [firstName, lastName, middleName])
-  console.log(fio, 'fio')
+  const fio = useMemo(() => `${lastName} ${firstName?.length && `${firstName[0]}.` || "AAA"} ${middleName?.length && `${middleName[0]}.` || "aaa"}`, [firstName])
   const bg = useMemo(() => {
-    return typeof firstName === "string" && colorFromString(firstName, 30, 80)
+    return typeof fio === "string" && colorFromString(fio, 30, 80)
   }, [fio])
 
   return (
     <div className="flex items-center justify-center">
-      {/*<UserCircle bg={"hsl(88, 30%, 80%)"} className="mr-2">*/}
+      {/*<UserCircle bg={bg} className="mr-2">*/}
       {/*  {`${lastName.length && lastName[0]} ${firstName.length && firstName[0]}`}*/}
       {/*</UserCircle>*/}
       <div>
