@@ -13,4 +13,8 @@ export default {
     valueKey: "r_object_id",
     labelKey: "dss_name"
   },
+  "ddt_dict_stamp": {
+    valueKey: "r_object_id",
+    labelKey: "dss_name"
+  },
 }

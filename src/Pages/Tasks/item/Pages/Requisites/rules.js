@@ -20,10 +20,10 @@ import createRegExpFromString from "../../../../../components_ocean/Utils/create
 import {DATE_FORMAT_DD_MM_YYYY_HH_mm_ss} from "../../../../../contants";
 import Classification from "./Components/Classification";
 import {URL_ENTITY_LIST} from "../../../../../ApiList";
-import CustomValuesSelect from "./Components/CustomValuesSelect";
+import { CustomValuesSelect, CustomValuesOrgStructure} from "./Components/CustomValuesSelect";
 import TextArea from "@Components/Components/Inputs/TextArea";
 import Input from "@Components/Components/Inputs/Input";
-import UserSelect from "@/Components/Inputs/UserSelect";
+
 import DocumentSelect from "@/Components/Inputs/DocumentSelect";
 import DatePicker from "@/Components/Inputs/DatePicker";
 import CheckBox from "@/Components/Inputs/CheckBox";
@@ -101,7 +101,7 @@ export const fieldsDictionary = {
   Combobox: CustomValuesSelect,
   Text: Input,
   TextArea,
-  Orgstructure: UserSelect,
+  Orgstructure: CustomValuesOrgStructure,
   DocumentPicker: DocumentSelect,
   Date: DatePicker,
   Checkbox: CheckBox,
