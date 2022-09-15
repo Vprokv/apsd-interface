@@ -29,7 +29,7 @@ import Filter from "./Components/Filter";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
-  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}},
+  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "id"},
 }
 const columns = [
   {

@@ -43,17 +43,15 @@ const SideBar = props => {
       data: {values = {}} = {},
     }
   } = useTabItem({stateId: documentType})
-  // console.log(values, 'values')
 
   const handleClick = (type) => async () => {
     if (type === "save") {
-      console.log(values, 'data.values')
-      const {data: {id, type}} = await api.post(documentType === TASK_ITEM_NEW_DOCUMENT ?
+      const {data: {id}} = await api.post(documentType === TASK_ITEM_NEW_DOCUMENT ?
           URL_DOCUMENT_CREATE : URL_DOCUMENT_UPDATE,
-        {values: {...values, dsid_stamp: "000000000000023q", dss_description: "Описание документа"}, type: typeDoc}
+        {values, type: typeDoc}
       )
 
-      id && type && navigate(`/task/${id}/${type}`)
+      id && navigate(`/task/${id}/${typeDoc}`)
     }
   }
 
