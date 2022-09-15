@@ -19,6 +19,7 @@ import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import {TASK_ITEM_SUBSCRIPTION, WINDOW_ADD_OBJECT} from "../../../contants";
 import {URL_EMPLOYEE_LIST, URL_SUBSCRIPTION_LIST} from "../../../ApiList";
 import UserCard from "./Components/UserCard";
+import closeIcon from "../../../Icons/closeIcon";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -29,7 +30,7 @@ const columns = [
   {
     id: "position",
     label: "ФИО, Должность",
-    component: ({ParentValue ={}} = {}) => {
+    component: ({ParentValue = {}} = {}) => {
       return UserCard(ParentValue)
     },
     sizes: 250
@@ -144,11 +145,32 @@ const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
+  const handleCloseIconClick = useCallback((id) => () => {
+    if (Array.isArray(selectState)) {
+      const prevSelectedState = [...selectState]
+      return setSelectState(prevSelectedState.splice(
+        prevSelectedState.findIndex(({emplId}) => emplId === id), 1))
+    }
+
+    return setSelectState("")
+  }, [selectState])
+
   const renderEmployee = useMemo(() => content
     .filter(({emplId}) => (Array.isArray(selectState) && selectState || [selectState]).includes(emplId))
     .map((value) =>
-      <div className="background-grey flex mb-2" key={value.emplId}>
-        <UserCard{...value}/>
+      <div className="bg-form-input-color p-3 flex mb-2 min-" key={value.emplId}>
+        <UserCard{...value} widthDepartment={true}/>
+        <Button
+          onClick={handleCloseIconClick(value.emplId)}
+          type="button"
+          className="ml-auto padding-null mb-auto height-small"
+        >
+          <Icon
+            icon={closeIcon}
+            size={10}
+            className="color-text-secondary"
+          />
+        </Button>
       </div>
     ), [selectState])
 
