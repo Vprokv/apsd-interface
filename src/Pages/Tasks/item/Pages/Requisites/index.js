@@ -6,8 +6,7 @@ import {RequisitesForm} from "./styles";
 import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
 import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
 import {useParams} from "react-router-dom";
-import {fieldsDictionary, NoFieldType} from "./constants";
-import {readOnlyRules, validationRules, visibleRules} from './rules'
+import {readOnlyRules, validationRules, visibleRules, fieldsDictionary, NoFieldType, propsTransmission} from './rules'
 
 
 const regeGetRules = /[^&|]+|(&|\||.)\b/gm //rege to get rules and summ characters
@@ -40,6 +39,7 @@ const Requisites = props => {
     row,
     width,
     height,
+    attr,
     attr: {
       dss_attr_label, dss_attr_name, dss_placeholder, dsb_readonly, dsb_multiply, dss_validation_rule,
       dss_visible_rule, dss_readonly_rule
@@ -76,12 +76,14 @@ const Requisites = props => {
       }
     }
 //TODO Разобраться с регуляркой с бека при создании нового документа
-    // if (dss_validation_rule) {
-    //   acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
-    //     const [ruleName, ...args] = rule.match(getRuleParams)
-    //     return validationRules[ruleName](...args)
-    //   })
-    // }
+    if (dss_validation_rule) {
+      acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
+        const [ruleName, ...args] = rule.match(getRuleParams)
+        return validationRules[ruleName](...args)
+      })
+    }
+
+    const { [type]: transmission = () => ({}) } = propsTransmission
 
     acc.fields.set(dss_attr_name, {
       id: dss_attr_name,
@@ -89,7 +91,7 @@ const Requisites = props => {
       label: dss_attr_label,
       placeholder: dss_placeholder,
       disabled: dsb_readonly,
-      multiple: dsb_multiply,
+      ...transmission({ api, backConfig: attr, nextProps: {} }),
       style: {
         gridColumn: `${col + 1}/${col + width + 1}`,
         gridRow: `grid-row: ${row + 1}/${row + height + 1}`

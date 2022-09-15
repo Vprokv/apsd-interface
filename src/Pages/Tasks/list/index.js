@@ -84,7 +84,6 @@ const columns = [
   },
 ]
 
-const emptyWrapper = (({children}) => children)
 
 function TaskList(props) {
   const [sortQuery, onSort] = useState({})
@@ -181,7 +180,6 @@ function TaskList(props) {
       onSelect={setSelectState}
       sortQuery={sortQuery}
       onSort={onSort}
-      valueKey="id"
     />
     <Pagination
       className="mt-2"
