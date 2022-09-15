@@ -50,6 +50,10 @@
     background-color: var(--text-secondary);
 }
 
+.bg-form-input-color {
+    background-color: var(--form-input-background-color);
+}
+
 .color-green {
     color: var(--green);
 }

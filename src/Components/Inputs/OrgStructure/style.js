@@ -7,6 +7,6 @@ export const OrgStructureWindowComponent = styled(ModalWindow)`
   margin: auto;
 `
 export const SelectedEmployeeContainer = styled.div`
-  width: 22.01%;
+  width: 25.01%;
   border-right: 1px solid var(--separator);
 `
