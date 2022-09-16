@@ -36,7 +36,7 @@ const CreateDocumentWindow = ({onClose}) => {
       const {data: {children}} = await api.post(URL_DOCUMENT_CREATION_OPTIONS)
       setDocuments(children)
     })()
-  }, [])
+  }, [api])
 
   useEffect(() => {
     selectedDocument.id && (async () => {
@@ -52,12 +52,13 @@ const CreateDocumentWindow = ({onClose}) => {
       }
 
     })()
-  }, [selectedDocument])
+  }, [api, selectedDocument])
 
   const toNewItem = useCallback(() => {
     selectedDocument && navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
     onClose()
-  }, [navigate, selectedDocument]);
+  }, [navigate, onClose, selectedDocument]);
+
   const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
 
   const renderAttributes = useMemo(() => {

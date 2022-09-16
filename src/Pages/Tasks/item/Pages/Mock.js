@@ -1,4 +1,4 @@
-export const design =[
+export const design = [
   {
     "type": "Classification",
     "col": 0,
@@ -776,11 +776,11 @@ export const docData = {
       "ПАО \"ЛЕНЭНЕРГО\""
     ],
     "dsc_content": "77000014004cy9ik"
-},
+  },
   "valuesCustom": {
-  "r_object_id": "77000014004cy9ig",
+    "r_object_id": "77000014004cy9ig",
     "dss_ord_status": {
-    "r_object_id": "77000014000c1m9u",
+      "r_object_id": "77000014000c1m9u",
       "r_creator_name": "master",
       "dsb_unique_choice": false,
       "r_creation_date": "04.12.2019 13:47:18",
@@ -793,39 +793,39 @@ export const docData = {
       "dsi_sort_order": 2,
       "dss_system_name": "active",
       "dsb_default": false
-  },
-  "dsid_document_subtype": {
-    "r_object_id": "770000140011m01c",
+    },
+    "dsid_document_subtype": {
+      "r_object_id": "770000140011m01c",
       "dss_name": "Приказ"
-  },
-  "drid_addressee_empl": null,
+    },
+    "drid_addressee_empl": null,
     "dsdt_creation_date": "01.09.2022 23:10:51",
     "i_global_id": "77000014004cy9ig",
     "dsb_important": false,
     "dsid_signer_empl": [
-    {
-      "lastName": "Автотест2",
-      "positionLevel": null,
-      "avatartId": null,
-      "positionLevelName": null,
-      "userName": null,
-      "branch": "Тестовый Филиал",
-      "isFederated": null,
-      "emplId": "770000140005s7hh",
-      "firstName": null,
-      "inactive": null,
-      "phone": null,
-      "organization": "ПАО \"ЛЕНЭНЕРГО\"",
-      "middleName": null,
-      "position": "Сотрудник",
-      "department": "Департамент 2",
-      "email": null
-    }
-  ],
+      {
+        "lastName": "Автотест2",
+        "positionLevel": null,
+        "avatartId": null,
+        "positionLevelName": null,
+        "userName": null,
+        "branch": "Тестовый Филиал",
+        "isFederated": null,
+        "emplId": "770000140005s7hh",
+        "firstName": null,
+        "inactive": null,
+        "phone": null,
+        "organization": "ПАО \"ЛЕНЭНЕРГО\"",
+        "middleName": null,
+        "position": "Сотрудник",
+        "department": "Департамент 2",
+        "email": null
+      }
+    ],
     "dss_description": "ыыы",
     "dss_work_number": "ВР-19180-2",
     "dsid_author_empl": {
-    "lastName": "Автотест2",
+      "lastName": "Автотест2",
       "positionLevel": null,
       "avatartId": null,
       "positionLevelName": null,
@@ -841,10 +841,10 @@ export const docData = {
       "position": "Сотрудник",
       "department": "Департамент 2",
       "email": null
-  },
-  "dsi_number_of_page": 0,
+    },
+    "dsi_number_of_page": 0,
     "dss_status": {
-    "r_object_id": "registered",
+      "r_object_id": "registered",
       "dss_name": "Зарегистрирован",
       "dsb_archival": false
     },
@@ -852,7 +852,7 @@ export const docData = {
     "dsdt_reg_date": "01.09.2022 23:11:05",
     "dsid_nomenclature": null,
     "dsid_register_empl": {
-    "lastName": "Автотест2",
+      "lastName": "Автотест2",
       "positionLevel": null,
       "avatartId": null,
       "positionLevelName": null,
@@ -870,7 +870,7 @@ export const docData = {
       "email": null
     },
     "dsid_executor_empl": {
-    "lastName": "Автотест2",
+      "lastName": "Автотест2",
       "positionLevel": null,
       "avatartId": null,
       "positionLevelName": null,
@@ -909,10 +909,10 @@ export const docData = {
     "dsid_classification": "Распорядительные документы / Приказ",
     "dsid_stamp": {
       "r_object_id": "000000000000023q",
-        "dsb_encryption": false,
-        "dss_name": "Общего пользования"
+      "dsb_encryption": false,
+      "dss_name": "Общего пользования"
     },
-  "dss_home": null,
+    "dss_home": null,
     "dsb_hardcopy_sgn": false,
     "dsb_to_sign": false,
     "dss_signer_organization": [
@@ -943,7 +943,7 @@ export const docData = {
     }
   },
   "state": {
-  "dss_name": "Зарегистрирован",
+    "dss_name": "Зарегистрирован",
     "r_object_id": "registered",
     "nameRu": "Зарегистрирован",
     "order": 6,
@@ -951,167 +951,167 @@ export const docData = {
   },
   "docState": null,
   "documentActions": [
-  {
-    "caption": "Создать резолюцию",
-    "name": "create_resolution",
-    "permits": null,
-    "dss_valid_condition": "",
-    "dss_title_window": "",
-    "dss_text_window": "",
-    "signal": null,
-    "autoClose": false,
-    "signatureRequired": false,
-    "parameters": null,
-    "bpSettingKey": null
-  },
-  {
-    "caption": "Сохранить",
-    "name": "save",
-    "permits": null,
-    "dss_valid_condition": "",
-    "dss_title_window": "",
-    "dss_text_window": "",
-    "signal": null,
-    "autoClose": false,
-    "signatureRequired": false,
-    "parameters": null,
-    "bpSettingKey": null
-  },
-  {
-    "caption": "Удалить",
-    "name": "delete",
-    "permits": null,
-    "dss_valid_condition": "",
-    "dss_title_window": "",
-    "dss_text_window": "",
-    "signal": null,
-    "autoClose": true,
-    "signatureRequired": false,
-    "parameters": null,
-    "bpSettingKey": null
-  },
-  {
-    "caption": "Выгрузить документ",
-    "name": "export_doc",
-    "permits": null,
-    "dss_valid_condition": null,
-    "dss_title_window": null,
-    "dss_text_window": null,
-    "signal": null,
-    "autoClose": false,
-    "signatureRequired": false,
-    "parameters": null,
-    "bpSettingKey": null
-  },
-  {
-    "caption": "Печать карточки",
-    "name": "print_card",
-    "permits": [],
-    "dss_valid_condition": null,
-    "dss_title_window": null,
-    "dss_text_window": null,
-    "signal": null,
-    "autoClose": false,
-    "signatureRequired": false,
-    "parameters": null,
-    "bpSettingKey": null
-  }
-],
+    {
+      "caption": "Создать резолюцию",
+      "name": "create_resolution",
+      "permits": null,
+      "dss_valid_condition": "",
+      "dss_title_window": "",
+      "dss_text_window": "",
+      "signal": null,
+      "autoClose": false,
+      "signatureRequired": false,
+      "parameters": null,
+      "bpSettingKey": null
+    },
+    {
+      "caption": "Сохранить",
+      "name": "save",
+      "permits": null,
+      "dss_valid_condition": "",
+      "dss_title_window": "",
+      "dss_text_window": "",
+      "signal": null,
+      "autoClose": false,
+      "signatureRequired": false,
+      "parameters": null,
+      "bpSettingKey": null
+    },
+    {
+      "caption": "Удалить",
+      "name": "delete",
+      "permits": null,
+      "dss_valid_condition": "",
+      "dss_title_window": "",
+      "dss_text_window": "",
+      "signal": null,
+      "autoClose": true,
+      "signatureRequired": false,
+      "parameters": null,
+      "bpSettingKey": null
+    },
+    {
+      "caption": "Выгрузить документ",
+      "name": "export_doc",
+      "permits": null,
+      "dss_valid_condition": null,
+      "dss_title_window": null,
+      "dss_text_window": null,
+      "signal": null,
+      "autoClose": false,
+      "signatureRequired": false,
+      "parameters": null,
+      "bpSettingKey": null
+    },
+    {
+      "caption": "Печать карточки",
+      "name": "print_card",
+      "permits": [],
+      "dss_valid_condition": null,
+      "dss_title_window": null,
+      "dss_text_window": null,
+      "signal": null,
+      "autoClose": false,
+      "signatureRequired": false,
+      "parameters": null,
+      "bpSettingKey": null
+    }
+  ],
   "documentTabs": [
-  {
-    "name": "content",
-    "caption": "Контент",
-    "permits": [
-      "manage_attachment_version"
-    ],
-    "settings": null,
-    "parameters": null
-  },
-  {
-    "name": "requisites",
-    "caption": "Реквизиты",
-    "permits": [
-      "save",
-      "change_doc_state",
-      "work_ext_addressees"
-    ],
-    "settings": null,
-    "parameters": {
-      "signature": {
-        "min_position_level": 4
+    {
+      "name": "content",
+      "caption": "Контент",
+      "permits": [
+        "manage_attachment_version"
+      ],
+      "settings": null,
+      "parameters": null
+    },
+    {
+      "name": "requisites",
+      "caption": "Реквизиты",
+      "permits": [
+        "save",
+        "change_doc_state",
+        "work_ext_addressees"
+      ],
+      "settings": null,
+      "parameters": {
+        "signature": {
+          "min_position_level": 4
+        }
       }
-    }
-  },
-  {
-    "name": "approval-sheet",
-    "caption": "Согласование и подписание",
-    "permits": [
-      "delete"
-    ],
-    "settings": [
-      "agreement",
-      "show_auto_approve"
-    ],
-    "parameters": {
-      "agreement": {},
-      "signature": {
-        "min_position_level": "4",
-        "restriction_selection": "ord_signer"
-      },
-      "review": {
-        "restriction_selection": "documentary_maintanance"
+    },
+    {
+      "name": "approval-sheet",
+      "caption": "Согласование и подписание",
+      "permits": [
+        "delete"
+      ],
+      "settings": [
+        "agreement",
+        "show_auto_approve"
+      ],
+      "parameters": {
+        "agreement": {},
+        "signature": {
+          "min_position_level": "4",
+          "restriction_selection": "ord_signer"
+        },
+        "review": {
+          "restriction_selection": "documentary_maintanance"
+        }
       }
+    },
+    {
+      "name": "links",
+      "caption": "Связанные документы",
+      "permits": [
+        "link"
+      ],
+      "settings": null,
+      "parameters": null
+    },
+    {
+      "name": "comments",
+      "caption": "Комментарии",
+      "permits": [],
+      "settings": null,
+      "parameters": null
+    },
+    {
+      "name": "resolutions",
+      "caption": "Резолюции",
+      "permits": [
+        "save",
+        "create_subresolution",
+        "CREATE"
+      ],
+      "settings": null,
+      "parameters": null
+    },
+    {
+      "name": "familiarization",
+      "caption": "Рассылка",
+      "permits": [],
+      "settings": null,
+      "parameters": null
+    },
+    {
+      "name": "audit",
+      "caption": "История",
+      "permits": [],
+      "settings": null,
+      "parameters": null
+    },
+    {
+      "name": "handouts",
+      "caption": "Выданные на руки",
+      "permits": [],
+      "settings": null,
+      "parameters": null
     }
-  },
-  {
-    "name": "links",
-    "caption": "Связанные документы",
-    "permits": [
-      "link"
-    ],
-    "settings": null,
-    "parameters": null
-  },
-  {
-    "name": "comments",
-    "caption": "Комментарии",
-    "permits": [],
-    "settings": null,
-    "parameters": null
-  },
-  {
-    "name": "resolutions",
-    "caption": "Резолюции",
-    "permits": [
-      "save",
-      "create_subresolution",
-      "CREATE"
-    ],
-    "settings": null,
-    "parameters": null
-  },
-  {
-    "name": "familiarization",
-    "caption": "Рассылка",
-    "permits": [],
-    "settings": null,
-    "parameters": null
-  },
-  {
-    "name": "audit",
-    "caption": "История",
-    "permits": [],
-    "settings": null,
-    "parameters": null
-  },
-  {
-    "name": "handouts",
-    "caption": "Выданные на руки",
-    "permits": [],
-    "settings": null,
-    "parameters": null
-  }
-],
+  ],
   "tags": [],
   "highlights": null,
   "performers": null,

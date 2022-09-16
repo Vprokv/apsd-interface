@@ -6,8 +6,8 @@ import {RequisitesForm} from "./styles";
 import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
 import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
 import {useParams} from "react-router-dom";
-import {fieldsDictionary, NoFieldType} from "./constants";
-import {readOnlyRules, validationRules, visibleRules} from './rules'
+import {readOnlyRules, validationRules, visibleRules, fieldsDictionary, NoFieldType, propsTransmission} from './rules'
+import {CustomValuesContext} from "./constants";
 
 
 const regeGetRules = /[^&|]+|(&|\||.)\b/gm //rege to get rules and summ characters
@@ -22,12 +22,17 @@ const Requisites = props => {
     stateId: TASK_ITEM_REQUISITES
   })
   const {
-    tabState: {data: documentData, data: {values} = {}}, setTabState: setDocumentState
+    tabState: {data: documentData, data: {values, valuesCustom} = {}}, setTabState: setDocumentState
   } = useTabItem({
     stateId: documentType
   })
 
-  const onFormInput = useCallback((formData) => setDocumentState({data: { ...documentData, values: formData}}), [documentData, setDocumentState])
+  const onFormInput = useCallback((formData) => setDocumentState({
+    data: {
+      ...documentData,
+      values: formData
+    }
+  }), [documentData, setDocumentState])
 
   useEffect(async () => {
     const {data: {children}} = await api.post(`/sedo/type/config/${documentData.type}/design`)
@@ -40,6 +45,7 @@ const Requisites = props => {
     row,
     width,
     height,
+    attr,
     attr: {
       dss_attr_label, dss_attr_name, dss_placeholder, dsb_readonly, dsb_multiply, dss_validation_rule,
       dss_visible_rule, dss_readonly_rule
@@ -72,16 +78,18 @@ const Requisites = props => {
       const [rule, id, values] = dss_readonly_rule.match(getRuleParams)
       // eslint-disable-next-line no-new-func
       if (!acc.disabled.has(dss_attr_name)) {
-        acc.disabled.set(dss_attr_name,new Function(`{${id}} = {}`, `return ${readOnlyRules[rule](id, values)}`))
+        acc.disabled.set(dss_attr_name, new Function(`{${id}} = {}`, `return ${readOnlyRules[rule](id, values)}`))
       }
     }
 //TODO Разобраться с регуляркой с бека при создании нового документа
-    // if (dss_validation_rule) {
-    //   acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
-    //     const [ruleName, ...args] = rule.match(getRuleParams)
-    //     return validationRules[ruleName](...args)
-    //   })
-    // }
+    if (dss_validation_rule) {
+      acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
+        const [ruleName, ...args] = rule.match(getRuleParams)
+        return validationRules[ruleName](...args)
+      })
+    }
+
+    const {[type]: transmission = () => ({})} = propsTransmission
 
     acc.fields.set(dss_attr_name, {
       id: dss_attr_name,
@@ -89,7 +97,7 @@ const Requisites = props => {
       label: dss_attr_label,
       placeholder: dss_placeholder,
       disabled: dsb_readonly,
-      multiple: dsb_multiply,
+      ...transmission({api, backConfig: attr, nextProps: {}}),
       style: {
         gridColumn: `${col + 1}/${col + width + 1}`,
         gridRow: `grid-row: ${row + 1}/${row + height + 1}`
@@ -99,11 +107,11 @@ const Requisites = props => {
     return acc
   }, {fields: new Map(), rules: {}, visibility: new Map(), disabled: new Map()}), [data])
 
-  const { fields, rules } = useMemo(() => {
-    const { fields, visibility, disabled, rules } = parsedDesign
+  const {fields, rules} = useMemo(() => {
+    const {fields, visibility, disabled, rules} = parsedDesign
     const fieldsCopy = new Map(fields)
     disabled.forEach((condition, key) => {
-      fieldsCopy.set(key, {...fieldsCopy.get(key), disabled: condition(values) })
+      fieldsCopy.set(key, {...fieldsCopy.get(key), disabled: condition(values)})
     })
     visibility.forEach((condition, key) => {
       if (!condition(values)) {
@@ -111,18 +119,20 @@ const Requisites = props => {
       }
     })
 
-    return { fields: Array.from(fieldsCopy.values()), rules }
+    return {fields: Array.from(fieldsCopy.values()), rules}
   }, [values, parsedDesign])
 
   return (
     <ScrollBar className="w-full">
-      <RequisitesForm
-        inputWrapper={DefaultWrapper}
-        value={values}
-        onInput={onFormInput}
-        fields={fields}
-        rules={rules}
-      />
+      <CustomValuesContext.Provider value={valuesCustom}>
+        <RequisitesForm
+          inputWrapper={DefaultWrapper}
+          value={values}
+          onInput={onFormInput}
+          fields={fields}
+          rules={rules}
+        />
+      </CustomValuesContext.Provider>
     </ScrollBar>
   );
 };

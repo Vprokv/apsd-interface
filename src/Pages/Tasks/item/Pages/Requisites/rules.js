@@ -18,6 +18,16 @@ import {
 } from "../../../../../components_ocean/Logic/Validator/constants";
 import createRegExpFromString from "../../../../../components_ocean/Utils/createRegExpFromString";
 import {DATE_FORMAT_DD_MM_YYYY_HH_mm_ss} from "../../../../../contants";
+import Classification from "./Components/Classification";
+import {URL_ENTITY_LIST} from "../../../../../ApiList";
+import { CustomValuesSelect, CustomValuesOrgStructure} from "./Components/CustomValuesSelect";
+import TextArea from "@Components/Components/Inputs/TextArea";
+import Input from "@Components/Components/Inputs/Input";
+
+import DocumentSelect from "@/Components/Inputs/DocumentSelect";
+import DatePicker from "@/Components/Inputs/DatePicker";
+import CheckBox from "@/Components/Inputs/CheckBox";
+import refsTransmission from "../../../../../RefsTransmission";
 
 export const VisibleIf = (key, values) => ({condition: `${key} === "${values[0]}"`})
 export const VisibleIn = (key, values) => ({condition: `[${values.reduce((acc, v) => acc ? `${acc},"${v}"` : `"${v}"`, "")}].includes(${key})`})
@@ -85,3 +95,80 @@ export const validationRules = {
   required_without_all,
   required_without,
 }
+
+export const fieldsDictionary = {
+  Classification: Classification,
+  Combobox: CustomValuesSelect,
+  Text: Input,
+  TextArea,
+  Orgstructure: CustomValuesOrgStructure,
+  DocumentPicker: DocumentSelect,
+  Date: DatePicker,
+  Checkbox: CheckBox,
+  // ExpansionPanel
+  // Скрывающаяся панель
+  // TextualCombobox
+  // Денормализованное поле ОШС
+  // Выбор пользователей
+  // Checkbox
+  // Флаг
+  // Классификация
+  // Branch
+  // Филиал
+  // Department
+  // Отдел
+  // TextualBranch
+  // Филиал
+}
+
+const getLoadFunction = (accumulator) => {
+  const {backConfig: {dss_component_reference, dss_attr_name}, nextProps, api} = accumulator
+  if (dss_component_reference) {
+    nextProps.loadFunction = async (query) => {
+      const { data } = await api.post(URL_ENTITY_LIST, {
+        id: dss_attr_name,
+        type: dss_component_reference
+      })
+      return data
+    }
+    const { [dss_component_reference]: { valueKey, labelKey } = {} } = refsTransmission
+    nextProps.valueKey = valueKey
+    nextProps.labelKey = labelKey
+  }
+  return accumulator
+}
+
+const getMultiply = (accumulator) => {
+  const {backConfig: {dsb_multiply}, nextProps } = accumulator
+  nextProps.multiple = dsb_multiply
+  return accumulator
+}
+
+export const propsTransmission = {
+  Classification: (accumulator) => {
+    getLoadFunction(accumulator)
+    getMultiply(accumulator)
+    return accumulator.nextProps
+  },
+  Combobox: (accumulator) => {
+    getLoadFunction(accumulator)
+    getMultiply(accumulator)
+    return accumulator.nextProps
+  },
+  DocStatus: (accumulator) => {
+    getLoadFunction(accumulator)
+    getMultiply(accumulator)
+    return accumulator.nextProps
+  },
+  DocumentPicker: (accumulator) => {
+    getLoadFunction(accumulator)
+    getMultiply(accumulator)
+    return accumulator.nextProps
+  }, //[]
+  Orgstructure: (accumulator) => {
+    getMultiply(accumulator)
+    return accumulator.nextProps
+  },
+}
+
+export const NoFieldType = () => <div>no fieldType</div>
