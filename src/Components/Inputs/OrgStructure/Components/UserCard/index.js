@@ -13,7 +13,6 @@ const UserCard = (
     widthDepartment = false
   } = {}) => {
   const fio = useMemo(() => `${lastName} ${firstName?.length && `${firstName[0]}.` || ""} ${middleName?.length && `${middleName[0]}.` || ""}`, [firstName, middleName, lastName])
-  console.log(fio, 'fio')
 
   const bg = useMemo(() => {
     return typeof fio === "string" && colorFromString(fio, 30, 80)

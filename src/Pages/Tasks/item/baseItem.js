@@ -75,7 +75,7 @@ export const BaseItem = ({documentTabs}) => {
     </NavigationContainer>
     <div className="flex h-full w-full overflow-hidden">
       <SideBar/>
-      {documentTabs && <Routes>
+      {!!routes?.length && <Routes>
         {routes}
         <Route
           path="*"
