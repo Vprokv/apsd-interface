@@ -15,23 +15,24 @@ import HeaderCell from "../../ListTableComponents/HeaderCell";
 import SortCellComponent from "../../ListTableComponents/SortCellComponent";
 import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable";
 import CheckBox from "../CheckBox";
-import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
-import {TASK_ITEM_SUBSCRIPTION, WINDOW_ADD_OBJECT} from "../../../contants";
 import {
-  URL_EMPLOYEE_LIST,
-  URL_ENTITY_LIST, URL_ORGSTURCTURE_BRANCHES, URL_ORGSTURCTURE_DEPARTMENTS,
-  URL_ORGSTURCTURE_ORGANIZATIONS,
-  URL_SUBSCRIPTION_LIST, URL_USER_OBJECT
+   URL_ORGSTURCTURE_BRANCHES,
+  URL_ORGSTURCTURE_DEPARTMENTS,
+  URL_ORGSTURCTURE_ORGANIZATIONS
 } from "../../../ApiList";
 import UserCard from "./Components/UserCard";
 import closeIcon from "../../../Icons/closeIcon";
 import LoadableSelect from "../Select";
-import {TASK_TYPE} from "../../../Pages/Tasks/list/constants";
 import Pagination from "../../Pagination";
 
-const plugins = {
-  outerSortPlugin: {component: SortCellComponent},
-  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
+const getPlugins = (multiply) => {
+  if (multiply) {
+    return {
+      outerSortPlugin: {component: SortCellComponent},
+      selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
+    }
+  }
+  return {outerSortPlugin: {component: SortCellComponent}}
 }
 
 const columns = [
@@ -66,13 +67,24 @@ const columns = [
 const emptyWrapper = (({children}) => children)
 
 const OrgStructureWindow = props => {
-  console.log(props, 'props')
-  const {onClose, value, onInput, multiply, remoteMethod, filter, setFilter, options, onSort, sortQuery, pagination} = props
- const {
-   setLimit,
-   setPage,
-   paginationState
- } = pagination
+  const {
+    onClose,
+    value,
+    onInput,
+    multiply,
+    remoteMethod,
+    filter,
+    setFilter,
+    options,
+    onSort,
+    sortQuery,
+    pagination
+  } = props
+  const {
+    setLimit,
+    setPage,
+    paginationState
+  } = pagination
 
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
@@ -198,7 +210,7 @@ const OrgStructureWindow = props => {
           />, [])}
           value={options}
           columns={columns}
-          plugins={multiply && plugins}
+          plugins={getPlugins(multiply)}
           headerCellComponent={HeaderCell}
           selectState={selectState}
           onSelect={setSelectState}

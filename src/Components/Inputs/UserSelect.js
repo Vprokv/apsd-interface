@@ -11,8 +11,6 @@ import {ApiContext, WINDOW_ADD_EMPLOYEE} from "@/contants";
 import {URL_EMPLOYEE_LIST} from "../../ApiList";
 import {useRecoilValue} from "recoil";
 import usePagination from "../../components_ocean/Logic/usePagination";
-import {TASK_LIST} from "../../contants";
-
 
 const RenderLoadable = Loadable(({children, ...props}) => children(props))
 
@@ -48,7 +46,7 @@ const UserSelect = props => {
     setState: setPaginationStateComp,
     defaultLimit: 10
   })
-  console.log(filter, 'filter')
+
   const loadRef = useCallback(async (search) => {
     const {limit, offset} = pagination.paginationState
     const {data: {content}} = await api.post(
@@ -57,15 +55,17 @@ const UserSelect = props => {
         filter,
         limit,
         offset,
-        orderBy: sortQuery.key,
-        sortType: sortQuery.direction
+        sort: [{
+          property: sortQuery.key,
+          direction: sortQuery.direction
+        }]
       }
     )
     content.forEach((v) => {
       v.fullName = `${v.firstName} ${v.middleName} ${v.lastName}`
     })
     return content
-  }, [api, filter, pagination.paginationState])
+  }, [api, filter, pagination.paginationState, sortQuery])
 
   return (
     <div className="flex items-center w-full">
@@ -93,11 +93,11 @@ const UserSelect = props => {
               open={addEmployeeWindow}
               onClose={closeEmployeeWindow}
               pagination={pagination}
+              onSort={onSort}
             />
           </>
         )}
       </RenderLoadable>
-
     </div>
   );
 };
