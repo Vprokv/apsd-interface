@@ -7,7 +7,7 @@ import Loadable from '@Components/Components/Inputs/Loadable'
 import searchIcon from "@/Icons/searchIcon";
 import styled from "styled-components";
 import AddEmployee from "./OrgStructure"
-import {ApiContext} from "@/contants";
+import {ApiContext, WINDOW_ADD_EMPLOYEE} from "@/contants";
 import {URL_EMPLOYEE_LIST} from "../../ApiList";
 import {useRecoilValue} from "recoil";
 import usePagination from "../../components_ocean/Logic/usePagination";
@@ -28,10 +28,9 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
-  console.log(props, 'props')
-
   const api = useContext(ApiContext)
   const [sortQuery, onSort] = useState({})
+  const [paginationStateComp, setPaginationStateComp] = useState({})
   const {
     organization: [{
       r_object_id: organization = "",
@@ -42,32 +41,31 @@ const UserSelect = props => {
   const openEmployeeWindow = useCallback(() => setAddEmployeeWindowState(true), [])
   const closeEmployeeWindow = useCallback(() => setAddEmployeeWindowState(false), [])
   const [filter, setFilter] = useState({organization, branchId})
-  //
-  // const {
-  //   setLimit,
-  //   setPage,
-  //   paginationState
-  // } = usePagination({defaultLimit: 10})
+
+  const pagination = usePagination({
+    stateId: WINDOW_ADD_EMPLOYEE,
+    state: paginationStateComp,
+    setState: setPaginationStateComp,
+    defaultLimit: 10
+  })
   console.log(filter, 'filter')
   const loadRef = useCallback(async (search) => {
-    // const {limit, offset} = paginationState
+    const {limit, offset} = pagination.paginationState
     const {data: {content}} = await api.post(
       URL_EMPLOYEE_LIST,
-      {filter},
-      // {
-      //   params: {
-      //     limit,
-      //     offset,
-      //     orderBy: sortQuery.key,
-      //     sortType: sortQuery.direction
-      //   }
-      // }
+      {
+        filter,
+        limit,
+        offset,
+        orderBy: sortQuery.key,
+        sortType: sortQuery.direction
+      }
     )
     content.forEach((v) => {
       v.fullName = `${v.firstName} ${v.middleName} ${v.lastName}`
     })
     return content
-  }, [api, filter])
+  }, [api, filter, pagination.paginationState])
 
   return (
     <div className="flex items-center w-full">
@@ -94,6 +92,7 @@ const UserSelect = props => {
               {...props}
               open={addEmployeeWindow}
               onClose={closeEmployeeWindow}
+              pagination={pagination}
             />
           </>
         )}

@@ -66,7 +66,14 @@ const columns = [
 const emptyWrapper = (({children}) => children)
 
 const OrgStructureWindow = props => {
-  const {onClose, value, onInput, multiply, remoteMethod, filter, setFilter, options, onSort, sortQuery} = props
+  console.log(props, 'props')
+  const {onClose, value, onInput, multiply, remoteMethod, filter, setFilter, options, onSort, sortQuery, pagination} = props
+ const {
+   setLimit,
+   setPage,
+   paginationState
+ } = pagination
+
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
 
@@ -129,24 +136,6 @@ const OrgStructureWindow = props => {
       }
     }
   ], [api, filter])
-
-  const {
-    //   tabState: {data: {content = []} = {}},
-    //   setTabState,
-    //   shouldReloadDataFlag,
-    loadDataHelper
-  } = useTabItem({
-    stateId: WINDOW_ADD_OBJECT
-  })
-
-  // const loadDataFunction = useMemo(() => {
-  //   return async () => {
-  //     const data = await remoteMethod()
-  //     console.log(data, 'data')
-  //   }
-  // }, [remoteMethod]);
-  //
-  // const refLoadDataFunction = useRef(remoteMethod)
 
   useEffect(() => remoteMethod(), [remoteMethod, filter])
 
@@ -217,29 +206,31 @@ const OrgStructureWindow = props => {
           onSort={onSort}
           valueKey="id"
         />
-        <Pagination
-          className="mt-2"
-          // limit={paginationState.limit}
-          // page={paginationState.page}
-          // setLimit={setLimit}
-          // setPage={setPage}
-        >
-        </Pagination>
+        <div className="flex items-center">
+          <Pagination
+            className="mt-2 w-full "
+            limit={paginationState.limit}
+            page={paginationState.page}
+            setLimit={setLimit}
+            setPage={setPage}
+          >
+          </Pagination>
+          <div className="flex items-center justify-end">
+            <Button
+              className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
+              onClick={onClose}
+            >
+              Закрыть
+            </Button>
+            <Button
+              className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+              onClick={handleClick}
+            >
+              Выбрать
+            </Button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div className="flex w-full items-center justify-end">
-  <Button
-    className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
-    onClick={onClose}
-  >
-    Закрыть
-  </Button>
-  <Button
-    className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
-    onClick={handleClick}
-  >
-    Выбрать
-  </Button>
     </div>
   </div>
 }
