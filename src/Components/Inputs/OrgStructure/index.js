@@ -17,9 +17,17 @@ import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/se
 import CheckBox from "../CheckBox";
 import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
 import {TASK_ITEM_SUBSCRIPTION, WINDOW_ADD_OBJECT} from "../../../contants";
-import {URL_EMPLOYEE_LIST, URL_SUBSCRIPTION_LIST} from "../../../ApiList";
+import {
+  URL_EMPLOYEE_LIST,
+  URL_ENTITY_LIST, URL_ORGSTURCTURE_BRANCHES, URL_ORGSTURCTURE_DEPARTMENTS,
+  URL_ORGSTURCTURE_ORGANIZATIONS,
+  URL_SUBSCRIPTION_LIST, URL_USER_OBJECT
+} from "../../../ApiList";
 import UserCard from "./Components/UserCard";
 import closeIcon from "../../../Icons/closeIcon";
+import LoadableSelect from "../Select";
+import {TASK_TYPE} from "../../../Pages/Tasks/list/constants";
+import Pagination from "../../Pagination";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -55,95 +63,92 @@ const columns = [
   },
 ]
 
-const filterFormConfig = [
-  {
-    id: "1",
-    component: SearchInput,
-    placeholder: "Поиск",
-    children: <Icon icon={searchIcon} size={10} className="color-text-secondary mr-2.5"/>
-  },
-  {
-    id: "department",
-    component: Select,
-    placeholder: "Отдел",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  },
-  {
-    id: "organization",
-    component: Select,
-    placeholder: "Организация",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  },
-  {
-    id: "branch",
-    component: Select,
-    placeholder: "Филиал",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
-  }
-]
-
 const emptyWrapper = (({children}) => children)
 
-const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
+const OrgStructureWindow = props => {
+  const {onClose, value, onInput, multiply, remoteMethod, filter, setFilter, options, onSort, sortQuery} = props
   const api = useContext(ApiContext)
-  const [filter, setFilter] = useState({branchId: "770000140005s24p"}) //TODO разобраться со стартовым значением
   const [selectState, setSelectState] = useState(value)
-  const [sortQuery, onSort] = useState({})
+
+  const filterRef = useRef(filter)
+
+  const disBranches = useMemo(() => {
+    if (filter.organization?.length < 2 || filterRef.current.organization !== filter.organization) {
+      const {branchId, ...item} = {...filter}
+      setFilter({...item})
+    }
+    return filter.organization?.length < 2
+  }, [filter.organization])
+
+  const disDepartment = useMemo(() => {
+    if (!filter.branchId && filter.branchId?.length < 2 || filterRef.current.branchId !== filter.branchId) {
+      const {departmentId, ...item} = {...filter}
+      setFilter({...item})
+    }
+    return !filter.branchId || filter.branchId?.length < 2
+  }, [filter.branchId])
+
+  const fields = useMemo(() => [
+    {
+      id: "query",
+      component: SearchInput,
+      placeholder: "Поиск",
+      children: <Icon icon={searchIcon} size={10} className="color-text-secondary mr-2.5"/>
+    },
+    {
+      id: "departmentId",
+      component: (props) => <LoadableSelect{...props} disabled={disDepartment}/>,
+      valueKey: "r_object_id",
+      labelKey: "dss_name",
+      placeholder: "Отдел",
+      loadFunction: async () => {
+        const {data} = await api.post(URL_ORGSTURCTURE_DEPARTMENTS, {branchIds: [filter.branchId]})
+        return data
+      }
+    },
+    {
+      id: "organization",
+      component: LoadableSelect,
+      valueKey: "r_object_id",
+      labelKey: "dss_name",
+      placeholder: "Организация",
+      loadFunction: async () => {
+        const {data} = await api.post(URL_ORGSTURCTURE_ORGANIZATIONS)
+        return data
+      }
+    },
+    {
+      id: "branchId",
+      placeholder: "Филиал",
+      component: (props) => <LoadableSelect{...props} disabled={disBranches}/>,
+      valueKey: "r_object_id",
+      labelKey: "dss_name",
+      loadFunction: async () => {
+        const {data} = await api.post(URL_ORGSTURCTURE_BRANCHES, {id: filter.organization})
+        return data
+      }
+    }
+  ], [api, filter])
 
   const {
-    tabState: {data: {content = []} = {}},
-    setTabState,
-    shouldReloadDataFlag,
+    //   tabState: {data: {content = []} = {}},
+    //   setTabState,
+    //   shouldReloadDataFlag,
     loadDataHelper
   } = useTabItem({
     stateId: WINDOW_ADD_OBJECT
   })
 
-  const loadDataFunction = useMemo(() => {
-    return loadDataHelper(async () => {
-      const {data} = await api.post(
-        URL_EMPLOYEE_LIST,
-        {filter}
-      )
-      return data
-    })
-  }, [api, loadDataHelper]);
+  // const loadDataFunction = useMemo(() => {
+  //   return async () => {
+  //     const data = await remoteMethod()
+  //     console.log(data, 'data')
+  //   }
+  // }, [remoteMethod]);
+  //
+  // const refLoadDataFunction = useRef(remoteMethod)
 
-  const refLoadDataFunction = useRef(loadDataFunction)
-
-  useEffect(() => {
-    if (shouldReloadDataFlag || loadDataFunction !== refLoadDataFunction.current) {
-      loadDataFunction()
-    }
-    refLoadDataFunction.current = loadDataFunction
-  }, [loadDataFunction, shouldReloadDataFlag])
+  useEffect(() => remoteMethod(), [remoteMethod, filter])
 
   const handleCloseIconClick = useCallback((id) => () => {
     if (Array.isArray(selectState)) {
@@ -155,7 +160,7 @@ const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
     return setSelectState("")
   }, [selectState])
 
-  const renderEmployee = useMemo(() => content
+  const renderEmployee = useMemo(() => options
     .filter(({emplId}) => (Array.isArray(selectState) && selectState || [selectState]).includes(emplId))
     .map((value) =>
       <div className="bg-form-input-color p-3 flex mb-2 min-" key={value.emplId}>
@@ -182,7 +187,7 @@ const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
   const handleSelectClick = useCallback((id) => () => setSelectState(id), [setSelectState])
 
   return <div className="flex flex-col overflow-hidden h-full">
-    <div className="flex overflow-hidden mb-6 h-full">
+    <div className="flex overflow-hidden  h-full">
       <SelectedEmployeeContainer>
         <ScrollBar className="pr-6 py-4">
           {renderEmployee}
@@ -191,7 +196,7 @@ const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
       <div className="px-4 pb-4 overflow-hidden flex-container">
         <div className="flex items-center py-4">
           <FilterForm
-            fields={filterFormConfig}
+            fields={fields}
             inputWrapper={emptyWrapper}
             value={filter}
             onInput={setFilter}
@@ -202,7 +207,7 @@ const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
           rowComponent={useMemo(() => (props) => <RowComponent
             onClick={handleSelectClick} {...props}
           />, [])}
-          value={content}
+          value={options}
           columns={columns}
           plugins={multiply && plugins}
           headerCellComponent={HeaderCell}
@@ -212,21 +217,29 @@ const OrgStructureWindow = ({onClose, value, onInput, multiply}) => {
           onSort={onSort}
           valueKey="id"
         />
+        <Pagination
+          className="mt-2"
+          // limit={paginationState.limit}
+          // page={paginationState.page}
+          // setLimit={setLimit}
+          // setPage={setPage}
+        >
+        </Pagination>
       </div>
     </div>
     <div className="flex w-full items-center justify-end">
-      <Button
-        className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
-        onClick={onClose}
-      >
-        Закрыть
-      </Button>
-      <Button
-        className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
-        onClick={handleClick}
-      >
-        Выбрать
-      </Button>
+  <Button
+    className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
+    onClick={onClose}
+  >
+    Закрыть
+  </Button>
+  <Button
+    className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+    onClick={handleClick}
+  >
+    Выбрать
+  </Button>
     </div>
   </div>
 }

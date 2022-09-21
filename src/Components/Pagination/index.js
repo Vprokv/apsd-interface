@@ -5,10 +5,20 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from "../../Icons/angleIcon";
 import doubleAngleIcon from "../../Icons/doubleAngleIcon";
 
-const Pagination = ({ children, className, setLimit, limit }) => {
+const Pagination = ({ children, className, setLimit, limit, page, setPage }) => {
   const onSetLimit = useCallback((limit) => () => {
     setLimit(limit)
   }, [setLimit])
+
+  const goToPage = useCallback((nextPage) => () => {
+    let result = page + nextPage
+    result = result > 1 ? result : 1
+    console.log(result)
+    if (result !== page) {
+      setPage(result > 1 ? result : 1)
+    }
+  }, [page, setPage])
+
   return (
     <div className={`${className} flex item-center`}>
       <div className="flex item-center mr-auto">
@@ -42,16 +52,36 @@ const Pagination = ({ children, className, setLimit, limit }) => {
         </PaginationButton>
       </div>
       <div className="flex items-center justify-center color-text-secondary">
+        <button
+          type="button"
+          onClick={goToPage(-10)}
+        >
           <Icon icon={doubleAngleIcon} className="rotate-180 mr-1.5"/>
+        </button>
+        <button
+          type="button"
+          onClick={goToPage(-1)}
+        >
           <Icon icon={angleIcon} className="rotate-90 mr-1.5" size={11}/>
+        </button>
         <PaginationButton
           className="mr-1.5"
           active
         >
-          1
+          {page}
         </PaginationButton>
+        <button
+          type="button"
+          onClick={goToPage(1)}
+        >
           <Icon icon={angleIcon} size={11} className="mr-1.5 rotate-270"/>
+        </button>
+        <button
+          type="button"
+          onClick={goToPage(10)}
+        >
           <Icon icon={doubleAngleIcon}/>
+        </button>
       </div>
       <div className="ml-auto color-text-secondary font-size-12">
         {children}
@@ -61,11 +91,18 @@ const Pagination = ({ children, className, setLimit, limit }) => {
 };
 
 Pagination.propTypes = {
+  setLimit: PropTypes.func.isRequired,
+  setPage: PropTypes.func.isRequired,
   className: PropTypes.string,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  limit: PropTypes.number,
+  page: PropTypes.number,
 };
 
 Pagination.defaultProps = {
-  className: ""
+  className: "",
+  page: 1,
+  limit: 10
 };
 
 export default Pagination;

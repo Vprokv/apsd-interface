@@ -1,5 +1,6 @@
 import React, {useCallback, useContext, useState} from 'react';
 import PropTypes from 'prop-types';
+import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 import {Select} from './Select'
 import Icon from '@Components/Components/Icon'
 import Loadable from '@Components/Components/Inputs/Loadable'
@@ -8,6 +9,10 @@ import styled from "styled-components";
 import AddEmployee from "./OrgStructure"
 import {ApiContext} from "@/contants";
 import {URL_EMPLOYEE_LIST} from "../../ApiList";
+import {useRecoilValue} from "recoil";
+import usePagination from "../../components_ocean/Logic/usePagination";
+import {TASK_LIST} from "../../contants";
+
 
 const RenderLoadable = Loadable(({children, ...props}) => children(props))
 
@@ -23,16 +28,40 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
+  console.log(props, 'props')
+
   const api = useContext(ApiContext)
+  const [sortQuery, onSort] = useState({})
+  const {
+    organization: [{
+      r_object_id: organization = "",
+      branches: [{r_object_id: branchId = ""}] = [{}]
+    }] = [{}],
+  } = useRecoilValue(userAtom)
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(() => setAddEmployeeWindowState(true), [])
   const closeEmployeeWindow = useCallback(() => setAddEmployeeWindowState(false), [])
-  const [filter, setFilter] = useState({branchId: "770000140005s24p"}) //TODO разобраться со стартовым значением
-
+  const [filter, setFilter] = useState({organization, branchId})
+  //
+  // const {
+  //   setLimit,
+  //   setPage,
+  //   paginationState
+  // } = usePagination({defaultLimit: 10})
+  console.log(filter, 'filter')
   const loadRef = useCallback(async (search) => {
-    const {data: { content}} = await api.post(
+    // const {limit, offset} = paginationState
+    const {data: {content}} = await api.post(
       URL_EMPLOYEE_LIST,
-      {filter}
+      {filter},
+      // {
+      //   params: {
+      //     limit,
+      //     offset,
+      //     orderBy: sortQuery.key,
+      //     sortType: sortQuery.direction
+      //   }
+      // }
     )
     content.forEach((v) => {
       v.fullName = `${v.firstName} ${v.middleName} ${v.lastName}`
@@ -45,6 +74,8 @@ const UserSelect = props => {
       <RenderLoadable
         {...props}
         loadFunction={loadRef}
+        filter={filter}
+        setFilter={setFilter}
       >
         {(props) => (
           <>

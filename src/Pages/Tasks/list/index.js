@@ -188,7 +188,7 @@ function TaskList(props) {
       setLimit={setLimit}
       setPage={setPage}
     >
-      {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего 120`}
+      {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
     </Pagination>
   </div>;
 }

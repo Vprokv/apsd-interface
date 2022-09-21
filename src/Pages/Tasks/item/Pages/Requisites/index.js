@@ -10,10 +10,6 @@ import {readOnlyRules, validationRules, visibleRules, fieldsDictionary, NoFieldT
 import {CustomValuesContext} from "./constants";
 
 
-const regeGetRules = /[^&|]+|(&|\||.)\b/gm //rege to get rules and summ characters
-const getRuleParams = /[^:,[\]\s$]+/gm // rege to get rule field and arguments
-const regExpGetValidationRules = /[^&|]+\b/gm // rege to get validation rule and arguments
-
 const Requisites = props => {
   const {type} = useParams()
   const documentType = useContext(DocumentTypeContext)
@@ -52,11 +48,11 @@ const Requisites = props => {
     }
   }) => {
     if (dss_visible_rule) {
-      const {args, condition, disabled} = dss_visible_rule.match(regeGetRules).reduce((acc, condition, i) => {
+      const {args, condition, disabled} = dss_visible_rule.match(/[^&|]+|(&|\||.)\b/gm).reduce((acc, condition, i) => {
         if (i % 2 === 1) {
           acc.condition = `${acc.condition} ${condition}${condition}`
         } else {
-          const [rule, id, ...values] = condition.match(getRuleParams)
+          const [rule, id, ...values] = condition.match(/[^:,[\]\s$]+/gm)
           const {condition: ruleCondition, disabled} = visibleRules[rule](id, values)
 
           acc.condition = `${acc.condition} ${ruleCondition}`
@@ -75,16 +71,16 @@ const Requisites = props => {
     }
 
     if (dss_readonly_rule) {
-      const [rule, id, values] = dss_readonly_rule.match(getRuleParams)
+      const [rule, id, values] = dss_readonly_rule.match(/[^:,]+/gm)
       // eslint-disable-next-line no-new-func
       if (!acc.disabled.has(dss_attr_name)) {
-        acc.disabled.set(dss_attr_name, new Function(`{${id}} = {}`, `return ${readOnlyRules[rule](id, values)}`))
+        acc.disabled.set(dss_attr_name, new Function(`obj = {}`, `return ${readOnlyRules[rule](id, values)}`))
       }
     }
-//TODO Разобраться с регуляркой с бека при создании нового документа
     if (dss_validation_rule) {
-      acc.rules[dss_attr_name] = dss_validation_rule.match(regExpGetValidationRules).map((rule) => {
-        const [ruleName, ...args] = rule.match(getRuleParams)
+      acc.rules[dss_attr_name] = dss_validation_rule.split("|").map((rule) => {
+        const [ruleName, ...args] = rule.startsWith("regex") ? rule.split(":") : rule.split(/([,:])/gm)
+        console.log(dss_validation_rule, ruleName, args)
         return validationRules[ruleName](...args)
       })
     }

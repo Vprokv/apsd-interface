@@ -33,3 +33,7 @@ export const URL_ENTITY_LIST = "/sedo/entity/list"
 
 //EMPLOYEE
 export const URL_EMPLOYEE_LIST = "/sedo/employee/query"
+
+export const URL_ORGSTURCTURE_ORGANIZATIONS = "/sedo/orgstructure/organizations"
+export const URL_ORGSTURCTURE_BRANCHES = "/sedo/orgstructure/branches"
+export const URL_ORGSTURCTURE_DEPARTMENTS = "/sedo/orgstructure/departments"

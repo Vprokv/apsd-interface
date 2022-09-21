@@ -46,8 +46,8 @@ export const visibleRules = {
   "visible_if_not_null": VisibleIfNotNull,
 }
 
-export const ReadOnlyIf = (key, values) => `${key} === "${values[0]}"`
-export const ReadOnlyIfNot = (key, values) => `${key} !== "${values[0]}"`
+export const ReadOnlyIf = (key, values) => `obj.${key} === ${values.startsWith("$") ? values.slice(1) : `"${values}"`}`
+export const ReadOnlyIfNot = (key, values) => `obj.${key} !== ${values.startsWith("$") ? values.slice(1) : `"${values}"`}`
 export const ReadOnly = () => `true`
 
 export const readOnlyRules = {
