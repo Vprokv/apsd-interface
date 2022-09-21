@@ -16,7 +16,7 @@ import SortCellComponent from "../../ListTableComponents/SortCellComponent";
 import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable";
 import CheckBox from "../CheckBox";
 import {
-   URL_ORGSTURCTURE_BRANCHES,
+  URL_ORGSTURCTURE_BRANCHES,
   URL_ORGSTURCTURE_DEPARTMENTS,
   URL_ORGSTURCTURE_ORGANIZATIONS
 } from "../../../ApiList";
@@ -88,6 +88,8 @@ const OrgStructureWindow = props => {
 
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
+
+  useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [])
 
   const filterRef = useRef(filter)
 
