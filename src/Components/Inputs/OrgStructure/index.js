@@ -93,21 +93,22 @@ const OrgStructureWindow = props => {
 
   const filterRef = useRef(filter)
 
-  const disBranches = useMemo(() => {
-    if (filter.organization?.length < 2 || filterRef.current.organization !== filter.organization) {
-      const {branchId, ...item} = {...filter}
-      setFilter({...item})
-    }
-    return filter.organization?.length < 2
-  }, [filter.organization])
+  const disBranches = useMemo(() => filter.organization?.length < 2, [filter.organization])
+  const disDepartment = useMemo(() => !filter.branchId || filter.branchId?.length < 2, [filter.branchId])
 
-  const disDepartment = useMemo(() => {
+  useEffect(() => {
     if (!filter.branchId && filter.branchId?.length < 2 || filterRef.current.branchId !== filter.branchId) {
       const {departmentId, ...item} = {...filter}
       setFilter({...item})
     }
-    return !filter.branchId || filter.branchId?.length < 2
   }, [filter.branchId])
+
+  useEffect(() => {
+    if (filter.organization?.length < 2 || filterRef.current.organization !== filter.organization) {
+      const {branchId, ...item} = {...filter}
+      setFilter({...item})
+    }
+  }, [filter.organization])
 
   const fields = useMemo(() => [
     {
@@ -118,7 +119,8 @@ const OrgStructureWindow = props => {
     },
     {
       id: "departmentId",
-      component: (props) => <LoadableSelect{...props} disabled={disDepartment}/>,
+      component: LoadableSelect,
+      disabled: disDepartment,
       valueKey: "r_object_id",
       labelKey: "dss_name",
       placeholder: "Отдел",
@@ -141,7 +143,8 @@ const OrgStructureWindow = props => {
     {
       id: "branchId",
       placeholder: "Филиал",
-      component: (props) => <LoadableSelect{...props} disabled={disBranches}/>,
+      component: LoadableSelect,
+      disabled: disBranches,
       valueKey: "r_object_id",
       labelKey: "dss_name",
       loadFunction: async () => {
@@ -149,7 +152,7 @@ const OrgStructureWindow = props => {
         return data
       }
     }
-  ], [api, filter])
+  ], [api, filter, options])
 
   useEffect(() => remoteMethod(), [remoteMethod, filter])
 

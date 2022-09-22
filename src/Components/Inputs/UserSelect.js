@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 import {Select} from './Select'
@@ -47,6 +47,18 @@ const UserSelect = props => {
     defaultLimit: 10
   })
 
+  const sort = useMemo(() => {
+    const {key, direction} = sortQuery
+    if (!key || !direction) {
+      return []
+    }
+
+    return [{
+        property: sortQuery.key,
+        direction: sortQuery.direction
+      }]
+  }, [sortQuery])
+
   const loadRef = useCallback(async (search) => {
     const {limit, offset} = pagination.paginationState
     const {data: {content}} = await api.post(
@@ -55,10 +67,7 @@ const UserSelect = props => {
         filter,
         limit,
         offset,
-        sort: [{
-          property: sortQuery.key,
-          direction: sortQuery.direction
-        }]
+        sort
       }
     )
     content.forEach((v) => {
