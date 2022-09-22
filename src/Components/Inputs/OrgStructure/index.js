@@ -15,23 +15,24 @@ import HeaderCell from "../../ListTableComponents/HeaderCell";
 import SortCellComponent from "../../ListTableComponents/SortCellComponent";
 import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable";
 import CheckBox from "../CheckBox";
-import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
-import {TASK_ITEM_SUBSCRIPTION, WINDOW_ADD_OBJECT} from "../../../contants";
 import {
-  URL_EMPLOYEE_LIST,
-  URL_ENTITY_LIST, URL_ORGSTURCTURE_BRANCHES, URL_ORGSTURCTURE_DEPARTMENTS,
-  URL_ORGSTURCTURE_ORGANIZATIONS,
-  URL_SUBSCRIPTION_LIST, URL_USER_OBJECT
+  URL_ORGSTURCTURE_BRANCHES,
+  URL_ORGSTURCTURE_DEPARTMENTS,
+  URL_ORGSTURCTURE_ORGANIZATIONS
 } from "../../../ApiList";
 import UserCard from "./Components/UserCard";
 import closeIcon from "../../../Icons/closeIcon";
 import LoadableSelect from "../Select";
-import {TASK_TYPE} from "../../../Pages/Tasks/list/constants";
 import Pagination from "../../Pagination";
 
-const plugins = {
-  outerSortPlugin: {component: SortCellComponent},
-  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
+const getPlugins = (multiply) => {
+  if (multiply) {
+    return {
+      outerSortPlugin: {component: SortCellComponent},
+      selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
+    }
+  }
+  return {outerSortPlugin: {component: SortCellComponent}}
 }
 
 const columns = [
@@ -66,27 +67,48 @@ const columns = [
 const emptyWrapper = (({children}) => children)
 
 const OrgStructureWindow = props => {
-  const {onClose, value, onInput, multiply, remoteMethod, filter, setFilter, options, onSort, sortQuery} = props
+  const {
+    onClose,
+    value,
+    onInput,
+    multiply,
+    remoteMethod,
+    filter,
+    setFilter,
+    options,
+    onSort,
+    sortQuery,
+    pagination
+  } = props
+  const {
+    setLimit,
+    setPage,
+    paginationState
+  } = pagination
+
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
 
+  useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [])
+
   const filterRef = useRef(filter)
 
-  const disBranches = useMemo(() => {
-    if (filter.organization?.length < 2 || filterRef.current.organization !== filter.organization) {
-      const {branchId, ...item} = {...filter}
-      setFilter({...item})
-    }
-    return filter.organization?.length < 2
-  }, [filter.organization])
+  const disBranches = useMemo(() => filter.organization?.length < 2, [filter.organization])
+  const disDepartment = useMemo(() => !filter.branchId || filter.branchId?.length < 2, [filter.branchId])
 
-  const disDepartment = useMemo(() => {
+  useEffect(() => {
     if (!filter.branchId && filter.branchId?.length < 2 || filterRef.current.branchId !== filter.branchId) {
       const {departmentId, ...item} = {...filter}
       setFilter({...item})
     }
-    return !filter.branchId || filter.branchId?.length < 2
   }, [filter.branchId])
+
+  useEffect(() => {
+    if (filter.organization?.length < 2 || filterRef.current.organization !== filter.organization) {
+      const {branchId, ...item} = {...filter}
+      setFilter({...item})
+    }
+  }, [filter.organization])
 
   const fields = useMemo(() => [
     {
@@ -97,7 +119,8 @@ const OrgStructureWindow = props => {
     },
     {
       id: "departmentId",
-      component: (props) => <LoadableSelect{...props} disabled={disDepartment}/>,
+      component: LoadableSelect,
+      disabled: disDepartment,
       valueKey: "r_object_id",
       labelKey: "dss_name",
       placeholder: "Отдел",
@@ -120,7 +143,8 @@ const OrgStructureWindow = props => {
     {
       id: "branchId",
       placeholder: "Филиал",
-      component: (props) => <LoadableSelect{...props} disabled={disBranches}/>,
+      component: LoadableSelect,
+      disabled: disBranches,
       valueKey: "r_object_id",
       labelKey: "dss_name",
       loadFunction: async () => {
@@ -128,25 +152,7 @@ const OrgStructureWindow = props => {
         return data
       }
     }
-  ], [api, filter])
-
-  const {
-    //   tabState: {data: {content = []} = {}},
-    //   setTabState,
-    //   shouldReloadDataFlag,
-    loadDataHelper
-  } = useTabItem({
-    stateId: WINDOW_ADD_OBJECT
-  })
-
-  // const loadDataFunction = useMemo(() => {
-  //   return async () => {
-  //     const data = await remoteMethod()
-  //     console.log(data, 'data')
-  //   }
-  // }, [remoteMethod]);
-  //
-  // const refLoadDataFunction = useRef(remoteMethod)
+  ], [api, filter, options])
 
   useEffect(() => remoteMethod(), [remoteMethod, filter])
 
@@ -209,7 +215,7 @@ const OrgStructureWindow = props => {
           />, [])}
           value={options}
           columns={columns}
-          plugins={multiply && plugins}
+          plugins={getPlugins(multiply)}
           headerCellComponent={HeaderCell}
           selectState={selectState}
           onSelect={setSelectState}
@@ -217,29 +223,31 @@ const OrgStructureWindow = props => {
           onSort={onSort}
           valueKey="id"
         />
-        <Pagination
-          className="mt-2"
-          // limit={paginationState.limit}
-          // page={paginationState.page}
-          // setLimit={setLimit}
-          // setPage={setPage}
-        >
-        </Pagination>
+        <div className="flex items-center">
+          <Pagination
+            className="mt-2 w-full "
+            limit={paginationState.limit}
+            page={paginationState.page}
+            setLimit={setLimit}
+            setPage={setPage}
+          >
+          </Pagination>
+          <div className="flex items-center justify-end">
+            <Button
+              className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
+              onClick={onClose}
+            >
+              Закрыть
+            </Button>
+            <Button
+              className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+              onClick={handleClick}
+            >
+              Выбрать
+            </Button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div className="flex w-full items-center justify-end">
-  <Button
-    className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
-    onClick={onClose}
-  >
-    Закрыть
-  </Button>
-  <Button
-    className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
-    onClick={handleClick}
-  >
-    Выбрать
-  </Button>
     </div>
   </div>
 }
