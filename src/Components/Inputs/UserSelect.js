@@ -26,6 +26,7 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
+  const {loadFunction, id: funcKey} = props
   const api = useContext(ApiContext)
   const [sortQuery, onSort] = useState({})
   const [paginationStateComp, setPaginationStateComp] = useState({})
@@ -88,6 +89,9 @@ const UserSelect = props => {
           <>
             <Select
               {...props}
+              loadFunction={loadFunction ? loadFunction : loadRef}
+              // remoteMethod={loadFunction ? loadFunction : loadRef}
+              // valueKey={funcKey ? funcKey : "emplId"}
               valueKey="emplId"
               labelKey="fullName"
             />

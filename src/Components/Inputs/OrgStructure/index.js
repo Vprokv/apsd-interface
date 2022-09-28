@@ -24,6 +24,8 @@ import UserCard from "./Components/UserCard";
 import closeIcon from "../../../Icons/closeIcon";
 import LoadableSelect from "../Select";
 import Pagination from "../../Pagination";
+import {useRecoilValue} from "recoil";
+import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 
 const getPlugins = (multiply) => {
   if (multiply) {
@@ -32,7 +34,7 @@ const getPlugins = (multiply) => {
       selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
     }
   }
-  return {outerSortPlugin: {component: SortCellComponent}}
+  return {outerSortPlugin: {component: SortCellComponent, typeDirection: "DESC"}}
 }
 
 const columns = [
@@ -88,6 +90,8 @@ const OrgStructureWindow = props => {
 
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
+  const {organization: [{branches, ...organizationOptions}]} = useRecoilValue(userAtom)
+
 
   useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [])
 
@@ -133,6 +137,7 @@ const OrgStructureWindow = props => {
       id: "organization",
       component: LoadableSelect,
       valueKey: "r_object_id",
+      options: [organizationOptions],
       labelKey: "dss_name",
       placeholder: "Организация",
       loadFunction: async () => {
@@ -147,6 +152,7 @@ const OrgStructureWindow = props => {
       disabled: disBranches,
       valueKey: "r_object_id",
       labelKey: "dss_name",
+      options: branches,
       loadFunction: async () => {
         const {data} = await api.post(URL_ORGSTURCTURE_BRANCHES, {id: filter.organization})
         return data
