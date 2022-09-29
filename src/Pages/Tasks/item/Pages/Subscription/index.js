@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router-dom";
 import {ApiContext, TASK_ITEM_HISTORY, TASK_ITEM_SUBSCRIPTION} from "../../../../../contants";
@@ -18,10 +18,12 @@ import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell
 import Button from "../../../../../Components/Button";
 import filterIcon from "../../../list/icons/filterIcon";
 import deleteIcon from "../../../../../Icons/deleteIcon";
+import UserSelect from "../../../../../Components/Inputs/UserSelect";
+import CreateSubscriptionWindow from "./Components/CreateSubscriptionWindow";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
-  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}},
+  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "id"},
 }
 
 const columns = [
@@ -59,34 +61,16 @@ const columns = [
 
 const filterFormConfig = [
   {
-    id: "1",
-    component: Select,
-    placeholder: "Получатель",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
+    id: "subscriber",
+    widthButton: false,
+    component: UserSelect,
+    placeholder: "Получатель"
   },
   {
-    id: "2",
-    component: Select,
-    placeholder: "Автор",
-    options: [
-      {
-        ID: "ASD",
-        SYS_NAME: "TT"
-      },
-      {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
-      },
-    ]
+    id: "author",
+    widthButton: false,
+    component: UserSelect,
+    placeholder: "Автор"
   }
 ]
 
@@ -122,7 +106,9 @@ const Subscription = props => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
-
+  const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
+  const openSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(true), [])
+  const closeSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(false), [])
 
   const {
     tabState: {data = mockData},
@@ -135,13 +121,14 @@ const Subscription = props => {
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
-      const data = await api.post(
+      const {data} = await api.post(
         URL_SUBSCRIPTION_LIST,
         {
           documentId: id,
           type
         }
       )
+      // console.log(data, 'data')
       return data
     })
   }, [id, type, api, loadDataHelper]);
@@ -159,7 +146,7 @@ const Subscription = props => {
   const [a, b] = useState({})
 
   return (
-    <div className="px-4 pb-4 overflow-hidden flex-container">
+    <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4">
         <FilterForm
           fields={filterFormConfig}
@@ -171,6 +158,7 @@ const Subscription = props => {
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
             className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+            onClick={openSubscriptionWindow}
           >
             Добавить подписку
           </Button>
@@ -183,9 +171,6 @@ const Subscription = props => {
         </div>
       </div>
       <ListTable
-        rowComponent={useMemo(() => (props) => <RowComponent
-          onDoubleClick={() => null} {...props}
-        />, [])}
         value={data}
         columns={columns}
         plugins={plugins}
@@ -196,6 +181,10 @@ const Subscription = props => {
         onSort={onSort}
         valueKey="id"
       />
+      {/*<CreateSubscriptionWindow*/}
+      {/*  open={addSubscriptionWindow}*/}
+      {/*  onClose={closeSubscriptionWindow}*/}
+      {/*/>*/}
     </div>
   );
 };

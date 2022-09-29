@@ -13,6 +13,7 @@ export const URL_TASK_STATISTIC = "/sedo/task/statistic"
 //ITEM
 //SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = "/apsd/subscription/list"
+export const URL_SUBSCRIPTION_EVENTS = "/apsd/subscription/events"
 export const URL_SUBSCRIPTION_CREATE = "/apsd/subscription/create"
 export const URL_SUBSCRIPTION_DELETE = "/apsd/subscription/delete"
 export const URL_SUBSCRIPTION_CHANNELS = "/apsd/subscription/channels"
