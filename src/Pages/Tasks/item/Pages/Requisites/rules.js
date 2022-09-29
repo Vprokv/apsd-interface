@@ -126,7 +126,8 @@ const getLoadFunction = (accumulator) => {
     nextProps.loadFunction = async (query) => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         id: dss_attr_name,
-        type: dss_component_reference
+        type: dss_component_reference,
+        query: query
       })
       return data
     }

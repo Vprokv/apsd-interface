@@ -65,7 +65,7 @@ const UserSelect = props => {
     const {data: {content}} = await api.post(
       URL_EMPLOYEE_LIST,
       {
-        filter,
+        filter: {query: search, ...filter},
         limit,
         offset,
         sort
