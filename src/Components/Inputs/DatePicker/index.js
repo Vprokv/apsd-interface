@@ -11,7 +11,7 @@ const DropDownComponent = ({ isOpen, children, ...props }) => isOpen && <Context
 </ContextMenu>
 
 
-const DatePicker = ({ onInput, id, value, ...props }) => {
+const DatePicker = ({ onInput, id, value, startPlaceHolder = "От", endPlaceHolder = "До",...props }) => {
   const handleInput = useCallback((itemValue, index) => {
     const newValue = [value[0], value[1]]
     newValue[index] = itemValue
@@ -26,7 +26,7 @@ const DatePicker = ({ onInput, id, value, ...props }) => {
         className="mr-4"
         leftSlot={<Icon icon={calendarIcon} className="mr-2 color-text-secondary"/>}
         CalendarComponent={ThemedCalendar}
-        placeholder="От"
+        placeholder={startPlaceHolder}
         onInput={handleInput}
         selectRestrictions={useMemo(() => ({ maxDate: value[1] }), [value])}
         DropDownComponent={DropDownComponent}
@@ -37,7 +37,7 @@ const DatePicker = ({ onInput, id, value, ...props }) => {
         value={value[1]}
         leftSlot={<Icon icon={calendarIcon} className="mr-2 color-text-secondary"/>}
         CalendarComponent={ThemedCalendar}
-        placeholder="До"
+        placeholder={endPlaceHolder}
         onInput={handleInput}
         selectRestrictions={useMemo(() => ({ minDate: value[0] }), [value])}
         DropDownComponent={DropDownComponent}

@@ -260,7 +260,7 @@ const OrgStructureWindow = props => {
 
 const OrgStructureWindowWrapper = props => <OrgStructureWindowComponent
   {...props}
-  title="Добавление Сотрудника"
+  title="Добавление сотрудника"
 >
   <OrgStructureWindow {...props}/>
 </OrgStructureWindowComponent>
