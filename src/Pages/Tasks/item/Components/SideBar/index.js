@@ -64,9 +64,11 @@ const SideBar = props => {
         const {icon, title} = buttons[name]
         acc.push(
           <Button className="font-weight-light" key={title} onClick={handleClick(name)}>
-            <div className="flex items-center break-words font-size-12">
+            <div className="flex items-center">
               <img src={icon} alt="" className="mr-2"/>
-              {title}
+              <div className={"break-words font-size-12 whitespace-pre-line text-left"}>
+                {title}
+              </div>
             </div>
           </Button>
         )
