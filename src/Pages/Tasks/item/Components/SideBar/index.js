@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useMemo} from 'react';
+import React, {useCallback, useContext, useMemo, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {SidebarContainer} from "./styles";
 import DeleteIcon from './Group 846.svg'
@@ -40,11 +40,11 @@ const SideBar = props => {
   const {
     tabState: {
       data: {documentActions} = [],
-      data: {values = {}} = {},
+      data: {values = {}} = {}
     }
   } = useTabItem({stateId: documentType})
 
-  const handleClick = (type) => async () => {
+  const handleClick = useCallback((type) => async () => {
     if (type === "save") {
       const {data: {id}} = await api.post(documentType === TASK_ITEM_NEW_DOCUMENT ?
           URL_DOCUMENT_CREATE : URL_DOCUMENT_UPDATE,
@@ -53,7 +53,7 @@ const SideBar = props => {
 
       id && navigate(`/task/${id}/${typeDoc}`)
     }
-  }
+  }, [values])
 
   const documentButtons = useMemo(() => {
     if (!documentActions) {
@@ -73,7 +73,7 @@ const SideBar = props => {
       }
       return acc
     }, [])
-  }, [documentActions])
+  }, [documentActions, handleClick])
 
   return (
     <SidebarContainer>
