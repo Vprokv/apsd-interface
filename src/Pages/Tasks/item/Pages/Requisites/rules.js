@@ -131,7 +131,7 @@ const getLoadFunction = (accumulator) => {
       })
       return data
     }
-    const { [dss_component_reference]: { valueKey, labelKey } = {} } = refsTransmission
+    const { [dss_component_reference]: { valueKey = "r_object_id", labelKey = "dss_name" } = {} } = refsTransmission
     nextProps.valueKey = valueKey
     nextProps.labelKey = labelKey
   }

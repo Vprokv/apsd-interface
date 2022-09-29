@@ -16,13 +16,16 @@ import Objects from "./Pages/Objects"
 import Contain from "./Pages/Contain"
 import Content from "./Pages/Content"
 import History from "./Pages/History"
+import Handouts from "./Pages/Handouts"
+import Lifecycle from "./Pages/Lifecycle"
+import Links from "./Pages/Links"
 import useTabItem from "../../../components_ocean/Logic/Tab/TabItem"
 import {ApiContext, TASK_ITEM_DOCUMENT} from "../../../contants"
 import {URL_TASK_ITEM, URL_TASK_LIST} from "../../../ApiList"
 import NewDocument from "./newItem"
 
 
-const pages = {  //TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
+const pages = {
   requisites: {
     label: "Реквизиты",
     path: "requisites",
@@ -44,10 +47,25 @@ const pages = {  //TODO проверить, всегда ли это поле е
     path: "objects",
     Component: Objects
   },
-  title_structure: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
+  title_structure: {
     label: "Состав титула",
     path: "contain",
     Component: Contain
+  },
+  "approval-sheet": {
+    label: "Жизненный цикл",
+    path: "lifecycle",
+    Component: Lifecycle
+  },
+  links: {
+    label: "Связанные документы",
+    path: "links",
+    Component: Links
+  },
+  handouts: {
+    label: "Учёт оригиналов",
+    path: "handouts",
+    Component: Handouts
   },
   audit: {
     label: "История",
@@ -55,14 +73,6 @@ const pages = {  //TODO проверить, всегда ли это поле е
     Component: History
   }
 }
-
-const mockDocumentTabs = [
-  {name: 'requisites'},
-  {name: 'subscriptions'},
-  {name: 'technical_objects'},
-  {name: 'contain'},
-  {name: 'audit'},
-]
 
 function TaskItem(props) {
   const { id, type } = useParams()

@@ -3,11 +3,7 @@ import {NavigationContainer, NavigationItem} from "../../../Components/DocumentN
 import {Navigate, Route, Routes} from "react-router-dom"
 import SideBar from "./Components/SideBar"
 import Requisites from "./Pages/Requisites"
-import Subscription from "./Pages/Subscription"
-import Objects from "./Pages/Objects"
-import Contain from "./Pages/Contain"
 import Content from "./Pages/Content"
-import History from "./Pages/History"
 
 const pages = {  //TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
   requisites: {
@@ -21,30 +17,6 @@ const pages = {  //TODO проверить, всегда ли это поле е
     label: "Контент",
     path: "content",
     Component: Content
-  },
-  subscriptions: {
-    label: "Подписка",
-    path: "subscriptions",
-    Component: Subscription,
-    weight: 2
-  },
-  technical_objects: {
-    label: "Технические объекты",
-    path: "objects",
-    Component: Objects,
-    weight: 3
-  },
-  contain: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
-    label: "Состав титула",
-    path: "contain",
-    Component: Contain,
-    weight: 4
-  },
-  audit: {
-    label: "История",
-    path: "history",
-    Component: History,
-    weight: 5
   }
 }
 
