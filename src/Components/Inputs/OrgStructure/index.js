@@ -30,11 +30,11 @@ import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 const getPlugins = (multiply) => {
   if (multiply) {
     return {
-      outerSortPlugin: {component: SortCellComponent},
+      outerSortPlugin: {component: SortCellComponent, downDirectionKey: "DESC"},
       selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}, valueKey: "emplId"},
     }
   }
-  return {outerSortPlugin: {component: SortCellComponent, typeDirection: "DESC"}}
+  return {outerSortPlugin: {component: SortCellComponent, downDirectionKey: "DESC"}}
 }
 
 const columns = [
@@ -80,7 +80,8 @@ const OrgStructureWindow = props => {
     options,
     onSort,
     sortQuery,
-    pagination
+    pagination,
+    id
   } = props
   const {
     setLimit,
@@ -192,9 +193,9 @@ const OrgStructureWindow = props => {
     ), [selectState])
 
   const handleClick = useCallback(() => {
-    onInput(selectState)
+    onInput(selectState, id)
     onClose()
-  }, [onInput, onClose, selectState])
+  }, [onInput, onClose, selectState, id])
 
   const handleSelectClick = useCallback((id) => () => setSelectState(id), [setSelectState])
 
