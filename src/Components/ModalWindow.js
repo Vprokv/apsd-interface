@@ -1,8 +1,8 @@
-import {useMemo} from "react";
+import {useMemo} from "react"
 import styled from "styled-components"
 import ModalWindowComponent from '@Components/Components/ModalWindow'
 import Icon from '@Components/Components/Icon'
-import closeIcon from "../Icons/closeIcon";
+import closeIcon from "../Icons/closeIcon"
 
 
 const ModalWindow = styled(ModalWindowComponent)`

@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import SelectComponent, { DropDownInput } from '@Components/Components/Inputs/Select'
 import Loadable from '@Components/Components/Inputs/Loadable'
 import Icon from '@Components/Components/Icon'
-import angleIcon from "@/Icons/angleIcon";
-import closeIcon from "@/Icons/closeIcon";
-import styled from "styled-components";
+import angleIcon from "@/Icons/angleIcon"
+import closeIcon from "@/Icons/closeIcon"
+import styled from "styled-components"
 
 const StyledSelect = styled(SelectComponent)`
   --padding-input: 5px 10px 5px 16px;
@@ -25,8 +25,8 @@ export const Select = props => <StyledSelect
   ToggleIndicatorIconComponent={ToggleIndicatorIconComponent}
   RemoveIconComponent={RemoveIconComponent}
   {...props}
-/>;
+/>
 
 const LoadableSelect = Loadable(Select)
 
-export default LoadableSelect;
+export default LoadableSelect

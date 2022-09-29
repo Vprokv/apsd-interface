@@ -15,19 +15,18 @@ import {
   VALIDATION_RULE_REQUIRED_WITH_ALL,
   VALIDATION_RULE_REQUIRED_WITHOUT_ALL,
   VALIDATION_RULE_REQUIRED_WITHOUT, VALIDATION_RULE_REQUIRED,
-} from "../../../../../components_ocean/Logic/Validator/constants";
-import createRegExpFromString from "../../../../../components_ocean/Utils/createRegExpFromString";
-import {DATE_FORMAT_DD_MM_YYYY_HH_mm_ss} from "../../../../../contants";
-import Classification from "./Components/Classification";
-import {URL_ENTITY_LIST} from "../../../../../ApiList";
-import { CustomValuesSelect, CustomValuesOrgStructure} from "./Components/CustomValuesSelect";
-import TextArea from "@Components/Components/Inputs/TextArea";
-import Input from "@Components/Components/Inputs/Input";
+} from "../../../../../components_ocean/Logic/Validator/constants"
+import createRegExpFromString from "../../../../../components_ocean/Utils/createRegExpFromString"
+import {DATE_FORMAT_DD_MM_YYYY_HH_mm_ss} from "../../../../../contants"
+import {URL_ENTITY_LIST} from "../../../../../ApiList"
+import {CustomValuesSelect, CustomValuesOrgStructure, CustomValuesClassification} from "./Components/CustomValuesSelect"
+import TextArea from "@Components/Components/Inputs/TextArea"
+import Input from "@Components/Components/Inputs/Input"
 
-import DocumentSelect from "@/Components/Inputs/DocumentSelect";
-import DatePicker from "@/Components/Inputs/DatePicker";
-import CheckBox from "@/Components/Inputs/CheckBox";
-import refsTransmission from "../../../../../RefsTransmission";
+import DocumentSelect from "@/Components/Inputs/DocumentSelect"
+import DatePicker from "@/Components/Inputs/DatePicker"
+import CheckBox from "@/Components/Inputs/CheckBox"
+import refsTransmission from "../../../../../RefsTransmission"
 
 export const VisibleIf = (key, values) => ({condition: `${key} === "${values[0]}"`})
 export const VisibleIn = (key, values) => ({condition: `[${values.reduce((acc, v) => acc ? `${acc},"${v}"` : `"${v}"`, "")}].includes(${key})`})
@@ -97,7 +96,7 @@ export const validationRules = {
 }
 
 export const fieldsDictionary = {
-  Classification: Classification,
+  Classification: CustomValuesClassification,
   Combobox: CustomValuesSelect,
   Text: Input,
   TextArea,

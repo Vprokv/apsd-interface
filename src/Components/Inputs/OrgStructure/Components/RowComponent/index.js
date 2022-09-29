@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { GridContainer } from "./styles";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { GridContainer } from "./styles"
 
 const RowComponent = ({ className, children, style, onClick, value: { emplId } }) => <GridContainer
   onClick={onClick(emplId)}
@@ -15,6 +15,6 @@ RowComponent.propTypes = {
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   style: PropTypes.object,
-};
+}
 
-export default RowComponent;
+export default RowComponent

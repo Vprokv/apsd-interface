@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import {Resizer} from "./styles";
+import {Resizer} from "./styles"
 
 const HeaderCell = ({label, onResize, onMove, onContextMenu}) => {
   return (
@@ -13,11 +13,11 @@ const HeaderCell = ({label, onResize, onMove, onContextMenu}) => {
       {label}
       <Resizer onMouseDown={onResize}/>
     </div>
-  );
-};
+  )
+}
 
 HeaderCell.propTypes = {
 
-};
+}
 
-export default HeaderCell;
+export default HeaderCell

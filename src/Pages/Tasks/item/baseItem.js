@@ -1,12 +1,13 @@
-import React, {useMemo} from "react";
-import {NavigationContainer, NavigationItem} from "../../../Components/DocumentNavigation";
-import {Navigate, Route, Routes} from "react-router-dom";
-import SideBar from "./Components/SideBar";
-import Requisites from "./Pages/Requisites";
-import Subscription from "./Pages/Subscription";
-import Objects from "./Pages/Objects";
-import Contain from "./Pages/Contain";
-import History from "./Pages/History";
+import React, {useMemo} from "react"
+import {NavigationContainer, NavigationItem} from "../../../Components/DocumentNavigation"
+import {Navigate, Route, Routes} from "react-router-dom"
+import SideBar from "./Components/SideBar"
+import Requisites from "./Pages/Requisites"
+import Subscription from "./Pages/Subscription"
+import Objects from "./Pages/Objects"
+import Contain from "./Pages/Contain"
+import Content from "./Pages/Content"
+import History from "./Pages/History"
 
 const pages = {  //TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
   requisites: {
@@ -15,6 +16,11 @@ const pages = {  //TODO проверить, всегда ли это поле е
     fieldKey: "requisites",
     Component: Requisites,
     weight: 1
+  },
+  content: {
+    label: "Контент",
+    path: "content",
+    Component: Content
   },
   subscriptions: {
     label: "Подписка",

@@ -1,23 +1,23 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
-import BaseCell, {sizes as baseCellSize} from "../../../../../Components/ListTableComponents/BaseCell";
-import Select from "../../../../../Components/Inputs/Select";
-import {FilterForm, TableActionButton} from "../../styles";
-import DatePicker from "../../../../../Components/Inputs/DatePicker";
+import React, {useContext, useEffect, useMemo, useState} from 'react'
+import PropTypes from 'prop-types'
+import BaseCell, {sizes as baseCellSize} from "../../../../../Components/ListTableComponents/BaseCell"
+import Select from "../../../../../Components/Inputs/Select"
+import {FilterForm, TableActionButton} from "../../styles"
+import DatePicker from "../../../../../Components/Inputs/DatePicker"
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
-import {useParams} from "react-router-dom";
-import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY, TASK_ITEM_REQUISITES} from "../../../../../contants";
-import RowComponent from "../../../list/Components/RowComponent";
-import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell";
-import ListTable from "../../../../../components_ocean/Components/Tables/ListTable";
-import Icon from "../../../../../components_ocean/Components/Icon";
-import searchIcon from "../../../../../Icons/searchIcon";
-import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent";
-import LoadableSelect from "../../../../../Components/Inputs/Select";
-import {URL_ENTITY_LIST} from "../../../../../ApiList";
-import {DOCUMENT_TYPE} from "../../../list/constants";
-import UserSelect from "../../../../../Components/Inputs/UserSelect";
+import {useParams} from "react-router-dom"
+import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem"
+import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY, TASK_ITEM_REQUISITES} from "../../../../../contants"
+import RowComponent from "../../../list/Components/RowComponent"
+import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell"
+import ListTable from "../../../../../components_ocean/Components/Tables/ListTable"
+import Icon from "../../../../../components_ocean/Components/Icon"
+import searchIcon from "../../../../../Icons/searchIcon"
+import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent"
+import LoadableSelect from "../../../../../Components/Inputs/Select"
+import {URL_ENTITY_LIST} from "../../../../../ApiList"
+import {DOCUMENT_TYPE} from "../../../list/constants"
+import UserSelect from "../../../../../Components/Inputs/UserSelect"
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent, "downDirectionKey": "DESC"}
@@ -82,7 +82,7 @@ const History = props => {
   })
 
   const sort = useMemo(() => {
-    console.log(sortQuery);
+    console.log(sortQuery)
     const {key, direction} = sortQuery
     if (!key || !direction) {
       return []
@@ -173,9 +173,9 @@ const History = props => {
         valueKey="id"
       />
     </div>
-  );
-};
+  )
+}
 
-History.propTypes = {};
+History.propTypes = {}
 
-export default History;
+export default History

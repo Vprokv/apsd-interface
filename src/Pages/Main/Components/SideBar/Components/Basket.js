@@ -1,13 +1,13 @@
-import React, {useCallback} from 'react';
-import PropTypes from 'prop-types';
-import {NavigationHeaderIcon} from "../style";
-import SidebarBasketIcon from "../icons/SidebarBasketIcon";
-import angleIcon from "@/Icons/angleIcon";
+import React, {useCallback} from 'react'
+import PropTypes from 'prop-types'
+import {NavigationHeaderIcon} from "../style"
+import SidebarBasketIcon from "../icons/SidebarBasketIcon"
+import angleIcon from "@/Icons/angleIcon"
 import Icon from '@Components/Components/Icon'
-import WithToggleNavigationItem from "./withToggleNavigationItem";
-import {DELETED_LIST_PATH, TASK_LIST_PATH} from "../../../../../routePaths";
-import {EXPIRED} from "../../../../Tasks/list/constants";
-import {DELETED_1, DELETED_3, DELETED_YEAR} from "../../../../Basket/list/constans";
+import WithToggleNavigationItem from "./withToggleNavigationItem"
+import {DELETED_LIST_PATH, TASK_LIST_PATH} from "../../../../../routePaths"
+import {EXPIRED} from "../../../../Tasks/list/constants"
+import {DELETED_1, DELETED_3, DELETED_YEAR} from "../../../../Basket/list/constans"
 
 
 const Basket = ({ onOpenNewTab }) => {
@@ -60,10 +60,10 @@ const Basket = ({ onOpenNewTab }) => {
       )}
     </WithToggleNavigationItem>
       )
-};
+}
 
 Basket.propTypes = {
 
-};
+}
 
-export default Basket;
+export default Basket

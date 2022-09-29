@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Contain = props => {
+const Content = props => {
   return (
     <div>
-      Contain
+      Content
     </div>
   )
 }
 
-Contain.propTypes = {
+Content.propTypes = {
 
 }
 
-export default Contain
+export default Content

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 import InputWrapper, { InputLabel, InputLabelStart } from '@Components/Components/Forms/InputWrapper'
 
 export default styled(InputWrapper)`

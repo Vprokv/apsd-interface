@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const UserCircle = styled.div`
   width: 36px;

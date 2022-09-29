@@ -1,5 +1,5 @@
 import CheckBox, { Box, BoxContainer } from '@Components/Components/Inputs/CheckBox'
-import styled from "styled-components";
+import styled from "styled-components"
 
 export default styled(CheckBox)`
   &:disabled {

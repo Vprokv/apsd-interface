@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const BaseSubCell = ({value, subValue, className, subClassName}) => {
   return (
@@ -11,21 +11,21 @@ const BaseSubCell = ({value, subValue, className, subClassName}) => {
         {subValue}
       </div>
     </div>
-  );
-};
+  )
+}
 
 BaseSubCell.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
   subClassName: PropTypes.string,
-};
+}
 
 BaseSubCell.defaultProps = {
   className: "",
   subClassName: "",
-};
+}
 
-export default BaseSubCell;
+export default BaseSubCell
 
 export const sizes = 150

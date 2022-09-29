@@ -1,16 +1,16 @@
-import React, {useCallback, useContext, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
+import React, {useCallback, useContext, useMemo, useState} from 'react'
+import PropTypes from 'prop-types'
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 import {Select} from './Select'
 import Icon from '@Components/Components/Icon'
 import Loadable from '@Components/Components/Inputs/Loadable'
-import searchIcon from "@/Icons/searchIcon";
-import styled from "styled-components";
+import searchIcon from "@/Icons/searchIcon"
+import styled from "styled-components"
 import AddEmployee from "./OrgStructure"
-import {ApiContext, WINDOW_ADD_EMPLOYEE} from "@/contants";
-import {URL_EMPLOYEE_LIST} from "../../ApiList";
-import {useRecoilValue} from "recoil";
-import usePagination from "../../components_ocean/Logic/usePagination";
+import {ApiContext, WINDOW_ADD_EMPLOYEE} from "@/contants"
+import {URL_EMPLOYEE_LIST} from "../../ApiList"
+import {useRecoilValue} from "recoil"
+import usePagination from "../../components_ocean/Logic/usePagination"
 
 const RenderLoadable = Loadable(({children, ...props}) => children(props))
 
@@ -72,7 +72,7 @@ const UserSelect = props => {
       }
     )
     content.forEach((v) => {
-      v.fullName = `${v.firstName} ${v.middleName} ${v.lastName}`
+      v.fullDescription = v.fullDescription ? v.fullDescription : `${v.firstName} ${v.middleName} ${v.lastName}`
     })
     return content
   }, [api, filter, pagination.paginationState, sortQuery])
@@ -84,6 +84,8 @@ const UserSelect = props => {
         loadFunction={loadRef}
         filter={filter}
         setFilter={setFilter}
+        valueKey="emplId"
+        labelKey="fullDescription"
       >
         {(props) => (
           <>
@@ -93,7 +95,7 @@ const UserSelect = props => {
               // remoteMethod={loadFunction ? loadFunction : loadRef}
               // valueKey={funcKey ? funcKey : "emplId"}
               valueKey="emplId"
-              labelKey="fullName"
+              labelKey="fullDescription"
             />
             <SearchButton
               className="ml-1"
@@ -112,9 +114,9 @@ const UserSelect = props => {
         )}
       </RenderLoadable>
     </div>
-  );
-};
+  )
+}
 
-UserSelect.propTypes = {};
+UserSelect.propTypes = {}
 
-export default UserSelect;
+export default UserSelect

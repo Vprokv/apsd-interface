@@ -1,24 +1,25 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react'
 import PropTypes from 'prop-types'
-import {NavigationContainer, NavigationItem} from "../../../Components/DocumentNavigation";
+import {NavigationContainer, NavigationItem} from "../../../Components/DocumentNavigation"
 import {
   Navigate,
   Route,
   Routes, useLocation, useParams,
 } from 'react-router-dom'
-import SideBar from "./Components/SideBar";
-import * as routePath from "../../../routePaths";
-import TaskList from "../list";
-import VolumeItem from "../../Volume";
-import Requisites from "./Pages/Requisites";
-import Subscription from "./Pages/Subscription";
-import Objects from "./Pages/Objects";
-import Contain from "./Pages/Contain";
-import History from "./Pages/History";
-import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
-import {ApiContext, TASK_ITEM_DOCUMENT} from "../../../contants";
-import {URL_TASK_ITEM, URL_TASK_LIST} from "../../../ApiList";
-import NewDocument from "./newItem";
+import SideBar from "./Components/SideBar"
+import * as routePath from "../../../routePaths"
+import TaskList from "../list"
+import VolumeItem from "../../Volume"
+import Requisites from "./Pages/Requisites"
+import Subscription from "./Pages/Subscription"
+import Objects from "./Pages/Objects"
+import Contain from "./Pages/Contain"
+import Content from "./Pages/Content"
+import History from "./Pages/History"
+import useTabItem from "../../../components_ocean/Logic/Tab/TabItem"
+import {ApiContext, TASK_ITEM_DOCUMENT} from "../../../contants"
+import {URL_TASK_ITEM, URL_TASK_LIST} from "../../../ApiList"
+import NewDocument from "./newItem"
 
 
 const pages = {  //TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
@@ -28,17 +29,22 @@ const pages = {  //TODO проверить, всегда ли это поле е
     fieldKey: "requisites",
     Component: Requisites
   },
-  subscriptions: {
+  subscription: {
     label: "Подписка",
     path: "subscriptions",
     Component: Subscription
+  },
+  content: {
+    label: "Контент",
+    path: "content",
+    Component: Content
   },
   technical_objects: {
     label: "Технические объекты",
     path: "objects",
     Component: Objects
   },
-  contain: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
+  title_structure: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
     label: "Состав титула",
     path: "contain",
     Component: Contain
@@ -87,7 +93,7 @@ function TaskItem(props) {
       )
       return data
     })
-  }, [id, type, api, loadDataHelper]);
+  }, [id, type, api, loadDataHelper])
   const refLoadDataFunction = useRef(loadDataFunction)
 
   useEffect(() => {
@@ -102,7 +108,7 @@ function TaskItem(props) {
       return {}
     }
 
-    return  [...documentTabs, {name: 'subscriptions'}, {name: 'technical_objects'}].reduce((acc, { name }) => {
+    return  [...documentTabs].reduce((acc, { name }) => {
       if (pages[name]) {
         const {path, label, Component} = pages[name]
         acc.headers.push(<NavigationItem to={path} key={path}>

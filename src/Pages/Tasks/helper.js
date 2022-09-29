@@ -1,5 +1,5 @@
-import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8} from "./list/constants";
-import {useMemo, useState} from "react";
+import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8} from "./list/constants"
+import {useMemo, useState} from "react"
 
 const initialStatistic = {
     "": "0/0",

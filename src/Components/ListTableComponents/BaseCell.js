@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 
 const BaseCell = ({ value, className }) => {
@@ -7,18 +7,18 @@ const BaseCell = ({ value, className }) => {
     <div className={`${className} word-wrap-anywhere font-size-14`}>
       {value}
     </div>
-  );
-};
+  )
+}
 
 BaseCell.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-};
+}
 
 BaseCell.defaultProps = {
   className: ""
-};
+}
 
-export default BaseCell;
+export default BaseCell
 
 export const sizes = 150

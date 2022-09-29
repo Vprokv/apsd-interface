@@ -1,11 +1,11 @@
-import React, {useMemo} from 'react';
-import PropTypes from 'prop-types';
+import React, {useMemo} from 'react'
+import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import documentIcon from '../../../Icons/documentIcon'
-import colorFromString from "@Components/Utils/colorFromString";
-import {VolumeStatus} from "./styles";
-import dayjs from "dayjs";
-import {DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT} from "../../../contants";
+import colorFromString from "@Components/Utils/colorFromString"
+import {VolumeStatus} from "./styles"
+import dayjs from "dayjs"
+import {DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT} from "../../../contants"
 
 const VolumeState = ({ ParentValue: { documentRegNumber, display, creationDate } }) => {
 
@@ -36,13 +36,13 @@ const VolumeState = ({ ParentValue: { documentRegNumber, display, creationDate }
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 VolumeState.propTypes = {
 
-};
+}
 
-export default VolumeState;
+export default VolumeState
 // Компонент сдизайнен для компонента ListTable и это его пропорции
 export const sizes = 200

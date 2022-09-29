@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {NavigationHeaderIcon} from "../style";
-import ArchiveIcon from "../icons/ArchiveIcon";
-import WithToggleNavigationItem from "./withToggleNavigationItem";
-import angleIcon from "@/Icons/angleIcon";
+import React from 'react'
+import PropTypes from 'prop-types'
+import {NavigationHeaderIcon} from "../style"
+import ArchiveIcon from "../icons/ArchiveIcon"
+import WithToggleNavigationItem from "./withToggleNavigationItem"
+import angleIcon from "@/Icons/angleIcon"
 import Icon from '@Components/Components/Icon'
 
 const Storage = props => {
@@ -88,11 +88,11 @@ const Storage = props => {
         </div>
       )}
     </WithToggleNavigationItem>
-  );
-};
+  )
+}
 
 Storage.propTypes = {
   
-};
+}
 
-export default Storage;
+export default Storage

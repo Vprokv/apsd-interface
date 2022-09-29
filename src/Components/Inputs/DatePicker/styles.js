@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import CalendarController from "./CalendarController";
+import styled, { css } from "styled-components"
+import CalendarController from "./CalendarController"
 import MonthView, { MonthViewHeader } from '@Components/Components/Calendar/MonthView'
 import DayView from '@Components/Components/Calendar/DayView'
 

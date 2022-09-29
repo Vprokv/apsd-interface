@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 import InputComponent, { Input } from '@Components/Components/Inputs/Input'
 
 

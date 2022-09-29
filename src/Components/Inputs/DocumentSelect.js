@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import Select from './Select'
 import Icon from '@Components/Components/Icon'
-import searchIcon from "@/Icons/searchIcon";
-import {SearchButton} from "./UserSelect";
+import searchIcon from "@/Icons/searchIcon"
+import {SearchButton} from "./UserSelect"
 
 const DocumentSelect = props => {
   return (
@@ -13,11 +13,11 @@ const DocumentSelect = props => {
         <Icon icon={searchIcon}/>
       </SearchButton>
     </div>
-  );
-};
+  )
+}
 
 DocumentSelect.propTypes = {
 
-};
+}
 
-export default DocumentSelect;
+export default DocumentSelect

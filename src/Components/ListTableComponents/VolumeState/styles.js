@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const VolumeStatus = styled.div`
   color: ${(({ color }) => color)};

@@ -1,13 +1,13 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react'
+import PropTypes from 'prop-types'
 import ScrollBar from '@Components/Components/ScrollBar'
-import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
-import {RequisitesForm} from "./styles";
-import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants";
-import {useParams} from "react-router-dom";
+import DefaultWrapper from "@/Components/Fields/DefaultWrapper"
+import {RequisitesForm} from "./styles"
+import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem"
+import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../../../contants"
+import {useParams} from "react-router-dom"
 import {readOnlyRules, validationRules, visibleRules, fieldsDictionary, NoFieldType, propsTransmission} from './rules'
-import {CustomValuesContext} from "./constants";
+import {CustomValuesContext} from "./constants"
 
 
 const Requisites = props => {
@@ -130,9 +130,9 @@ const Requisites = props => {
         />
       </CustomValuesContext.Provider>
     </ScrollBar>
-  );
-};
+  )
+}
 
-Requisites.propTypes = {};
+Requisites.propTypes = {}
 
-export default Requisites;
+export default Requisites

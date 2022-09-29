@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 import Icon from '@Components/Components/Icon'
 
 export const SideBarContainer = styled.div`

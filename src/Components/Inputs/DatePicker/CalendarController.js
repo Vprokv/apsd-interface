@@ -1,5 +1,5 @@
-import React, {useCallback, useLayoutEffect, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {useCallback, useLayoutEffect, useRef} from 'react'
+import PropTypes from 'prop-types'
 import Calendar from '@Components/Components/Calendar'
 import useCalendarViewController, {MONTH, YEAR} from '@Components/Components/Calendar/useCalendarViewController'
 import MonthView from './View'
@@ -32,11 +32,11 @@ const CalendarController = props => {
         onNavigationYear={handleNavigation(YEAR)}
       />
     </Calendar>
-  );
-};
+  )
+}
 
 CalendarController.propTypes = {
   
-};
+}
 
-export default CalendarController;
+export default CalendarController

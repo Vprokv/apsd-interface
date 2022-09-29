@@ -14,10 +14,10 @@ import VolumeItem from './Pages/Volume'
 import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
 import createAxiosInstance from "./api"
-import Main from "./Pages/Main";
-import {URL_LOGIN, URL_SYSTEM_META, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT} from "./ApiList";
+import Main from "./Pages/Main"
+import {URL_LOGIN, URL_SYSTEM_META, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT} from "./ApiList"
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
-import {ApiContext} from "./contants";
+import {ApiContext} from "./contants"
 import {TaskNewItem, TaskItem} from "./Pages/Tasks/item"
 
 // Апи на получения токена базовое и не требует
@@ -63,7 +63,7 @@ function App() {
     apiInstance.interceptors.response.use(function (response) {
       // Any status code that lie within the range of 2xx cause this function to trigger
       // Do something with response data
-      return response;
+      return response
     }, function (error) {
       const {status} = error
       if (status === 415) {
@@ -71,8 +71,8 @@ function App() {
       }
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
-      return Promise.reject(error);
-    });
+      return Promise.reject(error)
+    })
   }, [apiInstance, dropToken])
 
   return (

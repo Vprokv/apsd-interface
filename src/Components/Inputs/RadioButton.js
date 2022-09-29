@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 import RadioButtonBaseComponent from '@Components/Components/Inputs/RadioButton'
 
 const RadioButton = styled(RadioButtonBaseComponent)`

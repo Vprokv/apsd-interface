@@ -1,17 +1,17 @@
-import React, {useCallback, useState} from 'react';
-import PropTypes from 'prop-types';
-import {NavigationHeaderIcon, SideBarContainer} from "./style";
-import Button from "@/Components/Button";
+import React, {useCallback, useState} from 'react'
+import PropTypes from 'prop-types'
+import {NavigationHeaderIcon, SideBarContainer} from "./style"
+import Button from "@/Components/Button"
 import Icon from '@Components/Components/Icon'
 
-import plusIcon from "@/Icons/plusIcon";
-import MyTasks from "./Components/MyTasks";
-import ViewedIcon from "./icons/ViewedIcon";
-import CreatedByMeIcon from "./icons/CreatedByMeIcon";
-import Storage from "./Components/Storage";
-import Archive from "./Components/Archive";
-import Basket from "./Components/Basket";
-import CreateDocumentWindow from "./Components/CreateDocumentWindow";
+import plusIcon from "@/Icons/plusIcon"
+import MyTasks from "./Components/MyTasks"
+import ViewedIcon from "./icons/ViewedIcon"
+import CreatedByMeIcon from "./icons/CreatedByMeIcon"
+import Storage from "./Components/Storage"
+import Archive from "./Components/Archive"
+import Basket from "./Components/Basket"
+import CreateDocumentWindow from "./Components/CreateDocumentWindow"
 
 const SideBar = ({ onOpenNewTab }) => {
   const [createDocumentWindow, setCreateDocumentWindowState] = useState(false)
@@ -43,11 +43,11 @@ const SideBar = ({ onOpenNewTab }) => {
         onClose={closeCreateDocumentWindow}
       />
     </SideBarContainer>
-  );
-};
+  )
+}
 
 SideBar.propTypes = {
   onOpenNewTab: PropTypes.func.isRequired,
-};
+}
 
-export default SideBar;
+export default SideBar

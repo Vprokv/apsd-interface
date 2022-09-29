@@ -1,10 +1,10 @@
-import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
-import PropTypes from 'prop-types';
-import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_NEW_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../contants";
-import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
-import {URL_DOCUMENT_CLASSIFICATION, URL_TASK_ITEM} from "../../../ApiList";
-import {useParams} from "react-router-dom";
-import {BaseItem} from "./baseItem";
+import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react'
+import PropTypes from 'prop-types'
+import {ApiContext, DocumentTypeContext, TASK_ITEM_DOCUMENT, TASK_ITEM_NEW_DOCUMENT, TASK_ITEM_REQUISITES} from "../../../contants"
+import useTabItem from "../../../components_ocean/Logic/Tab/TabItem"
+import {URL_DOCUMENT_CLASSIFICATION, URL_TASK_ITEM} from "../../../ApiList"
+import {useParams} from "react-router-dom"
+import {BaseItem} from "./baseItem"
 
 const NewTaskItem = props => {
   const api = useContext(ApiContext)
@@ -28,7 +28,7 @@ const NewTaskItem = props => {
       )
       return data
     })
-  }, [classificationId, api, loadDataHelper]);
+  }, [classificationId, api, loadDataHelper])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -40,10 +40,10 @@ const NewTaskItem = props => {
   }, [loadDataFunction, shouldReloadDataFlag])
 
   return <DocumentTypeContext.Provider value={TASK_ITEM_NEW_DOCUMENT}>
-    <BaseItem documentTabs={data?.documentTabs || []}/>;
+    <BaseItem documentTabs={data?.documentTabs || []}/>
    </DocumentTypeContext.Provider>
-};
+}
 
-NewTaskItem.propTypes = {};
+NewTaskItem.propTypes = {}
 
-export default NewTaskItem;
+export default NewTaskItem

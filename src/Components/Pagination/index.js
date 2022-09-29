@@ -1,9 +1,9 @@
-import React, {useCallback} from 'react';
-import PropTypes from 'prop-types';
-import {PaginationButton} from "./styles";
+import React, {useCallback} from 'react'
+import PropTypes from 'prop-types'
+import {PaginationButton} from "./styles"
 import Icon from '@Components/Components/Icon'
-import angleIcon from "../../Icons/angleIcon";
-import doubleAngleIcon from "../../Icons/doubleAngleIcon";
+import angleIcon from "../../Icons/angleIcon"
+import doubleAngleIcon from "../../Icons/doubleAngleIcon"
 
 const Pagination = ({ children, className, setLimit, limit, page, setPage }) => {
   const onSetLimit = useCallback((limit) => () => {
@@ -87,8 +87,8 @@ const Pagination = ({ children, className, setLimit, limit, page, setPage }) => 
         {children}
       </div>
     </div>
-  );
-};
+  )
+}
 
 Pagination.propTypes = {
   setLimit: PropTypes.func.isRequired,
@@ -97,12 +97,12 @@ Pagination.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   limit: PropTypes.number,
   page: PropTypes.number,
-};
+}
 
 Pagination.defaultProps = {
   className: "",
   page: 1,
   limit: 10
-};
+}
 
-export default Pagination;
+export default Pagination

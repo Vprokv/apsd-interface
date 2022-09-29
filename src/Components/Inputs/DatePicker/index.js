@@ -1,10 +1,10 @@
-import React, {useCallback, useMemo} from 'react';
-import PropTypes from 'prop-types';
+import React, {useCallback, useMemo} from 'react'
+import PropTypes from 'prop-types'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import Icon from '@Components/Components/Icon'
 import calendarIcon from "@/Icons/calendarIcon"
 import {ThemedCalendar} from './styles'
-import ContextMenu from "@Components/Components/ContextMenu";
+import ContextMenu from "@Components/Components/ContextMenu"
 
 const DropDownComponent = ({ isOpen, children, ...props }) => isOpen && <ContextMenu {...props}>
   {children}
@@ -44,19 +44,19 @@ const DatePicker = ({ onInput, id, value, startPlaceHolder = "От", endPlaceHol
         {...props}
       />
     </div>
-  );
-};
+  )
+}
 
 DatePicker.propTypes = {
   value: PropTypes.array,
-};
+}
 
 DatePicker.defaultProps = {
   value: []
-};
+}
 
 export default ({ range, ...props }) => range ? <DatePicker {...props}/> : <DatePickerComponent
   {...props}
   CalendarComponent={ThemedCalendar}
   DropDownComponent={DropDownComponent}
-/>;
+/>

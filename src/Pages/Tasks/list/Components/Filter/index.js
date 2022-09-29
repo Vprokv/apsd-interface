@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
-import {FilterForm, SearchInput} from "../../styles";
-import Switch from "../../../../../Components/Inputs/Switch";
-import LoadableSelect, {Select} from "../../../../../Components/Inputs/Select";
+import {FilterForm, SearchInput} from "../../styles"
+import Switch from "../../../../../Components/Inputs/Switch"
+import LoadableSelect, {Select} from "../../../../../Components/Inputs/Select"
 import Icon from '@Components/Components/Icon'
 import searchIcon from "@/Icons/searchIcon"
-import {ApiContext} from "../../../../../contants";
-import {URL_ENTITY_LIST} from "../../../../../ApiList";
-import {DOCUMENT_TYPE, TASK_TYPE} from "../../constants";
+import {ApiContext} from "../../../../../contants"
+import {URL_ENTITY_LIST} from "../../../../../ApiList"
+import {DOCUMENT_TYPE, TASK_TYPE} from "../../constants"
 
 const emptyWrapper = (({children}) => children)
 

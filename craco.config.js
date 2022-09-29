@@ -16,4 +16,4 @@ module.exports = {
       '@/component_ocean': path.resolve(__dirname, './src/components_ocean'),
     },
   },
-};
+}

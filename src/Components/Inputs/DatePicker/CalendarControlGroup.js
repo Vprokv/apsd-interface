@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {NavigationElementContainer, NavigationElementController, Separator} from "./styles";
+import React from 'react'
+import PropTypes from 'prop-types'
+import {NavigationElementContainer, NavigationElementController, Separator} from "./styles"
 import Icon from '@Components/Components/Icon'
 import arrow from './icons/arrowUp'
 
@@ -31,8 +31,8 @@ const CalendarControlGroup = ({currentMonth, currentYear, onNavigationMonth, onN
         </div>
       </NavigationElementController>
     </NavigationElementContainer>
-  );
-};
+  )
+}
 
 CalendarControlGroup.propTypes = {
   onNavigationMonth: PropTypes.func.isRequired,
@@ -40,12 +40,12 @@ CalendarControlGroup.propTypes = {
   currentMonth: PropTypes.number,
   currentYear: PropTypes.number,
   monthDictionary: PropTypes.array,
-};
+}
 
 CalendarControlGroup.defaultProps = {
   monthDictionary: [
     "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
   ]
-};
+}
 
-export default CalendarControlGroup;
+export default CalendarControlGroup

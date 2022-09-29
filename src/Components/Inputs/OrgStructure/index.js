@@ -1,30 +1,30 @@
-import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
-import {OrgStructureWindowComponent, SelectedEmployeeContainer} from "./style";
-import {ApiContext} from "@/contants";
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react"
+import {OrgStructureWindowComponent, SelectedEmployeeContainer} from "./style"
+import {ApiContext} from "@/contants"
 import ScrollBar from '@Components/Components/ScrollBar'
-import Button from "@/Components/Button";
-import BaseCell, {sizes as baseCellSize} from "../../ListTableComponents/BaseCell";
-import BaseSubCell, {sizes as baseSubCellSize} from "../../ListTableComponents/BaseSubCell";
-import {FilterForm, SearchInput} from "../../../Pages/Tasks/list/styles";
-import Select from "../Select";
+import Button from "@/Components/Button"
+import BaseCell, {sizes as baseCellSize} from "../../ListTableComponents/BaseCell"
+import BaseSubCell, {sizes as baseSubCellSize} from "../../ListTableComponents/BaseSubCell"
+import {FilterForm, SearchInput} from "../../../Pages/Tasks/list/styles"
+import Select from "../Select"
 import Icon from '@Components/Components/Icon'
 import searchIcon from "@/Icons/searchIcon"
-import ListTable from "../../../components_ocean/Components/Tables/ListTable";
-import RowComponent from "./Components/RowComponent";
-import HeaderCell from "../../ListTableComponents/HeaderCell";
-import SortCellComponent from "../../ListTableComponents/SortCellComponent";
-import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable";
-import CheckBox from "../CheckBox";
+import ListTable from "../../../components_ocean/Components/Tables/ListTable"
+import RowComponent from "./Components/RowComponent"
+import HeaderCell from "../../ListTableComponents/HeaderCell"
+import SortCellComponent from "../../ListTableComponents/SortCellComponent"
+import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable"
+import CheckBox from "../CheckBox"
 import {
   URL_ORGSTURCTURE_BRANCHES,
   URL_ORGSTURCTURE_DEPARTMENTS,
   URL_ORGSTURCTURE_ORGANIZATIONS
-} from "../../../ApiList";
-import UserCard from "./Components/UserCard";
-import closeIcon from "../../../Icons/closeIcon";
-import LoadableSelect from "../Select";
-import Pagination from "../../Pagination";
-import {useRecoilValue} from "recoil";
+} from "../../../ApiList"
+import UserCard from "./Components/UserCard"
+import closeIcon from "../../../Icons/closeIcon"
+import LoadableSelect from "../Select"
+import Pagination from "../../Pagination"
+import {useRecoilValue} from "recoil"
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 
 const getPlugins = (multiply) => {
@@ -266,4 +266,4 @@ const OrgStructureWindowWrapper = props => <OrgStructureWindowComponent
   <OrgStructureWindow {...props}/>
 </OrgStructureWindowComponent>
 
-export default OrgStructureWindowWrapper;
+export default OrgStructureWindowWrapper

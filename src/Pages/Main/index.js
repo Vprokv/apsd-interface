@@ -1,12 +1,12 @@
-import React, {useEffect} from 'react';
-import PropTypes from 'prop-types';
-import {Outlet } from "react-router-dom";
+import React, {useEffect} from 'react'
+import PropTypes from 'prop-types'
+import {Outlet } from "react-router-dom"
 import Tab from '@Components/Logic/Tab'
-import Header from "./Components/Header";
-import SideBar from "./Components/SideBar";
-import TabHeader from "./Components/Tab";
+import Header from "./Components/Header"
+import SideBar from "./Components/SideBar"
+import TabHeader from "./Components/Tab"
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
-import {useRecoilValue} from "recoil";
+import {useRecoilValue} from "recoil"
 const Main = () => {
   const { r_object_id } = useRecoilValue(userAtom)
   return (
@@ -36,11 +36,11 @@ const Main = () => {
         )
       }
     </Tab>
-  );
-};
+  )
+}
 
 Main.propTypes = {
 
-};
+}
 
-export default Main;
+export default Main

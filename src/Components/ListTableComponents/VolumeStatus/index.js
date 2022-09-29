@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {StatusDot} from "./styles";
+import React from 'react'
+import PropTypes from 'prop-types'
+import {StatusDot} from "./styles"
 
 
 const VolumeStatus = ({ value, className }) => {
@@ -9,18 +9,18 @@ const VolumeStatus = ({ value, className }) => {
       <StatusDot className="mr-2" />
       {value}
     </div>
-  );
-};
+  )
+}
 
 VolumeStatus.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-};
+}
 
 VolumeStatus.defaultProps = {
   className: ""
-};
+}
 
-export default VolumeStatus;
+export default VolumeStatus
 
 export const sizes = 150

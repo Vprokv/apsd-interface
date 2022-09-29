@@ -1,16 +1,16 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
-import {ApiContext} from "@/contants";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react'
+import PropTypes from 'prop-types'
+import {ApiContext} from "@/contants"
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
-import {URL_DOCUMENT_CREATION_OPTIONS} from "@/ApiList";
-import {CreateDocumentWindowContainer, DocumentIcon, DocumentTypesContainer} from "./style";
+import {URL_DOCUMENT_CREATION_OPTIONS} from "@/ApiList"
+import {CreateDocumentWindowContainer, DocumentIcon, DocumentTypesContainer} from "./style"
 import RadioButton from '@/Components/Inputs/RadioButton'
-import Button from "@/Components/Button";
-import WithToggleNavigationItem from "../withToggleNavigationItem";
-import angleIcon from "@/Icons/angleIcon";
-import NavigationDocumentIcon from "../../icons/NavigationDocumentIcon";
-import {useNavigate} from "react-router-dom";
+import Button from "@/Components/Button"
+import WithToggleNavigationItem from "../withToggleNavigationItem"
+import angleIcon from "@/Icons/angleIcon"
+import NavigationDocumentIcon from "../../icons/NavigationDocumentIcon"
+import {useNavigate} from "react-router-dom"
 
 const FirstLevelHeaderComponent = ({children, selected}) => <div className="flex items-start font-size-14 w-full">
   <DocumentIcon
@@ -57,7 +57,7 @@ const CreateDocumentWindow = ({onClose}) => {
   const toNewItem = useCallback(() => {
     selectedDocument && navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
     onClose()
-  }, [navigate, onClose, selectedDocument]);
+  }, [navigate, onClose, selectedDocument])
 
   const handleSelectDocument = useCallback((obj) => () => setSelectedDocument(obj), [])
 
@@ -151,12 +151,12 @@ const CreateDocumentWindow = ({onClose}) => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 CreateDocumentWindow.propTypes = {
   onClose: PropTypes.func
-};
+}
 
 const CrateDocumentWrapper = (props) => (
   <CreateDocumentWindowContainer
@@ -167,4 +167,4 @@ const CrateDocumentWrapper = (props) => (
   </CreateDocumentWindowContainer>
 )
 
-export default CrateDocumentWrapper;
+export default CrateDocumentWrapper

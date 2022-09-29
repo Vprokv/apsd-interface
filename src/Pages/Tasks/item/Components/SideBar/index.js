@@ -1,14 +1,14 @@
-import React, {useCallback, useContext, useMemo, useRef} from 'react';
-import PropTypes from 'prop-types';
-import {SidebarContainer} from "./styles";
+import React, {useCallback, useContext, useMemo, useRef} from 'react'
+import PropTypes from 'prop-types'
+import {SidebarContainer} from "./styles"
 import DeleteIcon from './Group 846.svg'
 import SaveIcon from './SaveIcon.svg'
 import OtherIcon from './OtherIcon.svg'
-import Button from "@/Components/Button";
-import {ApiContext, DocumentTypeContext, TASK_ITEM_NEW_DOCUMENT} from "../../../../../contants";
-import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {URL_DOCUMENT_CREATE, URL_DOCUMENT_UPDATE} from "../../../../../ApiList";
-import {useNavigate, useParams} from "react-router-dom";
+import Button from "@/Components/Button"
+import {ApiContext, DocumentTypeContext, TASK_ITEM_NEW_DOCUMENT} from "../../../../../contants"
+import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem"
+import {URL_DOCUMENT_CREATE, URL_DOCUMENT_UPDATE} from "../../../../../ApiList"
+import {useNavigate, useParams} from "react-router-dom"
 
 const buttons = {
   save: {
@@ -81,9 +81,9 @@ const SideBar = props => {
     <SidebarContainer>
       {documentButtons}
     </SidebarContainer>
-  );
-};
+  )
+}
 
-SideBar.propTypes = {};
+SideBar.propTypes = {}
 
-export default SideBar;
+export default SideBar

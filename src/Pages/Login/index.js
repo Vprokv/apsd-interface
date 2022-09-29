@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithWithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
-import Button from "@/Components/Button";
-import {VALIDATION_RULE_REQUIRED} from "@Components/Logic/Validator/constants";
-import {Link} from "react-router-dom";
+import DefaultWrapper from "@/Components/Fields/DefaultWrapper"
+import Button from "@/Components/Button"
+import {VALIDATION_RULE_REQUIRED} from "@Components/Logic/Validator/constants"
+import {Link} from "react-router-dom"
 import { LoginInput } from './styles'
 
-import {RESET_PASSWORD_PAGE_PATH} from "../../routePaths";
-import LoginTemplate from "./LoginTemplate";
+import {RESET_PASSWORD_PAGE_PATH} from "../../routePaths"
+import LoginTemplate from "./LoginTemplate"
 
 export const fieldMap = [
   {

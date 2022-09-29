@@ -1,31 +1,31 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
-import {useNavigate, useOutletContext, useLocation} from "react-router-dom";
+import {useNavigate, useOutletContext, useLocation} from "react-router-dom"
 import ListTable from '@Components/Components/Tables/ListTable'
 import {FlatSelect} from '@Components/Components/Tables/Plugins/selectable'
 import Icon from '@Components/Components/Icon'
-import UserCard, {sizes as useCardSizes} from "../../../Components/ListTableComponents/UserCard";
-import DocumentState, {sizes as DocumentStateSizes} from "../../../Components/ListTableComponents/DocumentState";
-import AlertComponent, {sizes as alertSizes} from "../../../Components/ListTableComponents/AlertComponent";
-import VolumeState, {sizes as volumeStateSize} from "../../../Components/ListTableComponents/VolumeState";
-import BaseCell, {sizes as baseCellSize} from "../../../Components/ListTableComponents/BaseCell";
-import VolumeStatus, {sizes as volumeStatusSize} from "../../../Components/ListTableComponents/VolumeStatus";
-import HeaderCell from "../../../Components/ListTableComponents/HeaderCell";
-import {TableActionButton} from "./styles";
+import UserCard, {sizes as useCardSizes} from "../../../Components/ListTableComponents/UserCard"
+import DocumentState, {sizes as DocumentStateSizes} from "../../../Components/ListTableComponents/DocumentState"
+import AlertComponent, {sizes as alertSizes} from "../../../Components/ListTableComponents/AlertComponent"
+import VolumeState, {sizes as volumeStateSize} from "../../../Components/ListTableComponents/VolumeState"
+import BaseCell, {sizes as baseCellSize} from "../../../Components/ListTableComponents/BaseCell"
+import VolumeStatus, {sizes as volumeStatusSize} from "../../../Components/ListTableComponents/VolumeStatus"
+import HeaderCell from "../../../Components/ListTableComponents/HeaderCell"
+import {TableActionButton} from "./styles"
 import documentIcon from "./icons/documentIcon"
 import filterIcon from "./icons/filterIcon"
 import sortIcon from "./icons/sortIcon"
 import volumeIcon from "./icons/volumeIcon"
-import Pagination from "../../../Components/Pagination";
-import RowComponent from "./Components/RowComponent";
-import CheckBox from "../../../Components/Inputs/CheckBox";
-import {URL_TASK_LIST} from "../../../ApiList";
-import {ApiContext, TASK_LIST} from "../../../contants";
-import useTabItem from "../../../components_ocean/Logic/Tab/TabItem";
-import usePagination from "../../../components_ocean/Logic/usePagination";
-import {TabNames} from "./constants";
-import SortCellComponent from "../../../Components/ListTableComponents/SortCellComponent";
-import Filter from "./Components/Filter";
+import Pagination from "../../../Components/Pagination"
+import RowComponent from "./Components/RowComponent"
+import CheckBox from "../../../Components/Inputs/CheckBox"
+import {URL_TASK_LIST} from "../../../ApiList"
+import {ApiContext, TASK_LIST} from "../../../contants"
+import useTabItem from "../../../components_ocean/Logic/Tab/TabItem"
+import usePagination from "../../../components_ocean/Logic/usePagination"
+import {TabNames} from "./constants"
+import SortCellComponent from "../../../Components/ListTableComponents/SortCellComponent"
+import Filter from "./Components/Filter"
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -108,7 +108,7 @@ function TaskList(props) {
   const [a, b] = useState({})
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
-  const handleDoubleClick = useCallback((id, type) => () => navigate(`/task/${id}/${type}`), [navigate]);
+  const handleDoubleClick = useCallback((id, type) => () => navigate(`/task/${id}/${type}`), [navigate])
 
   const loadDataFunction = useMemo(() => {
     const {limit, offset} = paginationState
@@ -135,7 +135,7 @@ function TaskList(props) {
       )
       return data
     })
-  }, [sortQuery, api, loadDataHelper, paginationState, search]);
+  }, [sortQuery, api, loadDataHelper, paginationState, search])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -190,7 +190,7 @@ function TaskList(props) {
     >
       {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
     </Pagination>
-  </div>;
+  </div>
 }
 
 TaskList.propTypes = {}

@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
-import PropTypes from 'prop-types';
+import React, {useContext} from 'react'
+import PropTypes from 'prop-types'
 import sortAngleIcon from '../../../Icons/sortAngleIcon'
 import Icon from '@Components/Components/Icon'
 import { SortStateContext } from '@Components/Components/Tables/Plugins/constants'
-import {SortButton} from "./styles";
+import {SortButton} from "./styles"
 
 const SortCellComponent = (Component) => {
   const Cell = ({ className, style, id, ...props}) => {
@@ -35,20 +35,20 @@ const SortCellComponent = (Component) => {
         </div>
         <Component id={id} {...props}/>
       </div>
-    );
-  };
+    )
+  }
 
   Cell.propTypes = {
     className: PropTypes.string,
     style: PropTypes.object,
     id: PropTypes.string.isRequired,
-  };
+  }
 
   Cell.defaultProps = {
     className: ""
-  };
+  }
 
   return Cell
 }
 
-export default SortCellComponent;
+export default SortCellComponent

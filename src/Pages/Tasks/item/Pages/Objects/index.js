@@ -1,22 +1,22 @@
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
-import PropTypes from 'prop-types';
-import BaseCell from "../../../../../Components/ListTableComponents/BaseCell";
-import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent";
-import {FlatSelect} from "../../../../../components_ocean/Components/Tables/Plugins/selectable";
-import CheckBox from "../../../../../Components/Inputs/CheckBox";
-import Select from "../../../../../Components/Inputs/Select";
-import {useParams} from "react-router-dom";
-import {ApiContext, TASK_ITEM_OBJECTS, TASK_ITEM_SUBSCRIPTION} from "../../../../../contants";
-import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {URL_SUBSCRIPTION_LIST, URL_TECHNICAL_OBJECTS_LIST} from "../../../../../ApiList";
-import {FilterForm, TableActionButton} from "../../styles";
-import ListTable from "../../../../../components_ocean/Components/Tables/ListTable";
-import RowComponent from "../../../list/Components/RowComponent";
-import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell";
-import Button from "../../../../../Components/Button";
-import Icon from "../../../../../components_ocean/Components/Icon";
-import filterIcon from "../../../list/icons/filterIcon";
-import editIcon from "../../../../../Icons/editIcon";
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
+import PropTypes from 'prop-types'
+import BaseCell from "../../../../../Components/ListTableComponents/BaseCell"
+import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent"
+import {FlatSelect} from "../../../../../components_ocean/Components/Tables/Plugins/selectable"
+import CheckBox from "../../../../../Components/Inputs/CheckBox"
+import Select from "../../../../../Components/Inputs/Select"
+import {useParams} from "react-router-dom"
+import {ApiContext, TASK_ITEM_OBJECTS, TASK_ITEM_SUBSCRIPTION} from "../../../../../contants"
+import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem"
+import {URL_SUBSCRIPTION_LIST, URL_TECHNICAL_OBJECTS_LIST} from "../../../../../ApiList"
+import {FilterForm, TableActionButton} from "../../styles"
+import ListTable from "../../../../../components_ocean/Components/Tables/ListTable"
+import RowComponent from "../../../list/Components/RowComponent"
+import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell"
+import Button from "../../../../../Components/Button"
+import Icon from "../../../../../components_ocean/Components/Icon"
+import filterIcon from "../../../list/icons/filterIcon"
+import editIcon from "../../../../../Icons/editIcon"
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -139,7 +139,7 @@ const Objects = props => {
       )
       return data
     })
-  }, [id, type, api, loadDataHelper]);
+  }, [id, type, api, loadDataHelper])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -192,9 +192,9 @@ const Objects = props => {
         valueKey="id"
       />
     </div>
-  );
-};
+  )
+}
 
-Objects.propTypes = {};
+Objects.propTypes = {}
 
-export default Objects;
+export default Objects

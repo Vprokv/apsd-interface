@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 import ModalWindow from '@/Components/ModalWindow'
 
 export const OrgStructureWindowComponent = styled(ModalWindow)`

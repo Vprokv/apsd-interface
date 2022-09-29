@@ -1,7 +1,7 @@
-import React, {useMemo} from 'react';
-import PropTypes from 'prop-types';
-import {UserCircle} from "./styles";
-import colorFromString from "@Components/Utils/colorFromString";
+import React, {useMemo} from 'react'
+import PropTypes from 'prop-types'
+import {UserCircle} from "./styles"
+import colorFromString from "@Components/Utils/colorFromString"
 
 const UserCard = ({name = "", fio = "", position} = {}) => {
   const bg = useMemo(() => {
@@ -22,8 +22,8 @@ const UserCard = ({name = "", fio = "", position} = {}) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 UserCard.propTypes = {
   value: PropTypes.shape({
@@ -32,11 +32,11 @@ UserCard.propTypes = {
     secondName: PropTypes.string,
     position: PropTypes.string,
   })
-};
+}
 
-UserCard.defaultProps = {};
+UserCard.defaultProps = {}
 
-export default UserCard;
+export default UserCard
 
 // Компонент сдизайнен для компонента ListTable и это его пропорции
 export const sizes = 180

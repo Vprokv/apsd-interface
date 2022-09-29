@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import MainLogo from '../../main_logo.png'
 import Icon from '@Components/Components/Icon'
-import doubleShevronIcon from "@/Icons/doubleShevronIcon";
-import settingsIcon from "@/Icons/settingsIcon";
-import searchIcon from "@/Icons/searchIcon";
-import notificationIcon from "@/Icons/notificationIcon";
-import angleIcon from "@/Icons/angleIcon";
-import {Avatar, IconsGroup} from "./styles";
+import doubleShevronIcon from "@/Icons/doubleShevronIcon"
+import settingsIcon from "@/Icons/settingsIcon"
+import searchIcon from "@/Icons/searchIcon"
+import notificationIcon from "@/Icons/notificationIcon"
+import angleIcon from "@/Icons/angleIcon"
+import {Avatar, IconsGroup} from "./styles"
 import tempImg from './temp_avatar.png'
-import {useRecoilValue} from "recoil";
+import {useRecoilValue} from "recoil"
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 
 
@@ -39,11 +39,11 @@ const Header = props => {
         <Icon icon={angleIcon} size={10}/>
       </div>
     </div>
-  );
-};
+  )
+}
 
 Header.propTypes = {
   
-};
+}
 
-export default Header;
+export default Header

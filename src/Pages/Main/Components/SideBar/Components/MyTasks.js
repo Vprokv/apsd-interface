@@ -1,15 +1,15 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
-import {NavigationHeaderIcon} from "../style";
-import NavigationDocumentIcon from "../icons/NavigationDocumentIcon";
-import WithToggleNavigationItem from "./withToggleNavigationItem";
-import angleIcon from "@/Icons/angleIcon";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react'
+import PropTypes from 'prop-types'
+import {NavigationHeaderIcon} from "../style"
+import NavigationDocumentIcon from "../icons/NavigationDocumentIcon"
+import WithToggleNavigationItem from "./withToggleNavigationItem"
+import angleIcon from "@/Icons/angleIcon"
 import Icon from '@Components/Components/Icon'
-import {TASK_LIST_PATH} from "../../../../../routePaths";
-import {URL_TASK_STATISTIC} from "../../../../../ApiList";
-import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8, TabNames} from "../../../../Tasks/list/constants";
-import {ApiContext} from "../../../../../contants";
-import {useStatistic} from "../../../../Tasks/helper";
+import {TASK_LIST_PATH} from "../../../../../routePaths"
+import {URL_TASK_STATISTIC} from "../../../../../ApiList"
+import {EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8, TabNames} from "../../../../Tasks/list/constants"
+import {ApiContext} from "../../../../../contants"
+import {useStatistic} from "../../../../Tasks/helper"
 
 const MyTasks = ({onOpenNewTab}) => {
   const api = useContext(ApiContext)
@@ -89,9 +89,9 @@ const MyTasks = ({onOpenNewTab}) => {
         </div>
       )}
     </WithToggleNavigationItem>
-  );
-};
+  )
+}
 
-MyTasks.propTypes = {};
+MyTasks.propTypes = {}
 
-export default MyTasks;
+export default MyTasks
