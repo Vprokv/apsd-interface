@@ -39,7 +39,7 @@ const UserSelect = props => {
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(() => setAddEmployeeWindowState(true), [])
   const closeEmployeeWindow = useCallback(() => setAddEmployeeWindowState(false), [])
-  const [filter, setFilter] = useState({organization, branchId})
+  const [filter, setFilter] = useState({})
 
   const pagination = usePagination({
     stateId: WINDOW_ADD_EMPLOYEE,
