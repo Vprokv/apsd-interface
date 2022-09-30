@@ -26,7 +26,7 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
-  const {loadFunction, id: funcKey} = props
+  const {loadFunction, valueKey, labelKey, widthButton = true} = props
   const api = useContext(ApiContext)
   const [sortQuery, onSort] = useState({})
   const [paginationStateComp, setPaginationStateComp] = useState({})
@@ -55,10 +55,21 @@ const UserSelect = props => {
     }
 
     return [{
-        property: sortQuery.key,
-        direction: sortQuery.direction
-      }]
+      property: sortQuery.key,
+      direction: sortQuery.direction
+    }]
   }, [sortQuery])
+
+  const customSelectFilter = useMemo(() => {
+      return {organization, branchId}
+    }, [organization, branchId])
+
+  const loadRefSelectFunc = useCallback(async (search) => {
+    const {limit, offset} = pagination.paginationState
+    const data = await loadFunction(api)(customSelectFilter)(search)
+    console.log(data, 'data select')
+    return data
+  }, [api, loadFunction])
 
   const loadRef = useCallback(async (search) => {
     const {limit, offset} = pagination.paginationState
@@ -89,25 +100,28 @@ const UserSelect = props => {
           <>
             <Select
               {...props}
-              loadFunction={loadFunction ? loadFunction : loadRef}
-              // remoteMethod={loadFunction ? loadFunction : loadRef}
-              // valueKey={funcKey ? funcKey : "emplId"}
-              valueKey="emplId"
-              labelKey="fullName"
+              loadFunction={loadRefSelectFunc}
+              remoteMethod={loadRefSelectFunc}
+              valueKey={valueKey}
+              labelKey={labelKey}
             />
-            <SearchButton
-              className="ml-1"
-              onClick={openEmployeeWindow}
-            >
-              <Icon icon={searchIcon}/>
-            </SearchButton>
-            <AddEmployee
-              {...props}
-              open={addEmployeeWindow}
-              onClose={closeEmployeeWindow}
-              pagination={pagination}
-              onSort={onSort}
-            />
+            {widthButton &&
+            <>
+              <SearchButton
+                className="ml-1"
+                onClick={openEmployeeWindow}
+              >
+                <Icon icon={searchIcon}/>
+              </SearchButton>
+              <AddEmployee
+                {...props}
+                open={addEmployeeWindow}
+                onClose={closeEmployeeWindow}
+                pagination={pagination}
+                onSort={onSort}
+              />
+            </>
+            }
           </>
         )}
       </RenderLoadable>
@@ -116,5 +130,14 @@ const UserSelect = props => {
 };
 
 UserSelect.propTypes = {};
-
+UserSelect.defaultProps = {
+  loadFunction: (api) => (filter) => async (search) => {
+    const {data: {content}} = await api.post(URL_EMPLOYEE_LIST, {
+      filter
+    })
+    return content
+  },
+  valueKey: "emplId",
+  labelKey: "fullName"
+};
 export default UserSelect;
