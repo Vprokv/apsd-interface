@@ -118,7 +118,7 @@ const History = props => {
       placeholder: "Исполнитель",
       valueKey: "r_object_id",
       labelKey: "fullName",
-      loadFunction: () => async () => {
+      loadFunction: () => () => async () => {
         const {data: {performerId}} = await api.post(`/sedo/audit/filters/${id}`)
         performerId.forEach((v) => {
           v.fullName = `${v.dss_first_name} ${v.dss_middle_name} ${v.dss_last_name}` //TODO перенести orgStructure
