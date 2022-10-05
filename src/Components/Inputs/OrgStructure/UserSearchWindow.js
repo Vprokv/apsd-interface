@@ -83,7 +83,6 @@ const OrgStructureWindow = props => {
 
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
-  console.log(selectState)
   const {organization: [{branches, ...organizationOptions}]} = useRecoilValue(userAtom)
 
   const {valueKeys, cache} = useLoadableCache({
