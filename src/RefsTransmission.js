@@ -1,6 +1,4 @@
-
-
-export default {
+const refsMap = {
   "ddt_dict_titul": {
     valueKey: "r_object_id",
     labelKey: "dss_name"
@@ -18,3 +16,8 @@ export default {
     labelKey: "dss_name"
   },
 }
+
+const defaultObject = { valueKey: "r_object_id", labelKey: "dss_name"}
+const refsTransmission = (refKey) => refsMap[refKey] || defaultObject
+export default refsTransmission
+

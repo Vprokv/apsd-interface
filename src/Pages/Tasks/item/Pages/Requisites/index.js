@@ -80,7 +80,6 @@ const Requisites = props => {
     if (dss_validation_rule) {
       acc.rules[dss_attr_name] = dss_validation_rule.split("|").map((rule) => {
         const [ruleName, ...args] = rule.startsWith("regex") ? rule.split(":") : rule.split(/([,:])/gm)
-        console.log(dss_validation_rule, ruleName, args)
         return validationRules[ruleName](...args)
       })
     }

@@ -3,15 +3,44 @@ import PropTypes from 'prop-types';
 import {CustomValuesContext} from "../constants";
 import Select from "@/Components/Inputs/Select";
 import UserSelect from "@/Components/Inputs/UserSelect";
+import {AddUserOptionsFullName} from "../../../../../../Components/Inputs/UserSelect";
+
+const useCustomOptions = (id) => {
+  const customValues = useContext(CustomValuesContext)
+  return useMemo(() => {
+    const v = customValues[id]
+    return v ? Array.isArray(v) ? v : [v] : []
+  }, [customValues, id])
+}
 
 const WithCustomValuesSelect = (Component) => {
   const CustomValuesSelect = props => {
-    const customValues = useContext(CustomValuesContext)
+    const customOptions = useCustomOptions(props.id)
     return (
-      <Component {...props} options={useMemo(() => {
-        const v = customValues[props.id]
-        return v ? Array.isArray(v) ? v : [v] : []
-      }, [customValues, props.id])}/>
+      <Component
+        {...props}
+        value={props.value === null ? undefined : props.value}
+        options={customOptions}
+      />
+    );
+  };
+
+  CustomValuesSelect.propTypes = {
+    id: PropTypes.string.isRequired,
+  };
+
+  return CustomValuesSelect
+}
+
+const WithCustomValuesUserSelect = (Component) => {
+  const CustomValuesSelect = props => {
+    const customOptions = useCustomOptions(props.id)
+    return (
+      <Component
+        {...props}
+        value={props.value === null ? undefined : props.value}
+        options={useMemo(() => customOptions.map(AddUserOptionsFullName), [customOptions])}
+      />
     );
   };
 
@@ -23,5 +52,6 @@ const WithCustomValuesSelect = (Component) => {
 }
 
 
+
 export const CustomValuesSelect = WithCustomValuesSelect(Select);
-export const CustomValuesOrgStructure = WithCustomValuesSelect(UserSelect);
+export const CustomValuesOrgStructure = WithCustomValuesUserSelect(UserSelect);
