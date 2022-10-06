@@ -131,9 +131,10 @@ const getLoadFunction = (accumulator) => {
       })
       return data
     }
-    const { [dss_component_reference]: { valueKey = "r_object_id", labelKey = "dss_name" } = {} } = refsTransmission
+    const { valueKey, labelKey } = refsTransmission(dss_component_reference)
     nextProps.valueKey = valueKey
     nextProps.labelKey = labelKey
+    nextProps.refKey = dss_component_reference
   }
   return accumulator
 }
@@ -167,6 +168,8 @@ export const propsTransmission = {
   }, //[]
   Orgstructure: (accumulator) => {
     getMultiply(accumulator)
+    // TODO посмотреть в бэке есть ли компонент референс для юзеров, при задаче APSD-192
+    accumulator.nextProps.refKey = "userSelect"
     return accumulator.nextProps
   },
 }

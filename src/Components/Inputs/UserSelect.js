@@ -1,18 +1,18 @@
 import React, {useCallback, useContext, useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
-import {Select} from './Select'
+import Select from './Select'
 import Icon from '@Components/Components/Icon'
 import Loadable from '@Components/Components/Inputs/Loadable'
 import searchIcon from "@/Icons/searchIcon"
 import styled from "styled-components"
-import AddEmployee from "./OrgStructure"
+import AddEmployee from "./OrgStructure/UserSearchWindow"
 import {ApiContext, WINDOW_ADD_EMPLOYEE} from "@/contants"
 import {URL_EMPLOYEE_LIST} from "../../ApiList"
 import {useRecoilValue} from "recoil"
 import usePagination from "../../components_ocean/Logic/usePagination"
 
-const RenderLoadable = Loadable(({children, ...props}) => children(props))
+export const AddUserOptionsFullName = (v) => ({ ...v, fullName:  `${v.firstName} ${v.middleName} ${v.lastName}` })
 
 export const SearchButton = styled.button.attrs({type: "button"})`
   background-color: var(--light-blue);
@@ -26,8 +26,9 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
-  const {loadFunction, valueKey, labelKey, widthButton = true} = props
+  const {loadFunction, widthButton, options } = props
   const api = useContext(ApiContext)
+  const [modalWindowOptions, setModalWindowOptions] = useState([])
   const [sortQuery, onSort] = useState({})
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const {
@@ -69,7 +70,7 @@ const UserSelect = props => {
     const data = await loadFunction(api)(customSelectFilter)(search)
     console.log(data, 'data select')
     return data
-  }, [api, loadFunction])
+  }, [api, customSelectFilter, loadFunction, pagination.paginationState])
 
   const loadRef = useCallback(async (search) => {
     const {limit, offset} = pagination.paginationState
@@ -82,51 +83,38 @@ const UserSelect = props => {
         sort
       }
     )
-    content.forEach((v) => {
-      v.fullDescription = v.fullDescription ? v.fullDescription : `${v.firstName} ${v.middleName} ${v.lastName}`
-    })
-    return content
-  }, [api, filter, pagination.paginationState, sortQuery])
+    content.forEach(AddUserOptionsFullName)
+    setModalWindowOptions(content)
+  }, [api, filter, pagination.paginationState, sort])
 
   return (
     <div className="flex items-center w-full">
-      <RenderLoadable
+      <Select
         {...props}
-        loadFunction={loadRef}
-        filter={filter}
-        setFilter={setFilter}
-        valueKey="emplId"
-        labelKey="fullDescription"
-      >
-        {(props) => (
-          <>
-            <Select
-              {...props}
-              loadFunction={loadRefSelectFunc}
-              remoteMethod={loadRefSelectFunc}
-              valueKey={valueKey}
-              labelKey={labelKey}
-            />
-            {widthButton &&
-            <>
-              <SearchButton
-                className="ml-1"
-                onClick={openEmployeeWindow}
-              >
-                <Icon icon={searchIcon}/>
-              </SearchButton>
-              <AddEmployee
-                {...props}
-                open={addEmployeeWindow}
-                onClose={closeEmployeeWindow}
-                pagination={pagination}
-                onSort={onSort}
-              />
-            </>
-            }
-          </>
-        )}
-      </RenderLoadable>
+        options={useMemo(() => [...modalWindowOptions, ...options], [modalWindowOptions, options])}
+        loadFunction={loadRefSelectFunc}
+      />
+      {widthButton &&
+      <>
+        <SearchButton
+          className="ml-1"
+          onClick={openEmployeeWindow}
+        >
+          <Icon icon={searchIcon}/>
+        </SearchButton>
+        <AddEmployee
+          {...props}
+          options={modalWindowOptions}
+          open={addEmployeeWindow}
+          onClose={closeEmployeeWindow}
+          pagination={pagination}
+          loadFunction={loadRef}
+          onSort={onSort}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      </>
+      }
     </div>
   )
 }
@@ -141,7 +129,8 @@ UserSelect.defaultProps = {
     return content
   },
   valueKey: "emplId",
-  labelKey: "fullDescription"
+  labelKey: "fullDescription",
+  widthButton: true
 }
 
 export default UserSelect

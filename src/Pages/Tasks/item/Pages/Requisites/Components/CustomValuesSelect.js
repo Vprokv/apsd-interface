@@ -4,43 +4,35 @@ import {CustomValuesContext} from "../constants"
 import Select from "@/Components/Inputs/Select"
 import UserSelect from "@/Components/Inputs/UserSelect"
 import Classification from './Classification'
+import {AddUserOptionsFullName} from "../../../../../../Components/Inputs/UserSelect"
+
+const useCustomOptions = (id) => {
+  const customValues = useContext(CustomValuesContext)
+  return useMemo(() => {
+    const v = customValues[id]
+    return v ? Array.isArray(v) ? v : [v] : []
+  }, [customValues, id])
+}
 
 const WithCustomValuesSelect = (Component) => {
   const CustomValuesSelect = props => {
-    const customValues = useContext(CustomValuesContext)
+    const customOptions = useCustomOptions(props.id)
     return (
-      <Component {...props} options={useMemo(() => {
-        const v = customValues[props.id]
-        return v ? Array.isArray(v) ? v : [v] : []
-      }, [customValues, props.id])}/>
-    )
-  }
+      <Component
+        {...props}
+        value={props.value === null ? undefined : props.value}
+        options={customOptions}
+      />
+    );
+  };
 
   CustomValuesSelect.propTypes = {
     id: PropTypes.string.isRequired,
-  }
+  };
 
   return CustomValuesSelect
 }
 
-const WithCustomValuesInput = (Component) => {
-  const CustomValuesSelect = props => {
-    const customValues = useContext(CustomValuesContext)
-    return (
-      <Component {...props} value={useMemo(() => {
-        const v = customValues[props.id]
-        return v ? Array.isArray(v) ? v : [v] : []
-      }, [customValues, props.id])}/>
-    )
-  }
-
-  CustomValuesSelect.propTypes = {
-    id: PropTypes.string.isRequired,
-  }
-
-  return CustomValuesSelect
-}
-
-export const CustomValuesSelect = WithCustomValuesSelect(Select)
-export const CustomValuesOrgStructure = WithCustomValuesSelect(UserSelect)
-export const CustomValuesClassification = WithCustomValuesInput(Classification)
+export const CustomValuesSelect = WithCustomValuesSelect(Select);
+export const CustomValuesOrgStructure = WithCustomValuesUserSelect(UserSelect);
+export const CustomValuesClassification = WithCustomValuesSelect(Classification)
