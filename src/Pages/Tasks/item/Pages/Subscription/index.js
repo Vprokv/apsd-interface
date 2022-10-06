@@ -74,44 +74,17 @@ const filterFormConfig = [
   }
 ]
 
-const mockData = [
-  {
-    id: 1,
-    subscriber: "Якубовский П.П.",
-    subscription: "Утвержден новый документ. Ознакомьтесь с документом",
-    author: "Медведев Е.Е.",
-    startDate: "12.03.2022",
-    endDate: "12.03.2022"
-  },
-  {
-    id: 2,
-    subscriber: "Якубовский П.П.",
-    subscription: "Утвержден новый документ. Ознакомьтесь с документом",
-    author: "Медведев Е.Е.",
-    startDate: "12.03.2022",
-    endDate: "12.03.2022"
-  },
-  {
-    id: 3,
-    subscriber: "Якубовский П.П.",
-    subscription: "Утвержден новый документ. Ознакомьтесь с документом",
-    author: "Медведев Е.Е.",
-    startDate: "12.03.2022",
-    endDate: "12.03.2022"
-  },
-]
-
 const Subscription = props => {
   const {id, type} = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
-  const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
+  const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(true)
   const openSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(true), [])
   const closeSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(false), [])
 
   const {
-    tabState: {data = mockData},
+    tabState: {data},
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper
@@ -181,10 +154,10 @@ const Subscription = props => {
         onSort={onSort}
         valueKey="id"
       />
-      {/*<CreateSubscriptionWindow*/}
-      {/*  open={addSubscriptionWindow}*/}
-      {/*  onClose={closeSubscriptionWindow}*/}
-      {/*/>*/}
+      <CreateSubscriptionWindow
+        open={addSubscriptionWindow}
+        onClose={closeSubscriptionWindow}
+      />
     </div>
   );
 };

@@ -129,6 +129,7 @@ UserSelect.defaultProps = {
   },
   valueKey: "emplId",
   labelKey: "fullName",
-  widthButton: true
+  widthButton: true,
+  options: []
 };
 export default UserSelect;
