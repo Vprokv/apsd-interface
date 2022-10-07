@@ -1,4 +1,4 @@
-import CheckBox from "@Components/Components/Inputs/CheckBox"
+import CheckBox from "../../../../../../../../../Components/Inputs/CheckBox"
 import React, {useContext} from "react";
 import {SedoContext} from "../../constans"
 

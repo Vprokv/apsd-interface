@@ -68,8 +68,7 @@ const UserSelect = props => {
   const loadRefSelectFunc = useCallback(async (search) => {
     const {limit, offset} = pagination.paginationState
     const data = await loadFunction(api)(customSelectFilter)(search)
-    console.log(data, 'data select')
-    return data
+    return data.map(AddUserOptionsFullName)
   }, [api, customSelectFilter, loadFunction, pagination.paginationState])
 
   const loadRef = useCallback(async (search) => {

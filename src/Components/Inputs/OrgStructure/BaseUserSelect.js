@@ -40,6 +40,7 @@ UserSelect.defaultProps = {
     const {data: {content}} = await api.post(URL_EMPLOYEE_LIST, {
       filter
     })
+    content.forEach(AddUserOptionsFullName)
     return content
   },
   valueKey: "emplId",
