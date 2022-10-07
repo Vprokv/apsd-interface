@@ -1,6 +1,11 @@
 import React from "react";
 
-export const StateCheckButtonContext = React.createContext({
-  sedo: {},
-  email: {}
+export const SedoContext = React.createContext({
+  value: [],
+  onInput: () => null
+})
+
+export const EmailContext = React.createContext({
+  value: [],
+  onInput: () => null
 })

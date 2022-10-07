@@ -1,37 +1,33 @@
 import {CheckBoxGroupContainer, SelectedSubscriptionContainer, SubscriptionWindowComponent} from "./style";
 import ScrollBar from '@Components/Components/ScrollBar'
 import SortCellComponent from "../../../../../../../Components/ListTableComponents/SortCellComponent";
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {ApiContext} from "@/contants";
 import ListTable from '@Components/Components/Tables/ListTable';
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 import {FlatSelect} from '@Components/Components/Tables/Plugins/selectable'
-import RowComponent from "../../../../../../../Components/Inputs/OrgStructure/Components/RowComponent";
 import HeaderCell from "../../../../../../../Components/ListTableComponents/HeaderCell";
 import {useRecoilValue} from "recoil";
 import CheckBox from "../../../../../../../Components/Inputs/CheckBox";
 import {useParams} from "react-router-dom";
-import {URL_SUBSCRIPTION_CHANNELS, URL_SUBSCRIPTION_EVENTS, URL_SUBSCRIPTION_LIST} from "../../../../../../../ApiList";
+import {URL_SUBSCRIPTION_CHANNELS, URL_SUBSCRIPTION_EVENTS} from "../../../../../../../ApiList";
 import useTabItem from "../../../../../../../components_ocean/Logic/Tab/TabItem";
-import {
-  DEFAULT_DATE_FORMAT,
-  PRESENT_DATE_FORMAT,
-  TASK_ITEM_HISTORY,
-  WINDOW_ADD_SUBSCRIPTION
-} from "../../../../../../../contants";
+import {PRESENT_DATE_FORMAT, WINDOW_ADD_SUBSCRIPTION} from "../../../../../../../contants";
 import dayjs from "dayjs";
 import DatePicker from "@/Components/Inputs/DatePicker";
 import FilterForm from '@Components/Components/Forms'
-import Button from "../../../../../../../Components/Button";
 import {TableActionButton} from "../../../../styles";
 import Icon from "../../../../../../../components_ocean/Components/Icon";
-import filterIcon from "../../../../../list/icons/filterIcon";
 import deleteIcon from "../../../../../../../Icons/deleteIcon";
-import CheckBoxGroupInput from '@Components/Components/Inputs/CheckboxGroup';
 import OrgStructure from "./Components/OrgStructure";
 import BaseCell from "../../../../../../../Components/ListTableComponents/BaseCell";
 import BaseCellName from "./Components/BaseCellName";
-import StateCheckButton, {StateCheckButtonContext} from "./constans"
+import {SedoContext, EmailContext} from "./constans"
+import SendSystem from "./Components/CheckBox/SendSystem";
+import SendEmail from "./Components/CheckBox/SendEmail";
+import Button from "@/Components/Button";
+import {useCreateSubscription} from "./useCreateSubscription";
+import {template} from "lodash";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -67,12 +63,14 @@ const columns = [
   {
     id: "sedo",
     label: "Отправлять в систему",
-    sizes: 165
+    sizes: 165,
+    component: SendSystem
   },
   {
     id: "email",
     label: "Отправлять на e-mail",
-    sizes: 165
+    sizes: 165,
+    component: SendEmail
   }
 ]
 
@@ -87,27 +85,26 @@ const emptyWrapper = (({children}) => children)
 
 
 const CreateSubscriptionWindow = props => {
-  const {id, type} = useParams()
+  const {onClose} = props
+  const {id} = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
   const [sortQuery, onSort] = useState({})
-  const [tempState, setTempState] = useState([])
+  const [events, setEventsState] = useState([])
   const [value, onInput] = useState([])
-  const [sedo, setSedo] = useState({})
-  const [email, setEmail] = useState({})
+  const [sedo, setSedo] = useState([])
+  const [email, setEmail] = useState([])
 
   const {r_object_id, dss_first_name, dss_last_name, dss_middle_name} = useRecoilValue(userAtom)
   const {tabState: {data, options = []}, setTabState} = useTabItem({
     stateId: WINDOW_ADD_SUBSCRIPTION
   })
 
-  console.log(options, 'options')
-
   useEffect(async () => {
     const {data} = await api.post(URL_SUBSCRIPTION_EVENTS)
     setTabState({data})
-  }, [id])
+  }, [id, setTabState])
 
   useEffect(async () => {
     const {data} = await api.post(
@@ -118,7 +115,6 @@ const CreateSubscriptionWindow = props => {
         // type
       }
     )
-    console.log(data, 'data сhannels')
     return data
   }, [api])
 
@@ -128,28 +124,46 @@ const CreateSubscriptionWindow = props => {
       options={data}
       valueKey={"name"}
       labelKey={"label"}
-      value={tempState}
-      onInput={setTempState}
+      value={events}
+      onInput={setEventsState}
       checkBoxComponent={CheckBox}
       withHeader={false}
       className="height-checkboxGroup-container-full"
     />
-  </div>, [data, tempState])
+  </div>, [data, events])
 
   const userTable = useMemo(() => options.filter(({emplId}) => value.includes(emplId)), [value])
   const fio = useMemo(() => `${dss_last_name} ${dss_first_name[0]}. ${dss_middle_name[0]}.`, [r_object_id])
-  const today = useMemo(() => dayjs().format(PRESENT_DATE_FORMAT), [r_object_id])
+  const today = useMemo(() => dayjs().format(PRESENT_DATE_FORMAT), [])
+  const handleCloseIconClick = useCallback(() => onInput([...value].filter(item => !selectState.includes(item))), [selectState, value])
+  const {createData, handleSaveClick} = useCreateSubscription({
+    filter,
+    documentId: id,
+    events,
+    subscribersIDs: value,
+    channels: ["sedo", "email"]
+  })
+  console.log(createData, 'createData')
+
+
+  const onSave = useCallback(async () => {
+    const as = await handleSaveClick(api)(createData)
+    console.log(as)
+    onClose()
+
+  }, [createData, handleSaveClick])
+
 
   return <div className="flex flex-col overflow-hidden h-full">
     <div className="flex items-center py-4">
       <div className="flex items-center space-x-6">
         <div className="flex">
-          <div className="color-text-secondary">Автор:</div>
-          <div className="ml-1">{fio}</div>
+          <div className="color-text-secondary text-sm">Автор:</div>
+          <div className="ml-1 text-sm">{fio}</div>
         </div>
         <div className="flex">
-          <div className="color-text-secondary">Дата создания:</div>
-          <div className="ml-1">{today}</div>
+          <div className="color-text-secondary text-sm">Дата создания:</div>
+          <div className="ml-1 text-sm">{today}</div>
         </div>
         <FilterForm
           fields={filterConfig}
@@ -164,7 +178,10 @@ const CreateSubscriptionWindow = props => {
           onInput={onInput}
           id={id}
         />
-        <TableActionButton className="ml-2">
+        <TableActionButton
+          className="ml-2"
+          onClick={handleCloseIconClick}
+        >
           <Icon icon={deleteIcon}/>
         </TableActionButton>
       </div>
@@ -176,20 +193,37 @@ const CreateSubscriptionWindow = props => {
         </ScrollBar>
       </SelectedSubscriptionContainer>
       <div className="px-4 pb-4 overflow-hidden w-full flex-container">
-        <StateCheckButtonContext.Provider value={{sedo, email}}>
-          <ListTable
-            value={userTable}
-            columns={columns}
-            plugins={plugins}
-            headerCellComponent={HeaderCell}
-            selectState={selectState}
-            onSelect={setSelectState}
-            sortQuery={sortQuery}
-            onSort={onSort}
-            valueKey="id"
-          />
-        </StateCheckButtonContext.Provider>
+        <SedoContext.Provider value={{value: sedo, onInput: setSedo}}>
+          <EmailContext.Provider value={{value: email, onInput: setEmail}}>
+            <ListTable
+              value={userTable}
+              columns={columns}
+              plugins={plugins}
+              headerCellComponent={HeaderCell}
+              selectState={selectState}
+              onSelect={setSelectState}
+              sortQuery={sortQuery}
+              onSort={onSort}
+              valueKey="id"
+            />
+          </EmailContext.Provider>
+        </SedoContext.Provider>
       </div>
+
+    </div>
+    <div className="flex items-center justify-end">
+      <Button
+        className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center font-weight-normal"
+        onClick={onClose}
+      >
+        Закрыть
+      </Button>
+      <Button
+        className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
+        onClick={onSave}
+      >
+        Сохранить
+      </Button>
     </div>
   </div>
 }

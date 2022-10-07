@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import ModalWindow from '@/Components/ModalWindow'
 import CheckBoxGroupInput from '@Components/Components/Inputs/CheckboxGroup';
-import ScrollBar from "react-perfect-scrollbar";
 
 export const SubscriptionWindowComponent = styled(ModalWindow)`
   width: 81.25%;
@@ -22,5 +21,6 @@ export const CheckBoxGroupContainer = styled(CheckBoxGroupInput)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 14px;
   }
 `

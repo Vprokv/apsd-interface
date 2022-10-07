@@ -6,7 +6,6 @@ import Button from "@/Components/Button";
 import BaseCell, {sizes as baseCellSize} from "../../ListTableComponents/BaseCell";
 import BaseSubCell, {sizes as baseSubCellSize} from "../../ListTableComponents/BaseSubCell";
 import {FilterForm, SearchInput} from "../../../Pages/Tasks/list/styles";
-import Select from "../Select";
 import Icon from '@Components/Components/Icon'
 import searchIcon from "@/Icons/searchIcon"
 import ListTable from "../../../components_ocean/Components/Tables/ListTable";
@@ -94,7 +93,7 @@ const OrgStructureWindow = props => {
   const {organization: [{branches, ...organizationOptions}]} = useRecoilValue(userAtom)
 
 
-  useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [])
+  useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [onSort])
 
   const filterRef = useRef(filter)
 
@@ -102,7 +101,7 @@ const OrgStructureWindow = props => {
   const disDepartment = useMemo(() => !filter.branchId || filter.branchId?.length < 2, [filter.branchId])
 
   useEffect(() => {
-    if (!filter.branchId && filter.branchId?.length < 2 || filterRef.current.branchId !== filter.branchId) {
+    if ((!filter.branchId && filter.branchId?.length < 2) || filterRef.current.branchId !== filter.branchId) {
       const {departmentId, ...item} = {...filter}
       setFilter({...item})
     }
