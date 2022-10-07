@@ -23,12 +23,31 @@ const WithCustomValuesSelect = (Component) => {
         value={props.value === null ? undefined : props.value}
         options={customOptions}
       />
-    );
-  };
+    )
+  }
 
   CustomValuesSelect.propTypes = {
     id: PropTypes.string.isRequired,
-  };
+  }
+
+  return CustomValuesSelect
+}
+
+const WithCustomValuesUserSelect = (Component) => {
+  const CustomValuesSelect = props => {
+    const customOptions = useCustomOptions(props.id)
+    return (
+      <Component
+        {...props}
+        value={props.value === null ? undefined : props.value}
+        options={useMemo(() => customOptions.map(AddUserOptionsFullName), [customOptions])}
+      />
+    )
+  }
+
+  CustomValuesSelect.propTypes = {
+    id: PropTypes.string.isRequired,
+  }
 
   return CustomValuesSelect
 }
