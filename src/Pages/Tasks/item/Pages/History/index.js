@@ -1,27 +1,22 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import BaseCell, {sizes as baseCellSize} from "../../../../../Components/ListTableComponents/BaseCell";
-import Select from "../../../../../Components/Inputs/Select";
 import {FilterForm, TableActionButton} from "../../styles";
-import DatePicker from "../../../../../Components/Inputs/DatePicker";
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import {useParams} from "react-router-dom";
 import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
 import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY, TASK_ITEM_REQUISITES} from "../../../../../contants";
-import RowComponent from "../../../list/Components/RowComponent";
 import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell";
 import ListTable from "../../../../../components_ocean/Components/Tables/ListTable";
-import Icon from "../../../../../components_ocean/Components/Icon";
-import searchIcon from "../../../../../Icons/searchIcon";
 import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent";
 import LoadableSelect from "../../../../../Components/Inputs/Select";
-import {URL_ENTITY_LIST} from "../../../../../ApiList";
-import {DOCUMENT_TYPE} from "../../../list/constants";
 import UserSelect from "../../../../../Components/Inputs/UserSelect";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent, "downDirectionKey": "DESC"}
 }
+
+const AddUserOptionsFullName = (v) => ({ ...v, fullNames:  `${v.dss_first_name} ${v.department_name} ${v.dss_last_name}` })
 
 const columns = [
   {
@@ -117,13 +112,11 @@ const History = props => {
       component: UserSelect,
       placeholder: "Исполнитель",
       valueKey: "r_object_id",
-      labelKey: "fullName",
+      labelKey: "fullNames",
       loadFunction: () => () => async () => {
         const {data: {performerId}} = await api.post(`/sedo/audit/filters/${id}`)
-        performerId.forEach((v) => {
-          v.fullName = `${v.dss_first_name} ${v.dss_middle_name} ${v.dss_last_name}` //TODO перенести orgStructure
-        })
-        return performerId
+        console.log(performerId, 'performerId')
+        return performerId.map(AddUserOptionsFullName)
       },
     }
   ]

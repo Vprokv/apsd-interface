@@ -18,7 +18,7 @@ import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell
 import Button from "../../../../../Components/Button";
 import filterIcon from "../../../list/icons/filterIcon";
 import deleteIcon from "../../../../../Icons/deleteIcon";
-import UserSelect from "../../../../../Components/Inputs/UserSelect";
+import UserSelect from "../../../../../Components/Inputs/OrgStructure/BaseUserSelect";
 import CreateSubscriptionWindow from "./Components/CreateSubscriptionWindow";
 
 const plugins = {
@@ -79,7 +79,7 @@ const Subscription = props => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
-  const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(true)
+  const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const openSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(true), [])
   const closeSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(false), [])
 

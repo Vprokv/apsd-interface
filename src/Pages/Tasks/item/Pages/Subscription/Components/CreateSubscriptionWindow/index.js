@@ -143,8 +143,6 @@ const CreateSubscriptionWindow = props => {
     subscribersIDs: value,
     channels: ["sedo", "email"]
   })
-  console.log(createData, 'createData')
-
 
   const onSave = useCallback(async () => {
     const as = await handleSaveClick(api)(createData)

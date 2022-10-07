@@ -26,7 +26,7 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
-  const {loadFunction, widthButton, options } = props
+  const {loadFunction, options } = props
   const api = useContext(ApiContext)
   const [modalWindowOptions, setModalWindowOptions] = useState([])
   const [sortQuery, onSort] = useState({})
@@ -93,7 +93,6 @@ const UserSelect = props => {
         options={useMemo(() => [...modalWindowOptions, ...options], [modalWindowOptions, options])}
         loadFunction={loadRefSelectFunc}
       />
-      {widthButton &&
       <>
         <SearchButton
           className="ml-1"
@@ -113,7 +112,6 @@ const UserSelect = props => {
           setFilter={setFilter}
         />
       </>
-      }
     </div>
   );
 };
@@ -128,7 +126,6 @@ UserSelect.defaultProps = {
   },
   valueKey: "emplId",
   labelKey: "fullName",
-  widthButton: true,
   options: []
 };
 export default UserSelect;
