@@ -39,7 +39,7 @@ const WithCustomValuesUserSelect = (Component) => {
     return (
       <Component
         {...props}
-        value={props.value === null ? undefined : props.value}
+        value={props.value ? props.value : undefined}
         options={useMemo(() => customOptions.map(AddUserOptionsFullName), [customOptions])}
       />
     )

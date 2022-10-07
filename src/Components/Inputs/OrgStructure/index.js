@@ -9,9 +9,7 @@ import {URL_EMPLOYEE_LIST} from "../../../ApiList"
 import {useRecoilValue} from "recoil"
 import usePagination from "../../../components_ocean/Logic/usePagination"
 import AddEmployee from "./UserSearchWindow"
-import UserSelect from "./BaseUserSelect"
-
-export const AddUserOptionsFullName = (v) => ({ ...v, fullName:  `${v.firstName} ${v.middleName} ${v.lastName}` })
+import {UserSelect, AddUserOptionsFullName} from "./BaseUserSelect"
 
 export const SearchButton = styled.button.attrs({type: "button"})`
   background-color: var(--light-blue);
@@ -64,14 +62,13 @@ const OrgStructure = ({options, ...props}) => {
     const {data: {content}} = await api.post(
       URL_EMPLOYEE_LIST,
       {
-        filter,
+        filter: {query: search, ...filter},
         limit,
         offset,
         sort
       }
     )
-    content.forEach(AddUserOptionsFullName)
-    setModalWindowOptions(content)
+    setModalWindowOptions(content.map(AddUserOptionsFullName))
   }, [api, filter, pagination.paginationState, sort])
 
   return (
@@ -105,9 +102,9 @@ OrgStructure.propTypes = {}
 OrgStructure.defaultProps = {
   loadFunction: (api) => (filter) => async (search) => {
     const {data: {content}} = await api.post(URL_EMPLOYEE_LIST, {
-      filter
+      filter: {query: search, ...filter}
     })
-    return content
+    return content.map(AddUserOptionsFullName)
   },
   valueKey: "emplId",
   labelKey: "fullDescription",

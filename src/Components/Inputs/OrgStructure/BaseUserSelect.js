@@ -1,11 +1,15 @@
-import React, {useCallback, useContext, useMemo} from 'react';
+import React, {useCallback, useContext, useMemo} from 'react'
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 import Select from './Select'
-import {ApiContext} from "@/constants";
-import {URL_EMPLOYEE_LIST} from "../../ApiList";
-import {useRecoilValue} from "recoil";
+import {ApiContext} from "@/constants"
+import {URL_EMPLOYEE_LIST} from "../../ApiList"
+import {useRecoilValue} from "recoil"
 
-export const AddUserOptionsFullName = (v) => ({ ...v, fullName:  `${v.firstName} ${v.middleName} ${v.lastName}` })
+export const AddUserOptionsFullName = (v = {}) => ({ 
+  ...v,
+  fullName: `${v.firstName} ${v.middleName} ${v.lastName}`,
+  fullDescription:  v.fullDescription ? v.fullDescription : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`
+})
 
 const UserSelect = ({ loadFunction, ...props }) => {
   const api = useContext(ApiContext)
@@ -22,8 +26,7 @@ const UserSelect = ({ loadFunction, ...props }) => {
 
   const loadRefSelectFunc = useCallback(async (search) => {
     const data = await loadFunction(api)(customSelectFilter)(search)
-    data.forEach(AddUserOptionsFullName)
-    return data
+    return data.map(AddUserOptionsFullName)
   }, [api, customSelectFilter, loadFunction])
 
   return (
@@ -31,19 +34,20 @@ const UserSelect = ({ loadFunction, ...props }) => {
       {...props}
       loadFunction={loadRefSelectFunc}
     />
-  );
-};
+  )
+}
 
 UserSelect.propTypes = {};
 UserSelect.defaultProps = {
   loadFunction: (api) => (filter) => async (search) => {
     const {data: {content}} = await api.post(URL_EMPLOYEE_LIST, {
-      filter
+      filter: {query: search, ...filter}
     })
-    return content
+    return content.map(AddUserOptionsFullName)
   },
   valueKey: "emplId",
-  labelKey: "fullName",
+  labelKey: "fullDescription",
   widthButton: true
-};
-export default UserSelect;
+}
+
+export default UserSelect

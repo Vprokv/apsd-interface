@@ -12,7 +12,11 @@ import {URL_EMPLOYEE_LIST} from "../../ApiList"
 import {useRecoilValue} from "recoil"
 import usePagination from "../../components_ocean/Logic/usePagination"
 
-export const AddUserOptionsFullName = (v) => ({ ...v, fullName:  `${v.firstName} ${v.middleName} ${v.lastName}` })
+export const AddUserOptionsFullName = (v = {}) => ({ 
+  ...v,
+  fullName:  `${v.firstName} ${v.middleName} ${v.lastName}`,
+  fullDescription:  v.fullDescription ? v.fullDescription : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`
+})
 
 export const SearchButton = styled.button.attrs({type: "button"})`
   background-color: var(--light-blue);
@@ -83,8 +87,7 @@ const UserSelect = props => {
         sort
       }
     )
-    content.forEach(AddUserOptionsFullName)
-    setModalWindowOptions(content)
+    setModalWindowOptions(content.map(AddUserOptionsFullName))
   }, [api, filter, pagination.paginationState, sort])
 
   return (
@@ -124,9 +127,9 @@ UserSelect.propTypes = {}
 UserSelect.defaultProps = {
   loadFunction: (api) => (filter) => async (search) => {
     const {data: {content}} = await api.post(URL_EMPLOYEE_LIST, {
-      filter
+      filter: {query: search, ...filter}
     })
-    return content
+    return content.map(AddUserOptionsFullName)
   },
   valueKey: "emplId",
   labelKey: "fullDescription",
