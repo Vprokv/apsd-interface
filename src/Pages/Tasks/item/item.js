@@ -28,7 +28,7 @@ const pages = {  //TODO проверить, всегда ли это поле е
     fieldKey: "requisites",
     Component: Requisites
   },
-  subscriptions: {
+  subscription: {
     label: "Подписка",
     path: "subscriptions",
     Component: Subscription
@@ -38,9 +38,9 @@ const pages = {  //TODO проверить, всегда ли это поле е
     path: "objects",
     Component: Objects
   },
-  contain: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
+  title_structure: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
     label: "Состав титула",
-    path: "contain",
+    path: "structure",
     Component: Contain
   },
   audit: {
@@ -49,14 +49,6 @@ const pages = {  //TODO проверить, всегда ли это поле е
     Component: History
   }
 }
-
-const mockDocumentTabs = [
-  {name: 'requisites'},
-  {name: 'subscriptions'},
-  {name: 'technical_objects'},
-  {name: 'contain'},
-  {name: 'audit'},
-]
 
 function TaskItem(props) {
   const { id, type } = useParams()
@@ -90,6 +82,8 @@ function TaskItem(props) {
   }, [id, type, api, loadDataHelper]);
   const refLoadDataFunction = useRef(loadDataFunction)
 
+  console.log(documentTabs, 'documentTabs')
+
   useEffect(() => {
     if (shouldReloadDataFlag || loadDataFunction !== refLoadDataFunction.current) {
       loadDataFunction()
@@ -102,7 +96,7 @@ function TaskItem(props) {
       return {}
     }
 
-    return  [...documentTabs, {name: 'subscriptions'}, {name: 'technical_objects'}].reduce((acc, { name }) => {
+    return  [...documentTabs].reduce((acc, { name }) => {
       if (pages[name]) {
         const {path, label, Component} = pages[name]
         acc.headers.push(<NavigationItem to={path} key={path}>

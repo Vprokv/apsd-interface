@@ -120,7 +120,7 @@ const Objects = props => {
   const [sortQuery, onSort] = useState({})
 
   const {
-    tabState: {data = mockData},
+    tabState: {data: {technicalObjects} = []},
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper
@@ -130,13 +130,14 @@ const Objects = props => {
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
-      const data = await api.post(
+      const {data} = await api.post(
         URL_TECHNICAL_OBJECTS_LIST,
         {
           documentId: id,
           type
         }
       )
+      console.log(data, 'data')
       return data
     })
   }, [id, type, api, loadDataHelper]);
@@ -181,7 +182,7 @@ const Objects = props => {
         rowComponent={useMemo(() => (props) => <RowComponent
           onDoubleClick={() => null} {...props}
         />, [])}
-        value={data}
+        value={technicalObjects}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}

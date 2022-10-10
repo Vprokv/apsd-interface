@@ -97,7 +97,7 @@ const CreateSubscriptionWindow = props => {
   const [email, setEmail] = useState([])
 
   const {r_object_id, dss_first_name, dss_last_name, dss_middle_name} = useRecoilValue(userAtom)
-  const {tabState: {data, options = []}, setTabState} = useTabItem({
+  const {tabState: {data = [], options = []}, setTabState} = useTabItem({
     stateId: WINDOW_ADD_SUBSCRIPTION
   })
 
