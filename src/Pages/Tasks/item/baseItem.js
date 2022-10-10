@@ -28,7 +28,7 @@ const pages = {  //TODO проверить, всегда ли это поле е
     Component: Objects,
     weight: 3
   },
-  contain: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
+  contain: {
     label: "Состав титула",
     path: "contain",
     Component: Contain,

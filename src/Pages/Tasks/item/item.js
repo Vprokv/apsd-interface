@@ -82,8 +82,6 @@ function TaskItem(props) {
   }, [id, type, api, loadDataHelper]);
   const refLoadDataFunction = useRef(loadDataFunction)
 
-  console.log(documentTabs, 'documentTabs')
-
   useEffect(() => {
     if (shouldReloadDataFlag || loadDataFunction !== refLoadDataFunction.current) {
       loadDataFunction()
