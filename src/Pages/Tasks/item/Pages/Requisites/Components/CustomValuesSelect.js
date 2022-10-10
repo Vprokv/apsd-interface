@@ -4,6 +4,7 @@ import {CustomValuesContext} from "../constants";
 import Select from "@/Components/Inputs/Select";
 import UserSelect from "@/Components/Inputs/UserSelect";
 import {AddUserOptionsFullName} from "../../../../../../Components/Inputs/UserSelect";
+import Classification from "./Classification";
 
 const useCustomOptions = (id) => {
   const customValues = useContext(CustomValuesContext)
@@ -19,7 +20,7 @@ const WithCustomValuesSelect = (Component) => {
     return (
       <Component
         {...props}
-        value={props.value === null ? undefined : props.value}
+        value={props.value === null ? customOptions : props.value}
         options={customOptions}
       />
     );
@@ -40,7 +41,7 @@ const WithCustomValuesUserSelect = (Component) => {
     return (
       <Component
         {...props}
-        value={props.value === null ? undefined : props.value}
+        value={props.value === null ? customOptions : props.value}
         options={options}
       />
     );
@@ -57,3 +58,4 @@ const WithCustomValuesUserSelect = (Component) => {
 
 export const CustomValuesSelect = WithCustomValuesSelect(Select);
 export const CustomValuesOrgStructure = WithCustomValuesUserSelect(UserSelect);
+export const CustomValuesClassification = WithCustomValuesSelect(Classification)
