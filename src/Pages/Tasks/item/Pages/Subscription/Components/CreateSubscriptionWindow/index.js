@@ -27,7 +27,6 @@ import SendSystem from "./Components/CheckBox/SendSystem";
 import SendEmail from "./Components/CheckBox/SendEmail";
 import Button from "@/Components/Button";
 import {useCreateSubscription} from "./useCreateSubscription";
-import {template} from "lodash";
 
 const plugins = {
   outerSortPlugin: {component: SortCellComponent},
@@ -92,12 +91,13 @@ const CreateSubscriptionWindow = props => {
   const [filter, setFilter] = useState({})
   const [sortQuery, onSort] = useState({})
   const [events, setEventsState] = useState([])
-  const [value, onInput] = useState([])
   const [sedo, setSedo] = useState([])
   const [email, setEmail] = useState([])
+  const [value, onInput] = useState({valueKeys: [], cache: new Map()})
+  const {valueKeys, cache} = value
 
-  const {r_object_id, dss_first_name, dss_last_name, dss_middle_name} = useRecoilValue(userAtom)
-  const {tabState: {data = [], options = []}, setTabState} = useTabItem({
+  const {dss_first_name, dss_last_name, dss_middle_name} = useRecoilValue(userAtom)
+  const {tabState: {data = []}, setTabState} = useTabItem({
     stateId: WINDOW_ADD_SUBSCRIPTION
   })
 
@@ -132,15 +132,27 @@ const CreateSubscriptionWindow = props => {
     />
   </div>, [data, events])
 
-  const userTable = useMemo(() => options.filter(({emplId}) => value.includes(emplId)), [value])
-  const fio = useMemo(() => `${dss_last_name} ${dss_first_name[0]}. ${dss_middle_name[0]}.`, [r_object_id])
+  const userTable = useMemo(() => valueKeys.reduce((acc, val) => {
+    if (cache.has(val)) {
+      acc.push(cache.get(val))
+
+    }
+    return acc
+  }, []), [valueKeys, cache])
+  const fio = useMemo(() => `${dss_last_name} ${dss_first_name[0]}. ${dss_middle_name[0]}.`, [dss_last_name, dss_first_name, dss_middle_name])
   const today = useMemo(() => dayjs().format(PRESENT_DATE_FORMAT), [])
-  const handleCloseIconClick = useCallback(() => onInput([...value].filter(item => !selectState.includes(item))), [selectState, value])
+  const handleCloseIconClick = useCallback(() => onInput(
+    (value) => {
+      const prevValue = {...value}
+      const keys = valueKeys.filter(val => !selectState.includes(val))
+      return {...prevValue, valueKeys: keys}
+    }
+  ), [selectState, valueKeys])
   const {createData, handleSaveClick} = useCreateSubscription({
     filter,
     documentId: id,
     events,
-    subscribersIDs: value,
+    subscribersIDs: valueKeys,
     channels: ["sedo", "email"]
   })
 
@@ -172,9 +184,8 @@ const CreateSubscriptionWindow = props => {
       </div>
       <div className="flex items-center color-text-secondary ml-auto">
         <OrgStructure
-          value={value}
+          value={valueKeys}
           onInput={onInput}
-          id={id}
         />
         <TableActionButton
           className="ml-2"

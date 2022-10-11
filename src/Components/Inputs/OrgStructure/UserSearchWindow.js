@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {OrgStructureWindowComponent, SelectedEmployeeContainer} from "./style";
-import {ApiContext} from "@/contants";
+import {ApiContext, WINDOW_ADD_EMPLOYEE} from "@/contants";
 import ScrollBar from '@Components/Components/ScrollBar'
 import Button from "@/Components/Button";
 import BaseCell, {sizes as baseCellSize} from "../../ListTableComponents/BaseCell";
@@ -15,6 +15,7 @@ import SortCellComponent from "../../ListTableComponents/SortCellComponent";
 import {FlatSelect} from "../../../components_ocean/Components/Tables/Plugins/selectable";
 import CheckBox from "../CheckBox";
 import {
+  URL_EMPLOYEE_LIST,
   URL_ORGSTURCTURE_BRANCHES,
   URL_ORGSTURCTURE_DEPARTMENTS,
   URL_ORGSTURCTURE_ORGANIZATIONS
@@ -26,6 +27,9 @@ import Pagination from "../../Pagination";
 import {useRecoilValue} from "recoil";
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
 import {useLoadableCache} from "@Components/Components/Inputs/Loadable";
+import {AddUserOptionsFullName} from "../UserSelect";
+import usePagination from "../../../components_ocean/Logic/usePagination";
+import useDefaultFilter from "./useDefaultFilter";
 
 const columns = [
   {
@@ -70,11 +74,11 @@ const OrgStructureWindow = props => {
     onSort,
     sortQuery,
     pagination,
-    id,
     valueKey,
     multiple,
     returnOption
   } = props
+
   const {
     setLimit,
     setPage,
@@ -84,7 +88,6 @@ const OrgStructureWindow = props => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState(value)
   const {organization: [{branches, ...organizationOptions}]} = useRecoilValue(userAtom)
-
   const {valueKeys, cache} = useLoadableCache({
     ...props,
     optionsMap: useMemo(() => options.reduce((acc, item) => {
@@ -94,8 +97,7 @@ const OrgStructureWindow = props => {
     value: selectState
   })
 
-
-  useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [])
+  useEffect(() => onSort({key: columns[0].id, direction: "ASC"}), [onSort])
 
   const filterRef = useRef(filter)
 
@@ -103,7 +105,7 @@ const OrgStructureWindow = props => {
   const disDepartment = useMemo(() => !filter.branchId || filter.branchId?.length < 2, [filter.branchId])
 
   useEffect(() => {
-    if (!filter.branchId && filter.branchId?.length < 2 || filterRef.current.branchId !== filter.branchId) {
+    if ((!filter.branchId && filter.branchId?.length < 2) || filterRef.current.branchId !== filter.branchId) {
       const {departmentId, ...item} = {...filter}
       setFilter({...item})
     }
@@ -197,12 +199,17 @@ const OrgStructureWindow = props => {
   }), [valueKeys, cache, onRemoveSelectedValue])
 
   const handleClick = useCallback(() => {
-    onInput(selectState, id)
+    onInput({valueKeys, cache})
     onClose()
-  }, [onInput, onClose, selectState, id])
+  }, [onInput, onClose, cache, valueKeys])
 
-  const handleSelectClick = useCallback((obj) => () => setSelectState(returnOption ? obj : obj[valueKey]),
-    [setSelectState, returnOption, valueKey])
+  const handleSelectClick = useCallback((obj) => () => {
+      if (multiple) {
+        return
+      }
+      return setSelectState(returnOption ? obj : obj[valueKey])
+    },
+    [setSelectState, returnOption, valueKey, multiple])
 
   return <div className="flex flex-col overflow-hidden h-full">
     <div className="flex overflow-hidden  h-full">
@@ -277,11 +284,70 @@ const OrgStructureWindow = props => {
   </div>
 }
 
-const OrgStructureWindowWrapper = props => <OrgStructureWindowComponent
-  {...props}
-  title="Добавление сотрудника"
->
-  <OrgStructureWindow {...props}/>
-</OrgStructureWindowComponent>
+OrgStructureWindow.defaultProps = {
+  onInput: () => null
+};
 
+const OrgStructureWindowWrapper = ({onClose, open, ...props}) => {
+  const api = useContext(ApiContext)
+  const [paginationStateComp, setPaginationStateComp] = useState({})
+  const [modalWindowOptions, setModalWindowOptions] = useState([])
+  const {organization, branchId} = useDefaultFilter()
+  const [filter, setFilter] = useState({organization, branchId})
+  const [sortQuery, onSort] = useState({})
+
+  const pagination = usePagination({
+    stateId: WINDOW_ADD_EMPLOYEE,
+    state: paginationStateComp,
+    setState: setPaginationStateComp,
+    defaultLimit: 10
+  })
+
+
+  const sort = useMemo(() => {
+    const {key, direction} = sortQuery
+    if (!key || !direction) {
+      return []
+    }
+
+    return [{
+      property: sortQuery.key,
+      direction: sortQuery.direction
+    }]
+  }, [sortQuery])
+
+
+  const loadRef = useCallback(async (search) => {
+    const {limit, offset} = pagination.paginationState
+    const {data: {content}} = await api.post(
+      URL_EMPLOYEE_LIST,
+      {
+        filter,
+        limit,
+        offset,
+        sort
+      }
+    )
+    content.forEach(AddUserOptionsFullName)
+    setModalWindowOptions(content)
+  }, [api, filter, pagination.paginationState, sort])
+
+  return <OrgStructureWindowComponent
+    onClose={onClose}
+    open={open}
+    title="Добавление сотрудника"
+  >
+    <OrgStructureWindow
+      {...props}
+      filter={filter}
+      setFilter={setFilter}
+      onSort={onSort}
+      loadFunction={loadRef}
+      pagination={pagination}
+      options={modalWindowOptions}
+      setModalWindowOptions={setModalWindowOptions}
+      onClose={onClose}
+    />
+  </OrgStructureWindowComponent>
+}
 export default OrgStructureWindowWrapper;

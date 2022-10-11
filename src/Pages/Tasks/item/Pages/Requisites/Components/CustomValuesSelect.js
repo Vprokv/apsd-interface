@@ -37,7 +37,6 @@ const WithCustomValuesUserSelect = (Component) => {
   const CustomValuesSelect = props => {
     const customOptions = useCustomOptions(props.id)
     const options = useMemo(() => customOptions.map(AddUserOptionsFullName), [customOptions])
-    console.log(options, 'options')
     return (
       <Component
         {...props}
