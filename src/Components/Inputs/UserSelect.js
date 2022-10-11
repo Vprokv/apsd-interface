@@ -30,7 +30,7 @@ export const SearchButton = styled.button.attrs({type: "button"})`
 `
 
 const UserSelect = props => {
-  const {loadFunction, widthButton, options } = props
+  const {loadFunction, options } = props
   const api = useContext(ApiContext)
   const [modalWindowOptions, setModalWindowOptions] = useState([])
   const [sortQuery, onSort] = useState({})
@@ -72,8 +72,7 @@ const UserSelect = props => {
   const loadRefSelectFunc = useCallback(async (search) => {
     const {limit, offset} = pagination.paginationState
     const data = await loadFunction(api)(customSelectFilter)(search)
-    console.log(data, 'data select')
-    return data
+    return data.map(AddUserOptionsFullName)
   }, [api, customSelectFilter, loadFunction, pagination.paginationState])
 
   const loadRef = useCallback(async (search) => {
@@ -97,7 +96,6 @@ const UserSelect = props => {
         options={useMemo(() => [...modalWindowOptions, ...options], [modalWindowOptions, options])}
         loadFunction={loadRefSelectFunc}
       />
-      {widthButton &&
       <>
         <SearchButton
           className="ml-1"
@@ -117,7 +115,6 @@ const UserSelect = props => {
           setFilter={setFilter}
         />
       </>
-      }
     </div>
   )
 }
@@ -133,7 +130,6 @@ UserSelect.defaultProps = {
   },
   valueKey: "emplId",
   labelKey: "fullDescription",
-  widthButton: true
+  options: []
 }
-
 export default UserSelect

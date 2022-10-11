@@ -1,8 +1,8 @@
 import React, {useCallback, useContext, useMemo} from 'react'
 import {userAtom} from '@Components/Logic/UseTokenAndUserStorage'
-import Select from './Select'
-import {ApiContext} from "@/constants"
-import {URL_EMPLOYEE_LIST} from "../../ApiList"
+import Select from '../Select'
+import {ApiContext} from "../../../contants"
+import {URL_EMPLOYEE_LIST} from "../../../ApiList"
 import {useRecoilValue} from "recoil"
 
 export const AddUserOptionsFullName = (v = {}) => ({ 

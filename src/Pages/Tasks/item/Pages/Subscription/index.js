@@ -18,7 +18,7 @@ import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell
 import Button from "../../../../../Components/Button"
 import filterIcon from "../../../list/icons/filterIcon"
 import deleteIcon from "../../../../../Icons/deleteIcon"
-import UserSelect from "../../../../../Components/Inputs/UserSelect"
+import UserSelect from "../../../../../Components/Inputs/OrgStructure/BaseUserSelect"
 import CreateSubscriptionWindow from "./Components/CreateSubscriptionWindow"
 
 const plugins = {
@@ -74,33 +74,6 @@ const filterFormConfig = [
   }
 ]
 
-const mockData = [
-  {
-    id: 1,
-    subscriber: "Якубовский П.П.",
-    subscription: "Утвержден новый документ. Ознакомьтесь с документом",
-    author: "Медведев Е.Е.",
-    startDate: "12.03.2022",
-    endDate: "12.03.2022"
-  },
-  {
-    id: 2,
-    subscriber: "Якубовский П.П.",
-    subscription: "Утвержден новый документ. Ознакомьтесь с документом",
-    author: "Медведев Е.Е.",
-    startDate: "12.03.2022",
-    endDate: "12.03.2022"
-  },
-  {
-    id: 3,
-    subscriber: "Якубовский П.П.",
-    subscription: "Утвержден новый документ. Ознакомьтесь с документом",
-    author: "Медведев Е.Е.",
-    startDate: "12.03.2022",
-    endDate: "12.03.2022"
-  },
-]
-
 const Subscription = props => {
   const {id, type} = useParams()
   const api = useContext(ApiContext)
@@ -111,7 +84,7 @@ const Subscription = props => {
   const closeSubscriptionWindow = useCallback(() => setAddSubscriptionWindowState(false), [])
 
   const {
-    tabState: {data = mockData},
+    tabState: {data},
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper
@@ -181,10 +154,10 @@ const Subscription = props => {
         onSort={onSort}
         valueKey="id"
       />
-      {/*<CreateSubscriptionWindow*/}
-      {/*  open={addSubscriptionWindow}*/}
-      {/*  onClose={closeSubscriptionWindow}*/}
-      {/*/>*/}
+      <CreateSubscriptionWindow
+        open={addSubscriptionWindow}
+        onClose={closeSubscriptionWindow}
+      />
     </div>
   )
 }
