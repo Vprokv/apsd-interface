@@ -35,7 +35,7 @@ const useApi = ({ documentType, values }) => {
       const {
         data: { id },
       } = await api.post(url, val)
-      id && actions(id)
+      id && actions(id)()
     },
   }
 }
