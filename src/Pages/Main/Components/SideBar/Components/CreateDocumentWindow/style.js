@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
 import Icon from '@Components/Components/Icon'
 
@@ -15,5 +15,5 @@ export const DocumentTypesContainer = styled.div`
 
 export const DocumentIcon = styled(Icon)`
   margin-right: 0.75rem;
-  color: ${({ selected}) => selected ? "var(--blue-1)" : "#DDE2FF"};
+  color: ${({ selected }) => (selected ? 'var(--blue-1)' : '#DDE2FF')};
 `

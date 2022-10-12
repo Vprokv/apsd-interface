@@ -10,13 +10,9 @@ import { OrgStructureWindowComponent, SelectedEmployeeContainer } from './style'
 import { ApiContext, WINDOW_ADD_EMPLOYEE } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Button from '@/Components/Button'
-import BaseCell, {
-  sizes as baseCellSize,
-} from '../../ListTableComponents/BaseCell'
-import BaseSubCell, {
-  sizes as baseSubCellSize,
-} from '../../ListTableComponents/BaseSubCell'
-import { FilterForm, SearchInput } from '../../../Pages/Tasks/list/styles'
+import BaseCell from '../../ListTableComponents/BaseCell'
+import BaseSubCell from '../../ListTableComponents/BaseSubCell'
+import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import ListTable from '../../../components_ocean/Components/Tables/ListTable'
@@ -30,7 +26,7 @@ import {
   URL_ORGSTURCTURE_BRANCHES,
   URL_ORGSTURCTURE_DEPARTMENTS,
   URL_ORGSTURCTURE_ORGANIZATIONS,
-} from '../../../ApiList'
+} from '@/ApiList'
 import UserCard from './Components/UserCard'
 import closeIcon from '../../../Icons/closeIcon'
 import LoadableSelect from '../Select'

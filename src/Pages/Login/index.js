@@ -1,36 +1,35 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithWithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
-import Button from "@/Components/Button";
-import {VALIDATION_RULE_REQUIRED} from "@Components/Logic/Validator/constants";
-import {Link} from "react-router-dom";
+import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import Button from '@/Components/Button'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import { Link } from 'react-router-dom'
 import { LoginInput } from './styles'
 
-import {RESET_PASSWORD_PAGE_PATH} from "../../routePaths";
-import LoginTemplate from "./LoginTemplate";
+import { RESET_PASSWORD_PAGE_PATH } from '../../routePaths'
+import LoginTemplate from './LoginTemplate'
 
 export const fieldMap = [
   {
-    label: "Логин",
-    id: "login",
+    label: 'Логин',
+    id: 'login',
     component: LoginInput,
-    placeholder: "Введите свой логин"
+    placeholder: 'Введите свой логин',
   },
   {
-    label: "Пароль",
-    id: "password",
-    type: "password",
+    label: 'Пароль',
+    id: 'password',
+    type: 'password',
     component: LoginInput,
-    placeholder: "Введите свой пароль"
-  }
+    placeholder: 'Введите свой пароль',
+  },
 ]
 
 const rules = {
   login: [{ name: VALIDATION_RULE_REQUIRED }],
   password: [{ name: VALIDATION_RULE_REQUIRED }],
 }
-
 
 function Login({ loginRequest }) {
   const [state, setState] = useState({})
@@ -53,10 +52,7 @@ function Login({ loginRequest }) {
           >
             Смена пароля
           </Link>
-          <Button
-            className="bg-blue-1 text-white"
-            type="submit"
-          >
+          <Button className="bg-blue-1 text-white" type="submit">
             Вход
           </Button>
         </div>

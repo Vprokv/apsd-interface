@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 function BasketList(props) {
-    return <div></div>
+  return <div></div>
 }
 
 BasketList.propTypes = {}

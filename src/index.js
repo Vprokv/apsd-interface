@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { RecoilRoot } from "recoil"
+import { RecoilRoot } from 'recoil'
 import { createBrowserHistory } from 'history'
 import { HashRouter as Router } from 'react-router-dom'
 import './styles/index.css'
@@ -13,8 +13,6 @@ import './api'
 
 import App from './App'
 import history from './history'
-
-
 
 ReactDOM.render(
   <React.StrictMode>

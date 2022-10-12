@@ -1,16 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const Classification = ({value}) => {
-  return (
-    <div>
-      {value}
-    </div>
-  );
-};
+const Classification = ({ value }) => {
+  return <div>{value}</div>
+}
 
-Classification.propTypes = {
-  
-};
+Classification.propTypes = {}
 
-export default Classification;
+export default Classification

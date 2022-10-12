@@ -7,7 +7,7 @@ export const LoginInput = styled(InputComponent)`
     &::placeholder {
       font-size: 16px;
       font-weight: 400;
-      color: #98A5BC;
+      color: #98a5bc;
     }
   }
 `

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import {NavLink} from "react-router-dom";
+import styled from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
 export const NavigationContainer = styled.div`
   width: 100%;
@@ -13,6 +13,7 @@ export const NavigationItem = styled(NavLink)`
   font-weight: 500;
   font-size: 14px;
   padding: 8px 16px 12px;
+
   &.active {
     color: var(--blue-1);
     border-bottom: 2px solid var(--blue-1);

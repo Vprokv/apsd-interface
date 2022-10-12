@@ -7,4 +7,3 @@ export const TASK_NEW_ITEM_PATH = '/task/new/:classificationId/:type/*'
 export const VOLUME_ITEM_PATH = '/volume/:id'
 export const DELETED_LIST_PATH = '/deleted'
 export const DELETED_ITEM_PATH = '/basket:id/*'
-

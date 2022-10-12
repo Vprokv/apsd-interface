@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import {Resizer} from "./styles";
+import { Resizer } from './styles'
 
-const HeaderCell = ({label, onResize, onMove, onContextMenu}) => {
+const HeaderCell = ({ label, onResize, onMove, onContextMenu }) => {
   return (
     <div
       className="whitespace-nowrap font-size-12 color-text-secondary flex items-center py-3 relative w-full"
@@ -11,13 +11,11 @@ const HeaderCell = ({label, onResize, onMove, onContextMenu}) => {
       onContextMenu={onContextMenu}
     >
       {label}
-      <Resizer onMouseDown={onResize}/>
+      <Resizer onMouseDown={onResize} />
     </div>
-  );
-};
+  )
+}
 
-HeaderCell.propTypes = {
+HeaderCell.propTypes = {}
 
-};
-
-export default HeaderCell;
+export default HeaderCell

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import Input from '@Components/Components/Inputs/Input'
 
@@ -7,7 +7,7 @@ export const FilterForm = styled(Form)`
   display: grid;
   grid-template-columns: 200px 200px 200px;
   grid-column-gap: 0.5rem;
-  `
+`
 
 export const TableActionButton = styled.button`
   display: flex;
@@ -19,4 +19,4 @@ export const TableActionButton = styled.button`
   border: 1px solid var(--separator);
   box-sizing: border-box;
   border-radius: 6px;
-  `
+`

@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IconsGroup = styled.div`
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     right: 0;
     top: 0;
