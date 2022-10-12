@@ -113,7 +113,6 @@ const History = props => {
       labelKey: "fullNames",
       loadFunction: () => () => async () => {
         const {data: {performerId}} = await api.post(`/sedo/audit/filters/${id}`)
-        console.log(performerId, 'performerId')
         return performerId.map(AddUserOptionsFullName)
       },
     }

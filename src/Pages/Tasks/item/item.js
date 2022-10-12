@@ -47,9 +47,9 @@ const pages = {
     path: "objects",
     Component: Objects
   },
-  title_structure: {
+  title_structure: {  //TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
     label: "Состав титула",
-    path: "contain",
+    path: "structure",
     Component: Contain
   },
   "approval-sheet": {

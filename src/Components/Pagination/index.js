@@ -13,7 +13,6 @@ const Pagination = ({ children, className, setLimit, limit, page, setPage }) => 
   const goToPage = useCallback((nextPage) => () => {
     let result = page + nextPage
     result = result > 1 ? result : 1
-    console.log(result)
     if (result !== page) {
       setPage(result > 1 ? result : 1)
     }

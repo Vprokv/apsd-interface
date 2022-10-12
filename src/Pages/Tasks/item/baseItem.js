@@ -13,10 +13,29 @@ const pages = {  //TODO проверить, всегда ли это поле е
     Component: Requisites,
     weight: 1
   },
-  content: {
-    label: "Контент",
-    path: "content",
-    Component: Content
+  subscriptions: {
+    label: "Подписка",
+    path: "subscriptions",
+    Component: Subscription,
+    weight: 2
+  },
+  technical_objects: {
+    label: "Технические объекты",
+    path: "objects",
+    Component: Objects,
+    weight: 3
+  },
+  title_structure: {
+    label: "Состав титула",
+    path: "contain",
+    Component: Contain,
+    weight: 4
+  },
+  audit: {
+    label: "История",
+    path: "history",
+    Component: History,
+    weight: 5
   }
 }
 

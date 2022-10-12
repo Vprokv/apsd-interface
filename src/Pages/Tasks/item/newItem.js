@@ -16,7 +16,7 @@ const NewTaskItem = props => {
   const {
     shouldReloadDataFlag,
     loadDataHelper,
-    tabState: {data}
+    tabState: {data = {documentTabs: []}}
   } = useTabItem({
     setTabName: useCallback(() => dss_work_number, [dss_work_number]),
     stateId: TASK_ITEM_NEW_DOCUMENT
@@ -40,7 +40,7 @@ const NewTaskItem = props => {
   }, [loadDataFunction, shouldReloadDataFlag])
 
   return <DocumentTypeContext.Provider value={TASK_ITEM_NEW_DOCUMENT}>
-    <BaseItem documentTabs={data?.documentTabs || []}/>
+    <BaseItem documentTabs={data.documentTabs}/>
    </DocumentTypeContext.Provider>
 }
 
