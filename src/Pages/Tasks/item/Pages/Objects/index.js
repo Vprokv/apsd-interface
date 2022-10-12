@@ -1,157 +1,146 @@
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
-import PropTypes from 'prop-types';
-import BaseCell from "../../../../../Components/ListTableComponents/BaseCell";
-import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent";
-import {FlatSelect} from "../../../../../components_ocean/Components/Tables/Plugins/selectable";
-import CheckBox from "../../../../../Components/Inputs/CheckBox";
-import Select from "../../../../../Components/Inputs/Select";
-import {useParams} from "react-router-dom";
-import {ApiContext, TASK_ITEM_OBJECTS, TASK_ITEM_SUBSCRIPTION} from "../../../../../contants";
-import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem";
-import {URL_SUBSCRIPTION_LIST, URL_TECHNICAL_OBJECTS_LIST} from "../../../../../ApiList";
-import {FilterForm, TableActionButton} from "../../styles";
-import ListTable from "../../../../../components_ocean/Components/Tables/ListTable";
-import RowComponent from "../../../list/Components/RowComponent";
-import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell";
-import Button from "../../../../../Components/Button";
-import Icon from "../../../../../components_ocean/Components/Icon";
-import filterIcon from "../../../list/icons/filterIcon";
-import editIcon from "../../../../../Icons/editIcon";
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import PropTypes from 'prop-types'
+import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
+import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
+import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
+import CheckBox from '../../../../../Components/Inputs/CheckBox'
+import Select from '../../../../../Components/Inputs/Select'
+import { useParams } from 'react-router-dom'
+import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
+import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
+import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
+import { FilterForm, TableActionButton } from '../../styles'
+import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
+import RowComponent from '../../../list/Components/RowComponent'
+import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
+import Button from '../../../../../Components/Button'
+import Icon from '../../../../../components_ocean/Components/Icon'
+import filterIcon from '../../../list/icons/filterIcon'
+import editIcon from '../../../../../Icons/editIcon'
 
 const plugins = {
-  outerSortPlugin: {component: SortCellComponent},
-  selectPlugin: {driver: FlatSelect, component: CheckBox, style: {margin: "auto 0"}},
+  outerSortPlugin: { component: SortCellComponent },
+  selectPlugin: {
+    driver: FlatSelect,
+    component: CheckBox,
+    style: { margin: 'auto 0' },
+  },
 }
 
 const columns = [
   {
-    id: "name",
-    label: "Наименование",
-    component: ({ParentValue: {name}}) => <BaseCell value={name} className="flex items-center h-10"/>,
-    sizes: 250
+    id: 'name',
+    label: 'Наименование',
+    component: ({ ParentValue: { name } }) => (
+      <BaseCell value={name} className="flex items-center h-10" />
+    ),
+    sizes: 250,
   },
   {
-    id: "code",
-    label: "Код",
-    component: ({ParentValue: {code}}) => <BaseCell value={code} className="flex items-center h-10"/>,
-    sizes: 180
+    id: 'code',
+    label: 'Код',
+    component: ({ ParentValue: { code } }) => (
+      <BaseCell value={code} className="flex items-center h-10" />
+    ),
+    sizes: 180,
   },
   {
-    id: "type",
-    label: "Тип объекта",
-    component: ({ParentValue: {type}}) => <BaseCell value={type} className="flex items-center h-10"/>,
-    sizes: 230
+    id: 'type',
+    label: 'Тип объекта',
+    component: ({ ParentValue: { type } }) => (
+      <BaseCell value={type} className="flex items-center h-10" />
+    ),
+    sizes: 230,
   },
   {
-    id: "res",
-    label: "РЭС",
-    component: ({ParentValue: {res}}) => <BaseCell value={res} className="flex items-center h-10"/>,
-    sizes: 220
+    id: 'res',
+    label: 'РЭС',
+    component: ({ ParentValue: { res } }) => (
+      <BaseCell value={res} className="flex items-center h-10" />
+    ),
+    sizes: 220,
   },
   {
-    id: "address",
-    label: "Адрес",
-    component: ({ParentValue: {address}}) => <BaseCell value={address} className="flex items-center h-10"/>,
-    sizes: 540
-  }
+    id: 'address',
+    label: 'Адрес',
+    component: ({ ParentValue: { address } }) => (
+      <BaseCell value={address} className="flex items-center h-10" />
+    ),
+    sizes: 540,
+  },
 ]
 
 const filterFormConfig = [
   {
-    id: "1",
+    id: '1',
     component: Select,
-    placeholder: "Тип объекта",
+    placeholder: 'Тип объекта',
     options: [
       {
-        ID: "ASD",
-        SYS_NAME: "TT"
+        ID: 'ASD',
+        SYS_NAME: 'TT',
       },
       {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
+        ID: 'ASD1',
+        SYS_NAME: 'TT2',
       },
-    ]
+    ],
   },
   {
-    id: "2",
+    id: '2',
     component: Select,
-    placeholder: "Код",
+    placeholder: 'Код',
     options: [
       {
-        ID: "ASD",
-        SYS_NAME: "TT"
+        ID: 'ASD',
+        SYS_NAME: 'TT',
       },
       {
-        ID: "ASD1",
-        SYS_NAME: "TT2"
+        ID: 'ASD1',
+        SYS_NAME: 'TT2',
       },
-    ]
-  }
+    ],
+  },
 ]
 
-const mockData = [
-  {
-    name: "ПС Железнодорожная",
-    code: "ЖДС-2/1",
-    type: "Линейный",
-    res: "Северный",
-    address: "МО, мкр. Железнодорожный, ст. Железнодорожная"
-  },
-  {
-    name: "ПС Северная",
-    code: "ЖДС-2/1",
-    type: "Линейный",
-    res: "Северный",
-    address: "МО, мкр. Железнодорожный, ст. Железнодорожная"
-  },
-  {
-    name: "ПС Южная",
-    code: "ЖДС-2/1",
-    type: "Линейный",
-    res: "Северный",
-    address: "МО, мкр. Железнодорожный, ст. Железнодорожная"
-  }
-]
-
-const Objects = props => {
-  const {id, type} = useParams()
+const Objects = (props) => {
+  const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
 
   const {
-    tabState: {data: {technicalObjects} = []},
+    tabState: { data: { technicalObjects = [] } = {} },
     setTabState,
     shouldReloadDataFlag,
-    loadDataHelper
+    loadDataHelper,
   } = useTabItem({
-    stateId: TASK_ITEM_OBJECTS
+    stateId: TASK_ITEM_OBJECTS,
   })
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
-      const {data} = await api.post(
-        URL_TECHNICAL_OBJECTS_LIST,
-        {
-          documentId: id,
-          type
-        }
-      )
+      const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
+        documentId: id,
+      })
       console.log(data, 'data')
       return data
     })
-  }, [id, type, api, loadDataHelper]);
+  }, [id, api, loadDataHelper])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
   useEffect(() => {
-    if (shouldReloadDataFlag || loadDataFunction !== refLoadDataFunction.current) {
+    if (
+      shouldReloadDataFlag ||
+      loadDataFunction !== refLoadDataFunction.current
+    ) {
       loadDataFunction()
     }
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
-  const emptyWrapper = (({children}) => children)
+  const emptyWrapper = ({ children }) => children
   const [a, b] = useState({})
 
   return (
@@ -162,26 +151,25 @@ const Objects = props => {
           inputWrapper={emptyWrapper}
           value={a}
           onInput={b}
-        >
-        </FilterForm>
+        />
         <div className="flex items-center color-text-secondary ml-auto">
-          <Button
-            className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
-          >
+          <Button className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium">
             Добавить
           </Button>
           <TableActionButton className="ml-2">
-            <Icon icon={filterIcon}/>
+            <Icon icon={filterIcon} />
           </TableActionButton>
           <TableActionButton className="ml-2">
-            <Icon icon={editIcon}/>
+            <Icon icon={editIcon} />
           </TableActionButton>
         </div>
       </div>
       <ListTable
-        rowComponent={useMemo(() => (props) => <RowComponent
-          onDoubleClick={() => null} {...props}
-        />, [])}
+        rowComponent={useMemo(
+          () => (props) =>
+            <RowComponent onDoubleClick={() => null} {...props} />,
+          [],
+        )}
         value={technicalObjects}
         columns={columns}
         plugins={plugins}
@@ -193,9 +181,9 @@ const Objects = props => {
         valueKey="id"
       />
     </div>
-  );
-};
+  )
+}
 
-Objects.propTypes = {};
+Objects.propTypes = {}
 
-export default Objects;
+export default Objects
