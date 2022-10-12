@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 export const SidebarContainer = styled.div`
   width: 12.5rem;

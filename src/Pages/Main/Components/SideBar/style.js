@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 import Icon from '@Components/Components/Icon'
 
 export const SideBarContainer = styled.div`
@@ -8,6 +8,6 @@ export const SideBarContainer = styled.div`
 `
 
 export const NavigationHeaderIcon = styled(Icon)`
-  color: #DDE2FF;
+  color: #dde2ff;
   margin-right: 1.25rem;
 `

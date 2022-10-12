@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 export const Resizer = styled.div`
   position: absolute;
@@ -11,7 +11,7 @@ export const Resizer = styled.div`
   &:hover {
     &::after {
       display: block;
-      content: "";
+      content: '';
       height: 100%;
       width: 5px;
       background: var(--blue-1);

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {CloseIcon, Container} from "./styles"
-import closeIcon from "../../../../Icons/closeIcon"
+import { CloseIcon, Container } from './styles'
+import closeIcon from '../../../../Icons/closeIcon'
 
 const Tab = ({ name, onClose, active, onClick, closeable }) => {
   const handleClose = (e) => {
@@ -15,7 +15,14 @@ const Tab = ({ name, onClose, active, onClick, closeable }) => {
       onClick={onClick}
     >
       {name}
-      {closeable &&  <CloseIcon icon={closeIcon} size={6} className="ml-1 text-white" onClick={handleClose}/>}
+      {closeable && (
+        <CloseIcon
+          icon={closeIcon}
+          size={6}
+          className="ml-1 text-white"
+          onClick={handleClose}
+        />
+      )}
     </Container>
   )
 }

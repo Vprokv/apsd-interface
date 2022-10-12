@@ -1,6 +1,4 @@
-import styled from "styled-components"
-
-
+import styled from 'styled-components'
 
 export const UserCircle = styled.div`
   width: 36px;
@@ -9,7 +7,7 @@ export const UserCircle = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  background-color: ${(({ bg }) => bg)};
+  background-color: ${({ bg }) => bg};
   border-radius: 50%;
   flex: 0 0 auto;
 `

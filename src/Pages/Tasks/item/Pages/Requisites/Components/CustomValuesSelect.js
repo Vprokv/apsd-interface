@@ -1,21 +1,21 @@
-import React, {useContext, useMemo} from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import {CustomValuesContext} from "../constants"
-import Select from "@/Components/Inputs/Select"
-import UserSelect from "@/Components/Inputs/UserSelect"
+import { CustomValuesContext } from '../constants'
+import Select from '@/Components/Inputs/Select'
+import UserSelect from '@/Components/Inputs/UserSelect'
 import Classification from './Classification'
-import {AddUserOptionsFullName} from "../../../../../../Components/Inputs/UserSelect"
+import { AddUserOptionsFullName } from '../../../../../../Components/Inputs/UserSelect'
 
 const useCustomOptions = (id) => {
   const customValues = useContext(CustomValuesContext)
   return useMemo(() => {
     const v = customValues[id]
-    return v ? Array.isArray(v) ? v : [v] : []
+    return v ? (Array.isArray(v) ? v : [v]) : []
   }, [customValues, id])
 }
 
 const WithCustomValuesSelect = (Component) => {
-  const CustomValuesSelect = props => {
+  const CustomValuesSelect = (props) => {
     const customOptions = useCustomOptions(props.id)
     return (
       <Component
@@ -34,9 +34,12 @@ const WithCustomValuesSelect = (Component) => {
 }
 
 const WithCustomValuesUserSelect = (Component) => {
-  const CustomValuesSelect = props => {
+  const CustomValuesSelect = (props) => {
     const customOptions = useCustomOptions(props.id)
-    const options = useMemo(() => customOptions.map(AddUserOptionsFullName), [customOptions])
+    const options = useMemo(
+      () => customOptions.map(AddUserOptionsFullName),
+      [customOptions],
+    )
     return (
       <Component
         {...props}
@@ -53,6 +56,6 @@ const WithCustomValuesUserSelect = (Component) => {
   return CustomValuesSelect
 }
 
-export const CustomValuesSelect = WithCustomValuesSelect(Select);
-export const CustomValuesOrgStructure = WithCustomValuesUserSelect(UserSelect);
+export const CustomValuesSelect = WithCustomValuesSelect(Select)
+export const CustomValuesOrgStructure = WithCustomValuesUserSelect(UserSelect)
 export const CustomValuesClassification = WithCustomValuesSelect(Classification)

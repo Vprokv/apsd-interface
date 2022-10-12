@@ -1,10 +1,13 @@
-import CheckBox, { Box, BoxContainer } from '@Components/Components/Inputs/CheckBox'
-import styled from "styled-components"
+import CheckBox, {
+  Box,
+  BoxContainer,
+} from '@Components/Components/Inputs/CheckBox'
+import styled from 'styled-components'
 
 export default styled(CheckBox)`
   &:disabled {
     ${Box} {
-      background-color: var(--form-elements-border-color, #BDBDBD)!important;
+      background-color: var(--form-elements-border-color, #bdbdbd) !important;
     }
   }
   ${BoxContainer} {

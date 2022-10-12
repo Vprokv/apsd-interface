@@ -1,26 +1,29 @@
-import React, {useMemo} from 'react';
-import PropTypes from 'prop-types';
+import React, { useMemo } from 'react'
+import PropTypes from 'prop-types'
 
-
-const BaseCellName = ({value, className}) => {
-  const {lastName, firstName, middleName} = value
-  const fio = useMemo(() => `${lastName} ${firstName && `${firstName[0]}.` || ""} ${middleName && `${middleName[0]}.` || ""}`, [value])
+const BaseCellName = ({ value, className }) => {
+  const { lastName, firstName, middleName } = value
+  const fio = useMemo(
+    () =>
+      `${lastName} ${(firstName && `${firstName[0]}.`) || ''} ${
+        (middleName && `${middleName[0]}.`) || ''
+      }`,
+    [value],
+  )
   return (
-    <div className={`${className} word-wrap-anywhere font-size-14`}>
-      {fio}
-    </div>
-  );
-};
+    <div className={`${className} word-wrap-anywhere font-size-14`}>{fio}</div>
+  )
+}
 
 BaseCellName.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-};
+}
 
 BaseCellName.defaultProps = {
-  className: ""
-};
+  className: '',
+}
 
-export default BaseCellName;
+export default BaseCellName
 
 export const sizes = 150

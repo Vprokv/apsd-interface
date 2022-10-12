@@ -1,24 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from "styled-components"
+import styled from 'styled-components'
 import Icon from '@Components/Components/Icon'
 import warningIcon from '../../Icons/warningIcon'
 
 const OrangeIcon = styled(Icon)`
-  color: #FA9312;
+  color: #fa9312;
   align-self: center;
   justify-self: center;
 `
 
 const AlertComponent = () => {
-  return (
-    <OrangeIcon icon={warningIcon}/>
-  )
+  return <OrangeIcon icon={warningIcon} />
 }
 
-AlertComponent.propTypes = {
-
-}
+AlertComponent.propTypes = {}
 
 export default AlertComponent
 

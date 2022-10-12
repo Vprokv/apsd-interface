@@ -1,22 +1,30 @@
-import React, {useCallback, useMemo} from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import Icon from '@Components/Components/Icon'
-import calendarIcon from "@/Icons/calendarIcon"
-import {ThemedCalendar} from './styles'
-import ContextMenu from "@Components/Components/ContextMenu"
+import calendarIcon from '@/Icons/calendarIcon'
+import { ThemedCalendar } from './styles'
+import ContextMenu from '@Components/Components/ContextMenu'
 
-const DropDownComponent = ({ isOpen, children, ...props }) => isOpen && <ContextMenu {...props}>
-  {children}
-</ContextMenu>
+const DropDownComponent = ({ isOpen, children, ...props }) =>
+  isOpen && <ContextMenu {...props}>{children}</ContextMenu>
 
-
-const DatePicker = ({ onInput, id, value, startPlaceHolder = "От", endPlaceHolder = "До",...props }) => {
-  const handleInput = useCallback((itemValue, index) => {
-    const newValue = [value[0], value[1]]
-    newValue[index] = itemValue
-    onInput(newValue, id)
-  }, [onInput, value, id])
+const DatePicker = ({
+  onInput,
+  id,
+  value,
+  startPlaceHolder = 'От',
+  endPlaceHolder = 'До',
+  ...props
+}) => {
+  const handleInput = useCallback(
+    (itemValue, index) => {
+      const newValue = [value[0], value[1]]
+      newValue[index] = itemValue
+      onInput(newValue, id)
+    },
+    [onInput, value, id],
+  )
 
   return (
     <div className="flex items-center">
@@ -24,7 +32,9 @@ const DatePicker = ({ onInput, id, value, startPlaceHolder = "От", endPlaceHol
         id={0}
         value={value[0]}
         className="mr-4"
-        leftSlot={<Icon icon={calendarIcon} className="mr-2 color-text-secondary"/>}
+        leftSlot={
+          <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
+        }
         CalendarComponent={ThemedCalendar}
         placeholder={startPlaceHolder}
         onInput={handleInput}
@@ -35,7 +45,9 @@ const DatePicker = ({ onInput, id, value, startPlaceHolder = "От", endPlaceHol
       <DatePickerComponent
         id={1}
         value={value[1]}
-        leftSlot={<Icon icon={calendarIcon} className="mr-2 color-text-secondary"/>}
+        leftSlot={
+          <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
+        }
         CalendarComponent={ThemedCalendar}
         placeholder={endPlaceHolder}
         onInput={handleInput}
@@ -52,11 +64,16 @@ DatePicker.propTypes = {
 }
 
 DatePicker.defaultProps = {
-  value: []
+  value: [],
 }
 
-export default ({ range, ...props }) => range ? <DatePicker {...props}/> : <DatePickerComponent
-  {...props}
-  CalendarComponent={ThemedCalendar}
-  DropDownComponent={DropDownComponent}
-/>
+export default ({ range, ...props }) =>
+  range ? (
+    <DatePicker {...props} />
+  ) : (
+    <DatePickerComponent
+      {...props}
+      CalendarComponent={ThemedCalendar}
+      DropDownComponent={DropDownComponent}
+    />
+  )

@@ -1,10 +1,14 @@
 import React from 'react'
-import {ThemedView, ThemedDayView} from './styles'
-const weekHeaders = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+import { ThemedDayView, ThemedView } from './styles'
+const weekHeaders = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 
-const View = props => {
+const View = (props) => {
   return (
-    <ThemedView weekHeaders={weekHeaders} DayViewComponent={ThemedDayView} {...props}  />
+    <ThemedView
+      weekHeaders={weekHeaders}
+      DayViewComponent={ThemedDayView}
+      {...props}
+    />
   )
 }
 

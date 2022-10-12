@@ -11,7 +11,7 @@ test('when open root', async () => {
       <Router history={history}>
         <App />
       </Router>
-    </RecoilRoot>
+    </RecoilRoot>,
   )
 
   await screen.findByRole('button')

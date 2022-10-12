@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components"
+import styled, { css } from 'styled-components'
 import Icon from '@Components/Components/Icon'
 
 export const Container = styled.button`
@@ -7,16 +7,16 @@ export const Container = styled.button`
   font-weight: 500;
   font-size: 12px;
   line-height: 14px;
-  ${(({ active}) => active
-    ? css`
-        background-color: #d2dff9;
-        color: var(--blue-1);
-      `
-    : css`
-        background-color: var(--light-gray);
-        color: var(--text-secondary);
-    `
-  )};
+  ${({ active }) =>
+    active
+      ? css`
+          background-color: #d2dff9;
+          color: var(--blue-1);
+        `
+      : css`
+          background-color: var(--light-gray);
+          color: var(--text-secondary);
+        `};
 `
 
 export const CloseIcon = styled(Icon)`

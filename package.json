@@ -27,8 +27,8 @@
     "package": "tar -czf apsd-ui.tar.gz build",
     "test": "node scripts/test.js --watchAll=false",
     "site": "export FETCH_LICENSE=true && cdxgen -o build/bom.json",
-    "lint": "eslint --fix",
-    "lint:fix": "eslint . --max-warnings=0 --fix"
+    "lint": "TIMING=1 eslint --color --ext .js,.jsx src",
+    "lint:fix": "TIMING=1 eslint --max-warnings=0 --fix --ext .js,.jsx src"
   },
   "eslintConfig": {
     "extends": [
@@ -50,7 +50,7 @@
     ]
   },
   "devDependencies": {
-    "@appthreat/cdxgen": "^4.0.18",
+    "@appthreat/cdxgen": "^4.0.41",
     "@apsd/components": "file:src/components_ocean",
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.19.4",
@@ -73,9 +73,10 @@
     "dotenv-expand": "^5.1.0",
     "eslint": "8.22.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-config-react-app": "^7.0.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-webpack-plugin": "^3.1.1",
+    "eslint-webpack-plugin": "^3.2.0",
     "file-loader": "^6.2.0",
     "fs-extra": "^10.0.0",
     "html-webpack-plugin": "^5.5.0",

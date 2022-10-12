@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-
 const BaseCell = ({ value, className }) => {
   return (
     <div className={`${className} word-wrap-anywhere font-size-14`}>
@@ -16,7 +15,7 @@ BaseCell.propTypes = {
 }
 
 BaseCell.defaultProps = {
-  className: ""
+  className: '',
 }
 
 export default BaseCell

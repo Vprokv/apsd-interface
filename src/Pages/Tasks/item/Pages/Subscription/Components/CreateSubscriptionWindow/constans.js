@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 
 export const SedoContext = React.createContext({
   value: [],
-  onInput: () => null
+  onInput: () => null,
 })
 
 export const EmailContext = React.createContext({
   value: [],
-  onInput: () => null
+  onInput: () => null,
 })

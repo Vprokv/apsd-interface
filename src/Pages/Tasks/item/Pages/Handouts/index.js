@@ -1,16 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Handouts = props => {
-  return (
-    <div>
-      Links
-    </div>
-  )
+const Handouts = (props) => {
+  return <div>Links</div>
 }
 
-Handouts.propTypes = {
-
-}
+Handouts.propTypes = {}
 
 export default Handouts

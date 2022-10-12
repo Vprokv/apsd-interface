@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 import { WithWithValidationForm } from '@Components/Components/Forms'
 
 export const RequisitesForm = styled(WithWithValidationForm)`

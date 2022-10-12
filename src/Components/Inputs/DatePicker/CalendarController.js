@@ -1,17 +1,23 @@
-import React, {useCallback, useLayoutEffect, useRef} from 'react'
+import React, { useCallback, useLayoutEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import Calendar from '@Components/Components/Calendar'
-import useCalendarViewController, {MONTH, YEAR} from '@Components/Components/Calendar/useCalendarViewController'
+import useCalendarViewController, {
+  MONTH,
+  YEAR,
+} from '@Components/Components/Calendar/useCalendarViewController'
 import MonthView from './View'
-import CalendarControlGroup from "./CalendarControlGroup"
+import CalendarControlGroup from './CalendarControlGroup'
 
-const CalendarController = props => {
+const CalendarController = (props) => {
   const refCalendarContainer = useRef()
-  const {calendarState, onNavigation} = useCalendarViewController({
+  const { calendarState, onNavigation } = useCalendarViewController({
     ...props,
     initCalendarView: MonthView,
   })
-  const handleNavigation = useCallback((type) => (direction) => onNavigation(type, direction ? 1 : -1), [onNavigation])
+  const handleNavigation = useCallback(
+    (type) => (direction) => onNavigation(type, direction ? 1 : -1),
+    [onNavigation],
+  )
 
   useLayoutEffect(() => {
     refCalendarContainer.current.onwheel = (e) => {
@@ -20,11 +26,7 @@ const CalendarController = props => {
   }, [handleNavigation])
 
   return (
-    <Calendar
-      {...props}
-      {...calendarState}
-      ref={refCalendarContainer}
-    >
+    <Calendar {...props} {...calendarState} ref={refCalendarContainer}>
       <CalendarControlGroup
         currentMonth={calendarState[MONTH]}
         currentYear={calendarState[YEAR]}
@@ -35,8 +37,6 @@ const CalendarController = props => {
   )
 }
 
-CalendarController.propTypes = {
-  
-}
+CalendarController.propTypes = {}
 
 export default CalendarController

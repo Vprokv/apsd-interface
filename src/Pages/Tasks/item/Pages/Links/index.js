@@ -1,16 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Links = props => {
-  return (
-    <div>
-      Links
-    </div>
-  )
+const Links = (props) => {
+  return <div>Links</div>
 }
 
-Links.propTypes = {
-
-}
+Links.propTypes = {}
 
 export default Links

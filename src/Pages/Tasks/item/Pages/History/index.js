@@ -1,144 +1,183 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import BaseCell, {sizes as baseCellSize} from "../../../../../Components/ListTableComponents/BaseCell"
-import {FilterForm, TableActionButton} from "../../styles"
+import BaseCell, {
+  sizes as baseCellSize,
+} from '../../../../../Components/ListTableComponents/BaseCell'
+import { FilterForm, TableActionButton } from '../../styles'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
-import {useParams} from "react-router-dom"
-import useTabItem from "../../../../../components_ocean/Logic/Tab/TabItem"
-import {ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY, TASK_ITEM_REQUISITES} from "../../../../../contants"
-import HeaderCell from "../../../../../Components/ListTableComponents/HeaderCell"
-import ListTable from "../../../../../components_ocean/Components/Tables/ListTable"
-import SortCellComponent from "../../../../../Components/ListTableComponents/SortCellComponent"
-import LoadableSelect from "../../../../../Components/Inputs/Select"
-import UserSelect, {AddUserOptionsFullName} from "../../../../../Components/Inputs/UserSelect"
+import { useParams } from 'react-router-dom'
+import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
+import {
+  ApiContext,
+  TASK_ITEM_DOCUMENT,
+  TASK_ITEM_HISTORY,
+  TASK_ITEM_REQUISITES,
+} from '../../../../../contants'
+import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
+import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
+import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
+import LoadableSelect from '../../../../../Components/Inputs/Select'
+import UserSelect, {
+  AddUserOptionsFullName,
+} from '../../../../../Components/Inputs/UserSelect'
 
 const plugins = {
-  outerSortPlugin: {component: SortCellComponent, "downDirectionKey": "DESC"}
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
 }
 
 const columns = [
   {
-    id: "eventLabel",
-    label: "Событие",
-    component: ({ParentValue: {eventLabel}}) => <BaseCell value={eventLabel} className="flex items-center min-h-full"/>,
-    sizes: 205
+    id: 'eventLabel',
+    label: 'Событие',
+    component: ({ ParentValue: { eventLabel } }) => (
+      <BaseCell value={eventLabel} className="flex items-center min-h-full" />
+    ),
+    sizes: 205,
   },
   {
-    id: "stageIteration",
-    label: "Внейшний цикл",
-    component: ({ParentValue: {stageIteration}}) => <BaseCell value={stageIteration?.toString() || ""}
-                                                              className="flex items-center h-10"/>,
-    sizes: baseCellSize
+    id: 'stageIteration',
+    label: 'Внейшний цикл',
+    component: ({ ParentValue: { stageIteration } }) => (
+      <BaseCell
+        value={stageIteration?.toString() || ''}
+        className="flex items-center h-10"
+      />
+    ),
+    sizes: baseCellSize,
   },
   {
-    id: "auditEventStatuses",
-    label: "Состояние",
-    component: ({ParentValue: {eventStatus}}) => <BaseCell value={eventStatus} className="flex items-center h-full"/>,
-    sizes: baseCellSize
+    id: 'auditEventStatuses',
+    label: 'Состояние',
+    component: ({ ParentValue: { eventStatus } }) => (
+      <BaseCell value={eventStatus} className="flex items-center h-full" />
+    ),
+    sizes: baseCellSize,
   },
   {
-    id: "performerId",
-    label: "Исполнитель",
-    component: ({ParentValue: {performer: {lastName = "", firstName, middleName}}}) => {
-      const fio = `${lastName} ${firstName && `${firstName[0]}.` || ""} ${middleName && `${middleName[0]}.` || ""}`
-      return <BaseCell value={fio} className="flex items-center h-full"/>
+    id: 'performerId',
+    label: 'Исполнитель',
+    component: ({
+      ParentValue: {
+        performer: { lastName = '', firstName, middleName },
+      },
+    }) => {
+      const fio = `${lastName} ${(firstName && `${firstName[0]}.`) || ''} ${
+        (middleName && `${middleName[0]}.`) || ''
+      }`
+      return <BaseCell value={fio} className="flex items-center h-full" />
     },
-    sizes: baseCellSize
+    sizes: baseCellSize,
   },
   {
-    id: "fromDate",
-    label: "Дата получения",
-    component: ({ParentValue: {eventDate}}) => <BaseCell value={eventDate} className="flex items-center h-full"/>,
-    sizes: baseCellSize
+    id: 'fromDate',
+    label: 'Дата получения',
+    component: ({ ParentValue: { eventDate } }) => (
+      <BaseCell value={eventDate} className="flex items-center h-full" />
+    ),
+    sizes: baseCellSize,
   },
   {
-    id: "description",
-    label: "Описание",
-    component: ({ParentValue: {description}}) => <BaseCell value={description} className="flex items-center h-full"/>,
-    sizes: 361
-  }
+    id: 'description',
+    label: 'Описание',
+    component: ({ ParentValue: { description } }) => (
+      <BaseCell value={description} className="flex items-center h-full" />
+    ),
+    sizes: 361,
+  },
 ]
 
-const History = props => {
-  const {id} = useParams()
+const History = (props) => {
+  const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
-  const [filter, b] = useState({}) //fromDate: '2022-09-01T06:10:44.395Z'
-  const {tabState: {data}, setTabState} = useTabItem({
-    stateId: TASK_ITEM_HISTORY
+  const [filter, b] = useState({}) // fromDate: '2022-09-01T06:10:44.395Z'
+  const {
+    tabState: { data },
+    setTabState,
+  } = useTabItem({
+    stateId: TASK_ITEM_HISTORY,
   })
   const {
-    tabState: {data: documentData}
+    tabState: { data: documentData },
   } = useTabItem({
-    stateId: TASK_ITEM_DOCUMENT
+    stateId: TASK_ITEM_DOCUMENT,
   })
 
   const sort = useMemo(() => {
     console.log(sortQuery)
-    const {key, direction} = sortQuery
+    const { key, direction } = sortQuery
     if (!key || !direction) {
       return []
     }
 
-    return [{
-      property: sortQuery.key,
-      direction: sortQuery.direction
-    }]
+    return [
+      {
+        property: sortQuery.key,
+        direction: sortQuery.direction,
+      },
+    ]
   }, [sortQuery])
 
   const filterFormConfig = [
     {
-      id: "fromDate",
-      component: (props) => <DatePickerComponent dateFormat={"DD-MM-YYYY"} {...props}/>,// HH:MM:SS
-      placeholder: "Дата события",
+      id: 'fromDate',
+      component: (props) => (
+        <DatePickerComponent dateFormat={'DD-MM-YYYY'} {...props} />
+      ), // HH:MM:SS
+      placeholder: 'Дата события',
     },
     {
-      id: "auditEventNames",
-      placeholder: "Событие",
+      id: 'auditEventNames',
+      placeholder: 'Событие',
       component: LoadableSelect,
       multiple: true,
-      valueKey: "dss_name",
-      labelKey: "dss_label",
+      valueKey: 'dss_name',
+      labelKey: 'dss_label',
       loadFunction: async () => {
-        const {data: {auditEventNames}} = await api.post(`/sedo/audit/filters/${id}`)
+        const {
+          data: { auditEventNames },
+        } = await api.post(`/sedo/audit/filters/${id}`)
         return auditEventNames
       },
     },
     {
-      id: "performerId",
+      id: 'performerId',
       component: UserSelect,
-      placeholder: "Исполнитель",
-      valueKey: "r_object_id",
-      labelKey: "fullNames",
+      placeholder: 'Исполнитель',
+      valueKey: 'r_object_id',
+      labelKey: 'fullNames',
       loadFunction: () => () => async () => {
-        const {data: {performerId}} = await api.post(`/sedo/audit/filters/${id}`)
+        const {
+          data: { performerId },
+        } = await api.post(`/sedo/audit/filters/${id}`)
         return performerId.map(AddUserOptionsFullName)
       },
-    }
+    },
   ]
 
   const preparedFilterValues = useMemo(() => {
-    const {fromDate, ...item} = filter
+    const { fromDate, ...item } = filter
 
     if (!fromDate) {
-      return {...item}
+      return { ...item }
     }
 
-    return {...item, fromDate, toDate: fromDate}
+    return { ...item, fromDate, toDate: fromDate }
     // return {...item, fromDate: '2022-09-01T06:10:44.395Z', toDate: '2022-09-04T06:10:44.395Z'}
   }, [filter])
 
   useEffect(async () => {
-    const {data: {content}} = await api.post(`/sedo/audit/${id}`,
-      {filter: preparedFilterValues, sort}
-    )
-    setTabState({data: content})
-
+    const {
+      data: { content },
+    } = await api.post(`/sedo/audit/${id}`, {
+      filter: preparedFilterValues,
+      sort,
+    })
+    setTabState({ data: content })
   }, [api, setTabState, id, preparedFilterValues, sort])
 
-
-  const emptyWrapper = (({children}) => children)
+  const emptyWrapper = ({ children }) => children
 
   return (
     <div className="px-4 pb-4 w-full overflow-hidden flex-container">
@@ -148,8 +187,7 @@ const History = props => {
           inputWrapper={emptyWrapper}
           value={filter}
           onInput={b}
-        >
-        </FilterForm>
+        ></FilterForm>
       </div>
       <ListTable
         value={data}

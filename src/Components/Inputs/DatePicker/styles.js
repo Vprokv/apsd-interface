@@ -1,11 +1,13 @@
-import styled, { css } from "styled-components"
-import CalendarController from "./CalendarController"
-import MonthView, { MonthViewHeader } from '@Components/Components/Calendar/MonthView'
+import styled, { css } from 'styled-components'
+import CalendarController from './CalendarController'
+import MonthView, {
+  MonthViewHeader,
+} from '@Components/Components/Calendar/MonthView'
 import DayView from '@Components/Components/Calendar/DayView'
 
 export const ThemedCalendar = styled(CalendarController)`
-  background: #FFFFFF;
-  border: 1px solid #DFE0EB;
+  background: #ffffff;
+  border: 1px solid #dfe0eb;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   border-radius: 0px 0px 6px 6px;
   width: 300px;

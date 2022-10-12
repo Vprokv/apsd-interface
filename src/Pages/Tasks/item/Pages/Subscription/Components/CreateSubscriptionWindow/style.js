@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
-import CheckBoxGroupInput from '@Components/Components/Inputs/CheckboxGroup';
+import CheckBoxGroupInput from '@Components/Components/Inputs/CheckboxGroup'
 
 export const SubscriptionWindowComponent = styled(ModalWindow)`
   width: 81.25%;
@@ -15,7 +15,7 @@ export const SelectedSubscriptionContainer = styled.div`
 export const CheckBoxGroupContainer = styled(CheckBoxGroupInput)`
   --height-checkboxGroup-container: auto;
 
-  * > * > button>:nth-child(2)  {
+  * > * > button > :nth-child(2) {
     width: 90.25%;
     text-align: initial;
     white-space: nowrap;
