@@ -27,12 +27,15 @@ const MyTasks = ({ onOpenNewTab }) => {
   const api = useContext(ApiContext)
   const { statistic, setStatistic } = useStatistic()
 
-  useEffect(async () => {
-    const {
-      data: [data],
-    } = await api.post(URL_TASK_STATISTIC)
-    setStatistic(data)
-  }, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      const {
+        data: [data],
+      } = await api.post(URL_TASK_STATISTIC)
+      return data
+    }
+    setStatistic(fetchData())
+  }, [setStatistic])
 
   const handleOpenNewTab = useCallback(
     (path) => () => onOpenNewTab(path),
