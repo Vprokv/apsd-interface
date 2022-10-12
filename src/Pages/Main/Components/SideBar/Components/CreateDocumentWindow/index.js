@@ -92,9 +92,7 @@ const CreateDocumentWindow = ({ onClose }) => {
     return (
       <div className="flex flex-wrap">
         {templates.map(({ label, value }) => (
-          <textarea className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2">
-            {`${label} = ${value}`}
-          </textarea>
+          <textarea key={label} className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2" defaultValue={`${label} = ${value}`}/>
         ))}
       </div>
     )

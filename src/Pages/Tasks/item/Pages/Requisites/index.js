@@ -55,11 +55,14 @@ const Requisites = (props) => {
     [documentData, setDocumentState],
   )
 
-  useEffect(async () => {
-    const {
-      data: { children },
-    } = await api.post(`/sedo/type/config/${documentData.type}/design`)
-    setTabState({ data: children })
+  useEffect(() => {
+    const fecth = async () => {
+      const {
+        data: { children },
+      } = await api.post(`/sedo/type/config/${documentData.type}/design`)
+      setTabState({ data: children })
+    }
+    fecth()
   }, [api, setTabState, documentData])
 
   const parsedDesign = useMemo(

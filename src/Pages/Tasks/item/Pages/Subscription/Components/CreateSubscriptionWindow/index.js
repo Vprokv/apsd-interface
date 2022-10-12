@@ -135,18 +135,24 @@ const CreateSubscriptionWindow = (props) => {
     stateId: WINDOW_ADD_SUBSCRIPTION,
   })
 
-  useEffect(async () => {
-    const { data } = await api.post(URL_SUBSCRIPTION_EVENTS)
-    setTabState({ data })
+  useEffect(() => {
+    const fecth = async () => {
+      const { data } = await api.post(URL_SUBSCRIPTION_EVENTS)
+      setTabState({ data })
+    }
+    fecth()
   }, [id, setTabState])
 
-  useEffect(async () => {
-    const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS, {
-      // "subscribersIDs": [r_object_id]
-      // documentId: id,
-      // type
-    })
-    return data
+  useEffect(() => {
+    const fecth = async () => {
+      const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS, {
+        // "subscribersIDs": [r_object_id]
+        // documentId: id,
+        // type
+      })
+      return data  
+    }
+    fecth()
   }, [api])
 
   const sideBar = useMemo(

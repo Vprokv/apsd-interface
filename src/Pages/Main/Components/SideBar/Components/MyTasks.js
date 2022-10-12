@@ -32,9 +32,9 @@ const MyTasks = ({ onOpenNewTab }) => {
       const {
         data: [data],
       } = await api.post(URL_TASK_STATISTIC)
-      return data
+      setStatistic(data)
     }
-    setStatistic(fetchData())
+    fetchData()
   }, [setStatistic])
 
   const handleOpenNewTab = useCallback(

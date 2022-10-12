@@ -25,9 +25,9 @@ import {
   CustomValuesClassification,
   CustomValuesOrgStructure,
   CustomValuesSelect,
+  CustomValuesInput,
+  CustomValuesTextArea
 } from './Components/CustomValuesSelect'
-import TextArea from '@Components/Components/Inputs/TextArea'
-import Input from '@Components/Components/Inputs/Input'
 
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
@@ -146,8 +146,8 @@ export const validationRules = {
 export const fieldsDictionary = {
   Classification: CustomValuesClassification,
   Combobox: CustomValuesSelect,
-  Text: Input,
-  TextArea,
+  Text: CustomValuesInput,
+  TextArea: CustomValuesTextArea,
   Orgstructure: CustomValuesOrgStructure,
   DocumentPicker: DocumentSelect,
   Date: DatePicker,

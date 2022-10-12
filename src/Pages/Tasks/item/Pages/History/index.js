@@ -167,14 +167,17 @@ const History = (props) => {
     // return {...item, fromDate: '2022-09-01T06:10:44.395Z', toDate: '2022-09-04T06:10:44.395Z'}
   }, [filter])
 
-  useEffect(async () => {
-    const {
-      data: { content },
-    } = await api.post(`/sedo/audit/${id}`, {
-      filter: preparedFilterValues,
-      sort,
-    })
-    setTabState({ data: content })
+  useEffect(() => {
+    const fecth = async () => {
+      const {
+        data: { content },
+      } = await api.post(`/sedo/audit/${id}`, {
+        filter: preparedFilterValues,
+        sort,
+      })
+      setTabState({ data: content })
+    }
+    fecth()
   }, [api, setTabState, id, preparedFilterValues, sort])
 
   const emptyWrapper = ({ children }) => children
