@@ -24,7 +24,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js",
+    "test": "node scripts/test.js --watchAll=false",
     "lint:fix": "eslint . --max-warnings=0 --fix"
   },
   "prettier": "@imaginary-cloud/prettier-config",
