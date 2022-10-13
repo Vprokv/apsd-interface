@@ -350,11 +350,13 @@ const OrgStructureWindow = (props) => {
 
 OrgStructureWindow.propTypes = {
   onClose: PropTypes.func,
+  sendValue: PropTypes.func,
 }
 
 OrgStructureWindow.defaultProps = {
   onInput: () => null,
   onClose: () => null,
+  sendValue: () => null,
 }
 
 const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
