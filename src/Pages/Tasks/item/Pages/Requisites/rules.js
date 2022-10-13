@@ -20,6 +20,7 @@ import {
 } from '../../../../../components_ocean/Logic/Validator/constants'
 import createRegExpFromString from '../../../../../components_ocean/Utils/createRegExpFromString'
 import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '../../../../../contants'
+import Classification from './Components/Classification'
 import { URL_ENTITY_LIST } from '../../../../../ApiList'
 import {
   CustomValuesClassification,
@@ -28,6 +29,8 @@ import {
   CustomValuesInput,
   CustomValuesTextArea
 } from './Components/CustomValuesSelect'
+import TextArea from '@Components/Components/Inputs/TextArea'
+import Input from '@Components/Components/Inputs/Input'
 
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
@@ -179,7 +182,6 @@ const getLoadFunction = (accumulator) => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         id: dss_attr_name,
         type: dss_component_reference,
-        query: query,
       })
       return data
     }

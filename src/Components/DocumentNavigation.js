@@ -13,6 +13,7 @@ export const NavigationItem = styled(NavLink)`
   font-weight: 500;
   font-size: 14px;
   padding: 8px 16px 12px;
+
   &.active {
     color: var(--blue-1);
     border-bottom: 2px solid var(--blue-1);

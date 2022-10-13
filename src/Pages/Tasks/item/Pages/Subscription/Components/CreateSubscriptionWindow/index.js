@@ -20,15 +20,9 @@ import HeaderCell from '../../../../../../../Components/ListTableComponents/Head
 import { useRecoilValue } from 'recoil'
 import CheckBox from '../../../../../../../Components/Inputs/CheckBox'
 import { useParams } from 'react-router-dom'
-import {
-  URL_SUBSCRIPTION_CHANNELS,
-  URL_SUBSCRIPTION_EVENTS,
-} from '../../../../../../../ApiList'
+import { URL_SUBSCRIPTION_CHANNELS, URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
 import useTabItem from '../../../../../../../components_ocean/Logic/Tab/TabItem'
-import {
-  PRESENT_DATE_FORMAT,
-  WINDOW_ADD_SUBSCRIPTION,
-} from '../../../../../../../contants'
+import { PRESENT_DATE_FORMAT, WINDOW_ADD_SUBSCRIPTION } from '@/contants'
 import dayjs from 'dayjs'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import FilterForm from '@Components/Components/Forms'
@@ -43,6 +37,7 @@ import SendSystem from './Components/CheckBox/SendSystem'
 import SendEmail from './Components/CheckBox/SendEmail'
 import Button from '@/Components/Button'
 import { useCreateSubscription } from './useCreateSubscription'
+import PropTypes from 'prop-types'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -113,8 +108,7 @@ const filterConfig = [
 ]
 const emptyWrapper = ({ children }) => children
 
-const CreateSubscriptionWindow = (props) => {
-  const { onClose } = props
+const CreateSubscriptionWindow = ({ onClose }) => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -136,29 +130,28 @@ const CreateSubscriptionWindow = (props) => {
   })
 
   useEffect(() => {
-    const fecth = async () => {
+    async function fetchData() {
       const { data } = await api.post(URL_SUBSCRIPTION_EVENTS)
       setTabState({ data })
     }
-    fecth()
-  }, [id, setTabState])
 
-  useEffect(() => {
-    const fecth = async () => {
-      const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS, {
-        // "subscribersIDs": [r_object_id]
-        // documentId: id,
-        // type
-      })
-      return data  
-    }
-    fecth()
-  }, [api])
+    fetchData()
+  }, [id, setTabState, api])
+
+  // useEffect(async () => {
+  //   const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS, {
+  //     // "subscribersIDs": [r_object_id]
+  //     // documentId: id,
+  //     // type
+  //   })
+  //   return data
+  // }, [api])
 
   const sideBar = useMemo(
     () => (
       <div className="h-full">
         <CheckBoxGroupContainer
+          headerComponent={() => <div />}
           id="name"
           options={data}
           valueKey={'name'}
@@ -207,10 +200,9 @@ const CreateSubscriptionWindow = (props) => {
   })
 
   const onSave = useCallback(async () => {
-    const as = await handleSaveClick(api)(createData)
-    console.log(as)
+    await handleSaveClick(api)(createData)
     onClose()
-  }, [createData, handleSaveClick])
+  }, [createData, handleSaveClick, api, onClose])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
@@ -276,6 +268,13 @@ const CreateSubscriptionWindow = (props) => {
       </div>
     </div>
   )
+}
+
+CreateSubscriptionWindow.propTypes = {
+  onClose: PropTypes.func,
+}
+CreateSubscriptionWindow.defaultProps = {
+  onClose: () => null,
 }
 
 const CreateSubscriptionWindowWrapper = (props) => (

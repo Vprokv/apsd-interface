@@ -10,13 +10,9 @@ import { OrgStructureWindowComponent, SelectedEmployeeContainer } from './style'
 import { ApiContext, WINDOW_ADD_EMPLOYEE } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Button from '@/Components/Button'
-import BaseCell, {
-  sizes as baseCellSize,
-} from '../../ListTableComponents/BaseCell'
-import BaseSubCell, {
-  sizes as baseSubCellSize,
-} from '../../ListTableComponents/BaseSubCell'
-import { FilterForm, SearchInput } from '../../../Pages/Tasks/list/styles'
+import BaseCell from '../../ListTableComponents/BaseCell'
+import BaseSubCell from '../../ListTableComponents/BaseSubCell'
+import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import ListTable from '../../../components_ocean/Components/Tables/ListTable'
@@ -30,7 +26,7 @@ import {
   URL_ORGSTURCTURE_BRANCHES,
   URL_ORGSTURCTURE_DEPARTMENTS,
   URL_ORGSTURCTURE_ORGANIZATIONS,
-} from '../../../ApiList'
+} from '@/ApiList'
 import UserCard from './Components/UserCard'
 import closeIcon from '../../../Icons/closeIcon'
 import LoadableSelect from '../Select'
@@ -41,6 +37,7 @@ import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import { AddUserOptionsFullName } from '../UserSelect'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import useDefaultFilter from './useDefaultFilter'
+import PropTypes from 'prop-types'
 
 const columns = [
   {
@@ -94,6 +91,7 @@ const OrgStructureWindow = (props) => {
     valueKey,
     multiple,
     returnOption,
+    id,
   } = props
 
   const { setLimit, setPage, paginationState } = pagination
@@ -208,7 +206,7 @@ const OrgStructureWindow = (props) => {
     [api, filter, options],
   )
 
-  useEffect(() => loadFunction(), [loadFunction])
+  useEffect(() => loadFunction(), [])
 
   const onRemoveSelectedValue = useCallback(
     (id) => () =>
@@ -251,9 +249,9 @@ const OrgStructureWindow = (props) => {
   )
 
   const handleClick = useCallback(() => {
-    onInput({ valueKeys, cache })
+    onInput(selectState, id)
     onClose()
-  }, [onInput, onClose, cache, valueKeys])
+  }, [onInput, onClose, selectState, id])
 
   const handleSelectClick = useCallback(
     (obj) => () => {
@@ -278,7 +276,7 @@ const OrgStructureWindow = (props) => {
               inputWrapper={emptyWrapper}
               value={filter}
               onInput={setFilter}
-            ></FilterForm>
+            />
           </div>
           <ListTable
             rowComponent={useMemo(
@@ -326,7 +324,7 @@ const OrgStructureWindow = (props) => {
               page={paginationState.page}
               setLimit={setLimit}
               setPage={setPage}
-            ></Pagination>
+            />
             <div className="flex items-center justify-end">
               <Button
                 className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
@@ -348,8 +346,13 @@ const OrgStructureWindow = (props) => {
   )
 }
 
+OrgStructureWindow.propTypes = {
+  onClose: PropTypes.func,
+}
+
 OrgStructureWindow.defaultProps = {
   onInput: () => null,
+  onClose: () => null,
 }
 
 const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
@@ -381,22 +384,19 @@ const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
     ]
   }, [sortQuery])
 
-  const loadRef = useCallback(
-    async (search) => {
-      const { limit, offset } = pagination.paginationState
-      const {
-        data: { content },
-      } = await api.post(URL_EMPLOYEE_LIST, {
-        filter,
-        limit,
-        offset,
-        sort,
-      })
-      content.forEach(AddUserOptionsFullName)
-      setModalWindowOptions(content)
-    },
-    [api, filter, pagination.paginationState, sort],
-  )
+  const loadRef = useCallback(async () => {
+    const { limit, offset } = pagination.paginationState
+    const {
+      data: { content },
+    } = await api.post(URL_EMPLOYEE_LIST, {
+      filter,
+      limit,
+      offset,
+      sort,
+    })
+    content.forEach(AddUserOptionsFullName)
+    setModalWindowOptions(content)
+  }, [api, filter, pagination.paginationState, sort])
 
   return (
     <OrgStructureWindowComponent
@@ -418,4 +418,15 @@ const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
     </OrgStructureWindowComponent>
   )
 }
+
+OrgStructureWindowWrapper.propTypes = {
+  onClose: PropTypes.func,
+  open: PropTypes.func,
+}
+
+OrgStructureWindowWrapper.defaultProps = {
+  open: () => null,
+  onClose: () => null,
+}
+
 export default OrgStructureWindowWrapper

@@ -6,10 +6,10 @@ import {
 import { Navigate, Route, Routes } from 'react-router-dom'
 import SideBar from './Components/SideBar'
 import Requisites from './Pages/Requisites'
-import Contain from './Pages/Contain'
-import Content from './Pages/Content'
 import Subscription from './Pages/Subscription'
 import Objects from './Pages/Objects'
+import Contain from './Pages/Contain'
+import History from './Pages/History'
 
 const pages = {
   // TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
@@ -20,36 +20,29 @@ const pages = {
     Component: Requisites,
     weight: 1,
   },
-  content: {
-    label: 'Контент',
-    path: 'content',
-    fieldKey: 'content',
-    Component: Content,
-    weight: 2,
-  },
   subscriptions: {
     label: 'Подписка',
     path: 'subscriptions',
     Component: Subscription,
-    weight: 3,
+    weight: 2,
   },
   technical_objects: {
     label: 'Технические объекты',
     path: 'objects',
     Component: Objects,
-    weight: 4,
+    weight: 3,
   },
-  title_structure: {
+  contain: {
     label: 'Состав титула',
     path: 'contain',
     Component: Contain,
-    weight: 5,
+    weight: 4,
   },
   audit: {
     label: 'История',
     path: 'history',
     Component: History,
-    weight: 6,
+    weight: 5,
   },
 }
 

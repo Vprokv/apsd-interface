@@ -5,6 +5,7 @@
 .bg-blue-1 {
     background-color: var(--blue-1);
 }
+
 .color-blue-2 {
     color: var(--light-blue);
 }
@@ -12,12 +13,15 @@
 .bg-blue-4 {
     background-color: var(--blue-4);
 }
+
 .color-blue-4 {
     color: var(--blue-4);
 }
+
 .bg-blue-3 {
     background-color: var(--blue-hover);
 }
+
 .color-blue-3 {
     color: var(--blue-hover);
 }
@@ -61,6 +65,7 @@
 .bg-green {
     background-color: var(--green);
 }
+
 .color-secondary {
     color: var(--secondary);
 }

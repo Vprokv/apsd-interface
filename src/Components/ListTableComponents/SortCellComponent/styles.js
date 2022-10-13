@@ -5,6 +5,7 @@ export const SortButton = styled.button`
   transition: color 250ms ease-in-out;
   color: ${({ current }) =>
     current ? 'var(--blue-1)' : 'var(--text-secondary)'};
+
   &:hover {
     color: var(--base);
   }

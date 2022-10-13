@@ -59,7 +59,7 @@ const NewTaskItem = (props) => {
 
   return (
     <DocumentTypeContext.Provider value={TASK_ITEM_NEW_DOCUMENT}>
-      <BaseItem documentTabs={data.documentTabs} />
+      <BaseItem documentTabs={data.documentTabs} />;
     </DocumentTypeContext.Provider>
   )
 }

@@ -8,6 +8,7 @@ export const Resizer = styled.div`
   z-index: 2;
   cursor: e-resize;
   width: 5px;
+
   &:hover {
     &::after {
       display: block;

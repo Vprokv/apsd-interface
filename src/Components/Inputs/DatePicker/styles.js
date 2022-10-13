@@ -34,6 +34,7 @@ export const NavigationElementController = styled.div`
 `
 export const ThemedView = styled(MonthView)`
   padding: 0 8px 16px;
+
   ${MonthViewHeader} {
     padding: 8px 0 6px;
     font-weight: 400;

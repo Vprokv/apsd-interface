@@ -17,13 +17,16 @@ import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell
 import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
 import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
 import LoadableSelect from '../../../../../Components/Inputs/Select'
-import UserSelect, {
-  AddUserOptionsFullName,
-} from '../../../../../Components/Inputs/UserSelect'
+import UserSelect from '../../../../../Components/Inputs/UserSelect'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
 }
+
+const AddUserOptionsFullName = (v) => ({
+  ...v,
+  fullNames: `${v.dss_first_name} ${v.department_name} ${v.dss_last_name}`,
+})
 
 const columns = [
   {
@@ -167,17 +170,14 @@ const History = (props) => {
     // return {...item, fromDate: '2022-09-01T06:10:44.395Z', toDate: '2022-09-04T06:10:44.395Z'}
   }, [filter])
 
-  useEffect(() => {
-    const fecth = async () => {
-      const {
-        data: { content },
-      } = await api.post(`/sedo/audit/${id}`, {
-        filter: preparedFilterValues,
-        sort,
-      })
-      setTabState({ data: content })
-    }
-    fecth()
+  useEffect(async () => {
+    const {
+      data: { content },
+    } = await api.post(`/sedo/audit/${id}`, {
+      filter: preparedFilterValues,
+      sort,
+    })
+    setTabState({ data: content })
   }, [api, setTabState, id, preparedFilterValues, sort])
 
   const emptyWrapper = ({ children }) => children

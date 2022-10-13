@@ -6,16 +6,9 @@ import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Pl
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import Select from '../../../../../Components/Inputs/Select'
 import { useParams } from 'react-router-dom'
-import {
-  ApiContext,
-  TASK_ITEM_OBJECTS,
-  TASK_ITEM_SUBSCRIPTION,
-} from '../../../../../contants'
+import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
-import {
-  URL_SUBSCRIPTION_LIST,
-  URL_TECHNICAL_OBJECTS_LIST,
-} from '../../../../../ApiList'
+import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
 import { FilterForm, TableActionButton } from '../../styles'
 import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
 import RowComponent from '../../../list/Components/RowComponent'
@@ -110,30 +103,6 @@ const filterFormConfig = [
   },
 ]
 
-const mockData = [
-  {
-    name: 'ПС Железнодорожная',
-    code: 'ЖДС-2/1',
-    type: 'Линейный',
-    res: 'Северный',
-    address: 'МО, мкр. Железнодорожный, ст. Железнодорожная',
-  },
-  {
-    name: 'ПС Северная',
-    code: 'ЖДС-2/1',
-    type: 'Линейный',
-    res: 'Северный',
-    address: 'МО, мкр. Железнодорожный, ст. Железнодорожная',
-  },
-  {
-    name: 'ПС Южная',
-    code: 'ЖДС-2/1',
-    type: 'Линейный',
-    res: 'Северный',
-    address: 'МО, мкр. Железнодорожный, ст. Железнодорожная',
-  },
-]
-
 const Objects = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -141,7 +110,7 @@ const Objects = (props) => {
   const [sortQuery, onSort] = useState({})
 
   const {
-    tabState: { data: { technicalObjects } = [] },
+    tabState: { data: { technicalObjects = [] } = {} },
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
@@ -153,12 +122,11 @@ const Objects = (props) => {
     return loadDataHelper(async () => {
       const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
         documentId: id,
-        type,
       })
       console.log(data, 'data')
       return data
     })
-  }, [id, type, api, loadDataHelper])
+  }, [id, api, loadDataHelper])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -183,7 +151,7 @@ const Objects = (props) => {
           inputWrapper={emptyWrapper}
           value={a}
           onInput={b}
-        ></FilterForm>
+        />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium">
             Добавить

@@ -17,6 +17,14 @@ RowComponent.propTypes = {
     PropTypes.node,
   ]),
   style: PropTypes.object,
+  value: PropTypes.object,
+}
+
+RowComponent.defaultProps = {
+  className: '',
+  emplId: '',
+  style: {},
+  value: {},
 }
 
 export default RowComponent

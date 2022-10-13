@@ -1,68 +1,45 @@
-import React, { useCallback, useContext, useMemo, useRef } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { SidebarContainer } from './styles'
 import DeleteIcon from './Group 846.svg'
 import SaveIcon from './SaveIcon.svg'
 import OtherIcon from './OtherIcon.svg'
 import Button from '@/Components/Button'
-import {
-  ApiContext,
-  DocumentTypeContext,
-  TASK_ITEM_NEW_DOCUMENT,
-} from '../../../../../contants'
+import { DocumentTypeContext } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
-import {
-  URL_DOCUMENT_CREATE,
-  URL_DOCUMENT_UPDATE,
-} from '../../../../../ApiList'
-import { useNavigate, useParams } from 'react-router-dom'
-
-const buttons = {
-  save: {
-    icon: SaveIcon,
-    title: 'Сохранить',
-  },
-  delete: {
-    icon: DeleteIcon,
-    title: 'Удалить',
-  },
-  export_doc: {
-    icon: OtherIcon,
-    title: 'Выгрузить документ',
-  },
-  print_card: {
-    icon: OtherIcon,
-    title: 'Печать карточки',
-  },
-}
+import useSaveApi from './useApi'
 
 const SideBar = (props) => {
-  const api = useContext(ApiContext)
   const documentType = useContext(DocumentTypeContext)
-  const { type: typeDoc } = useParams()
-  const navigate = useNavigate()
-
   const {
     tabState: { data: { documentActions } = [], data: { values = {} } = {} },
   } = useTabItem({ stateId: documentType })
+  const { saveFunc } = useSaveApi({ documentType, values })
 
-  const handleClick = useCallback(
-    (type) => async () => {
-      if (type === 'save') {
-        const {
-          data: { id },
-        } = await api.post(
-          documentType === TASK_ITEM_NEW_DOCUMENT
-            ? URL_DOCUMENT_CREATE
-            : URL_DOCUMENT_UPDATE,
-          { values, type: typeDoc },
-        )
-
-        id && navigate(`/task/${id}/${typeDoc}`)
-      }
-    },
-    [values],
-  )
+  const buttons = useMemo(() => {
+    return {
+      save: {
+        icon: SaveIcon,
+        title: 'Сохранить',
+        handleClick: saveFunc,
+      },
+      delete: {
+        icon: DeleteIcon,
+        title: 'Удалить',
+        handleClick: () => null,
+      },
+      export_doc: {
+        icon: OtherIcon,
+        title: 'Выгрузить документ',
+        handleClick: () => null,
+      },
+      print_card: {
+        icon: OtherIcon,
+        title: 'Печать карточки',
+        handleClick: () => null,
+      },
+    }
+  }, [saveFunc])
 
   const documentButtons = useMemo(() => {
     if (!documentActions) {
@@ -70,12 +47,12 @@ const SideBar = (props) => {
     }
     return documentActions?.reduce((acc, { name }) => {
       if (buttons[name]) {
-        const { icon, title } = buttons[name]
+        const { icon, title, handleClick } = buttons[name]
         acc.push(
           <Button
             className="font-weight-light"
             key={title}
-            onClick={handleClick(name)}
+            onClick={handleClick}
           >
             <div className="flex items-center">
               <img src={icon} alt="" className="mr-2" />
@@ -92,7 +69,7 @@ const SideBar = (props) => {
       }
       return acc
     }, [])
-  }, [documentActions, handleClick])
+  }, [documentActions, buttons])
 
   return <SidebarContainer>{documentButtons}</SidebarContainer>
 }

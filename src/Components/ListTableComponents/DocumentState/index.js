@@ -4,7 +4,7 @@ import Icon from '@Components/Components/Icon'
 import calendarIcon from '../../../Icons/calendarIcon'
 import clockIcon from '../../../Icons/clockIcon'
 import dayjs from 'dayjs'
-import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '../../../contants'
+import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
 
 const DocumentState = ({
   ParentValue: { documentStatus, creationDate, dueDate },

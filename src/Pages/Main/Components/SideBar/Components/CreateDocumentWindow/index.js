@@ -24,12 +24,7 @@ import { useNavigate } from 'react-router-dom'
 
 const FirstLevelHeaderComponent = ({ children, selected }) => (
   <div className="flex items-start font-size-14 w-full">
-    <DocumentIcon
-      key={children.id}
-      icon={NavigationDocumentIcon}
-      size={22}
-      selected={selected}
-    />
+    <DocumentIcon icon={NavigationDocumentIcon} size={22} selected={selected} />
     <div className="mt-0.5 w-full">{children}</div>
   </div>
 )
@@ -92,7 +87,9 @@ const CreateDocumentWindow = ({ onClose }) => {
     return (
       <div className="flex flex-wrap">
         {templates.map(({ label, value }) => (
-          <textarea key={label} className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2" defaultValue={`${label} = ${value}`}/>
+          <text className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2">
+            {`${label} = ${value}`}
+          </text>
         ))}
       </div>
     )
