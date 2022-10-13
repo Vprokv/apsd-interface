@@ -117,7 +117,7 @@ const CreateSubscriptionWindow = ({ onClose }) => {
   const [events, setEventsState] = useState([])
   const [sedo, setSedo] = useState([])
   const [email, setEmail] = useState([])
-  const [value, onInput] = useState({ valueKeys: [], cache: new Map() })
+  const [value, sendValue] = useState({ valueKeys: [], cache: new Map() })
   const { valueKeys, cache } = value
 
   const { dss_first_name, dss_last_name, dss_middle_name } =
@@ -169,7 +169,7 @@ const CreateSubscriptionWindow = ({ onClose }) => {
 
   const userTable = useMemo(
     () =>
-      valueKeys.reduce((acc, val) => {
+      valueKeys?.reduce((acc, val) => {
         if (cache.has(val)) {
           acc.push(cache.get(val))
         }
@@ -184,7 +184,7 @@ const CreateSubscriptionWindow = ({ onClose }) => {
   const today = useMemo(() => dayjs().format(PRESENT_DATE_FORMAT), [])
   const handleCloseIconClick = useCallback(
     () =>
-      onInput((value) => {
+      sendValue((value) => {
         const prevValue = { ...value }
         const keys = valueKeys.filter((val) => !selectState.includes(val))
         return { ...prevValue, valueKeys: keys }
@@ -224,7 +224,7 @@ const CreateSubscriptionWindow = ({ onClose }) => {
           />
         </div>
         <div className="flex items-center color-text-secondary ml-auto">
-          <OrgStructure value={valueKeys} onInput={onInput} />
+          <OrgStructure value={valueKeys} sendValue={sendValue} />
           <TableActionButton className="ml-2" onClick={handleCloseIconClick}>
             <Icon icon={deleteIcon} />
           </TableActionButton>
