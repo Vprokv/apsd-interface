@@ -1,50 +1,71 @@
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import Select from '@/Components/Inputs/Select'
 import { useParams } from 'react-router-dom'
 import { ApiContext, WINDOW_ADD_OBJECT } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_ENTITY_LIST } from '@/ApiList'
-import { CreateObjectsWindowComponent } from './styled'
+import { CreateObjectsWindowComponent, FilterForm } from './styled'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import Button from '@Components/Components/Button'
+import Icon from '@Components/Components/Icon'
+import ListTable from '@Components/Components/Tables/ListTable'
+import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
+import { SelectedSubscriptionContainer } from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/style'
+import ScrollBar from '@Components/Components/ScrollBar'
+import { SearchInput } from '@/Pages/Tasks/list/styles'
+import searchIcon from '@/Icons/searchIcon'
+
+const plugins = {
+  outerSortPlugin: { component: SortCellComponent },
+  selectPlugin: {
+    driver: FlatSelect,
+    component: CheckBox,
+    style: { margin: 'auto 0' },
+    valueKey: 'r_object_id',
+  },
+}
 
 const columns = [
   {
     id: 'name',
     label: 'Наименование',
-    component: ({ ParentValue: { name } }) => (
-      <BaseCell value={name} className="flex items-center h-10" />
+    component: ({ ParentValue: { dss_name } }) => (
+      <BaseCell value={dss_name} className="flex items-center h-10" />
     ),
     sizes: 250,
   },
   {
     id: 'code',
     label: 'Код',
-    component: ({ ParentValue: { code } }) => (
-      <BaseCell value={code} className="flex items-center h-10" />
+    component: ({ ParentValue: { dss_voltage } }) => (
+      <BaseCell value={dss_voltage} className="flex items-center h-10" />
     ),
     sizes: 180,
   },
   {
     id: 'type',
     label: 'Тип объекта',
-    component: ({ ParentValue: { type } }) => (
-      <BaseCell value={type} className="flex items-center h-10" />
+    component: ({ ParentValue: { dss_type } }) => (
+      <BaseCell value={dss_type} className="flex items-center h-10" />
     ),
     sizes: 230,
   },
   {
     id: 'res',
     label: 'РЭС',
-    component: ({ ParentValue: { res } }) => (
-      <BaseCell value={res} className="flex items-center h-10" />
+    component: ({ ParentValue: { dss_res } }) => (
+      <BaseCell value={dss_res} className="flex items-center h-10" />
     ),
     sizes: 220,
   },
   {
     id: 'address',
     label: 'Адрес',
-    component: ({ ParentValue: { address } }) => (
-      <BaseCell value={address} className="flex items-center h-10" />
+    component: ({ ParentValue: { dss_addr } }) => (
+      <BaseCell value={dss_addr} className="flex items-center h-10" />
     ),
     sizes: 540,
   },
@@ -52,7 +73,39 @@ const columns = [
 
 const filterFormConfig = [
   {
-    id: '1',
+    id: 'one',
+    component: SearchInput,
+    placeholder: 'Поиск',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'two',
+    component: SearchInput,
+    placeholder: 'Наименование',
+  },
+  {
+    id: '3',
+    component: Select,
+    placeholder: 'Балансодержатель',
+    options: [
+      {
+        ID: 'ASD',
+        SYS_NAME: 'TT',
+      },
+      {
+        ID: 'ASD1',
+        SYS_NAME: 'TT2',
+      },
+    ],
+  },
+  {
+    id: '4',
     component: Select,
     placeholder: 'Тип объекта',
     options: [
@@ -67,19 +120,9 @@ const filterFormConfig = [
     ],
   },
   {
-    id: '2',
-    component: Select,
+    id: '5',
+    component: SearchInput,
     placeholder: 'Код',
-    options: [
-      {
-        ID: 'ASD',
-        SYS_NAME: 'TT',
-      },
-      {
-        ID: 'ASD1',
-        SYS_NAME: 'TT2',
-      },
-    ],
   },
 ]
 
@@ -102,18 +145,64 @@ const CreateObjectsWindow = ({ onClose }) => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         type: 'ddt_dict_technical_object',
       })
-      console.log(data, 'data')
+      console.log(data, 'data ent')
       setTabState({ data })
     }
 
     fetchData()
   }, [id, setTabState, api])
 
-  return <div></div>
+  const emptyWrapper = ({ children }) => children
+
+  return (
+    <div className="flex flex-col overflow-hidden h-full">
+      <div className="flex overflow-hidden w-full h-full">
+        <SelectedSubscriptionContainer>
+          <ScrollBar className="pr-4 py-4">{/*{sideBar}*/}</ScrollBar>
+        </SelectedSubscriptionContainer>
+        <div className="px-4 pb-4 overflow-hidden flex-container">
+          <div className="flex items-center py-4">
+            <FilterForm
+              fields={filterFormConfig}
+              inputWrapper={emptyWrapper}
+              value={filter}
+              onInput={setFilter}
+            />
+          </div>
+
+          <ListTable
+            value={data}
+            columns={columns}
+            plugins={plugins}
+            headerCellComponent={HeaderCell}
+            selectState={selectState}
+            onSelect={setSelectState}
+            sortQuery={sortQuery}
+            onSort={onSort}
+            valueKey="id"
+          />
+        </div>
+      </div>
+      <div className="flex items-center justify-end">
+        <Button
+          className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center font-weight-normal"
+          onClick={onClose}
+        >
+          Закрыть
+        </Button>
+        <Button
+          className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
+          onClick={() => null}
+        >
+          Сохранить
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 const CreateObjectsWindowWindowWrapper = (props) => (
-  <CreateObjectsWindowComponent {...props} title="Добавление подписок">
+  <CreateObjectsWindowComponent {...props} title="Добавление технического объекта">
     <CreateObjectsWindow {...props} />
   </CreateObjectsWindowComponent>
 )
