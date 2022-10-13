@@ -24,6 +24,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
+    valueKey: 'id',
   },
 }
 
@@ -144,7 +145,7 @@ const Objects = (props) => {
   const [a, b] = useState({})
 
   return (
-    <div className="px-4 pb-4 overflow-hidden flex-container">
+    <div className="px-4 pb-4 overflow-hidden flex-container w-full">
       <div className="flex items-center py-4">
         <FilterForm
           fields={filterFormConfig}

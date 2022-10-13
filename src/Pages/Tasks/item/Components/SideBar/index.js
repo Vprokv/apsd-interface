@@ -4,6 +4,7 @@ import { SidebarContainer } from './styles'
 import DeleteIcon from './Group 846.svg'
 import SaveIcon from './SaveIcon.svg'
 import OtherIcon from './OtherIcon.svg'
+import PrintIcon from './PrintIcon.svg'
 import Button from '@/Components/Button'
 import { DocumentTypeContext } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
@@ -34,12 +35,14 @@ const SideBar = (props) => {
         handleClick: () => null,
       },
       print_card: {
-        icon: OtherIcon,
+        icon: PrintIcon,
         title: 'Печать карточки',
         handleClick: () => null,
       },
     }
   }, [saveFunc])
+
+  console.log(documentActions, 'documentActions')
 
   const documentButtons = useMemo(() => {
     if (!documentActions) {

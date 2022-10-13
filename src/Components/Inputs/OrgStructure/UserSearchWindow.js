@@ -92,6 +92,7 @@ const OrgStructureWindow = (props) => {
     multiple,
     returnOption,
     id,
+    sendValue
   } = props
 
   const { setLimit, setPage, paginationState } = pagination
@@ -250,8 +251,9 @@ const OrgStructureWindow = (props) => {
 
   const handleClick = useCallback(() => {
     onInput(selectState, id)
+    sendValue({ valueKeys, cache })
     onClose()
-  }, [onInput, onClose, selectState, id])
+  }, [onInput, onClose, selectState, id, valueKeys, cache])
 
   const handleSelectClick = useCallback(
     (obj) => () => {
