@@ -123,7 +123,6 @@ const Subscription = (props) => {
         documentId: id,
         type,
       })
-      // console.log(data, 'data')
       return data
     })
   }, [id, type, api, loadDataHelper])
@@ -151,7 +150,7 @@ const Subscription = (props) => {
           inputWrapper={emptyWrapper}
           value={a}
           onInput={b}
-        ></FilterForm>
+        />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
             className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"

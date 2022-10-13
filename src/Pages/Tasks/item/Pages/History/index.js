@@ -108,7 +108,6 @@ const History = (props) => {
   })
 
   const sort = useMemo(() => {
-    console.log(sortQuery)
     const { key, direction } = sortQuery
     if (!key || !direction) {
       return []

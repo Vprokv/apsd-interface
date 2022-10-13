@@ -124,7 +124,6 @@ const Objects = (props) => {
       const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
         documentId: id,
       })
-      console.log(data, 'data')
       return data
     })
   }, [id, api, loadDataHelper])
