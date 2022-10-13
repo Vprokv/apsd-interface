@@ -8,23 +8,16 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
-import {
-  ApiContext,
-  TASK_ITEM_HISTORY,
-  TASK_ITEM_SUBSCRIPTION,
-} from '../../../../../contants'
+import { ApiContext, TASK_ITEM_SUBSCRIPTION } from '@/contants'
 import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
 import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
-import Select from '../../../../../Components/Inputs/Select'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
-import { URL_SUBSCRIPTION_LIST } from '../../../../../ApiList'
+import { URL_SUBSCRIPTION_LIST } from '@/ApiList'
 import { FilterForm, TableActionButton } from '../../styles'
 import Icon from '../../../../../components_ocean/Components/Icon'
-import searchIcon from '../../../../../Icons/searchIcon'
 import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
-import RowComponent from '../../../list/Components/RowComponent'
 import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
 import Button from '../../../../../Components/Button'
 import filterIcon from '../../../list/icons/filterIcon'
