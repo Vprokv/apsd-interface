@@ -42,8 +42,6 @@ const SideBar = (props) => {
     }
   }, [saveFunc])
 
-  console.log(documentActions, 'documentActions')
-
   const documentButtons = useMemo(() => {
     if (!documentActions) {
       return []

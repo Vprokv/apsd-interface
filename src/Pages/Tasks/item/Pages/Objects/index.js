@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
 import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
@@ -17,6 +24,7 @@ import Button from '../../../../../Components/Button'
 import Icon from '../../../../../components_ocean/Components/Icon'
 import filterIcon from '../../../list/icons/filterIcon'
 import editIcon from '../../../../../Icons/editIcon'
+import CreateObjectsWindow from './Components/CreateObjectsWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -109,6 +117,15 @@ const Objects = (props) => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
+  const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
+  const openCreateObjectsWindow = useCallback(
+    () => setCreateObjectsWindow(true),
+    [],
+  )
+  const closeCreateObjectsWindow = useCallback(
+    () => setCreateObjectsWindow(false),
+    [],
+  )
 
   const {
     tabState: { data: { technicalObjects = [] } = {} },
@@ -124,7 +141,6 @@ const Objects = (props) => {
       const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
         documentId: id,
       })
-      console.log(data, 'data')
       return data
     })
   }, [id, api, loadDataHelper])
@@ -154,7 +170,10 @@ const Objects = (props) => {
           onInput={b}
         />
         <div className="flex items-center color-text-secondary ml-auto">
-          <Button className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium">
+          <Button
+            onClick={openCreateObjectsWindow}
+            className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+          >
             Добавить
           </Button>
           <TableActionButton className="ml-2">
@@ -164,6 +183,10 @@ const Objects = (props) => {
             <Icon icon={editIcon} />
           </TableActionButton>
         </div>
+        <CreateObjectsWindow
+          open={addCreateObjectsWindow}
+          onClose={closeCreateObjectsWindow}
+        />
       </div>
       <ListTable
         rowComponent={useMemo(
