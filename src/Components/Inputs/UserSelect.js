@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import AddEmployee from './OrgStructure/UserSearchWindow'
 import { ApiContext } from '@/contants'
 import { URL_EMPLOYEE_LIST } from '../../ApiList'
-import useDefaultFilter from './OrgStructure/useDefaultFilter'
 
 export const AddUserOptionsFullName = (v = {}) => ({
   ...v,
@@ -30,7 +29,7 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 const UserSelect = (props) => {
   const { loadFunction } = props
   const api = useContext(ApiContext)
-  const { organization, branchId } = useDefaultFilter()
+  const { organization, branchId } = {}
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(
     () => setAddEmployeeWindowState(true),

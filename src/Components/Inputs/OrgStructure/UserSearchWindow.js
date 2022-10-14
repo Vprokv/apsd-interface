@@ -36,7 +36,6 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import { AddUserOptionsFullName } from '../UserSelect'
 import usePagination from '../../../components_ocean/Logic/usePagination'
-import useDefaultFilter from './useDefaultFilter'
 import PropTypes from 'prop-types'
 
 const columns = [
@@ -361,7 +360,7 @@ const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
   const api = useContext(ApiContext)
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const [modalWindowOptions, setModalWindowOptions] = useState([])
-  const { organization, branchId } = useDefaultFilter()
+  const { organization, branchId } = {}
   const [filter, setFilter] = useState({ organization, branchId })
   const [sortQuery, onSort] = useState({})
 
