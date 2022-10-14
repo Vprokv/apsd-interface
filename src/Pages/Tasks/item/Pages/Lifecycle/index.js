@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const Lifecycle = (props) => {
-  return <div>Lifecycle</div>
+  return <div>Жизненный цикл</div>
 }
 
 Lifecycle.propTypes = {}

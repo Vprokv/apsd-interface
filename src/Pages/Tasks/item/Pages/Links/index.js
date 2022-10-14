@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const Links = (props) => {
-  return <div>Links</div>
+  return <div>Связанные документы</div>
 }
 
 Links.propTypes = {}

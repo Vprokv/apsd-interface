@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const Contain = (props) => {
-  return <div>Contain</div>
+  return <div>Состав титула</div>
 }
 
 Contain.propTypes = {}
