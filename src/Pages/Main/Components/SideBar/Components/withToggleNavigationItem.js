@@ -7,6 +7,8 @@ const WithToggleNavigationItem = ({ id, children }) => {
   const [isDisplayed, setDisplayedFlag] = useRecoilState(
     cachedLocalStorageValue(`navigationItem${id}`),
   )
+  console.log(isDisplayed, 'isDisplayed')
+
   return children({
     isDisplayed,
     toggleDisplayedFlag: useCallback(() => setDisplayedFlag((s) => !s), []),

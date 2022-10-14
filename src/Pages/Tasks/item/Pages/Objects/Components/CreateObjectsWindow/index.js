@@ -1,5 +1,11 @@
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import Select from '@/Components/Inputs/Select'
 import { useParams } from 'react-router-dom'
 import { ApiContext, WINDOW_ADD_OBJECT } from '@/contants'
@@ -17,6 +23,10 @@ import { SelectedSubscriptionContainer } from '@/Pages/Tasks/item/Pages/Subscrip
 import ScrollBar from '@Components/Components/ScrollBar'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import searchIcon from '@/Icons/searchIcon'
+import log from 'tailwindcss/lib/util/log'
+import ObjectCard from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow/Components/ObjectCard'
+import closeIcon from '@/Icons/closeIcon'
+import { value } from 'lodash/seq'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -145,7 +155,6 @@ const CreateObjectsWindow = ({ onClose }) => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         type: 'ddt_dict_technical_object',
       })
-      console.log(data, 'data ent')
       setTabState({ data })
     }
 
@@ -154,11 +163,46 @@ const CreateObjectsWindow = ({ onClose }) => {
 
   const emptyWrapper = ({ children }) => children
 
+
+  const onRemoveSelectedValue = useCallback(
+    (id) => () =>
+      setSelectState((prevValue) => {
+          const nextValue = Array.isArray(prevValue) ? [...prevValue] : []
+          nextValue.splice(nextValue.findIndex((objValueKey) => objValueKey === id, 1))
+          return nextValue
+      }),
+    [],
+  )
+
+  const objects = useMemo(
+    () =>
+      selectState.map((val) => {
+        const obj = data.find(({ r_object_id }) => r_object_id === val)
+        return (
+          <div className="bg-form-input-color p-3 flex mb-2 min-" key={val}>
+            <ObjectCard {...obj} />
+            <Button
+              onClick={onRemoveSelectedValue(val)}
+              type="button"
+              className="ml-auto padding-null mb-auto height-small"
+            >
+              <Icon
+                icon={closeIcon}
+                size={10}
+                className="color-text-secondary"
+              />
+            </Button>
+          </div>
+        )
+      }),
+    [selectState, data],
+  )
+
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <div className="flex overflow-hidden w-full h-full">
         <SelectedSubscriptionContainer>
-          <ScrollBar className="pr-4 py-4">{/*{sideBar}*/}</ScrollBar>
+          <ScrollBar className="pr-4 py-4">{objects}</ScrollBar>
         </SelectedSubscriptionContainer>
         <div className="px-4 pb-4 overflow-hidden flex-container">
           <div className="flex items-center py-4">
@@ -169,7 +213,6 @@ const CreateObjectsWindow = ({ onClose }) => {
               onInput={setFilter}
             />
           </div>
-
           <ListTable
             value={data}
             columns={columns}
@@ -202,7 +245,10 @@ const CreateObjectsWindow = ({ onClose }) => {
 }
 
 const CreateObjectsWindowWindowWrapper = (props) => (
-  <CreateObjectsWindowComponent {...props} title="Добавление технического объекта">
+  <CreateObjectsWindowComponent
+    {...props}
+    title="Добавление технического объекта"
+  >
     <CreateObjectsWindow {...props} />
   </CreateObjectsWindowComponent>
 )

@@ -37,3 +37,8 @@ export const URL_EMPLOYEE_LIST = '/sedo/employee/query'
 export const URL_ORGSTURCTURE_ORGANIZATIONS = '/sedo/orgstructure/organizations'
 export const URL_ORGSTURCTURE_BRANCHES = '/sedo/orgstructure/branches'
 export const URL_ORGSTURCTURE_DEPARTMENTS = '/sedo/orgstructure/departments'
+
+//STORAGE
+export const URL_STORAGE_BRANCH = 'apsd/archive/branch'
+export const URL_STORAGE_TITLE = 'apsd/archive/title'
+export const URL_STORAGE_DOCUMENT = 'apsd/archive/list'
