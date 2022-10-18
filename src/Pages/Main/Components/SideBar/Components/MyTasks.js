@@ -1,27 +1,21 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon } from '../style'
 import NavigationDocumentIcon from '../icons/NavigationDocumentIcon'
 import WithToggleNavigationItem from './withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
-import { TASK_LIST_PATH } from '../../../../../routePaths'
-import { URL_TASK_STATISTIC } from '../../../../../ApiList'
+import { TASK_LIST_PATH } from '@/routePaths'
+import { URL_TASK_STATISTIC } from '@/ApiList'
 import {
   EXPIRED,
   EXPIRED_1_3,
   EXPIRED_4_7,
   EXPIRED_8,
   TabNames,
-} from '../../../../Tasks/list/constants'
-import { ApiContext } from '../../../../../contants'
-import { useStatistic } from '../../../../Tasks/helper'
+} from '@/Pages/Tasks/list/constants'
+import { ApiContext } from '@/contants'
+import { useStatistic } from '@/Pages/Tasks/helper'
 
 const MyTasks = ({ onOpenNewTab }) => {
   const api = useContext(ApiContext)
@@ -45,7 +39,7 @@ const MyTasks = ({ onOpenNewTab }) => {
   return (
     <WithToggleNavigationItem id="Мои задания">
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className="mb-4">
+        <div className="px-2 mb-4">
           <button
             className="flex items-center w-full"
             onClick={toggleDisplayedFlag}
@@ -133,6 +127,8 @@ const MyTasks = ({ onOpenNewTab }) => {
   )
 }
 
-MyTasks.propTypes = {}
+MyTasks.propTypes = {
+  onOpenNewTab: PropTypes.func.isRequired,
+}
 
 export default MyTasks

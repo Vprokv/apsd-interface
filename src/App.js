@@ -1,19 +1,6 @@
 import axios from 'axios'
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from './Pages/Login'
 import ResetPassword from './Pages/ResetPassword'
 import TaskList from './Pages/Tasks/list'
@@ -30,7 +17,7 @@ import {
 } from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext } from './contants'
-import { TaskNewItem, TaskItem } from './Pages/Tasks/item'
+import { TaskItem, TaskNewItem } from './Pages/Tasks/item'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -74,7 +61,7 @@ function App() {
 
   useEffect(() => {
     ;(async () => {
-      //TODO включить что-то из этого, пока оба запроса валяться
+      // TODO включить что-то из этого, пока оба запроса валяться
       // const {data} = axios.get(URL_SYSTEM_META)
       // const {data} = axios.get("/settings.json")
     })()

@@ -45,6 +45,7 @@ module.exports = {
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react/display-name': 'off',
     'spaced-comment': 'error',
     'no-duplicate-imports': 'error',
     'prettier/prettier': ['error', { singleQuote: true }],

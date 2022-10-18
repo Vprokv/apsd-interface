@@ -1,24 +1,27 @@
-import axios from "axios";
+import axios from 'axios'
 
-axios.defaults.baseURL = "http://sedo-test.devel"
-// axios.defaults.baseURL = "http://192.168.42.105/"
+// axios.defaults.baseURL = "http://sedo-test.devel"
+axios.defaults.baseURL = 'http://192.168.42.105/'
 
-export default function ({ token, ...apiParams}) {
+export default function ({ token, ...apiParams }) {
   const api = axios.create({
     // baseURL: env.API_URL,
-    baseURL: "http://sedo-test.devel",
-    // baseURL: "http://192.168.42.105/",
+    // baseURL: "http://sedo-test.devel",
+    baseURL: 'http://192.168.42.105/',
     timeout: 60000,
-    ...apiParams
-  });
+    ...apiParams,
+  })
 
   if (token) {
-    api.interceptors.request.use((config) => {
-      config.data = config.data ? { ...config.data, token } : { token }
-      return config;
-    }, function (error) {
-      return Promise.reject(error);
-    });
+    api.interceptors.request.use(
+      (config) => {
+        config.data = config.data ? { ...config.data, token } : { token }
+        return config
+      },
+      function (error) {
+        return Promise.reject(error)
+      },
+    )
   }
 
   return api
