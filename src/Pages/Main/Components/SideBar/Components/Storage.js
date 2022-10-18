@@ -1,16 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import { NavigationHeaderIcon } from '../style'
 import StorageIcon from '../icons/StorageIcon'
 import WithToggleNavigationItem from './withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
 
-const Storage = (props) => {
+const Storage = () => {
   return (
     <WithToggleNavigationItem id="Хранилище">
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className="mb-4">
+        <div className="px-2 mb-4">
           <button
             className="flex items-center w-full "
             onClick={toggleDisplayedFlag}
@@ -157,6 +155,5 @@ const Storage = (props) => {
   )
 }
 
-Storage.propTypes = {}
 
 export default Storage

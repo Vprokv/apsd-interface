@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,29 +6,28 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import Icon from '@Components/Components/Icon'
 import UserCard, {
   sizes as useCardSizes,
-} from '../../../Components/ListTableComponents/UserCard'
+} from '@/Components/ListTableComponents/UserCard'
 import DocumentState, {
   sizes as DocumentStateSizes,
-} from '../../../Components/ListTableComponents/DocumentState'
+} from '@/Components/ListTableComponents/DocumentState'
 import AlertComponent, {
   sizes as alertSizes,
-} from '../../../Components/ListTableComponents/AlertComponent'
+} from '@/Components/ListTableComponents/AlertComponent'
 import VolumeState, {
   sizes as volumeStateSize,
-} from '../../../Components/ListTableComponents/VolumeState'
+} from '@/Components/ListTableComponents/VolumeState'
 import BaseCell, {
   sizes as baseCellSize,
-} from '../../../Components/ListTableComponents/BaseCell'
+} from '@/Components/ListTableComponents/BaseCell'
 import VolumeStatus, {
   sizes as volumeStatusSize,
-} from '../../../Components/ListTableComponents/VolumeStatus'
+} from '@/Components/ListTableComponents/VolumeStatus'
 import HeaderCell from '../../../Components/ListTableComponents/HeaderCell'
 import { TableActionButton } from './styles'
 import documentIcon from './icons/documentIcon'
@@ -38,8 +37,8 @@ import volumeIcon from './icons/volumeIcon'
 import Pagination from '../../../Components/Pagination'
 import RowComponent from './Components/RowComponent'
 import CheckBox from '../../../Components/Inputs/CheckBox'
-import { URL_TASK_LIST } from '../../../ApiList'
-import { ApiContext, TASK_LIST } from '../../../contants'
+import { URL_TASK_LIST } from '@/ApiList'
+import { ApiContext, TASK_LIST } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
@@ -120,7 +119,7 @@ const columns = [
   },
 ]
 
-function TaskList(props) {
+function TaskList() {
   const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
   const { search } = useLocation()
@@ -155,18 +154,19 @@ function TaskList(props) {
       const { data } = await api.post(
         URL_TASK_LIST,
         {
-          filter: {
-            ...(search
-              ? search
-                  .replace('?', '')
-                  .split('&')
-                  .reduce((acc, p) => {
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce(
+                  (acc, p) => {
                     const [key, value] = p.split('=')
-                    acc[key] = JSON.parse(value)
+                    acc.filter[key] = JSON.parse(value)
                     return acc
-                  }, {})
-              : {}),
-          },
+                  },
+                  { filter: {} },
+                )
+            : {}),
         },
         {
           params: {
@@ -239,7 +239,5 @@ function TaskList(props) {
     </div>
   )
 }
-
-TaskList.propTypes = {}
 
 export default TaskList

@@ -1,17 +1,17 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon } from '../style'
 import SidebarBasketIcon from '../icons/SidebarBasketIcon'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
 import WithToggleNavigationItem from './withToggleNavigationItem'
-import { DELETED_LIST_PATH, TASK_LIST_PATH } from '../../../../../routePaths'
-import { EXPIRED } from '../../../../Tasks/list/constants'
+import { DELETED_LIST_PATH, TASK_LIST_PATH } from '@/routePaths'
+import { EXPIRED } from '@/Pages/Tasks/list/constants'
 import {
   DELETED_1,
   DELETED_3,
   DELETED_YEAR,
-} from '../../../../Basket/list/constans'
+} from '@/Pages/Basket/list/constans'
 
 const Basket = ({ onOpenNewTab }) => {
   const handleOpenNewTab = useCallback(
@@ -22,7 +22,7 @@ const Basket = ({ onOpenNewTab }) => {
   return (
     <WithToggleNavigationItem id="корзина">
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className="mb-4">
+        <div className="px-2 mb-4">
           <button
             className="flex items-center w-full "
             onClick={toggleDisplayedFlag}
@@ -75,6 +75,8 @@ const Basket = ({ onOpenNewTab }) => {
   )
 }
 
-Basket.propTypes = {}
+Basket.propTypes = {
+  onOpenNewTab: PropTypes.func.isRequired,
+}
 
 export default Basket

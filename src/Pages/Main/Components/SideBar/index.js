@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon, SideBarContainer } from './style'
 import Button from '@/Components/Button'
@@ -24,20 +24,20 @@ const SideBar = ({ onOpenNewTab }) => {
     [],
   )
   return (
-    <SideBarContainer className="px-2 py-4 bg-light-gray flex-container">
+    <SideBarContainer className="py-4 bg-light-gray flex-container">
       <Button
-        className="text-white bg-blue-1 w-full flex items-center capitalize mb-4 rounded-lg"
+        className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 rounded-lg"
         onClick={openCreateDocumentWindow}
       >
         <Icon className="mr-2 ml-auto" icon={plusIcon} size={14} />
         <span className="mr-auto">Создать</span>
       </Button>
       <MyTasks onOpenNewTab={onOpenNewTab} />
-      <div className="flex items-center w-full mb-6">
+      <div className="px-2 flex items-center w-full mb-6">
         <NavigationHeaderIcon className="mr-2" icon={ViewedIcon} size={22} />
         <div className="font-size-14 mr-auto font-medium">Просмотренные</div>
       </div>
-      <div className="flex items-center w-full mb-6">
+      <div className="px-2 flex items-center w-full mb-6">
         <NavigationHeaderIcon
           className="mr-2"
           icon={CreatedByMeIcon}
@@ -46,7 +46,7 @@ const SideBar = ({ onOpenNewTab }) => {
         <div className="font-size-14 mr-auto font-medium">Созданные мной</div>
       </div>
       <Storage />
-      <Archive />
+      <Archive onOpenNewTab={onOpenNewTab} />
       <Basket onOpenNewTab={onOpenNewTab} />
       <CreateDocumentWindow
         open={createDocumentWindow}
