@@ -33,4 +33,10 @@ const ModalWindowWrapper = ({ title, ...props }) => (
   />
 )
 
+export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
+  width: 61.6%;
+  height: 72.65%;
+  margin: auto;
+`
+
 export default ModalWindowWrapper

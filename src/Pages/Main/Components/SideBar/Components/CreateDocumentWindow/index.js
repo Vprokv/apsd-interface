@@ -1,26 +1,17 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import { URL_DOCUMENT_CREATION_OPTIONS } from '@/ApiList'
-import {
-  CreateDocumentWindowContainer,
-  DocumentIcon,
-  DocumentTypesContainer,
-} from './style'
+import { DocumentIcon, DocumentTypesContainer } from './style'
 import RadioButton from '@/Components/Inputs/RadioButton'
 import Button from '@/Components/Button'
 import WithToggleNavigationItem from '../withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import NavigationDocumentIcon from '../../icons/NavigationDocumentIcon'
 import { useNavigate } from 'react-router-dom'
+import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 
 const FirstLevelHeaderComponent = ({ children, selected }) => (
   <div className="flex items-start font-size-14 w-full">
@@ -87,7 +78,10 @@ const CreateDocumentWindow = ({ onClose }) => {
     return (
       <div className="flex flex-wrap">
         {templates.map(({ label, value }) => (
-          <text className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2">
+          <text
+            key={value}
+            className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2"
+          >
             {`${label} = ${value}`}
           </text>
         ))}
@@ -194,9 +188,9 @@ CreateDocumentWindow.propTypes = {
 }
 
 const CrateDocumentWrapper = (props) => (
-  <CreateDocumentWindowContainer {...props} title="Создание нового документа">
+  <StandardSizeModalWindow {...props} title="Создание нового документа">
     <CreateDocumentWindow {...props} />
-  </CreateDocumentWindowContainer>
+  </StandardSizeModalWindow>
 )
 
 export default CrateDocumentWrapper

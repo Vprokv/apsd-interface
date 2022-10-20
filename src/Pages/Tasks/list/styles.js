@@ -13,15 +13,3 @@ export const SearchInput = styled(Input)`
   flex-direction: row-reverse;
   padding-left: 0.625rem;
 `
-
-export const TableActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--light-gray);
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--separator);
-  box-sizing: border-box;
-  border-radius: 6px;
-`

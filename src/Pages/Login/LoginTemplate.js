@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import LoginLogo from './Login_logo.png'
 import { Background, LoginContainer, LoginFormContainer } from './styles'
@@ -20,10 +19,12 @@ function LoginTemplate({ children, backgroundUrlPath }) {
 }
 
 LoginTemplate.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  backgroundUrlPath: PropTypes.string.isRequired,
 }
 
 export default LoginTemplate

@@ -11,6 +11,9 @@ export const URL_TASK_LIST_V2 = '/sedo/task/list/v2'
 export const URL_TASK_LIST_FILTERS = '/apsd/task/filters'
 export const URL_TASK_STATISTIC = '/sedo/task/statistic'
 // ITEM
+// TITLE CONTAIN
+export const URL_TITLE_CONTAIN = '/apsd/structure/list'
+export const URL_TITLE_CONTAIN_DEPARTMENT = '/apsd/structure/default'
 // SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
 export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'

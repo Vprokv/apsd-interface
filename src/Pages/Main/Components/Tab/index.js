@@ -1,7 +1,6 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import { CloseIcon, Container } from './styles'
-import closeIcon from '../../../../Icons/closeIcon'
+import closeIcon from '@/Icons/closeIcon'
 
 const Tab = ({ name, onClose, active, onClick, closeable }) => {
   const handleClose = (e) => {
@@ -30,8 +29,10 @@ const Tab = ({ name, onClose, active, onClick, closeable }) => {
 Tab.propTypes = {
   onClose: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
-  name: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   active: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   closeable: PropTypes.bool,
 }
 
