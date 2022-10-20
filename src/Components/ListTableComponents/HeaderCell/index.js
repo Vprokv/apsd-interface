@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 
 import { Resizer } from './styles'
@@ -16,6 +15,11 @@ const HeaderCell = ({ label, onResize, onMove, onContextMenu }) => {
   )
 }
 
-HeaderCell.propTypes = {}
+HeaderCell.propTypes = {
+  label: PropTypes.string.isRequired,
+  onResize: PropTypes.func.isRequired,
+  onMove: PropTypes.func.isRequired,
+  onContextMenu: PropTypes.func.isRequired,
+}
 
 export default HeaderCell

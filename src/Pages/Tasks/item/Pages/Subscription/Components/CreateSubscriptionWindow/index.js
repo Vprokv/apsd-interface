@@ -4,38 +4,34 @@ import {
   SubscriptionWindowComponent,
 } from './style'
 import ScrollBar from '@Components/Components/ScrollBar'
-import SortCellComponent from '../../../../../../../Components/ListTableComponents/SortCellComponent'
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import { ApiContext } from '@/contants'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
-import HeaderCell from '../../../../../../../Components/ListTableComponents/HeaderCell'
+import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
-import CheckBox from '../../../../../../../Components/Inputs/CheckBox'
+import CheckBox from '@/Components/Inputs/CheckBox'
 import { useParams } from 'react-router-dom'
 import { URL_SUBSCRIPTION_CHANNELS, URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
-import useTabItem from '../../../../../../../components_ocean/Logic/Tab/TabItem'
-import { PRESENT_DATE_FORMAT, WINDOW_ADD_SUBSCRIPTION } from '@/contants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  ApiContext,
+  PRESENT_DATE_FORMAT,
+  WINDOW_ADD_SUBSCRIPTION,
+} from '@/contants'
 import dayjs from 'dayjs'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import FilterForm from '@Components/Components/Forms'
-import { TableActionButton } from '../../../../styles'
-import Icon from '../../../../../../../components_ocean/Components/Icon'
-import deleteIcon from '../../../../../../../Icons/deleteIcon'
+import Button, { ButtonForIcon } from '@/Components/Button'
+import Icon from '@Components/Components/Icon'
+import deleteIcon from '@/Icons/deleteIcon'
 import OrgStructure from './Components/OrgStructure'
-import BaseCell from '../../../../../../../Components/ListTableComponents/BaseCell'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import BaseCellName from './Components/BaseCellName'
 import { EmailContext, SedoContext } from './constans'
 import SendSystem from './Components/CheckBox/SendSystem'
 import SendEmail from './Components/CheckBox/SendEmail'
-import Button from '@/Components/Button'
 import { useCreateSubscription } from './useCreateSubscription'
 import PropTypes from 'prop-types'
 
@@ -225,9 +221,9 @@ const CreateSubscriptionWindow = ({ onClose }) => {
         </div>
         <div className="flex items-center color-text-secondary ml-auto">
           <OrgStructure value={valueKeys} sendValue={sendValue} />
-          <TableActionButton className="ml-2" onClick={handleCloseIconClick}>
+          <ButtonForIcon className="ml-2" onClick={handleCloseIconClick}>
             <Icon icon={deleteIcon} />
-          </TableActionButton>
+          </ButtonForIcon>
         </div>
       </div>
       <div className="flex overflow-hidden w-full h-full">

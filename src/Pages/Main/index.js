@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
 import { Outlet } from 'react-router-dom'
 import Tab from '@Components/Logic/Tab'
 import Header from './Components/Header'

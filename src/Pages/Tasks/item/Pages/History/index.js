@@ -1,23 +1,17 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import BaseCell, {
   sizes as baseCellSize,
-} from '../../../../../Components/ListTableComponents/BaseCell'
-import { FilterForm, TableActionButton } from '../../styles'
+} from '@/Components/ListTableComponents/BaseCell'
+import { FilterForm } from '../../styles'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import { useParams } from 'react-router-dom'
-import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
-import {
-  ApiContext,
-  TASK_ITEM_DOCUMENT,
-  TASK_ITEM_HISTORY,
-  TASK_ITEM_REQUISITES,
-} from '../../../../../contants'
-import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
-import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
-import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
-import LoadableSelect from '../../../../../Components/Inputs/Select'
-import UserSelect from '../../../../../Components/Inputs/UserSelect'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import { ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY } from '@/contants'
+import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
+import ListTable from '@Components/Components/Tables/ListTable'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import LoadableSelect from '@/Components/Inputs/Select'
+import UserSelect from '@/Components/Inputs/UserSelect'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -89,7 +83,7 @@ const columns = [
   },
 ]
 
-const History = (props) => {
+const History = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -169,14 +163,16 @@ const History = (props) => {
     // return {...item, fromDate: '2022-09-01T06:10:44.395Z', toDate: '2022-09-04T06:10:44.395Z'}
   }, [filter])
 
-  useEffect(async () => {
-    const {
-      data: { content },
-    } = await api.post(`/sedo/audit/${id}`, {
-      filter: preparedFilterValues,
-      sort,
-    })
-    setTabState({ data: content })
+  useEffect(() => {
+    ;(async () => {
+      const {
+        data: { content },
+      } = await api.post(`/sedo/audit/${id}`, {
+        filter: preparedFilterValues,
+        sort,
+      })
+      setTabState({ data: content })
+    })()
   }, [api, setTabState, id, preparedFilterValues, sort])
 
   const emptyWrapper = ({ children }) => children

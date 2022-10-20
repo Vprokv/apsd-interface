@@ -1,12 +1,6 @@
 import styled from 'styled-components'
-import ModalWindow from '@/Components/ModalWindow'
 import Icon from '@Components/Components/Icon'
 
-export const CreateDocumentWindowContainer = styled(ModalWindow)`
-  width: 62.2%;
-  height: 72.65%;
-  margin: auto;
-`
 
 export const DocumentTypesContainer = styled.div`
   width: 37.8%;

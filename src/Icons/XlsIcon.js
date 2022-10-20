@@ -21,6 +21,7 @@ export default {
       attribs: {
         fillRule: 'evenodd',
         clipRule: 'evenodd',
+        opacity: '0.302',
         d: 'M9.80658 0V5.86132H15.4781L9.80658 0Z',
         fill: 'white',
       },

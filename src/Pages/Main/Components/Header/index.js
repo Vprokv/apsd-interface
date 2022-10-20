@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import MainLogo from '../../main_logo.png'
 import Icon from '@Components/Components/Icon'
 import doubleShevronIcon from '@/Icons/doubleShevronIcon'
@@ -12,7 +10,7 @@ import tempImg from './temp_avatar.png'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 
-const Header = (props) => {
+const Header = () => {
   const { dss_first_name, dss_last_name, dsid_avatar } =
     useRecoilValue(userAtom)
   return (
@@ -37,7 +35,5 @@ const Header = (props) => {
     </div>
   )
 }
-
-Header.propTypes = {}
 
 export default Header

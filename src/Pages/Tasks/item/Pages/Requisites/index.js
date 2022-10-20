@@ -1,21 +1,13 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import ScrollBar from '@Components/Components/ScrollBar'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { RequisitesForm } from './styles'
-import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
+import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
 import {
   ApiContext,
   DocumentTypeContext,
-  TASK_ITEM_DOCUMENT,
   TASK_ITEM_REQUISITES,
-} from '../../../../../contants'
+} from '@/contants'
 import { useParams } from 'react-router-dom'
 import {
   fieldsDictionary,
@@ -27,7 +19,7 @@ import {
 } from './rules'
 import { CustomValuesContext } from './constants'
 
-const Requisites = (props) => {
+const Requisites = () => {
   const { type } = useParams()
   const documentType = useContext(DocumentTypeContext)
   const api = useContext(ApiContext)
@@ -171,7 +163,7 @@ const Requisites = (props) => {
           disabled: new Map(),
         },
       ),
-    [data],
+    [api, data],
   )
 
   const { fields, rules } = useMemo(() => {
@@ -206,7 +198,5 @@ const Requisites = (props) => {
     </ScrollBar>
   )
 }
-
-Requisites.propTypes = {}
 
 export default Requisites

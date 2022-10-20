@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,23 +6,22 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_SUBSCRIPTION } from '@/contants'
-import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
-import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
-import CheckBox from '../../../../../Components/Inputs/CheckBox'
-import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
-import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import { FlatSelect } from '@/components_ocean/Components/Tables/Plugins/selectable'
+import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
 import { URL_SUBSCRIPTION_LIST } from '@/ApiList'
-import { FilterForm, TableActionButton } from '../../styles'
-import Icon from '../../../../../components_ocean/Components/Icon'
-import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
-import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
-import Button from '../../../../../Components/Button'
+import { FilterForm } from '../../styles'
+import Icon from '@/components_ocean/Components/Icon'
+import ListTable from '@/components_ocean/Components/Tables/ListTable'
+import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
+import Button, { ButtonForIcon } from '@/Components/Button'
 import filterIcon from '../../../list/icons/filterIcon'
-import deleteIcon from '../../../../../Icons/deleteIcon'
-import UserSelect from '../../../../../Components/Inputs/OrgStructure/BaseUserSelect'
+import deleteIcon from '@/Icons/deleteIcon'
+import UserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import CreateSubscriptionWindow from './Components/CreateSubscriptionWindow'
 
 const plugins = {
@@ -93,7 +92,7 @@ const filterFormConfig = [
   },
 ]
 
-const Subscription = (props) => {
+const Subscription = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -110,7 +109,6 @@ const Subscription = (props) => {
 
   const {
     tabState: { data },
-    setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
   } = useTabItem({
@@ -158,12 +156,12 @@ const Subscription = (props) => {
           >
             Добавить подписку
           </Button>
-          <TableActionButton className="ml-2">
+          <ButtonForIcon className="ml-2">
             <Icon icon={filterIcon} />
-          </TableActionButton>
-          <TableActionButton className="ml-2">
+          </ButtonForIcon>
+          <ButtonForIcon className="ml-2">
             <Icon icon={deleteIcon} />
-          </TableActionButton>
+          </ButtonForIcon>
         </div>
       </div>
       <ListTable

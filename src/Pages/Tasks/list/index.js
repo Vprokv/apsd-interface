@@ -29,8 +29,7 @@ import VolumeStatus, {
   sizes as volumeStatusSize,
 } from '@/Components/ListTableComponents/VolumeStatus'
 import HeaderCell from '../../../Components/ListTableComponents/HeaderCell'
-import { TableActionButton } from './styles'
-import documentIcon from './icons/documentIcon'
+import XlsIcon from '@/Icons/XlsIcon'
 import filterIcon from './icons/filterIcon'
 import sortIcon from './icons/sortIcon'
 import volumeIcon from './icons/volumeIcon'
@@ -44,6 +43,7 @@ import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import Filter from './Components/Filter'
+import { ButtonForIcon } from '@/Components/Button'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -198,18 +198,18 @@ function TaskList() {
       <div className="flex items-center">
         <Filter value={a} onInput={b} />
         <div className="flex items-center color-text-secondary ml-auto">
-          <TableActionButton className="mr-2">
+          <ButtonForIcon className="mr-2">
             <Icon icon={filterIcon} />
-          </TableActionButton>
-          <TableActionButton className="mr-2">
+          </ButtonForIcon>
+          <ButtonForIcon className="mr-2">
             <Icon icon={sortIcon} />
-          </TableActionButton>
-          <TableActionButton className="mr-2">
+          </ButtonForIcon>
+          <ButtonForIcon className="mr-2">
             <Icon icon={volumeIcon} />
-          </TableActionButton>
-          <TableActionButton className="color-green">
-            <Icon icon={documentIcon} />
-          </TableActionButton>
+          </ButtonForIcon>
+          <ButtonForIcon className="color-green">
+            <Icon icon={XlsIcon} />
+          </ButtonForIcon>
         </div>
       </div>
       <ListTable

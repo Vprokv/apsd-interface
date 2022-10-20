@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithWithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 import LoginTemplate from '../Login/LoginTemplate'
 import { LoginInput } from '../Login/styles'
 
-import { LOGIN_PAGE_PATH } from '../../routePaths'
+import { LOGIN_PAGE_PATH } from '@/routePaths'
 
 export const fieldMap = [
   {
@@ -89,6 +89,8 @@ function Login({ loginRequest }) {
   )
 }
 
-Login.propTypes = {}
+Login.propTypes = {
+  loginRequest: PropTypes.func.isRequired,
+}
 
 export default Login

@@ -25,6 +25,7 @@ import Icon from '../../../../../components_ocean/Components/Icon'
 import filterIcon from '../../../list/icons/filterIcon'
 import editIcon from '../../../../../Icons/editIcon'
 import CreateObjectsWindow from './Components/CreateObjectsWindow'
+import { ButtonForIcon } from '@/Components/Button'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -176,12 +177,12 @@ const Objects = (props) => {
           >
             Добавить
           </Button>
-          <TableActionButton className="ml-2">
+          <ButtonForIcon className="ml-2">
             <Icon icon={filterIcon} />
-          </TableActionButton>
-          <TableActionButton className="ml-2">
+          </ButtonForIcon>
+          <ButtonForIcon className="ml-2">
             <Icon icon={editIcon} />
-          </TableActionButton>
+          </ButtonForIcon>
         </div>
         <CreateObjectsWindow
           open={addCreateObjectsWindow}
