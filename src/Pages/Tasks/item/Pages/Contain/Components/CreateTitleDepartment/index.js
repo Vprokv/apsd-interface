@@ -5,13 +5,17 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext } from '@/contants'
-import {URL_TITLE_CONTAIN_CREATE, URL_TITLE_CONTAIN_DEPARTMENT, URL_TITLE_CONTAIN_SAVE} from '@/ApiList'
+import {
+  URL_TITLE_CONTAIN_CREATE,
+  URL_TITLE_CONTAIN_DEPARTMENT,
+  URL_TITLE_CONTAIN_SAVE,
+} from '@/ApiList'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
-import {useParams} from "react-router-dom";
+import { useParams } from 'react-router-dom'
 
-const CreateTitleDepartment = ({ className, setChange, parentId = null }) => {
+const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
@@ -38,9 +42,6 @@ const CreateTitleDepartment = ({ className, setChange, parentId = null }) => {
     changeModalState(true)()
   }, [api, changeModalState])
 
-  console.log(parentId, 'parentId')
-  console.log(selected, 'selected')
-
   const handleClick = useCallback(async () => {
     await api.post(URL_TITLE_CONTAIN_CREATE, {
       titleId: id,
@@ -48,6 +49,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId = null }) => {
       parentId,
     })
     setSelected(null)
+    setChange()
     changeModalState(false)()
   }, [api, id, selected, parentId])
 
@@ -145,6 +147,14 @@ const CreateTitleDepartment = ({ className, setChange, parentId = null }) => {
   )
 }
 
-CreateTitleDepartment.propTypes = {}
+CreateTitleDepartment.defaultProps = {
+  parentId: null,
+}
+
+CreateTitleDepartment.propTypes = {
+  className: PropTypes.string,
+  setChange: PropTypes.func,
+  parentId: PropTypes.oneOfType([PropTypes.string, PropTypes.oneOf([null])]),
+}
 
 export default CreateTitleDepartment

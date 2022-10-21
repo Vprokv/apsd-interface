@@ -6,6 +6,7 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import { URL_TITLE_CONTAIN_SAVE } from '@/ApiList'
+import PropTypes from 'prop-types'
 
 export const MiniModalWindow = styled(ModalWindow)`
   width: 28.22%;
@@ -13,7 +14,7 @@ export const MiniModalWindow = styled(ModalWindow)`
   margin: auto;
 `
 
-const NewTitle = ({ onClose, parentId, closeParent, setChange, ...props }) => {
+const NewTitle = ({ onClose, parentId, closeParent, setChange, open }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [value, onInput] = useState('')
@@ -33,7 +34,7 @@ const NewTitle = ({ onClose, parentId, closeParent, setChange, ...props }) => {
 
   return (
     <MiniModalWindow
-      {...props}
+      open={open}
       onClose={onClose}
       title="Создание нового раздела"
     >
@@ -64,5 +65,11 @@ const NewTitle = ({ onClose, parentId, closeParent, setChange, ...props }) => {
   )
 }
 
-NewTitle.propTypes = {}
+NewTitle.propTypes = {
+  onClose: PropTypes.func,
+  closeParent: PropTypes.func,
+  setChange: PropTypes.func,
+  parentId: PropTypes.string,
+  open: PropTypes.bool,
+}
 export default NewTitle
