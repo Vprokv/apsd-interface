@@ -21,6 +21,7 @@ import { EmptyInputWrapper } from '@Components/Components/Forms/index'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useParams } from 'react-router-dom'
 import CreateTitleDepartment from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment'
+import log from 'tailwindcss/lib/util/log'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -28,7 +29,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'titleId',
+    valueKey: 'id',
   },
 }
 
@@ -38,7 +39,7 @@ const columns = [
     label: 'Наименование',
   },
   {
-    id: 'Связь',
+    id: 'linkName',
     label: 'Связь',
   },
   {
@@ -97,7 +98,7 @@ const Contain = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data },
+    tabState: { data, change = false },
   } = tabItemState
 
   const loadData = useCallback(
@@ -108,7 +109,16 @@ const Contain = () => {
       })
       return data
     },
-    [api, id],
+    [api, id, change],
+  )
+
+  console.log(selectState, 'selectState')
+
+  const setChange = useCallback(
+    () => setTabState(({ change }) => {
+      return { change: !change }
+    }),
+    [setTabState],
   )
 
   useAutoReload(loadData, tabItemState)
@@ -145,7 +155,7 @@ const Contain = () => {
           inputWrapper={EmptyInputWrapper}
         />
         <div className="flex items-center ml-auto">
-          <CreateTitleDepartment className="mr-2" />
+          <CreateTitleDepartment className="mr-2" setChange={setChange} parentId={selectState[0] ?? null}/>
           <SecondaryBlueButton className="mr-2" disabled>
             Том
           </SecondaryBlueButton>
@@ -169,6 +179,7 @@ const Contain = () => {
         </div>
       </div>
       <ListTable
+        returnObjects={true}
         plugins={plugins}
         headerCellComponent={HeaderCell}
         columns={columns}

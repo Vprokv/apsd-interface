@@ -14,6 +14,8 @@ export const URL_TASK_STATISTIC = '/sedo/task/statistic'
 // TITLE CONTAIN
 export const URL_TITLE_CONTAIN = '/apsd/structure/list'
 export const URL_TITLE_CONTAIN_DEPARTMENT = '/apsd/structure/default'
+export const URL_TITLE_CONTAIN_SAVE = '/apsd/structure/save'
+export const URL_TITLE_CONTAIN_CREATE = '/apsd/structure/create'
 // SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
 export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'
