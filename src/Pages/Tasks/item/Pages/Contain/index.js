@@ -30,6 +30,7 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'id',
+    returnObject: true
   },
 }
 

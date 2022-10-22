@@ -53,7 +53,13 @@ const ArchiveItem = ({ level, id, onOpenNewTab }) => {
           />
         )
       : ({ id, name }) => (
-          <ArchiveParentItem key={id} id={id} name={name}>
+          <ArchiveParentItem
+            key={id}
+            id={id}
+            name={name}
+            level={level}
+            onOpenNewTab={onOpenNewTab}
+          >
             <div className="flex flex-col pl-4">
               <ArchiveItem
                 level={level + 1}
@@ -69,7 +75,7 @@ const ArchiveItem = ({ level, id, onOpenNewTab }) => {
 
 ArchiveItem.propTypes = {
   level: PropTypes.number,
-  id: PropTypes.number,
+  id: PropTypes.string,
   onOpenNewTab: PropTypes.func.isRequired,
 }
 

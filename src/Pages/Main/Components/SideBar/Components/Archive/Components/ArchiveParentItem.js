@@ -2,8 +2,14 @@ import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
+import { useCallback } from 'react'
 
-const ArchiveParentItem = ({ name, id, children }) => {
+const ArchiveParentItem = ({ name, id, level, children, onOpenNewTab }) => {
+  const onNavigate = useCallback(
+    () => onOpenNewTab(`/task/list/${id}/${name}`),
+    [id, onOpenNewTab],
+  )
+  console.log(level, 'level')
   return (
     <WithToggleNavigationItem id={id} key={id}>
       {({ isDisplayed, toggleDisplayedFlag }) => (
@@ -11,7 +17,10 @@ const ArchiveParentItem = ({ name, id, children }) => {
           <button
             type="button"
             className="flex w-full py-1.5"
-            onClick={toggleDisplayedFlag}
+            onClick={() => {
+              toggleDisplayedFlag()
+              level === 1 && onNavigate()
+            }}
           >
             <span className="mr-auto">{name}</span>
             <Icon

@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from './Pages/Login'
 import ResetPassword from './Pages/ResetPassword'
 import TaskList from './Pages/Tasks/list'
+import ArchiveList from './Pages/Tasks/archiveList'
 import VolumeItem from './Pages/Volume'
 import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
@@ -18,6 +19,7 @@ import {
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext } from './contants'
 import { TaskItem, TaskNewItem } from './Pages/Tasks/item'
+import {TASK_LIST_ARCHIVE_PATH} from "./routePaths";
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -110,6 +112,7 @@ function App() {
           ) : (
             <Route element={<Main />}>
               <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
+              <Route path={routePath.TASK_LIST_ARCHIVE_PATH} element={<ArchiveList />} />
               <Route
                 path={routePath.TASK_NEW_ITEM_PATH}
                 element={<TaskNewItem />}
