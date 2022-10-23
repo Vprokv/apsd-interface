@@ -1,9 +1,9 @@
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import Button, { LoadableSecondaryBlueButton } from '@/Components/Button'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext } from '@/contants'
 import {
   URL_TITLE_CONTAIN_CREATE,
@@ -51,7 +51,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
     setSelected(null)
     setChange()
     changeModalState(false)()
-  }, [api, id, selected, parentId])
+  }, [api, id, selected, parentId, setChange, changeModalState])
 
   const renderEntities = useCallback(
     ({ id, name, code, sections }) => (
