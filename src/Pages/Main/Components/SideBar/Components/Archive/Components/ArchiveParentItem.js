@@ -2,35 +2,53 @@ import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 
-const ArchiveParentItem = ({ name, id, level, children, onOpenNewTab }) => {
+const ArchiveParentItem = ({
+  parentName,
+  name,
+  id,
+  level,
+  children,
+  onOpenNewTab,
+}) => {
   const onNavigate = useCallback(
-    () => onOpenNewTab(`/task/list/${id}/${name}`),
-    [id, onOpenNewTab],
+    () => onOpenNewTab(`/task/list/${parentName}/${name}/${id}`),
+    [id, onOpenNewTab, parentName, name],
   )
-  console.log(level, 'level')
+
   return (
     <WithToggleNavigationItem id={id} key={id}>
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className="font-size-12 mt-2 pl-2">
-          <button
-            type="button"
-            className="flex w-full py-1.5"
-            onClick={() => {
-              toggleDisplayedFlag()
-              level === 1 && onNavigate()
-            }}
-          >
-            <span className="mr-auto">{name}</span>
-            <Icon
-              icon={angleIcon}
-              size={10}
-              className={`color-text-secondary ${
-                isDisplayed ? '' : 'rotate-180'
-              }`}
-            />
-          </button>
+        <div className=" font-size-12 mt-2 ">
+          <div className="flex w-full py-1.5 justify-between">
+            <button
+              type="button"
+              className=""
+              onClick={() => {
+                toggleDisplayedFlag()
+                level === 1 && !isDisplayed && onNavigate()
+              }}
+            >
+              <span className="mr-auto">{name}</span>
+            </button>
+            <button
+              className="pl-2"
+              type="button"
+              onClick={() => {
+                toggleDisplayedFlag()
+              }}
+            >
+              <Icon
+                icon={angleIcon}
+                size={10}
+                className={`color-text-secondary ${
+                  isDisplayed ? '' : 'rotate-180'
+                }`}
+              />
+            </button>
+          </div>
+
           {isDisplayed && children}
         </div>
       )}

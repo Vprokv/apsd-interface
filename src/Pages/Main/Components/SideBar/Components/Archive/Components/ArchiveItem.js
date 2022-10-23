@@ -34,7 +34,7 @@ const apisMap = {
   },
 }
 
-const ArchiveItem = ({ level, id, onOpenNewTab }) => {
+const ArchiveItem = ({ parentName, level, id, onOpenNewTab }) => {
   const [items, setItems] = useState([])
   const api = useContext(ApiContext)
   useEffect(() => {
@@ -57,6 +57,7 @@ const ArchiveItem = ({ level, id, onOpenNewTab }) => {
             key={id}
             id={id}
             name={name}
+            parentName={parentName}
             level={level}
             onOpenNewTab={onOpenNewTab}
           >
@@ -64,7 +65,7 @@ const ArchiveItem = ({ level, id, onOpenNewTab }) => {
               <ArchiveItem
                 level={level + 1}
                 id={id}
-                name={name}
+                parentName={name}
                 onOpenNewTab={onOpenNewTab}
               />
             </div>
@@ -81,6 +82,7 @@ ArchiveItem.propTypes = {
 
 ArchiveItem.defaultProps = {
   level: 0,
+  parentName: 123123,
 }
 
 export default ArchiveItem
