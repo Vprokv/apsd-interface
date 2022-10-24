@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import BaseButton, { LoadableButton } from '@Components/Components/Button'
 
-export default styled(BaseButton)``
+const button = styled(BaseButton)``
+export default button
 
 export const SecondaryBlueButton = styled(BaseButton)`
   background: var(--blue-5);
@@ -9,6 +10,7 @@ export const SecondaryBlueButton = styled(BaseButton)`
   padding: 0 1.5rem;
   font-weight: 500;
   font-size: 14px;
+
   &:disabled {
     background: #e9effc;
     color: #8eb0f0;
@@ -16,6 +18,7 @@ export const SecondaryBlueButton = styled(BaseButton)`
 `
 
 export const LoadableSecondaryBlueButton = LoadableButton(SecondaryBlueButton)
+export const LoadableBaseButton = LoadableButton(button)
 
 export const ButtonForIcon = styled.button`
   display: flex;

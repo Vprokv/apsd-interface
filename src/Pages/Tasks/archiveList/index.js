@@ -10,6 +10,7 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 
 const columns = [
   {
@@ -69,12 +70,13 @@ const plugins = {
 const ArchiveList = () => {
   const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
+  const { openNewTab } = useContext(TabStateManipulation)
   const { id, name = '', parentName = '' } = useParams()
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => navigate(`/task/${id}/${type}`),
-    [navigate],
+    (id, type) => () => openNewTab(navigate(`/task/${id}/${type}`)),
+    [navigate, openNewTab],
   )
   const tabItemState = useTabItem({
     setTabName: useCallback(() => `${parentName}/${name}`, [name, parentName]),

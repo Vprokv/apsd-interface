@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import Button, { LoadableSecondaryBlueButton } from '@/Components/Button'
+import Button, {LoadableBaseButton, LoadableSecondaryBlueButton} from '@/Components/Button'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import { ApiContext } from '@/contants'
@@ -122,12 +122,12 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
           >
             Отменить
           </Button>
-          <Button
+          <LoadableBaseButton
             className="text-white bg-blue-1 flex items-center w-60 mr-4 rounded-lg justify-center font-weight-normal"
             onClick={changeModalStateTitle(true)}
           >
             Создать новый
-          </Button>
+          </LoadableBaseButton>
           <NewTitle
             setChange={setChange}
             open={openTitle}
@@ -135,12 +135,12 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
             parentId={selected}
             closeParent={changeModalState(false)}
           />
-          <Button
+          <LoadableBaseButton
             className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
             onClick={handleClick}
           >
             Выбрать
-          </Button>
+          </LoadableBaseButton>
         </div>
       </StandardSizeModalWindow>
     </>
