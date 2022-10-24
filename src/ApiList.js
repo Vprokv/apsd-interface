@@ -14,6 +14,8 @@ export const URL_TASK_STATISTIC = '/sedo/task/statistic'
 // TITLE CONTAIN
 export const URL_TITLE_CONTAIN = '/apsd/structure/list'
 export const URL_TITLE_CONTAIN_DEPARTMENT = '/apsd/structure/default'
+export const URL_TITLE_CONTAIN_SAVE = '/apsd/structure/save'
+export const URL_TITLE_CONTAIN_CREATE = '/apsd/structure/create'
 // SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
 export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'
@@ -25,6 +27,7 @@ export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'
+export const URL_DOCUMENT_APSD_CREATION_OPTIONS = '/apsd/classification'
 export const URL_DOCUMENT_VIEWED = '/sedo/document/list/recently_viewed'
 export const URL_DOCUMENT_CLASSIFICATION =
   '/sedo/document/create/from_classification'

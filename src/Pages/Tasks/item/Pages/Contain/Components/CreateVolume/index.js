@@ -1,25 +1,22 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import Button, { LoadableSecondaryBlueButton } from '@/Components/Button'
-import ScrollBar from '@Components/Components/ScrollBar'
-import Icon from '@Components/Components/Icon'
 import { ApiContext } from '@/contants'
+import { useParams } from 'react-router-dom'
+import Button, { LoadableSecondaryBlueButton } from '@/Components/Button'
+import { StandardSizeModalWindow } from '@/Components/ModalWindow'
+import ScrollBar from '@Components/Components/ScrollBar'
 import {
+  URL_DOCUMENT_APSD_CREATION_OPTIONS,
   URL_TITLE_CONTAIN_CREATE,
-  URL_TITLE_CONTAIN_DEPARTMENT,
-  URL_TITLE_CONTAIN_SAVE,
 } from '@/ApiList'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
+import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
-import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
-import { useParams } from 'react-router-dom'
 
-const CreateTitleDepartment = ({ className, setChange, parentId }) => {
+const CreateVolume = ({ className, parentId }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
-  const [openTitle, setOpenTitleState] = useState(false)
   const [entities, setEntities] = useState([])
   const [selected, setSelected] = useState(null)
   const changeModalState = useCallback(
@@ -29,36 +26,30 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
     [],
   )
 
-  const changeModalStateTitle = useCallback(
-    (nextState) => () => {
-      setOpenTitleState(nextState)
-    },
-    [],
-  )
-
   const openModalWindow = useCallback(async () => {
-    const { data } = await api.post(URL_TITLE_CONTAIN_DEPARTMENT)
-    setEntities(data)
+    const { data: { children } } = await api.post(URL_DOCUMENT_APSD_CREATION_OPTIONS, {
+      classificationName: 'Том',
+    })
+    setEntities(children)
     changeModalState(true)()
   }, [api, changeModalState])
 
   const handleClick = useCallback(async () => {
-    await api.post(URL_TITLE_CONTAIN_CREATE, {
-      titleId: id,
-      partId: selected,
-      parentId,
-    })
+    // await api.post(URL_TITLE_CONTAIN_CREATE, {
+    //   titleId: id,
+    //   partId: selected,
+    //   parentId,
+    // })
     setSelected(null)
-    setChange()
     changeModalState(false)()
-  }, [api, id, selected, parentId, setChange, changeModalState])
+  }, [api, id, selected, parentId, changeModalState])
 
   const renderEntities = useCallback(
-    ({ id, name, code, sections }) => (
+    ({ data: { name, id }, children }) => (
       <WithToggleNavigationItem
         id={id}
         key={id}
-        func={(id) => !sections.length > 0 && setSelected(id)}
+        func={(id) => !children.length > 0 && setSelected(id)}
       >
         {({ isDisplayed, toggleDisplayedFlag }) => (
           <div
@@ -72,7 +63,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
                 className="flex items-center w-full h-10 border-b-2 "
                 onClick={toggleDisplayedFlag}
               >
-                {!!sections.length > 0 && (
+                {!!children.length > 0 && (
                   <Icon
                     icon={angleIcon}
                     size={10}
@@ -85,7 +76,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
               </button>
               {isDisplayed && (
                 <div className="flex flex-col ">
-                  {sections.map(renderEntities)}
+                  {children.map(renderEntities)}
                 </div>
               )}
             </div>
@@ -106,8 +97,9 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
       <LoadableSecondaryBlueButton
         className={className}
         onClick={openModalWindow}
+        disabled={!parentId}
       >
-        Раздел
+        Том
       </LoadableSecondaryBlueButton>
       <StandardSizeModalWindow
         title="Выбор разделов титула"
@@ -123,19 +115,6 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
             Отменить
           </Button>
           <Button
-            className="text-white bg-blue-1 flex items-center w-60 mr-4 rounded-lg justify-center font-weight-normal"
-            onClick={changeModalStateTitle(true)}
-          >
-            Создать новый
-          </Button>
-          <NewTitle
-            setChange={setChange}
-            open={openTitle}
-            onClose={changeModalStateTitle(false)}
-            parentId={selected}
-            closeParent={changeModalState(false)}
-          />
-          <Button
             className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
             onClick={handleClick}
           >
@@ -147,14 +126,6 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   )
 }
 
-CreateTitleDepartment.defaultProps = {
-  parentId: null,
-}
+CreateVolume.propTypes = {}
 
-CreateTitleDepartment.propTypes = {
-  className: PropTypes.string,
-  setChange: PropTypes.func,
-  parentId: PropTypes.oneOfType([PropTypes.string, PropTypes.oneOf([null])]),
-}
-
-export default CreateTitleDepartment
+export default CreateVolume

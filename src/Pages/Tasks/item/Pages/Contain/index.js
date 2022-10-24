@@ -20,15 +20,24 @@ import SortIcon from './Icons/SortIcon'
 import { EmptyInputWrapper } from '@Components/Components/Forms/index'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useParams } from 'react-router-dom'
-import CreateTitleDepartment from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment'
+import CreateTitleDepartment from './Components/CreateTitleDepartment'
+import LeafTableComponent from './Components/LeafTableComponent'
+import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
+import CreateVolume from './Components/CreateVolume'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
+  treePlugin: {
+    valueKey: 'id',
+    nestedDataKey: 'children',
+    component: LeafTableComponent,
+  },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'titleId',
+    valueKey: 'id',
+    returnObject: true,
   },
 }
 
@@ -38,7 +47,7 @@ const columns = [
     label: 'Наименование',
   },
   {
-    id: 'Связь',
+    id: 'linkName',
     label: 'Связь',
   },
   {
@@ -111,6 +120,14 @@ const Contain = () => {
     [api, id],
   )
 
+  const setChange = useCallback(
+    () =>
+      setTabState(({ change }) => {
+        return { change: !change }
+      }),
+    [setTabState],
+  )
+
   useAutoReload(loadData, tabItemState)
 
   const fields = useMemo(
@@ -134,51 +151,62 @@ const Contain = () => {
     ],
     [api],
   )
+
+  const onTableUpdate = useCallback(
+    (data) => setTabState({ data }),
+    [setTabState],
+  )
   return (
-    <div className="flex-container p-4 w-full overflow-hidden">
-      <div className="flex items-center form-element-sizes-32 w-full mb-4">
-        <FilterForm
-          className="mr-2"
-          value={filterValue}
-          onInput={setFilterValue}
-          fields={fields}
-          inputWrapper={EmptyInputWrapper}
-        />
-        <div className="flex items-center ml-auto">
-          <CreateTitleDepartment className="mr-2" />
-          <SecondaryBlueButton className="mr-2" disabled>
-            Том
-          </SecondaryBlueButton>
-          <SecondaryBlueButton className="mr-2" disabled>
-            Связь
-          </SecondaryBlueButton>
-          <div className="flex items-center color-text-secondary">
-            <ButtonForIcon className="mr-2">
-              <Icon icon={editIcon} />
-            </ButtonForIcon>
-            <ButtonForIcon className="mr-2">
-              <Icon icon={DeleteIcon} />
-            </ButtonForIcon>
-            <ButtonForIcon className="mr-2">
-              <Icon icon={SortIcon} />
-            </ButtonForIcon>
-            <ButtonForIcon className="color-green">
-              <Icon icon={XlsIcon} />
-            </ButtonForIcon>
+    <LoadContainChildrenContext.Provider value={loadData}>
+      <div className="flex-container p-4 w-full overflow-hidden">
+        <div className="flex items-center form-element-sizes-32 w-full mb-4">
+          <FilterForm
+            className="mr-2"
+            value={filterValue}
+            onInput={setFilterValue}
+            fields={fields}
+            inputWrapper={EmptyInputWrapper}
+          />
+          <div className="flex items-center ml-auto">
+            <CreateTitleDepartment
+              className="mr-2"
+              setChange={setChange}
+              parentId={selectState[0] ?? null}
+            />
+            <CreateVolume className="mr-2" parentId={selectState[0]} />
+            <SecondaryBlueButton className="mr-2" disabled>
+              Связь
+            </SecondaryBlueButton>
+            <div className="flex items-center color-text-secondary">
+              <ButtonForIcon className="mr-2">
+                <Icon icon={editIcon} />
+              </ButtonForIcon>
+              <ButtonForIcon className="mr-2">
+                <Icon icon={DeleteIcon} />
+              </ButtonForIcon>
+              <ButtonForIcon className="mr-2">
+                <Icon icon={SortIcon} />
+              </ButtonForIcon>
+              <ButtonForIcon className="color-green">
+                <Icon icon={XlsIcon} />
+              </ButtonForIcon>
+            </div>
           </div>
         </div>
+        <ListTable
+          returnObjects={true}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          columns={columns}
+          selectState={selectState}
+          onSelect={setSelectState}
+          sortQuery={sortQuery}
+          onSort={onSort}
+          value={data}
+          onInput={onTableUpdate}
+        />
       </div>
-      <ListTable
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        columns={columns}
-        selectState={selectState}
-        onSelect={setSelectState}
-        sortQuery={sortQuery}
-        onSort={onSort}
-        value={data}
-      />
-    </div>
+    </LoadContainChildrenContext.Provider>
   )
 }
 
