@@ -67,8 +67,6 @@ const plugins = {
 }
 
 const ArchiveList = () => {
-  console.log(1)
-
   const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
   const { id, name = '', parentName = '' } = useParams()
@@ -78,14 +76,12 @@ const ArchiveList = () => {
     (id, type) => () => navigate(`/task/${id}/${type}`),
     [navigate],
   )
-  console.log(parentName, 'parentName')
   const tabItemState = useTabItem({
     setTabName: useCallback(() => `${parentName}/${name}`, [name, parentName]),
     // setTabName: useCallback(() => `Архивный документ`, [name, parentName]),
     stateId: TASK_LIST_ARCHIVE,
   })
 
-  console.log(parentName, 'parentName1')
 
   const {
     tabState: { data },

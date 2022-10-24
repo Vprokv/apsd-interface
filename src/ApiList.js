@@ -27,6 +27,7 @@ export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'
+export const URL_DOCUMENT_APSD_CREATION_OPTIONS = '/apsd/classification'
 export const URL_DOCUMENT_VIEWED = '/sedo/document/list/recently_viewed'
 export const URL_DOCUMENT_CLASSIFICATION =
   '/sedo/document/create/from_classification'

@@ -23,6 +23,7 @@ import { useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
+import CreateVolume from './Components/CreateVolume'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -172,9 +173,7 @@ const Contain = () => {
               setChange={setChange}
               parentId={selectState[0] ?? null}
             />
-            <SecondaryBlueButton className="mr-2" disabled>
-              Том
-            </SecondaryBlueButton>
+            <CreateVolume className="mr-2" parentId={selectState[0]} />
             <SecondaryBlueButton className="mr-2" disabled>
               Связь
             </SecondaryBlueButton>
