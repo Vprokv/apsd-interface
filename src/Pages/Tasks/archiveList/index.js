@@ -78,7 +78,6 @@ const ArchiveList = () => {
   )
   const tabItemState = useTabItem({
     setTabName: useCallback(() => `${parentName}/${name}`, [name, parentName]),
-    // setTabName: useCallback(() => `Архивный документ`, [name, parentName]),
     stateId: TASK_LIST_ARCHIVE,
   })
 

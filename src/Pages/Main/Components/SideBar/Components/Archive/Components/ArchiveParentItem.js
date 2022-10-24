@@ -12,9 +12,15 @@ const ArchiveParentItem = ({
   children,
   onOpenNewTab,
 }) => {
-  const onNavigate = useCallback(
-    () => onOpenNewTab(`/task/list/${parentName}/${name}/${id}`),
-    [id, onOpenNewTab, parentName, name],
+  const handleClick = useCallback(
+    (toggleDisplayedFlag) => {
+      return () => {
+        return level === 1
+          ? (() => onOpenNewTab(`/task/list/${parentName}/${name}/${id}`))()
+          : toggleDisplayedFlag()
+      }
+    },
+    [id, onOpenNewTab, parentName, name, level],
   )
 
   return (
@@ -25,10 +31,7 @@ const ArchiveParentItem = ({
             <button
               type="button"
               className=""
-              onClick={() => {
-                toggleDisplayedFlag()
-                level === 1 && !isDisplayed && onNavigate()
-              }}
+              onClick={handleClick(toggleDisplayedFlag)}
             >
               <span className="mr-auto">{name}</span>
             </button>
