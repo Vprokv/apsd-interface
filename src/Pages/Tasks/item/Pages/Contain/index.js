@@ -24,6 +24,8 @@ import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 import CreateVolume from './Components/CreateVolume'
+import EditVolume from '@/Pages/Tasks/item/Pages/Contain/Components/EditVolume'
+import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -37,7 +39,7 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'id',
-    returnObject: true,
+    returnObjects: true,
   },
 }
 
@@ -106,7 +108,7 @@ const Contain = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data },
+    tabState: { data, change },
   } = tabItemState
 
   const loadData = useCallback(
@@ -117,8 +119,11 @@ const Contain = () => {
       })
       return data
     },
-    [api, id],
+    [api, id, change],
   )
+
+  console.log(tabState, 'tabState')
+  console.log(change, 'change')
 
   const setChange = useCallback(
     () =>
@@ -171,19 +176,22 @@ const Contain = () => {
             <CreateTitleDepartment
               className="mr-2"
               setChange={setChange}
-              parentId={selectState[0] ?? null}
+              parentId={selectState[0]?.id ?? selectState[0] ?? null}
             />
-            <CreateVolume className="mr-2" parentId={selectState[0]} />
+            <CreateVolume
+              className="mr-2"
+              parentId={selectState[0]?.id ?? selectState[0]}
+            />
             <SecondaryBlueButton className="mr-2" disabled>
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
-              <ButtonForIcon className="mr-2">
-                <Icon icon={editIcon} />
-              </ButtonForIcon>
-              <ButtonForIcon className="mr-2">
-                <Icon icon={DeleteIcon} />
-              </ButtonForIcon>
+              <EditVolume selected={selectState[0] ?? {}} />
+              <DeleteContain
+                selected={selectState[0] ?? {}}
+                setChange={setChange}
+                setSelectState={setSelectState}
+              />
               <ButtonForIcon className="mr-2">
                 <Icon icon={SortIcon} />
               </ButtonForIcon>
@@ -194,7 +202,6 @@ const Contain = () => {
           </div>
         </div>
         <ListTable
-          returnObjects={true}
           plugins={plugins}
           headerCellComponent={HeaderCell}
           columns={columns}
