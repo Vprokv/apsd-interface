@@ -23,7 +23,7 @@ import {
 import dayjs from 'dayjs'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import FilterForm from '@Components/Components/Forms'
-import Button, { ButtonForIcon } from '@/Components/Button'
+import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import deleteIcon from '@/Icons/deleteIcon'
 import OrgStructure from './Components/OrgStructure'
@@ -104,7 +104,7 @@ const filterConfig = [
 ]
 const emptyWrapper = ({ children }) => children
 
-const CreateSubscriptionWindow = ({ onClose }) => {
+const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -197,8 +197,9 @@ const CreateSubscriptionWindow = ({ onClose }) => {
 
   const onSave = useCallback(async () => {
     await handleSaveClick(api)(createData)
+    await loadDataFunction()
     onClose()
-  }, [createData, handleSaveClick, api, onClose])
+  }, [createData, handleSaveClick, api, onClose, loadDataFunction])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
@@ -255,12 +256,12 @@ const CreateSubscriptionWindow = ({ onClose }) => {
         >
           Закрыть
         </Button>
-        <Button
+        <LoadableBaseButton
           className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
           onClick={onSave}
         >
           Сохранить
-        </Button>
+        </LoadableBaseButton>
       </div>
     </div>
   )

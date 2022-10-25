@@ -1,14 +1,15 @@
 import { useCallback, useMemo } from 'react'
 import dayjs from 'dayjs'
-import { DATE_FORMAT_YYYY_escape } from '../../../../../../../contants'
+import {DATE_FORMAT_YYYY_escape, DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT} from '../../../../../../../contants'
 import { URL_SUBSCRIPTION_CREATE } from '../../../../../../../ApiList'
 
 export const useCreateSubscription = ({ filter, ...item }) => {
   const data = useMemo(() => {
     const { DatePicker: [start, end] = [] } = filter
+
     return {
-      startDate: start && dayjs(start).format(DATE_FORMAT_YYYY_escape),
-      endDate: end && dayjs(end).format(DATE_FORMAT_YYYY_escape),
+      startDate: start && dayjs(start, PRESENT_DATE_FORMAT).format(DATE_FORMAT_YYYY_escape),
+      endDate: end && dayjs(end, PRESENT_DATE_FORMAT).format(DATE_FORMAT_YYYY_escape),
     }
   }, [filter])
 

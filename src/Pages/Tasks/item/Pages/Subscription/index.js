@@ -7,13 +7,21 @@ import {
   useState,
 } from 'react'
 import { useParams } from 'react-router-dom'
-import { ApiContext, TASK_ITEM_SUBSCRIPTION } from '@/contants'
+import {
+  ApiContext,
+  PRESENT_DATE_FORMAT,
+  TASK_ITEM_SUBSCRIPTION,
+} from '@/contants'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { FlatSelect } from '@/components_ocean/Components/Tables/Plugins/selectable'
 import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
-import { URL_SUBSCRIPTION_LIST } from '@/ApiList'
+import {
+  URL_EMPLOYEE_LIST,
+  URL_SUBSCRIPTION_EVENTS,
+  URL_SUBSCRIPTION_LIST,
+} from '@/ApiList'
 import { FilterForm } from '../../styles'
 import Icon from '@/components_ocean/Components/Icon'
 import ListTable from '@/components_ocean/Components/Tables/ListTable'
@@ -23,6 +31,14 @@ import filterIcon from '../../../list/icons/filterIcon'
 import deleteIcon from '@/Icons/deleteIcon'
 import UserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import CreateSubscriptionWindow from './Components/CreateSubscriptionWindow'
+import dayjs from 'dayjs'
+import { useRecoilValue } from 'recoil'
+import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
+import {
+  EventsContext,
+  SubscribersContext,
+} from './Components/CreateSubscriptionWindow/constans'
+import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -44,10 +60,10 @@ const columns = [
     sizes: 150,
   },
   {
-    id: 'subscription',
+    id: 'events',
     label: 'Подписка на событие',
-    component: ({ ParentValue: { subscription } }) => (
-      <BaseCell value={subscription} className="flex items-center h-10" />
+    component: ({ ParentValue: { events } }) => (
+      <Events events={events} className="flex items-center h-10" />
     ),
     sizes: 450,
   },
@@ -63,7 +79,10 @@ const columns = [
     id: 'startDate',
     label: 'Дата начала',
     component: ({ ParentValue: { startDate } }) => (
-      <BaseCell value={startDate} className="flex items-center h-10" />
+      <BaseCell
+        value={startDate && dayjs(startDate).format(PRESENT_DATE_FORMAT)}
+        className="flex items-center h-10"
+      />
     ),
     sizes: 190,
   },
@@ -71,7 +90,10 @@ const columns = [
     id: 'endDate',
     label: 'Дата окончания',
     component: ({ ParentValue: { endDate } }) => (
-      <BaseCell value={endDate} className="flex items-center h-10" />
+      <BaseCell
+        value={endDate && dayjs(endDate).format(PRESENT_DATE_FORMAT)}
+        className="flex items-center h-10"
+      />
     ),
     sizes: 450,
   },
@@ -93,6 +115,14 @@ const filterFormConfig = [
 ]
 
 const Subscription = () => {
+  const {
+    organization: [
+      {
+        r_object_id: organization = '',
+        branches: [{ r_object_id: branchId = '' }] = [{}],
+      },
+    ] = [{}],
+  } = useRecoilValue(userAtom)
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -108,12 +138,41 @@ const Subscription = () => {
   )
 
   const {
-    tabState: { data },
+    setTabState,
+    tabState: { data, events = new Map(), subscribers = new Map() },
     shouldReloadDataFlag,
     loadDataHelper,
   } = useTabItem({
     stateId: TASK_ITEM_SUBSCRIPTION,
   })
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_SUBSCRIPTION_EVENTS)
+      setTabState({
+        events: data.reduce((acc, { name, label }) => {
+          acc.set(name, label)
+          return acc
+        }, new Map()),
+      })
+    })()
+  }, [id, setTabState, api])
+
+  useEffect(() => {
+    ;(async () => {
+      const {
+        data: { content },
+      } = await api.post(URL_EMPLOYEE_LIST, {
+        filter: { organization, branchId },
+      })
+      setTabState({
+        subscribers: content.reduce((acc, val) => {
+          acc.set(val.emplId, val)
+          return acc
+        }, new Map()),
+      })
+    })()
+  }, [organization, setTabState, api, branchId])
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
@@ -164,20 +223,25 @@ const Subscription = () => {
           </ButtonForIcon>
         </div>
       </div>
-      <ListTable
-        value={data}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        selectState={selectState}
-        onSelect={setSelectState}
-        sortQuery={sortQuery}
-        onSort={onSort}
-        valueKey="id"
-      />
+      <EventsContext.Provider value={events}>
+        <SubscribersContext.Provider value={subscribers}>
+          <ListTable
+            value={data}
+            columns={columns}
+            plugins={plugins}
+            headerCellComponent={HeaderCell}
+            selectState={selectState}
+            onSelect={setSelectState}
+            sortQuery={sortQuery}
+            onSort={onSort}
+            valueKey="id"
+          />
+        </SubscribersContext.Provider>
+      </EventsContext.Provider>
       <CreateSubscriptionWindow
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}
+        loadDataFunction={loadDataFunction}
       />
     </div>
   )
