@@ -32,12 +32,7 @@ import deleteIcon from '@/Icons/deleteIcon'
 import UserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import CreateSubscriptionWindow from './Components/CreateSubscriptionWindow'
 import dayjs from 'dayjs'
-import { useRecoilValue } from 'recoil'
-import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import {
-  EventsContext,
-  SubscribersContext,
-} from './Components/CreateSubscriptionWindow/constans'
+import { EventsContext } from './Components/CreateSubscriptionWindow/constans'
 import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
 
 const plugins = {
@@ -46,7 +41,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'id',
+    valueKey: 'objectId',
   },
 }
 
@@ -101,32 +96,25 @@ const columns = [
 
 const filterFormConfig = [
   {
-    id: 'subscriber',
-    widthButton: false,
+    id: 'subscriberId',
     component: UserSelect,
     placeholder: 'Получатель',
   },
   {
-    id: 'author',
-    widthButton: false,
+    id: 'authorId',
     component: UserSelect,
     placeholder: 'Автор',
   },
 ]
 
+const emptyWrapper = ({ children }) => children
+
 const Subscription = () => {
-  const {
-    organization: [
-      {
-        r_object_id: organization = '',
-        branches: [{ r_object_id: branchId = '' }] = [{}],
-      },
-    ] = [{}],
-  } = useRecoilValue(userAtom)
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
+  const [filter, setFilter] = useState({})
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
@@ -158,31 +146,30 @@ const Subscription = () => {
     })()
   }, [id, setTabState, api])
 
-  useEffect(() => {
-    ;(async () => {
-      const {
-        data: { content },
-      } = await api.post(URL_EMPLOYEE_LIST, {
-        filter: { organization, branchId },
-      })
-      setTabState({
-        subscribers: content.reduce((acc, val) => {
-          acc.set(val.emplId, val)
-          return acc
-        }, new Map()),
-      })
-    })()
-  }, [organization, setTabState, api, branchId])
+  const memoFilter = useMemo(() => {
+    const obj = {}
+    const { authorId, subscriberId } = filter
+    if (authorId) {
+      obj['authorId'] = authorId
+    }
+
+    if (subscriberId) {
+      obj['subscriberId'] = subscriberId
+    }
+
+    return obj
+  }, [filter])
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
         documentId: id,
         type,
+        filter: memoFilter,
       })
       return data
     })
-  }, [id, type, api, loadDataHelper])
+  }, [id, type, api, loadDataHelper, memoFilter])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -196,17 +183,14 @@ const Subscription = () => {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
-  const emptyWrapper = ({ children }) => children
-  const [a, b] = useState({})
-
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4">
         <FilterForm
           fields={filterFormConfig}
           inputWrapper={emptyWrapper}
-          value={a}
-          onInput={b}
+          value={filter}
+          onInput={setFilter}
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
@@ -224,19 +208,17 @@ const Subscription = () => {
         </div>
       </div>
       <EventsContext.Provider value={events}>
-        <SubscribersContext.Provider value={subscribers}>
-          <ListTable
-            value={data}
-            columns={columns}
-            plugins={plugins}
-            headerCellComponent={HeaderCell}
-            selectState={selectState}
-            onSelect={setSelectState}
-            sortQuery={sortQuery}
-            onSort={onSort}
-            valueKey="id"
-          />
-        </SubscribersContext.Provider>
+        <ListTable
+          value={data}
+          columns={columns}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          selectState={selectState}
+          onSelect={setSelectState}
+          sortQuery={sortQuery}
+          onSort={onSort}
+          valueKey="id"
+        />
       </EventsContext.Provider>
       <CreateSubscriptionWindow
         open={addSubscriptionWindow}
