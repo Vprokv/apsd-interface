@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil'
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import { useCallback } from 'react'
 
-const WithToggleNavigationItem = ({ id, children, func }) => {
+const WithToggleNavigationItem = ({ id, children }) => {
   const [isDisplayed, setDisplayedFlag] = useRecoilState(
     cachedLocalStorageValue(`navigationItem${id}`),
   )
@@ -11,17 +11,13 @@ const WithToggleNavigationItem = ({ id, children, func }) => {
     isDisplayed,
     toggleDisplayedFlag: useCallback(() => {
       setDisplayedFlag((s) => !s)
-      func(id)
     }, [setDisplayedFlag]),
   })
 }
 
-WithToggleNavigationItem.defaultProps = {
-  func: (id) => null,
-}
-
 WithToggleNavigationItem.propTypes = {
   id: PropTypes.string.isRequired,
+  children: PropTypes.func.isRequired,
 }
 
 export default WithToggleNavigationItem

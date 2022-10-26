@@ -1,15 +1,9 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   NavigationContainer,
   NavigationItem,
-} from '../../../Components/DocumentNavigation'
+} from '@/Components/DocumentNavigation'
 import {
   Navigate,
   Route,
@@ -31,9 +25,8 @@ import Handouts from './Pages/Handouts'
 import Lifecycle from './Pages/Lifecycle'
 import Links from './Pages/Links'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
-import { ApiContext, TASK_ITEM_DOCUMENT } from '../../../contants'
-import { URL_TASK_ITEM, URL_TASK_LIST } from '../../../ApiList'
-import NewDocument from './newItem'
+import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
+import { URL_TASK_ITEM, URL_TASK_LIST } from '@/ApiList'
 
 const pages = {
   requisites: {
@@ -58,7 +51,6 @@ const pages = {
     Component: Objects,
   },
   title_structure: {
-    // TODO в тз нет этой вкладки, неизвестно при каких условиях выводить
     label: 'Состав титула',
     path: 'structure',
     Component: Contain,

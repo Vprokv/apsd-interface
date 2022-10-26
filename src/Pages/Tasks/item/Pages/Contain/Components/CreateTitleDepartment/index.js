@@ -1,19 +1,22 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import Button, {LoadableBaseButton, LoadableSecondaryBlueButton} from '@/Components/Button'
+import Button, {
+  LoadableBaseButton,
+  LoadableSecondaryBlueButton,
+} from '@/Components/Button'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import { ApiContext } from '@/contants'
 import {
   URL_TITLE_CONTAIN_CREATE,
   URL_TITLE_CONTAIN_DEPARTMENT,
-  URL_TITLE_CONTAIN_SAVE,
 } from '@/ApiList'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
 import { useParams } from 'react-router-dom'
+import { NestedButton } from '../../styles'
 
 const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   const api = useContext(ApiContext)
@@ -54,50 +57,57 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   }, [api, id, selected, parentId, setChange, changeModalState])
 
   const renderEntities = useCallback(
-    ({ id, name, code, sections }) => (
-      <WithToggleNavigationItem
-        id={id}
-        key={id}
-        func={(id) => !sections.length > 0 && setSelected(id)}
-      >
-        {({ isDisplayed, toggleDisplayedFlag }) => (
-          <div
-            className={`flex flex-col w-full   ${isDisplayed ? '' : ''} ${
-              selected === id ? 'bg-light-gray' : ''
-            }`}
-          >
-            <div className="pl-4">
-              <button
-                type="button"
-                className="flex items-center w-full h-10 border-b-2 "
-                onClick={toggleDisplayedFlag}
-              >
-                {!!sections.length > 0 && (
+    (level = 1) =>
+      // eslint-disable-next-line react/prop-types
+      ({ id, name, sections }) =>
+        // eslint-disable-next-line react/prop-types
+        sections.length > 0 ? (
+          <WithToggleNavigationItem id={id} key={id}>
+            {({ isDisplayed, toggleDisplayedFlag }) => (
+              <div className={`flex flex-col w-full ${isDisplayed ? '' : ''}`}>
+                <NestedButton
+                  level={level}
+                  type="button"
+                  className={`flex items-center w-full h-10 border-b-2 ${
+                    selected === id ? 'bg-light-gray' : ''
+                  }`}
+                  onClick={() => setSelected(id)}
+                >
                   <Icon
                     icon={angleIcon}
                     size={10}
+                    onClick={toggleDisplayedFlag}
                     className={`${
                       isDisplayed ? 'rotate-180' : ''
                     } mt-1 color-text-secondary`}
                   />
+                  <span className="mr-auto ml-2">{name}</span>
+                </NestedButton>
+                {isDisplayed && (
+                  <div className="flex flex-col">
+                    {sections.map(renderEntities(level + 1))}
+                  </div>
                 )}
-                <span className="mr-auto ml-2">{name}</span>
-              </button>
-              {isDisplayed && (
-                <div className="flex flex-col ">
-                  {sections.map(renderEntities)}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </WithToggleNavigationItem>
-    ),
+              </div>
+            )}
+          </WithToggleNavigationItem>
+        ) : (
+          <NestedButton
+            level={level}
+            type="button"
+            className={`flex items-center w-full h-10 border-b-2 ${
+              selected === id ? 'bg-light-gray' : ''
+            }`}
+            onClick={() => setSelected(id)}
+          >
+            <span className="mr-auto ml-2">{name}</span>
+          </NestedButton>
+        ),
     [selected],
   )
 
   const renderedEntities = useMemo(
-    () => entities.map(renderEntities),
+    () => entities.map(renderEntities()),
     [entities, renderEntities],
   )
 
@@ -132,7 +142,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
             setChange={setChange}
             open={openTitle}
             onClose={changeModalStateTitle(false)}
-            parentId={selected}
+            parentId={parentId}
             closeParent={changeModalState(false)}
           />
           <LoadableBaseButton
@@ -147,14 +157,15 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   )
 }
 
-CreateTitleDepartment.defaultProps = {
-  parentId: null,
-}
-
 CreateTitleDepartment.propTypes = {
   className: PropTypes.string,
   setChange: PropTypes.func,
   parentId: PropTypes.oneOfType([PropTypes.string, PropTypes.oneOf([null])]),
+}
+
+CreateTitleDepartment.defaultProps = {
+  parentId: null,
+  className: '',
 }
 
 export default CreateTitleDepartment

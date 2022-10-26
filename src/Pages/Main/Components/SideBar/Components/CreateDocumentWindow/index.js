@@ -91,7 +91,7 @@ const CreateDocumentWindow = ({ onClose }) => {
 
   const renderDocumentItem = useCallback(
     (HeaderComponent) =>
-      ({ data, data: { name, id }, children }) => {
+      ({ data, data: { name, id, typeName }, children }) => {
         const selected = selectedDocument.name === name
         return children.length > 0 ? (
           <WithToggleNavigationItem id={id} key={id}>

@@ -14,7 +14,7 @@ import {
   TASK_ITEM_REQUISITES,
 } from '../../../contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
-import { URL_DOCUMENT_CLASSIFICATION, URL_TASK_ITEM } from '../../../ApiList'
+import { URL_DOCUMENT_CLASSIFICATION, URL_TASK_ITEM } from '@/ApiList'
 import { useParams } from 'react-router-dom'
 import { BaseItem } from './baseItem'
 
@@ -25,6 +25,7 @@ const NewTaskItem = (props) => {
     tabState: {
       data: { values: { dss_work_number = 'Новый документ' } = {} } = {},
     },
+    initialState,
   } = useTabItem({ stateId: TASK_ITEM_NEW_DOCUMENT })
 
   const {
@@ -38,12 +39,17 @@ const NewTaskItem = (props) => {
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
+      const { valuesCustom, values } = initialState || {}
       const { data } = await api.post(URL_DOCUMENT_CLASSIFICATION, {
         classificationId,
       })
-      return data
+      return {
+        ...data,
+        values: { ...data.values, ...values },
+        valuesCustom: { ...data.valuesCustom, ...valuesCustom },
+      }
     })
-  }, [classificationId, api, loadDataHelper])
+  }, [classificationId, api, loadDataHelper, initialState])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 

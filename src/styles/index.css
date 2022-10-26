@@ -34,6 +34,7 @@ body {
     --form-elements-disabled-border-color: #DDDDDD;
     --elements-hover-color: #1848BE;
     --elements-active-color: #4980e6;
+    --buttons-hover-color: var(--blue-1);
 
     --base: #232832;
     --secondary: #B8C7E4;
