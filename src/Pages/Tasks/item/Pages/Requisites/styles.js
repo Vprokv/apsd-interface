@@ -7,4 +7,6 @@ export const RequisitesForm = styled(WithWithValidationForm)`
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 32px;
   padding: 1rem;
+  --form-elements-indent: 0px;
+  grid-row-gap: 20px;
 `
