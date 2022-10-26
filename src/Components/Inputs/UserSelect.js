@@ -11,7 +11,7 @@ import useDefaultFilter from './OrgStructure/useDefaultFilter'
 
 export const AddUserOptionsFullName = (v) => ({
   ...v,
-  fullName: `${v.firstName} ${v.middleName} ${v.lastName}`,
+  fullName: `${v.lastName} ${v.firstName} ${v.middleName}`,
 })
 
 export const SearchButton = styled.button.attrs({ type: 'button' })`
