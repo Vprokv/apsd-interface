@@ -26,9 +26,9 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 `
 
 const UserSelect = (props) => {
-  const { loadFunction } = props
+  const { loadFunction, source, docId } = props
   const api = useContext(ApiContext)
-  const { organization, branchId } = useDefaultFilter()
+  const defaultFilter = useDefaultFilter({ source, docId })
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(
     () => setAddEmployeeWindowState(true),
@@ -39,16 +39,12 @@ const UserSelect = (props) => {
     [],
   )
 
-  const customSelectFilter = useMemo(() => {
-    return { organization, branchId }
-  }, [organization, branchId])
-
   const loadRefSelectFunc = useCallback(
     async (search) => {
-      const data = await loadFunction(api)(customSelectFilter)(search)
+      const data = await loadFunction(api)(defaultFilter)(search)
       return data.map(AddUserOptionsFullName)
     },
-    [api, customSelectFilter, loadFunction],
+    [api, defaultFilter, loadFunction],
   )
 
   return (

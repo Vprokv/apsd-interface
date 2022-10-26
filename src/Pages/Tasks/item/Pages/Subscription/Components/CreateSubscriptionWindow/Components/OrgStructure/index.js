@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Button from '../../../../../../../../../Components/Button'
 import AddEmployee from '../../../../../../../../../Components/Inputs/OrgStructure/UserSearchWindow'
+import { useParams } from 'react-router-dom'
 
 const OrgStructure = (props) => {
+  const { id } = useParams()
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(
     () => setAddEmployeeWindowState(true),
@@ -27,6 +29,7 @@ const OrgStructure = (props) => {
         valueKey={'emplId'}
         open={addEmployeeWindow}
         onClose={closeEmployeeWindow}
+        docId={id}
       />
     </>
   )
