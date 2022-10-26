@@ -3,7 +3,7 @@ import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
 import { FilterForm } from '../../styles'
-import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
+import DatePickerComponent from '@/Components/Inputs/DatePicker'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY } from '@/contants'

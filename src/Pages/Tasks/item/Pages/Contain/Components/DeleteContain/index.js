@@ -1,7 +1,11 @@
-import Button, {ButtonForIcon, LoadableBaseButton, LoadableSecondaryBlueButton} from '@/Components/Button'
+import Button, {
+  ButtonForIcon,
+  LoadableBaseButton,
+  LoadableSecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'

@@ -9,6 +9,7 @@ import './styles/helpers.css'
 import './styles/sizing.css'
 import 'normalize.css'
 import 'react-perfect-scrollbar/dist/css/styles.min.css'
+import 'simplebar-react/dist/simplebar.min.css'
 import './api'
 
 import App from './App'

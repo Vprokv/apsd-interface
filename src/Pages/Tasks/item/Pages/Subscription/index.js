@@ -31,6 +31,7 @@ import filterIcon from '../../../list/icons/filterIcon'
 import deleteIcon from '@/Icons/deleteIcon'
 import UserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import CreateSubscriptionWindow from './Components/CreateSubscriptionWindow'
+import EmptyInputWrapper from '@/components_ocean/Components/Forms/EmptyInputWrapper'
 import dayjs from 'dayjs'
 import { EventsContext } from './Components/CreateSubscriptionWindow/constans'
 import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
@@ -107,8 +108,6 @@ const filterFormConfig = [
   },
 ]
 
-const emptyWrapper = ({ children }) => children
-
 const Subscription = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -183,12 +182,14 @@ const Subscription = () => {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
+  const [a, b] = useState({})
+
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4">
         <FilterForm
           fields={filterFormConfig}
-          inputWrapper={emptyWrapper}
+          inputWrapper={EmptyInputWrapper}
           value={filter}
           onInput={setFilter}
         />

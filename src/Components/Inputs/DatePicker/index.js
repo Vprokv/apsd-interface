@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import Icon from '@Components/Components/Icon'
@@ -61,7 +61,6 @@ const DatePicker = ({
 
 DatePicker.propTypes = {
   value: PropTypes.array,
-
 }
 
 DatePicker.defaultProps = {
@@ -74,6 +73,9 @@ export default ({ range, ...props }) =>
   ) : (
     <DatePickerComponent
       {...props}
+      leftSlot={
+        <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
+      }
       CalendarComponent={ThemedCalendar}
       DropDownComponent={DropDownComponent}
     />

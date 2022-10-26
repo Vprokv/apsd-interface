@@ -14,8 +14,9 @@ const SideBar = (props) => {
   const documentType = useContext(DocumentTypeContext)
   const {
     tabState: { data: { documentActions } = [], data: { values = {} } = {} },
+    initialState,
   } = useTabItem({ stateId: documentType })
-  const { saveFunc } = useSaveApi({ documentType, values })
+  const { saveFunc } = useSaveApi({ documentType, values, initialState })
 
   const buttons = useMemo(() => {
     return {

@@ -4,6 +4,7 @@ import { ApiContext } from '@/contants'
 import {
   URL_STORAGE_BRANCH,
   URL_STORAGE_DOCUMENT,
+  URL_STORAGE_SECTION,
   URL_STORAGE_TITLE,
 } from '@/ApiList'
 import ArchiveChildrenItem from './ArchiveChildrenItem'
@@ -23,14 +24,12 @@ const apisMap = {
     return data
   },
   2: async ({ api, id }) => {
-    const {
-      data: { content },
-    } = await api.post(URL_STORAGE_DOCUMENT, {
+    const { data } = await api.post(URL_STORAGE_SECTION, {
       filter: {
         titleId: id,
       },
     })
-    return content
+    return data
   },
 }
 

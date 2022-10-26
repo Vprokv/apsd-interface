@@ -19,6 +19,7 @@
     "react-spring": "^9.5.2",
     "react-virtualized": "^9.22.3",
     "recoil": "^0.6.1",
+    "simplebar-react": "^2.4.3",
     "styled-components": "^5.3.3"
   },
   "scripts": {

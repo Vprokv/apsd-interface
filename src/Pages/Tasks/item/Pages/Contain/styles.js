@@ -6,3 +6,7 @@ export const FilterForm = styled(Form)`
   grid-template-columns: 200px 200px;
   grid-column-gap: 0.5rem;
 `
+
+export const NestedButton = styled.button`
+  padding-left: ${({ level }) => level * 1}rem;
+`

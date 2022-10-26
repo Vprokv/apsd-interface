@@ -122,9 +122,6 @@ const Contain = () => {
     [api, id, change],
   )
 
-  console.log(tabState, 'tabState')
-  console.log(change, 'change')
-
   const setChange = useCallback(
     () =>
       setTabState(({ change }) => {
@@ -180,7 +177,8 @@ const Contain = () => {
             />
             <CreateVolume
               className="mr-2"
-              parentId={selectState[0]?.id ?? selectState[0]}
+              parent={selectState[0]}
+              setChange={setChange}
             />
             <SecondaryBlueButton className="mr-2" disabled>
               Связь
@@ -202,6 +200,7 @@ const Contain = () => {
           </div>
         </div>
         <ListTable
+          key={change}
           plugins={plugins}
           headerCellComponent={HeaderCell}
           columns={columns}

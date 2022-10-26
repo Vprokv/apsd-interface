@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import Button from '@/Components/Button'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { ApiContext } from '@/contants'
@@ -30,7 +30,7 @@ const NewTitle = ({ onClose, parentId, closeParent, setChange, open }) => {
     setChange()
     onClose()
     closeParent()
-  }, [api, onClose, value, id])
+  }, [api, id, parentId, value, setChange, onClose, closeParent])
 
   return (
     <MiniModalWindow

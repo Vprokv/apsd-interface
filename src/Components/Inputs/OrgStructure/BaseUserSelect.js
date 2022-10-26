@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import Select from '../Select'
 import { ApiContext } from '@/contants'
@@ -32,7 +32,6 @@ const UserSelect = ({ loadFunction, ...props }) => {
     },
     [api, customSelectFilter, loadFunction],
   )
-
   return <Select {...props} loadFunction={loadRefSelectFunc} />
 }
 

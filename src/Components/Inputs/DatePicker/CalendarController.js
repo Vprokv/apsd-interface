@@ -1,5 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useLayoutEffect, useRef } from 'react'
 import Calendar from '@Components/Components/Calendar'
 import useCalendarViewController, {
   MONTH,
