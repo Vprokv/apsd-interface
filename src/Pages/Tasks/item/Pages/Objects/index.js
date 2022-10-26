@@ -26,6 +26,7 @@ import filterIcon from '../../../list/icons/filterIcon'
 import editIcon from '../../../../../Icons/editIcon'
 import CreateObjectsWindow from './Components/CreateObjectsWindow'
 import { ButtonForIcon } from '@/Components/Button'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -113,6 +114,8 @@ const filterFormConfig = [
   },
 ]
 
+const emptyWrapper = ({ children }) => children
+
 const Objects = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -128,37 +131,23 @@ const Objects = (props) => {
     [],
   )
 
-  const {
-    tabState: { data: { technicalObjects = [] } = {} },
-    setTabState,
-    shouldReloadDataFlag,
-    loadDataHelper,
-  } = useTabItem({
+  const tabItemState = useTabItem({
     stateId: TASK_ITEM_OBJECTS,
   })
 
-  const loadDataFunction = useMemo(() => {
-    return loadDataHelper(async () => {
-      const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
-        documentId: id,
-      })
-      return data
+  const {
+    tabState: { data: { technicalObjects = [] } = {} },
+  } = tabItemState
+
+  const loadDataFunction = useCallback(async () => {
+    const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
+      documentId: id,
     })
-  }, [id, api, loadDataHelper])
+    return data
+  }, [id, api])
 
-  const refLoadDataFunction = useRef(loadDataFunction)
+  useAutoReload(loadDataFunction, tabItemState)
 
-  useEffect(() => {
-    if (
-      shouldReloadDataFlag ||
-      loadDataFunction !== refLoadDataFunction.current
-    ) {
-      loadDataFunction()
-    }
-    refLoadDataFunction.current = loadDataFunction
-  }, [loadDataFunction, shouldReloadDataFlag])
-
-  const emptyWrapper = ({ children }) => children
   const [a, b] = useState({})
 
   return (
@@ -185,6 +174,7 @@ const Objects = (props) => {
           </ButtonForIcon>
         </div>
         <CreateObjectsWindow
+          loadDataFunction={loadDataFunction}
           open={addCreateObjectsWindow}
           onClose={closeCreateObjectsWindow}
         />

@@ -10,7 +10,7 @@ import Select from '@/Components/Inputs/Select'
 import { useParams } from 'react-router-dom'
 import { ApiContext, WINDOW_ADD_OBJECT } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_CREATE } from '@/ApiList'
 import { CreateObjectsWindowComponent, FilterForm } from './styled'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -27,6 +27,7 @@ import log from 'tailwindcss/lib/util/log'
 import ObjectCard from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow/Components/ObjectCard'
 import closeIcon from '@/Icons/closeIcon'
 import { value } from 'lodash/seq'
+import {LoadableBaseButton} from "@/Components/Button";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -136,7 +137,7 @@ const filterFormConfig = [
   },
 ]
 
-const CreateObjectsWindow = ({ onClose }) => {
+const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -163,13 +164,23 @@ const CreateObjectsWindow = ({ onClose }) => {
 
   const emptyWrapper = ({ children }) => children
 
+  const onSave = useCallback(async () => {
+    await api.post(URL_TECHNICAL_OBJECTS_CREATE, {
+      titleId: id,
+      techObjectIds: selectState,
+    })
+    await loadDataFunction()
+    onClose()
+  }, [api, id, selectState, onClose, loadDataFunction])
 
   const onRemoveSelectedValue = useCallback(
     (id) => () =>
       setSelectState((prevValue) => {
-          const nextValue = Array.isArray(prevValue) ? [...prevValue] : []
-          nextValue.splice(nextValue.findIndex((objValueKey) => objValueKey === id, 1))
-          return nextValue
+        const nextValue = Array.isArray(prevValue) ? [...prevValue] : []
+        nextValue.splice(
+          nextValue.findIndex((objValueKey) => objValueKey === id, 1),
+        )
+        return nextValue
       }),
     [],
   )
@@ -195,7 +206,7 @@ const CreateObjectsWindow = ({ onClose }) => {
           </div>
         )
       }),
-    [selectState, data],
+    [selectState, data, onRemoveSelectedValue],
   )
 
   return (
@@ -233,12 +244,12 @@ const CreateObjectsWindow = ({ onClose }) => {
         >
           Закрыть
         </Button>
-        <Button
+        <LoadableBaseButton
           className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-          onClick={() => null}
+          onClick={onSave}
         >
           Сохранить
-        </Button>
+        </LoadableBaseButton>
       </div>
     </div>
   )

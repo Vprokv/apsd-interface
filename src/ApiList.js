@@ -25,6 +25,7 @@ export const URL_SUBSCRIPTION_DELETE = '/apsd/subscription/delete'
 export const URL_SUBSCRIPTION_CHANNELS = '/apsd/subscription/channels'
 // OBJECTS
 export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
+export const URL_TECHNICAL_OBJECTS_CREATE = '/apsd/title/technical_objects/add'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'

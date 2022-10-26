@@ -182,8 +182,6 @@ const Subscription = () => {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
-  const [a, b] = useState({})
-
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4">
