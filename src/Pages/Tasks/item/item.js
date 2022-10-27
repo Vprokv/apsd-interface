@@ -19,7 +19,6 @@ import Requisites from './Pages/Requisites'
 import Subscription from './Pages/Subscription'
 import Objects from './Pages/Objects'
 import Contain from './Pages/Contain'
-import Content from './Pages/Content'
 import History from './Pages/History'
 import Handouts from './Pages/Handouts'
 import Lifecycle from './Pages/Lifecycle'
@@ -40,11 +39,6 @@ const pages = {
     label: 'Подписка',
     path: 'subscriptions',
     Component: Subscription,
-  },
-  content: {
-    label: 'Контент',
-    path: 'content',
-    Component: Content,
   },
   technical_objects: {
     label: 'Технические объекты',
