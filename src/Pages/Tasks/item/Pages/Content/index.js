@@ -1,15 +1,12 @@
-import React, {useCallback, useContext, useState} from 'react';
+import { useCallback, useContext, useState } from 'react'
 import Icon from '@Components/Components/Icon'
-import {BoxForFile, GridForFiles} from "./style";
-// import Button, { ButtonForIcon } from '@Components/Components/Button'
-import Button, { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { useParams } from 'react-router-dom'
-import {URL_CONTENT_LIST} from "@/ApiList"
+import { URL_CONTENT_LIST } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
+import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import {TASK_ITEM_CONTENT} from "@/contants"
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
@@ -17,7 +14,10 @@ import deleteIcon from '@/Icons/deleteIcon'
 import editIcon from '@/Icons/editIcon'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Form from '@Components/Components/Forms'
-import DownloadWindow from "./Components/DownloadWindow";
+import DownloadWindow from './Components/DownloadWindow'
+import EmptyInputWrapper from '@Components/Components/Forms/EmptyInputWrapper'
+import XlsIcon from '@/Icons/XlsIcon'
+import WarningIcon from '@/Icons/warningIcon'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -50,7 +50,6 @@ const columns = [
   {
     id: 'author',
     label: 'Автор',
-
   },
   {
     id: 'version',
@@ -69,7 +68,7 @@ const columns = [
 
 const filterFormConfig = [
   {
-    id: 'subscriber',
+    id: 'fullVersion',
     widthButton: false,
     component: CheckBox,
     label: 'Отобразить все версии',
@@ -79,7 +78,7 @@ const filterFormConfig = [
 const Content = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
-  const [a, b] = useState(false)
+  const [filterValue, setFilterValue] = useState(false)
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
 
   const tabItemState = useTabItem({
@@ -87,23 +86,18 @@ const Content = () => {
   })
 
   const {
-    tabState,
-    setTabState,
     tabState: { data },
   } = tabItemState
 
-  const loadData = useCallback(
-    async () => {
-      const { data } = await api.post(URL_CONTENT_LIST, {
-        documentId: id,
-        isCurrentVersion: a,
-      })
-      return data
-    },
-    [api, id],)
+  const loadData = useCallback(async () => {
+    const { data } = await api.post(URL_CONTENT_LIST, {
+      documentId: id,
+      isCurrentVersion: filterValue.fullVersion,
+    })
+    return data
+  }, [filterValue.fullVersion, api, id])
 
   useAutoReload(loadData, tabItemState)
-  const emptyWrapper = ({ children }) => children
 
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
@@ -115,7 +109,7 @@ const Content = () => {
   )
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
-      {/*<GridForFiles>*/}
+      {/* <GridForFiles>*/}
       {/*  <BoxForFile className="flex items-center justify-center">*/}
       {/*    <Button*/}
       {/*      className="text-white bg-blue-1 flex items-center w-52 rounded-lg justify-center font-weight-normal"*/}
@@ -124,26 +118,26 @@ const Content = () => {
       {/*      Загрузить контент*/}
       {/*    </Button>*/}
       {/*  </BoxForFile>*/}
-      {/*</GridForFiles>*/}
-      <div className="flex items-center color-text-secondary">
+      {/* </GridForFiles>*/}
+      <div className="flex items-center color-text-secondary form-element-sizes-32">
         <Form
           fields={filterFormConfig}
-          inputWrapper={emptyWrapper}
-          value={a}
-          onInput={b}
+          inputWrapper={EmptyInputWrapper}
+          value={filterValue}
+          onInput={setFilterValue}
         />
         <div className="ml-auto flex items-center color-text-secondary">
-          <Button
-            className="ml-2 text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+          <SecondaryBlueButton
+            className="ml-2 text-white flex items-center w-60 rounded-lg justify-center"
             onClick={openSubscriptionWindow}
           >
             Добавить файл /версию
-          </Button>
+          </SecondaryBlueButton>
           <ButtonForIcon className="ml-2">
-            <Icon icon={editIcon} />
+            <Icon icon={WarningIcon} />
           </ButtonForIcon>
           <ButtonForIcon className="ml-2">
-            <Icon icon={editIcon} />
+            <Icon icon={XlsIcon} />
           </ButtonForIcon>
 
           <ButtonForIcon className="ml-4">
@@ -165,7 +159,7 @@ const Content = () => {
         onClose={closeSubscriptionWindow}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Content;
+export default Content

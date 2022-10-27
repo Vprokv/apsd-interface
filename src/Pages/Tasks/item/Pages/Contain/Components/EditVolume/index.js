@@ -31,6 +31,8 @@ EditVolume.propTypes = {
     type: PropTypes.string,
   }).isRequired,
 }
-EditVolume.defaultProps = {}
+EditVolume.defaultProps = {
+  selected: {},
+}
 
 export default EditVolume

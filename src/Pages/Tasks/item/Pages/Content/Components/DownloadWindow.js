@@ -1,68 +1,67 @@
-import React, {useCallback, useState} from 'react'
-import {SubscriptionWindowComponent} from "../../Subscription/Components/CreateSubscriptionWindow/style";
-import PropTypes from "prop-types"
-import Button, { ButtonForIcon } from '@/Components/Button'
-import {RequisitesForm} from "../../Requisites/styles";
-import InputComponent, { Input } from '@Components/Components/Inputs/Input'
+import { useCallback, useState } from 'react'
+import { FormWindow } from '@/Components/ModalWindow'
+import PropTypes from 'prop-types'
+import Button from '@/Components/Button'
+import InputComponent from '@Components/Components/Inputs/Input'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import Form from '@Components/Components/Forms'
+import DatePicker from '@/Components/Inputs/DatePicker'
+import UserSelect from '@/Components/Inputs/UserSelect'
+import dayjs from 'dayjs'
 
 export const fieldMap = [
   {
     label: 'Тип файла',
-    id: 'login',
+    id: 'file',
     component: InputComponent,
     placeholder: 'Введите данные',
   },
   {
     label: 'Комментарий',
+    id: 'comment',
+    component: InputComponent,
+    placeholder: 'Введите данные',
+  },
+  {
+    label: 'Шифр',
     id: 'password',
     type: 'password',
     component: InputComponent,
     placeholder: 'Введите данные',
   },
   {
-    label: 'Шифр',
-    id: 'new_password',
-    type: 'password',
-    component: InputComponent,
-    placeholder: 'Введите данные',
-  },
-  {
     label: 'Дата версии',
-    id: 'confirmation_password',
+    id: 'date',
     type: 'password',
-    component: InputComponent,
+    component: DatePicker,
     placeholder: 'Введите данные',
   },
   {
     label: 'Автор',
-    id: 'confirmation_password',
+    id: 'author',
     type: 'password',
-    component: InputComponent,
+    component: UserSelect,
     placeholder: 'Введите данные',
   },
 ]
 
-const rules = {
-
-}
+const rules = {}
+const initFormValue = { date: dayjs().format('DD.MM.YYYY') }
 
 const DownloadWindow = ({ onClose }) => {
-  const [values, setValues] = useState({})
+  const [values, setValues] = useState(initFormValue)
   const onSave = useCallback(async () => {
     // await handleSaveClick(api)(createData)
     onClose()
   }, [onClose])
 
-  const onFormInput = useCallback((formData) => {
-    console.log(formData)
-  }, [])
   return (
     <div className="flex flex-col overflow-hidden h-full">
-      <RequisitesForm
+      <Form
+        className="mb-10"
         inputWrapper={DefaultWrapper}
         value={values}
-        onInput={onFormInput}
+        onInput={setValues}
         fields={fieldMap}
         rules={rules}
       />
@@ -81,8 +80,8 @@ const DownloadWindow = ({ onClose }) => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 DownloadWindow.propTypes = {
   onClose: PropTypes.func,
@@ -92,9 +91,9 @@ DownloadWindow.defaultProps = {
 }
 
 const DownloadWindowWrapper = (props) => (
-  <SubscriptionWindowComponent {...props} title="Добавление файла/версии">
+  <FormWindow {...props} title="Добавление файла/версии">
     <DownloadWindow {...props} />
-  </SubscriptionWindowComponent>
+  </FormWindow>
 )
 
 export default DownloadWindowWrapper

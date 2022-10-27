@@ -1,5 +1,5 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import {ApiContext, TASK_LIST, TASK_LIST_ARCHIVE} from '@/contants'
+import { ApiContext, TASK_LIST, TASK_LIST_ARCHIVE } from '@/contants'
 import { useNavigate, useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_STORAGE_DOCUMENT, URL_TASK_LIST } from '@/ApiList'
@@ -71,7 +71,7 @@ const ArchiveList = () => {
   const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
   const { openNewTab } = useContext(TabStateManipulation)
-  const { id, name = '', parentName = '' } = useParams()
+  const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
@@ -83,7 +83,6 @@ const ArchiveList = () => {
     stateId: TASK_LIST_ARCHIVE,
   })
 
-
   const {
     tabState: { data },
   } = tabItemState
@@ -92,11 +91,11 @@ const ArchiveList = () => {
     const {
       data: { content },
     } = await api.post(URL_STORAGE_DOCUMENT, {
-      filter: { titleId: id },
+      filter: { titleId: id, sectionId },
     })
 
     return content
-  }, [api, id])
+  }, [api, id, sectionId])
 
   useAutoReload(loadData, tabItemState)
 

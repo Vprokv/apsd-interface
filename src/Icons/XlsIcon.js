@@ -1,4 +1,4 @@
-export default {
+const XlsIcon = {
   viewBox: '0 0 16 20',
   fill: 'none',
   children: [
@@ -39,3 +39,5 @@ export default {
     },
   ],
 }
+
+export default XlsIcon

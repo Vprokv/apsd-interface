@@ -184,7 +184,7 @@ const Contain = () => {
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
-              <EditVolume selected={selectState[0] ?? {}} />
+              <EditVolume selected={selectState[0]} />
               <DeleteContain
                 selected={selectState[0] ?? {}}
                 setChange={setChange}

@@ -1,4 +1,4 @@
-export default {
+const WarningIcon = {
   viewBox: '0 0 18 18',
   children: [
     {
@@ -13,3 +13,5 @@ export default {
     },
   ],
 }
+
+export default WarningIcon
