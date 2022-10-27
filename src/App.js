@@ -123,10 +123,6 @@ function App() {
                 element={<VolumeItem />}
               />
               <Route
-                path={routePath.DELETED_LIST_PATH}
-                element={<BasketList />}
-              />
-              <Route
                 path={routePath.DELETED_ITEM_PATH}
                 element={<BasketList />}
               />

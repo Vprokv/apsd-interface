@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
 const ArchiveParentItem = ({
   parentName,
@@ -11,12 +11,18 @@ const ArchiveParentItem = ({
   level,
   children,
   onOpenNewTab,
+  sectionId,
 }) => {
   const handleClick = useCallback(
     (toggleDisplayedFlag) => {
       return () => {
-        return level === 1
-          ? (() => onOpenNewTab(`/task/list/${parentName}/${name}/${id}`))()
+        return level > 0
+          ? (() =>
+              onOpenNewTab(
+                `/task/list/${parentName}/${name}/${id}${
+                  sectionId ? `/${sectionId}` : ''
+                }`,
+              ))()
           : toggleDisplayedFlag()
       }
     },
@@ -38,9 +44,7 @@ const ArchiveParentItem = ({
             <button
               className="pl-2"
               type="button"
-              onClick={() => {
-                toggleDisplayedFlag()
-              }}
+              onClick={toggleDisplayedFlag}
             >
               <Icon
                 icon={angleIcon}

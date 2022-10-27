@@ -6,11 +6,12 @@ import searchIcon from '@/Icons/searchIcon'
 import styled from 'styled-components'
 import AddEmployee from './OrgStructure/UserSearchWindow'
 import { ApiContext } from '@/contants'
-import { URL_EMPLOYEE_LIST } from '../../ApiList'
+import { URL_EMPLOYEE_LIST } from '@/ApiList'
+import useDefaultFilter from './OrgStructure/useDefaultFilter'
 
 export const AddUserOptionsFullName = (v = {}) => ({
   ...v,
-  fullName: `${v.firstName} ${v.middleName} ${v.lastName}`,
+  fullName: `${v.lastName} ${v.firstName} ${v.middleName}`,
   fullDescription: v.fullDescription
     ? v.fullDescription
     : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`,
@@ -28,9 +29,9 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 `
 
 const UserSelect = (props) => {
-  const { loadFunction } = props
+  const { loadFunction, source, docId } = props
   const api = useContext(ApiContext)
-  const { organization, branchId } = {}
+  const defaultFilter = useDefaultFilter({ source, docId })
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(
     () => setAddEmployeeWindowState(true),
@@ -41,16 +42,12 @@ const UserSelect = (props) => {
     [],
   )
 
-  const customSelectFilter = useMemo(() => {
-    return { organization, branchId }
-  }, [organization, branchId])
-
   const loadRefSelectFunc = useCallback(
     async (search) => {
-      const data = await loadFunction(api)(customSelectFilter)(search)
+      const data = await loadFunction(api)(defaultFilter)(search)
       return data.map(AddUserOptionsFullName)
     },
-    [api, customSelectFilter, loadFunction],
+    [api, defaultFilter, loadFunction],
   )
 
   return (

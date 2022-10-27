@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import {
   URL_STORAGE_BRANCH,
-  URL_STORAGE_DOCUMENT,
   URL_STORAGE_SECTION,
   URL_STORAGE_TITLE,
 } from '@/ApiList'
-import ArchiveChildrenItem from './ArchiveChildrenItem'
 import ArchiveParentItem from './ArchiveParentItem'
+import Icon from '@Components/Components/Icon'
+import angleIcon from '@/Icons/angleIcon'
+import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
+import { OthersLevelsArchiveButton } from './ArchiveButton'
 
 const apisMap = {
   0: async ({ api }) => {
@@ -23,54 +25,79 @@ const apisMap = {
     })
     return data
   },
-  2: async ({ api, id }) => {
+  defaultRequest: async ({ api, id, sectionId }) => {
     const { data } = await api.post(URL_STORAGE_SECTION, {
       filter: {
         titleId: id,
+        sectionId,
       },
     })
     return data
   },
 }
 
-const ArchiveItem = ({ parentName, level, id, onOpenNewTab }) => {
+const ArchiveItem = ({
+  parentName,
+  level,
+  id,
+  onOpenNewTab,
+  sectionId,
+  buttonComponent: ButtonComponent,
+}) => {
   const [items, setItems] = useState([])
   const api = useContext(ApiContext)
   useEffect(() => {
     ;(async () => {
-      setItems(await apisMap[level]({ api, id }))
+      const { [level]: req = apisMap.defaultRequest } = apisMap
+      setItems(await req({ api, id, sectionId }))
     })()
-  }, [api, level, id])
+  }, [api, level, id, sectionId])
 
-  return items.map(
-    level === 2
-      ? (props) => (
-          <ArchiveChildrenItem
-            {...props}
-            onOpenNewTab={onOpenNewTab}
-            key={props.id}
-          />
-        )
-      : ({ id, name }) => (
-          <ArchiveParentItem
-            key={id}
-            id={id}
-            name={name}
-            parentName={parentName}
-            level={level}
-            onOpenNewTab={onOpenNewTab}
-          >
+  const ChildrenComponent = level < 2 ? LevelTitleArchiveItem : ArchiveItem
+
+  return items.map(({ id: levelId, name }) => (
+    <WithToggleNavigationItem id={levelId} key={levelId}>
+      {({ isDisplayed, toggleDisplayedFlag }) => (
+        <div className=" font-size-12 mt-2 ">
+          <div className="flex w-full py-1.5 justify-between">
+            <ButtonComponent
+              id={id}
+              toggleChildrenRender={toggleDisplayedFlag}
+              name={name}
+              sectionId={levelId}
+              parentName={parentName}
+              onOpenNewTab={onOpenNewTab}
+            />
+            <button
+              className="pl-2"
+              type="button"
+              onClick={toggleDisplayedFlag}
+            >
+              <Icon
+                icon={angleIcon}
+                size={10}
+                className={`color-text-secondary ${
+                  isDisplayed ? '' : 'rotate-180'
+                }`}
+              />
+            </button>
+          </div>
+
+          {isDisplayed && (
             <div className="flex flex-col pl-4">
-              <ArchiveItem
+              <ChildrenComponent
                 level={level + 1}
                 id={id}
+                sectionId={levelId}
                 parentName={name}
                 onOpenNewTab={onOpenNewTab}
               />
             </div>
-          </ArchiveParentItem>
-        ),
-  )
+          )}
+        </div>
+      )}
+    </WithToggleNavigationItem>
+  ))
 }
 
 ArchiveItem.propTypes = {
@@ -82,6 +109,15 @@ ArchiveItem.propTypes = {
 ArchiveItem.defaultProps = {
   level: 0,
   parentName: 123123,
+  buttonComponent: OthersLevelsArchiveButton,
+}
+
+// кастим сектионИд в ид
+export const LevelTitleArchiveItem = ({ sectionId, ...props }) => (
+  <ArchiveItem {...props} id={sectionId} />
+)
+LevelTitleArchiveItem.propTypes = {
+  sectionId: PropTypes.string.isRequired,
 }
 
 export default ArchiveItem

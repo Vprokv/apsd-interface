@@ -6,6 +6,7 @@ import Icon from '@Components/Components/Icon'
 import ScrollBar from '@Components/Components/ScrollBar'
 import ArchiveItem from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
+import { FirstLevelArchiveButton } from './Components/ArchiveButton'
 
 const Archive = ({ onOpenNewTab }) => {
   return (
@@ -27,7 +28,10 @@ const Archive = ({ onOpenNewTab }) => {
           {isDisplayed && (
             <ScrollBar className="max-h-80">
               <div className="px-2">
-                <ArchiveItem onOpenNewTab={onOpenNewTab} />
+                <ArchiveItem
+                  onOpenNewTab={onOpenNewTab}
+                  buttonComponent={FirstLevelArchiveButton}
+                />
               </div>
             </ScrollBar>
           )}

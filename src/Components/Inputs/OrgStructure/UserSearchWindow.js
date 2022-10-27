@@ -91,7 +91,7 @@ const OrgStructureWindow = (props) => {
     multiple,
     returnOption,
     id,
-    sendValue
+    sendValue,
   } = props
 
   const { setLimit, setPage, paginationState } = pagination
@@ -118,15 +118,6 @@ const OrgStructureWindow = (props) => {
 
   const filterRef = useRef(filter)
 
-  const disBranches = useMemo(
-    () => filter.organization?.length < 2,
-    [filter.organization],
-  )
-  const disDepartment = useMemo(
-    () => !filter.branchId || filter.branchId?.length < 2,
-    [filter.branchId],
-  )
-
   useEffect(() => {
     if (
       (!filter.branchId && filter.branchId?.length < 2) ||
@@ -139,13 +130,13 @@ const OrgStructureWindow = (props) => {
 
   useEffect(() => {
     if (
-      filter.organization?.length < 2 ||
+      !filter.organization ||
       filterRef.current.organization !== filter.organization
     ) {
       const { branchId, ...item } = { ...filter }
       setFilter({ ...item })
     }
-  }, [filter.organization])
+  }, [filter.organization, filterRef])
 
   const fields = useMemo(
     () => [
@@ -164,7 +155,7 @@ const OrgStructureWindow = (props) => {
       {
         id: 'departmentId',
         component: LoadableSelect,
-        disabled: disDepartment,
+        disabled: !filter.branchId,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         placeholder: 'Отдел',
@@ -191,7 +182,7 @@ const OrgStructureWindow = (props) => {
         id: 'branchId',
         placeholder: 'Филиал',
         component: LoadableSelect,
-        disabled: disBranches,
+        disabled: !filter.organization,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         options: branches,
@@ -206,7 +197,7 @@ const OrgStructureWindow = (props) => {
     [api, filter, options],
   )
 
-  useEffect(() => loadFunction(), [])
+  useEffect(() => loadFunction(), [loadFunction])
 
   const onRemoveSelectedValue = useCallback(
     (id) => () =>
@@ -358,12 +349,18 @@ OrgStructureWindow.defaultProps = {
   sendValue: () => null,
 }
 
-const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
+const OrgStructureWindowWrapper = ({
+  onClose,
+  open,
+  type,
+  docId,
+  ...props
+}) => {
   const api = useContext(ApiContext)
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const [modalWindowOptions, setModalWindowOptions] = useState([])
-  const { organization, branchId } = {}
-  const [filter, setFilter] = useState({ organization, branchId })
+  const defaultFilter = useDefaultFilter({ type, docId })
+  const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
 
   const pagination = usePagination({
@@ -401,9 +398,15 @@ const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
     setModalWindowOptions(content)
   }, [api, filter, pagination.paginationState, sort])
 
+
+  const closeFunc = useCallback(() => {
+    onClose()
+    setFilter(defaultFilter)
+  }, [setFilter, onClose])
+
   return (
     <OrgStructureWindowComponent
-      onClose={onClose}
+      onClose={closeFunc}
       open={open}
       title="Добавление сотрудника"
     >
@@ -412,11 +415,12 @@ const OrgStructureWindowWrapper = ({ onClose, open, ...props }) => {
         filter={filter}
         setFilter={setFilter}
         onSort={onSort}
+        sortQuery={sortQuery}
         loadFunction={loadRef}
         pagination={pagination}
         options={modalWindowOptions}
         setModalWindowOptions={setModalWindowOptions}
-        onClose={onClose}
+        onClose={closeFunc}
       />
     </OrgStructureWindowComponent>
   )
@@ -430,6 +434,7 @@ OrgStructureWindowWrapper.propTypes = {
 OrgStructureWindowWrapper.defaultProps = {
   open: () => null,
   onClose: () => null,
+  type: '',
 }
 
 export default OrgStructureWindowWrapper

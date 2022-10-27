@@ -27,6 +27,7 @@ import Links from './Pages/Links'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
 import { URL_TASK_ITEM, URL_TASK_LIST } from '@/ApiList'
+import Content from './Pages/Content'
 
 const pages = {
   requisites: {
@@ -75,6 +76,11 @@ const pages = {
     path: 'history',
     Component: History,
   },
+  content: {
+    label: 'Контент',
+    path: 'content',
+    Component: Content,
+  }
 }
 
 function TaskItem(props) {
