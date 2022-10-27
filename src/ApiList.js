@@ -47,4 +47,4 @@ export const URL_STORAGE_TITLE = 'apsd/archive/title'
 export const URL_STORAGE_DOCUMENT = 'apsd/archive/list'
 
 // CONTENT
-export const URL_CONTENT_LIST = '/apsd/content/list'
+export const URL_CONTENT_LIST = '/apsd/content/list/version'

@@ -13,3 +13,5 @@ export const BoxForFile = styled.div`
   border: 1px dashed var(--secondary);
   border-radius: 10px;
 `
+
+
