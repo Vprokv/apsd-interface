@@ -23,6 +23,7 @@ import History from './Pages/History'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
 import { URL_TASK_ITEM, URL_TASK_LIST } from '@/ApiList'
+import Content from './Pages/Content'
 
 const pages = {
   // TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
@@ -52,6 +53,11 @@ const pages = {
     path: 'history',
     Component: History,
   },
+  content: {
+    label: 'Контент',
+    path: 'content',
+    Component: Content,
+  }
 }
 
 function TaskItem(props) {
