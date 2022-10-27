@@ -17,6 +17,7 @@ import deleteIcon from '@/Icons/deleteIcon'
 import editIcon from '@/Icons/editIcon'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Form from '@Components/Components/Forms'
+import DownloadWindow from "./Components/DownloadWindow";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -79,6 +80,7 @@ const Content = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [a, b] = useState(false)
+  const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -102,6 +104,15 @@ const Content = () => {
 
   useAutoReload(loadData, tabItemState)
   const emptyWrapper = ({ children }) => children
+
+  const openSubscriptionWindow = useCallback(
+    () => setAddSubscriptionWindowState(true),
+    [],
+  )
+  const closeSubscriptionWindow = useCallback(
+    () => setAddSubscriptionWindowState(false),
+    [],
+  )
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       {/*<GridForFiles>*/}
@@ -122,9 +133,12 @@ const Content = () => {
           onInput={b}
         />
         <div className="ml-auto flex items-center color-text-secondary">
-          <ButtonForIcon className="ml-2">
-            <Icon icon={editIcon} />
-          </ButtonForIcon>
+          <Button
+            className="ml-2 text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+            onClick={openSubscriptionWindow}
+          >
+            Добавить файл /версию
+          </Button>
           <ButtonForIcon className="ml-2">
             <Icon icon={editIcon} />
           </ButtonForIcon>
@@ -145,6 +159,10 @@ const Content = () => {
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
+      />
+      <DownloadWindow
+        open={addSubscriptionWindow}
+        onClose={closeSubscriptionWindow}
       />
     </div>
   );
