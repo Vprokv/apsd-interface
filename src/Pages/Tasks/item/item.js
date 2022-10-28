@@ -4,29 +4,22 @@ import {
   NavigationContainer,
   NavigationItem,
 } from '@/Components/DocumentNavigation'
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useParams,
-} from 'react-router-dom'
+import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import SideBar from './Components/SideBar'
-import * as routePath from '../../../routePaths'
-import TaskList from '../list'
-import VolumeItem from '../../Volume'
 import Requisites from './Pages/Requisites'
 import Subscription from './Pages/Subscription'
 import Objects from './Pages/Objects'
 import Contain from './Pages/Contain'
 import History from './Pages/History'
+import Links from './Pages/Links'
+import Handouts from './Pages/Handouts'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
-import { URL_TASK_ITEM, URL_TASK_LIST } from '@/ApiList'
+import { URL_TASK_ITEM } from '@/ApiList'
 import Content from './Pages/Content'
+import ApprovalSheet from './Pages/ApprovalSheet'
 
 const pages = {
-  // TODO проверить, всегда ли это поле есть в респонсе или доложить его в массив
   requisites: {
     label: 'Реквизиты',
     path: 'requisites',
@@ -57,7 +50,22 @@ const pages = {
     label: 'Контент',
     path: 'content',
     Component: Content,
-  }
+  },
+  links: {
+    label: 'Связанные документы',
+    path: 'links',
+    Component: Links,
+  },
+  handouts: {
+    label: 'Учет оригиналов',
+    path: 'handouts',
+    Component: Handouts,
+  },
+  'approval-sheet': {
+    label: 'Жизненный цикл',
+    path: 'approval-sheet',
+    Component: ApprovalSheet,
+  },
 }
 
 function TaskItem(props) {
