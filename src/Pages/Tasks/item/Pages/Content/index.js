@@ -1,7 +1,5 @@
 import React, {useCallback, useContext, useState} from 'react';
 import Icon from '@Components/Components/Icon'
-import {BoxForFile, GridForFiles} from "./style";
-// import Button, { ButtonForIcon } from '@Components/Components/Button'
 import Button, { ButtonForIcon } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { useParams } from 'react-router-dom'
@@ -115,16 +113,6 @@ const Content = () => {
   )
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
-      {/*<GridForFiles>*/}
-      {/*  <BoxForFile className="flex items-center justify-center">*/}
-      {/*    <Button*/}
-      {/*      className="text-white bg-blue-1 flex items-center w-52 rounded-lg justify-center font-weight-normal"*/}
-      {/*      onClick={() => null}*/}
-      {/*    >*/}
-      {/*      Загрузить контент*/}
-      {/*    </Button>*/}
-      {/*  </BoxForFile>*/}
-      {/*</GridForFiles>*/}
       <div className="flex items-center color-text-secondary">
         <Form
           fields={filterFormConfig}
