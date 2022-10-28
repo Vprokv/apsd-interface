@@ -20,6 +20,7 @@ import { FlatSelect } from '@/components_ocean/Components/Tables/Plugins/selecta
 import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
 import {
   URL_EMPLOYEE_LIST,
+  URL_SUBSCRIPTION_DELETE,
   URL_SUBSCRIPTION_EVENTS,
   URL_SUBSCRIPTION_LIST,
 } from '@/ApiList'
@@ -152,30 +153,16 @@ const Subscription = () => {
     })()
   }, [id, setTabState, api])
 
-  const memoFilter = useMemo(() => {
-    const obj = {}
-    const { authorId, subscriberId } = filter
-    if (authorId) {
-      obj['authorId'] = authorId
-    }
-
-    if (subscriberId) {
-      obj['subscriberId'] = subscriberId
-    }
-
-    return obj
-  }, [filter])
-
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
         documentId: id,
         type,
-        filter: memoFilter,
+        filter,
       })
       return data
     })
-  }, [id, type, api, loadDataHelper, memoFilter])
+  }, [id, type, api, loadDataHelper, filter])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -188,6 +175,15 @@ const Subscription = () => {
     }
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
+
+  const onDelete = useCallback(async () => {
+    await Promise.all([
+      selectState.map((subscriptionId) => {
+        return api.post(URL_SUBSCRIPTION_DELETE, { subscriptionId })
+      }),
+    ])
+    loadDataFunction()
+  }, [api, selectState, loadDataFunction])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -208,7 +204,7 @@ const Subscription = () => {
           <ButtonForIcon className="ml-2">
             <Icon icon={filterIcon} />
           </ButtonForIcon>
-          <ButtonForIcon className="ml-2">
+          <ButtonForIcon onClick={onDelete} className="ml-2">
             <Icon icon={deleteIcon} />
           </ButtonForIcon>
         </div>
