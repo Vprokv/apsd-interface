@@ -399,7 +399,6 @@ const OrgStructureWindowWrapper = ({
     setModalWindowOptions(content)
   }, [api, filter, pagination.paginationState, sort])
 
-
   const closeFunc = useCallback(() => {
     onClose()
     setFilter(defaultFilter)
@@ -429,7 +428,7 @@ const OrgStructureWindowWrapper = ({
 
 OrgStructureWindowWrapper.propTypes = {
   onClose: PropTypes.func,
-  open: PropTypes.func,
+  open: PropTypes.bool,
 }
 
 OrgStructureWindowWrapper.defaultProps = {
