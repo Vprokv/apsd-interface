@@ -91,7 +91,7 @@ const ArchiveList = () => {
     const {
       data: { content },
     } = await api.post(URL_STORAGE_DOCUMENT, {
-      filter: { titleId: id, sectionId },
+      filter: { titleId: id, sectionId: sectionId || undefined },
     })
 
     return content
