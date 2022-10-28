@@ -9,6 +9,7 @@ import {
 import { useParams } from 'react-router-dom'
 import {
   ApiContext,
+  DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
   TASK_ITEM_SUBSCRIPTION,
 } from '@/contants'
@@ -58,8 +59,8 @@ const columns = [
   {
     id: 'events',
     label: 'Подписка на событие',
-    component: ({ ParentValue: { events } }) => (
-      <Events events={events} className="flex items-center h-10" />
+    component: ({ ParentValue: { events = '' } }) => (
+      <Events events={events} className="flex items-center h-10 w-full" />
     ),
     sizes: 450,
   },
@@ -76,7 +77,10 @@ const columns = [
     label: 'Дата начала',
     component: ({ ParentValue: { startDate } }) => (
       <BaseCell
-        value={startDate && dayjs(startDate).format(PRESENT_DATE_FORMAT)}
+        value={
+          startDate &&
+          dayjs(startDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT)
+        }
         className="flex items-center h-10"
       />
     ),
@@ -87,7 +91,10 @@ const columns = [
     label: 'Дата окончания',
     component: ({ ParentValue: { endDate } }) => (
       <BaseCell
-        value={endDate && dayjs(endDate).format(PRESENT_DATE_FORMAT)}
+        value={
+          endDate &&
+          dayjs(endDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT)
+        }
         className="flex items-center h-10"
       />
     ),
@@ -126,7 +133,7 @@ const Subscription = () => {
 
   const {
     setTabState,
-    tabState: { data, events = new Map(), subscribers = new Map() },
+    tabState: { data, events = new Map() },
     shouldReloadDataFlag,
     loadDataHelper,
   } = useTabItem({

@@ -13,7 +13,7 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { useParams } from 'react-router-dom'
-import { URL_SUBSCRIPTION_CHANNELS, URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
+import {URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   ApiContext,
@@ -190,9 +190,9 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
   const { createData, handleSaveClick } = useCreateSubscription({
     filter,
     documentId: id,
-    events,
-    subscribersIDs: valueKeys,
-    channels: ['sedo', 'email'],
+    sedo,
+    email,
+    ids: valueKeys,
   })
 
   const onSave = useCallback(async () => {
