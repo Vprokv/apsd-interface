@@ -48,7 +48,7 @@ module.exports = {
     'react/display-name': 'off',
     'spaced-comment': 'error',
     'no-duplicate-imports': 'error',
-    'prettier/prettier': ['error', { singleQuote: true }],
+    'prettier/prettier': ['error', { singleQuote: true, endOfLine: 'auto' }],
     quotes: ['error', 'single', { avoidEscape: true }],
     'linebreak-style': 0,
     semi: ['error', 'never'],
