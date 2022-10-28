@@ -4,7 +4,7 @@ import WithToggleNavigationItem from '../withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
 import ScrollBar from '@Components/Components/ScrollBar'
-import ArchiveItem from './Components/ArchiveItem'
+import ArchiveItem, { LevelOneArchiveItem } from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
 import { FirstLevelArchiveButton } from './Components/ArchiveButton'
 
@@ -31,6 +31,7 @@ const Archive = ({ onOpenNewTab }) => {
                 <ArchiveItem
                   onOpenNewTab={onOpenNewTab}
                   buttonComponent={FirstLevelArchiveButton}
+                  childrenComponent={LevelOneArchiveItem}
                 />
               </div>
             </ScrollBar>

@@ -23,6 +23,25 @@ FirstLevelArchiveButton.propTypes = {
   toggleChildrenRender: PropTypes.func.isRequired,
 }
 
+export const SecondArchiveButton = ({
+  name,
+  onOpenNewTab,
+  parentName,
+  sectionId,
+}) => {
+  const handleClick = useCallback(() => {
+    onOpenNewTab(`/task/list/${parentName}/${name}/${sectionId}`)()
+  }, [onOpenNewTab, parentName, name, sectionId])
+  return <ArchiveButton name={name} onClick={handleClick} />
+}
+
+SecondArchiveButton.propTypes = {
+  name: PropTypes.string.isRequired,
+  parentName: PropTypes.string.isRequired,
+  sectionId: PropTypes.string.isRequired,
+  onOpenNewTab: PropTypes.func.isRequired,
+}
+
 export const OthersLevelsArchiveButton = ({
   name,
   onOpenNewTab,
@@ -31,7 +50,6 @@ export const OthersLevelsArchiveButton = ({
   sectionId,
 }) => {
   const handleClick = useCallback(() => {
-    console.log(parentName, name, id)
     onOpenNewTab(
       `/task/list/${parentName}/${name}/${id}${
         sectionId ? `/${sectionId}` : ''
