@@ -1,3 +1,7 @@
 .form-element-sizes-32 {
     --form--elements_height: 32px;
 }
+
+.form-element-sizes-40 {
+    --form--elements_height: 40px;
+}
