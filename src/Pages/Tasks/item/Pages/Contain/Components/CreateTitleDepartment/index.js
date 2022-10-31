@@ -17,8 +17,6 @@ import angleIcon from '@/Icons/angleIcon'
 import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
 import { useParams } from 'react-router-dom'
 import { NestedButton } from '../../styles'
-import {ToggleBtn} from "./style"
-import Button from '@/Components/Button'
 
 const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   const api = useContext(ApiContext)
@@ -67,7 +65,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
           <WithToggleNavigationItem id={id} key={id}>
             {({ isDisplayed, toggleDisplayedFlag }) => (
               <div className={`flex flex-col w-full ${isDisplayed ? '' : ''}`}>
-                <ToggleBtn
+                <NestedButton
                   level={level}
                   type="button"
                   className={`flex items-center w-full h-8 ${
@@ -84,7 +82,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
                     } mr-1.5 color-text-secondary`}
                   />
                   <span className="mr-auto ml-2">{name}</span>
-                </ToggleBtn>
+                </NestedButton>
                 {isDisplayed && (
                   <div className="flex flex-col  pl-4">
                     {sections.map(renderEntities(level + 1))}
