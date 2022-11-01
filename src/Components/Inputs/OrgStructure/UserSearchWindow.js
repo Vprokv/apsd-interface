@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -342,6 +342,19 @@ const OrgStructureWindow = (props) => {
 OrgStructureWindow.propTypes = {
   onClose: PropTypes.func,
   sendValue: PropTypes.func,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  onInput: PropTypes.func.isRequired,
+  loadFunction: PropTypes.func.isRequired,
+  filter: PropTypes.object,
+  setFilter: PropTypes.func.isRequired,
+  options: PropTypes.array,
+  onSort: PropTypes.func.isRequired,
+  sortQuery: PropTypes.object,
+  pagination: PropTypes.object,
+  valueKey: PropTypes.string.isRequired,
+  multiple: PropTypes.bool,
+  returnOption: PropTypes.bool,
+  id: PropTypes.string.isRequired,
 }
 
 OrgStructureWindow.defaultProps = {
@@ -355,6 +368,7 @@ const OrgStructureWindowWrapper = ({
   open,
   type,
   docId,
+  filter: baseFilter,
   ...props
 }) => {
   const api = useContext(ApiContext)
@@ -363,6 +377,10 @@ const OrgStructureWindowWrapper = ({
   const defaultFilter = useDefaultFilter({ type, docId })
   const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
+
+  useEffect(() => {
+    setFilter({ ...defaultFilter, ...baseFilter })
+  }, [baseFilter, defaultFilter])
 
   const pagination = usePagination({
     stateId: WINDOW_ADD_EMPLOYEE,
@@ -439,12 +457,17 @@ const OrgStructureWindowWrapper = ({
 OrgStructureWindowWrapper.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
+  filter: PropTypes.object,
+  type: PropTypes.string,
+  docId: PropTypes.string,
 }
 
 OrgStructureWindowWrapper.defaultProps = {
   open: () => null,
   onClose: () => null,
-  type: '',
+  type: undefined,
+  docId: undefined,
+  filter: {},
 }
 
 export default OrgStructureWindowWrapper

@@ -10,7 +10,6 @@ import {
 } from '@/contants'
 import { useParams } from 'react-router-dom'
 import {
-  fieldsDictionary,
   NoFieldType,
   propsTransmission,
   readOnlyRules,
@@ -71,10 +70,10 @@ const Requisites = () => {
               dss_attr_name,
               dss_placeholder,
               dsb_readonly,
-              dsb_multiply,
               dss_validation_rule,
               dss_visible_rule,
               dss_readonly_rule,
+              filters,
             },
           },
         ) => {
@@ -139,11 +138,11 @@ const Requisites = () => {
               })
           }
 
-          const { [type]: transmission = () => ({}) } = propsTransmission
+          const { [type]: transmission = () => ({ component: NoFieldType }) } =
+            propsTransmission
 
           acc.fields.set(dss_attr_name, {
             id: dss_attr_name,
-            component: fieldsDictionary[type] || NoFieldType,
             label: dss_attr_label,
             placeholder: dss_placeholder,
             disabled: dsb_readonly,
@@ -154,20 +153,31 @@ const Requisites = () => {
             },
           })
 
+          if (filters) {
+            filters.map(({ field }) => {
+              if (!acc.interceptors.has(field)) {
+                acc.interceptors.set(field, [])
+              }
+              acc.interceptors[field].push(dss_attr_name)
+            })
+          }
+
           return acc
         },
         {
           fields: new Map(),
-          rules: {},
+          rules: new Map(),
           visibility: new Map(),
           disabled: new Map(),
+          interceptors: {},
         },
       ),
     [api, data],
   )
 
-  const { fields, rules } = useMemo(() => {
-    const { fields, visibility, disabled, rules } = parsedDesign
+  const { fields, rules, interceptors } = useMemo(() => {
+    const { fields, visibility, disabled, rules, interceptors } = parsedDesign
+    const interceptorsFunctions = new Map()
     const fieldsCopy = new Map(fields)
     disabled.forEach((condition, key) => {
       fieldsCopy.set(key, {
@@ -180,8 +190,13 @@ const Requisites = () => {
         fieldsCopy.delete(key)
       }
     })
+    interceptors.forEach((deps, key) => {
+      interceptorsFunctions.set(key, ({ handleInput }) =>
+        deps.forEach((key) => handleInput(undefined, key)),
+      )
+    })
 
-    return { fields: Array.from(fieldsCopy.values()), rules }
+    return { fields: Array.from(fieldsCopy.values()), rules, interceptors:  interceptorsFunctions}
   }, [values, parsedDesign])
 
   return (
@@ -193,6 +208,7 @@ const Requisites = () => {
           onInput={onFormInput}
           fields={fields}
           rules={rules}
+          interceptors={interceptors}
         />
       </CustomValuesContext.Provider>
     </ScrollBar>

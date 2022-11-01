@@ -17,15 +17,16 @@ import {
   VALIDATION_RULE_REQUIRED_WITHOUT,
   VALIDATION_RULE_REQUIRED_WITHOUT_ALL,
   VALIDATION_RULE_SIZE,
-} from '../../../../../components_ocean/Logic/Validator/constants'
+} from '@Components/Logic/Validator/constants'
 import createRegExpFromString from '../../../../../components_ocean/Utils/createRegExpFromString'
-import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '../../../../../contants'
+import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
 import Classification from './Components/Classification'
-import { URL_ENTITY_LIST } from '../../../../../ApiList'
+import { URL_ENTITY_LIST } from '@/ApiList'
 import {
   CustomValuesOrgStructure,
   CustomValuesSelect,
 } from './Components/CustomValuesSelect'
+import { WithFiltersUserSelect } from './Components/WithFilters'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import Input from '@Components/Components/Inputs/Input'
 
@@ -33,6 +34,9 @@ import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import refsTransmission from '../../../../../RefsTransmission'
+const WithCustomValuesFiltersUserSelect = WithFiltersUserSelect(
+  CustomValuesOrgStructure,
+)
 
 export const VisibleIf = (key, values) => ({
   condition: `${key} === "${values[0]}"`,
@@ -143,39 +147,18 @@ export const validationRules = {
   required_without,
 }
 
-export const fieldsDictionary = {
-  Classification: Classification,
-  Combobox: CustomValuesSelect,
-  Text: Input,
-  TextArea,
-  Orgstructure: CustomValuesOrgStructure,
-  DocumentPicker: DocumentSelect,
-  Date: DatePicker,
-  Checkbox: CheckBox,
-  // ExpansionPanel
-  // Скрывающаяся панель
-  // TextualCombobox
-  // Денормализованное поле ОШС
-  // Выбор пользователей
-  // Checkbox
-  // Флаг
-  // Классификация
-  // Branch
-  // Филиал
-  // Department
-  // Отдел
-  // TextualBranch
-  // Филиал
-}
-
 const getLoadFunction = (accumulator) => {
   const {
-    backConfig: { dss_component_reference, dss_attr_name },
+    backConfig: { dss_component_reference, dss_attr_name, filters },
     nextProps,
     api,
   } = accumulator
+
+  if (filters) {
+    console.log(1, filters)
+  }
   if (dss_component_reference) {
-    nextProps.loadFunction = async (query) => {
+    nextProps.loadFunction = async () => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         id: dss_attr_name,
         type: dss_component_reference,
@@ -203,11 +186,13 @@ export const propsTransmission = {
   Classification: (accumulator) => {
     getLoadFunction(accumulator)
     getMultiply(accumulator)
+    accumulator.nextProps.component = Classification
     return accumulator.nextProps
   },
   Combobox: (accumulator) => {
     getLoadFunction(accumulator)
     getMultiply(accumulator)
+    accumulator.nextProps.component = CustomValuesSelect
     return accumulator.nextProps
   },
   DocStatus: (accumulator) => {
@@ -218,14 +203,50 @@ export const propsTransmission = {
   DocumentPicker: (accumulator) => {
     getLoadFunction(accumulator)
     getMultiply(accumulator)
-    return accumulator.nextProps
-  }, // []
-  Orgstructure: (accumulator) => {
-    getMultiply(accumulator)
-    // TODO посмотреть в бэке есть ли компонент референс для юзеров, при задаче APSD-192
-    accumulator.nextProps.refKey = 'userSelect'
+    accumulator.nextProps.component = DocumentSelect
     return accumulator.nextProps
   },
+  Orgstructure: (accumulator) => {
+    getMultiply(accumulator)
+    accumulator.nextProps.refKey = 'userSelect'
+    if (accumulator.backConfig.filters) {
+      accumulator.nextProps.filters = accumulator.backConfig.filters
+      accumulator.nextProps.component = WithCustomValuesFiltersUserSelect
+    } else {
+      accumulator.nextProps.component = CustomValuesOrgStructure
+    }
+    return accumulator.nextProps
+  },
+  Text: (accumulator) => {
+    accumulator.nextProps.component = Input
+    return accumulator.nextProps
+  },
+  TextArea: (accumulator) => {
+    accumulator.nextProps.component = TextArea
+    return accumulator.nextProps
+  },
+  Date: (accumulator) => {
+    accumulator.nextProps.component = DatePicker
+    return accumulator.nextProps
+  },
+  Checkbox: (accumulator) => {
+    accumulator.nextProps.component = CheckBox
+    return accumulator.nextProps
+  },
+  // ExpansionPanel
+  // Скрывающаяся панель
+  // TextualCombobox
+  // Денормализованное поле ОШС
+  // Выбор пользователей
+  // Checkbox
+  // Флаг
+  // Классификация
+  // Branch
+  // Филиал
+  // Department
+  // Отдел
+  // TextualBranch
+  // Филиал
 }
 
 export const NoFieldType = () => <div>no fieldType</div>
