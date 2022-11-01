@@ -38,6 +38,7 @@ import { AddUserOptionsFullName } from '../UserSelect'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import useDefaultFilter from './useDefaultFilter'
 import PropTypes from 'prop-types'
+import log from "tailwindcss/lib/util/log";
 
 const columns = [
   {
@@ -102,6 +103,7 @@ const OrgStructureWindow = (props) => {
   const {
     organization: [{ branches, ...organizationOptions }],
   } = useRecoilValue(userAtom)
+
   const { valueKeys, cache } = useLoadableCache({
     ...props,
     optionsMap: useMemo(
@@ -405,8 +407,11 @@ const OrgStructureWindowWrapper = ({
       offset,
       sort,
     })
-    content.forEach(AddUserOptionsFullName)
-    setModalWindowOptions(content)
+
+    const data = content.map(AddUserOptionsFullName)
+    console.log(data, 'data')
+
+    setModalWindowOptions(data)
   }, [api, filter, pagination.paginationState, sort])
 
   const closeFunc = useCallback(() => {
