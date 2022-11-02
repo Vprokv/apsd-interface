@@ -35,9 +35,14 @@ const SideBar = (props) => {
         title: 'Выгрузить документ',
         handleClick: () => null,
       },
-      print_card: {
+      sent_to_curator: {
         icon: PrintIcon,
         title: 'Печать карточки',
+        handleClick: () => null,
+      },
+      print_card: {
+        icon: OtherIcon,
+        title: 'Отправить куратору',
         handleClick: () => null,
       },
     }

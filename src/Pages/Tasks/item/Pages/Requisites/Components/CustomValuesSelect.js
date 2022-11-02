@@ -5,7 +5,7 @@ import Input from '@Components/Components/Inputs/Input'
 import Select from '@/Components/Inputs/Select'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { AddUserOptionsFullName } from '../../../../../../Components/Inputs/UserSelect'
+import { AddUserOptionsFullName } from '@/Components/Inputs/UserSelect'
 import Classification from './Classification'
 
 const useCustomOptions = (id, value) => {

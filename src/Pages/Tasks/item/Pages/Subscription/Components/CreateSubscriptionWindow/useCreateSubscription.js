@@ -30,8 +30,6 @@ export const useCreateSubscription = ({
     }, [])
   }, [ids, sedo, email])
 
-  console.log(filter, 'filter')
-
   const date = useMemo(() => {
     const { DatePicker: [start, end] = [] } = filter
 

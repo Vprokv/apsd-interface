@@ -21,11 +21,18 @@ export const URL_TITLE_CONTAIN_DELETE = '/apsd/structure/delete'
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
 export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'
 export const URL_SUBSCRIPTION_CREATE = '/apsd/subscription/create'
-export const URL_SUBSCRIPTION_DELETE = '/apsd/subscription/delete'
+export const URL_SUBSCRIPTION_DELETE = '/apsd/subscription/deleted'
 export const URL_SUBSCRIPTION_CHANNELS = '/apsd/subscription/channels'
 // OBJECTS
 export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
 export const URL_TECHNICAL_OBJECTS_CREATE = '/apsd/title/technical_objects/add'
+
+// HANDOUTS
+export const URL_HANDOUTS_LIST = '/apsd/original/accounting/list'
+export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
+
+// APPROVAL SHEET
+export const URL_APPROVAL_SHEET = '/sedo/approve/stage/get_all'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'

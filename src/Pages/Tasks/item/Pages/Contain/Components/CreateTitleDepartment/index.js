@@ -68,7 +68,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
                 <NestedButton
                   level={level}
                   type="button"
-                  className={`flex items-center w-full h-10 border-b-2 ${
+                  className={`flex items-center w-full h-8 ${
                     selected === id ? 'bg-light-gray' : ''
                   }`}
                   onClick={() => setSelected(id)}
@@ -79,12 +79,12 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
                     onClick={toggleDisplayedFlag}
                     className={`${
                       isDisplayed ? 'rotate-180' : ''
-                    } mt-1 color-text-secondary`}
+                    } mr-1.5 color-text-secondary`}
                   />
                   <span className="mr-auto ml-2">{name}</span>
                 </NestedButton>
                 {isDisplayed && (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col  pl-4">
                     {sections.map(renderEntities(level + 1))}
                   </div>
                 )}
@@ -125,15 +125,15 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
         onClose={changeModalState(false)}
       >
         <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
-        <div className="flex items-center justify-end">
+        <div className="flex ml-auto">
           <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
+            className="ml-2 bg-form-input-color flex items-center w-60 rounded-lg"
             onClick={changeModalState(false)}
           >
             Отменить
           </Button>
           <LoadableBaseButton
-            className="text-white bg-blue-1 flex items-center w-60 mr-4 rounded-lg justify-center font-weight-normal"
+            className="ml-2 text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
             onClick={changeModalStateTitle(true)}
           >
             Создать новый
@@ -146,7 +146,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
             closeParent={changeModalState(false)}
           />
           <LoadableBaseButton
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
+            className="ml-2 text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
             onClick={handleClick}
           >
             Выбрать

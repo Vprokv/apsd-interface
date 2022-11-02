@@ -109,17 +109,7 @@ const Content = () => {
   )
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
-      {/* <GridForFiles>*/}
-      {/*  <BoxForFile className="flex items-center justify-center">*/}
-      {/*    <Button*/}
-      {/*      className="text-white bg-blue-1 flex items-center w-52 rounded-lg justify-center font-weight-normal"*/}
-      {/*      onClick={() => null}*/}
-      {/*    >*/}
-      {/*      Загрузить контент*/}
-      {/*    </Button>*/}
-      {/*  </BoxForFile>*/}
-      {/* </GridForFiles>*/}
-      <div className="flex items-center color-text-secondary form-element-sizes-32">
+      <div className="flex items-center color-text-secondary">
         <Form
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
