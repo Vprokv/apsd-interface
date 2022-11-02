@@ -14,6 +14,363 @@ import { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import CreateApprovalSheetWindow from './Components/CreateApprovalSheetWindow'
+import LeafTable from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin/LeafTable'
+import Tree from '@Components/Components/Tree'
+import RowSelector from "@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin";
+
+const myData = [
+  // {
+  //   type: 'string', //- системное наименование корневого этапа
+  //   name: 'string', //- наименование корневого этапа
+  //   canAdd: false,
+  //   hasAutoAgreement: false,
+  //   current: false,
+  //   addGroup: false,
+  //   emplOrAgents: null,
+  //   stages: [], //- этапы конфигурируемые пользователем
+  // },
+  {
+    type: 'string',
+    name: 'string',
+    canAdd: true,
+    hasAutoAgreement: true,
+    current: false,
+    addGroup: false,
+    emplOrAgents: null,
+    stages: [
+      {
+        id: 'string', //- id этапа
+        globalId: 'string',
+        documentId: 'string', //- id документа к которому относиться этап
+        index: 1, //- номер этапа
+        name: 'string', //- наименование этапа
+        iteration: 0,
+        status: 'string', //- статус этапа
+        approvers: [
+          {
+            id: 'string', //- id записи с участником этапа
+            creatorName: 'string',
+            dsidStage: 'string', //- id этапа к которому относится участник
+            dsidDocument: 'string', //- id документа
+            dssApproverName: 'string', // - логин участника
+            dsidApproverEmpl: 'string', //- id участника
+            dssStatus: 'string', // - статус участника
+            performerComment: null,
+            dssApproverFio: 'Автотест1 А Т', //- данные участника для вывода на экран
+            dssApproverPosition: 'Сотрудник',
+            dssApproverDep: 'Департамент 1',
+            dssApproverBranch: 'Тестовый филиал ФСК',
+            dssApproverOrganization: 'ПАО ФСК ЕЭС',
+            dsdtInit: null,
+            dsdtDueDate: null,
+            dsdtDecision: null,
+            dsdtAcquire: null,
+            dsbAdditional: false,
+            dsidParentApprover: null,
+            dsidApproverRoot: '00000002000372ve',
+            approvers: null,
+            deletable: true,
+            isFederated: false,
+            canDistribute: false,
+            canRecall: false,
+            canCreateChat: false,
+            report: null,
+            reportsCount: 0,
+            statusName: 'new',
+            agentPerson: null,
+            delegate: null,
+            deputy: null,
+            dssGroupName: null,
+          },
+        ],
+        editable: true,
+        changePerformersPermit: false,
+        changeTermPermit: false,
+        deletable: true,
+        appendBefore: true,
+        appendAfter: true,
+        autoApprove: true,
+        fixedApprovalPeriod: true,
+        increasedTerm: false,
+        stageType: 'string', //- тип этапа
+        term: 4, //- кол-во раб дней на этап
+        endDate: null,
+        finishDate: null,
+        creator: 'Delova',
+      },
+      {
+        id: 'sdsdsds', //- id этапа
+        globalId: 'string',
+        documentId: 'string', //- id документа к которому относиться этап
+        index: 2, //- номер этапа
+        name: 'name 2', //- наименование этапа
+        iteration: 0,
+        status: 'string', //- статус этапа
+        approvers: [
+          {
+            id: '11', //- id записи с участником этапа
+            creatorName: 'string',
+            dsidStage: 'string', //- id этапа к которому относится участник
+            dsidDocument: 'string', //- id документа
+            dssApproverName: 'string', // - логин участника
+            dsidApproverEmpl: 'string', //- id участника
+            dssStatus: 'string', // - статус участника
+            performerComment: null,
+            dssApproverFio: 'Автотест1 А Т', //- данные участника для вывода на экран
+            dssApproverPosition: 'Сотрудник',
+            dssApproverDep: 'Департамент 1',
+            dssApproverBranch: 'Тестовый филиал ФСК',
+            dssApproverOrganization: 'ПАО ФСК ЕЭС',
+            dsdtInit: null,
+            dsdtDueDate: null,
+            dsdtDecision: null,
+            dsdtAcquire: null,
+            dsbAdditional: false,
+            dsidParentApprover: null,
+            dsidApproverRoot: '00000002000372ve',
+            approvers: null,
+            deletable: true,
+            isFederated: false,
+            canDistribute: false,
+            canRecall: false,
+            canCreateChat: false,
+            report: null,
+            reportsCount: 0,
+            statusName: 'new',
+            agentPerson: null,
+            delegate: null,
+            deputy: null,
+            dssGroupName: null,
+          },
+          {
+            id: '22', //- id записи с участником этапа
+            creatorName: 'string',
+            dsidStage: 'string', //- id этапа к которому относится участник
+            dsidDocument: 'string', //- id документа
+            dssApproverName: 'string', // - логин участника
+            dsidApproverEmpl: 'string', //- id участника
+            dssStatus: 'string', // - статус участника
+            performerComment: null,
+            dssApproverFio: 'Автотест1 А Т', //- данные участника для вывода на экран
+            dssApproverPosition: 'Сотрудник',
+            dssApproverDep: 'Департамент 1',
+            dssApproverBranch: 'Тестовый филиал ФСК',
+            dssApproverOrganization: 'ПАО ФСК ЕЭС',
+            dsdtInit: null,
+            dsdtDueDate: null,
+            dsdtDecision: null,
+            dsdtAcquire: null,
+            dsbAdditional: false,
+            dsidParentApprover: null,
+            dsidApproverRoot: '00000002000372ve',
+            approvers: null,
+            deletable: true,
+            isFederated: false,
+            canDistribute: false,
+            canRecall: false,
+            canCreateChat: false,
+            report: null,
+            reportsCount: 0,
+            statusName: 'new',
+            agentPerson: null,
+            delegate: null,
+            deputy: null,
+            dssGroupName: null,
+          },
+        ],
+        editable: true,
+        changePerformersPermit: false,
+        changeTermPermit: false,
+        deletable: true,
+        appendBefore: true,
+        appendAfter: true,
+        autoApprove: true,
+        fixedApprovalPeriod: true,
+        increasedTerm: false,
+        stageType: 'string', //- тип этапа
+        term: 2, //- кол-во раб дней на этап
+        endDate: null,
+        finishDate: null,
+        creator: 'Delova',
+      },
+    ],
+  },
+  // {
+  //   type: 'string',
+  //   name: 'string',
+  //   canAdd: true,
+  //   hasAutoAgreement: true,
+  //   current: false,
+  //   addGroup: false,
+  //   emplOrAgents: null,
+  //   stages: [
+  //     {
+  //       id: 'string', //- id этапа
+  //       globalId: 'string',
+  //       documentId: 'string', //- id документа к которому относиться этап
+  //       index: 1, //- номер этапа
+  //       name: 'string', //- наименование этапа
+  //       iteration: 0,
+  //       status: 'string', //- статус этапа
+  //       approvers: [
+  //         {
+  //           id: 'string', //- id записи с участником этапа
+  //           creatorName: 'string',
+  //           dsidStage: 'string', //- id этапа к которому относится участник
+  //           dsidDocument: 'string', //- id документа
+  //           dssApproverName: 'string', // - логин участника
+  //           dsidApproverEmpl: 'string', //- id участника
+  //           dssStatus: 'string', // - статус участника
+  //           performerComment: null,
+  //           dssApproverFio: 'Автотест1 А Т', //- данные участника для вывода на экран
+  //           dssApproverPosition: 'Сотрудник',
+  //           dssApproverDep: 'Департамент 1',
+  //           dssApproverBranch: 'Тестовый филиал ФСК',
+  //           dssApproverOrganization: 'ПАО ФСК ЕЭС',
+  //           dsdtInit: null,
+  //           dsdtDueDate: null,
+  //           dsdtDecision: null,
+  //           dsdtAcquire: null,
+  //           dsbAdditional: false,
+  //           dsidParentApprover: null,
+  //           dsidApproverRoot: '00000002000372ve',
+  //           approvers: null,
+  //           deletable: true,
+  //           isFederated: false,
+  //           canDistribute: false,
+  //           canRecall: false,
+  //           canCreateChat: false,
+  //           report: null,
+  //           reportsCount: 0,
+  //           statusName: 'new',
+  //           agentPerson: null,
+  //           delegate: null,
+  //           deputy: null,
+  //           dssGroupName: null,
+  //         },
+  //       ],
+  //       editable: true,
+  //       changePerformersPermit: false,
+  //       changeTermPermit: false,
+  //       deletable: true,
+  //       appendBefore: true,
+  //       appendAfter: true,
+  //       autoApprove: true,
+  //       fixedApprovalPeriod: true,
+  //       increasedTerm: false,
+  //       stageType: 'string', //- тип этапа
+  //       term: 4, //- кол-во раб дней на этап
+  //       endDate: null,
+  //       finishDate: null,
+  //       creator: 'Delova',
+  //     },
+  //     {
+  //       id: 'sdsdsds', //- id этапа
+  //       globalId: 'string',
+  //       documentId: 'string', //- id документа к которому относиться этап
+  //       index: 2, //- номер этапа
+  //       name: 'name 2', //- наименование этапа
+  //       iteration: 0,
+  //       status: 'string', //- статус этапа
+  //       approvers: [
+  //         {
+  //           id: '11', //- id записи с участником этапа
+  //           creatorName: 'string',
+  //           dsidStage: 'string', //- id этапа к которому относится участник
+  //           dsidDocument: 'string', //- id документа
+  //           dssApproverName: 'string', // - логин участника
+  //           dsidApproverEmpl: 'string', //- id участника
+  //           dssStatus: 'string', // - статус участника
+  //           performerComment: null,
+  //           dssApproverFio: 'Автотест1 А Т', //- данные участника для вывода на экран
+  //           dssApproverPosition: 'Сотрудник',
+  //           dssApproverDep: 'Департамент 1',
+  //           dssApproverBranch: 'Тестовый филиал ФСК',
+  //           dssApproverOrganization: 'ПАО ФСК ЕЭС',
+  //           dsdtInit: null,
+  //           dsdtDueDate: null,
+  //           dsdtDecision: null,
+  //           dsdtAcquire: null,
+  //           dsbAdditional: false,
+  //           dsidParentApprover: null,
+  //           dsidApproverRoot: '00000002000372ve',
+  //           approvers: null,
+  //           deletable: true,
+  //           isFederated: false,
+  //           canDistribute: false,
+  //           canRecall: false,
+  //           canCreateChat: false,
+  //           report: null,
+  //           reportsCount: 0,
+  //           statusName: 'new',
+  //           agentPerson: null,
+  //           delegate: null,
+  //           deputy: null,
+  //           dssGroupName: null,
+  //         },
+  //         {
+  //           id: '22', //- id записи с участником этапа
+  //           creatorName: 'string',
+  //           dsidStage: 'string', //- id этапа к которому относится участник
+  //           dsidDocument: 'string', //- id документа
+  //           dssApproverName: 'string', // - логин участника
+  //           dsidApproverEmpl: 'string', //- id участника
+  //           dssStatus: 'string', // - статус участника
+  //           performerComment: null,
+  //           dssApproverFio: 'Автотест1 А Т', //- данные участника для вывода на экран
+  //           dssApproverPosition: 'Сотрудник',
+  //           dssApproverDep: 'Департамент 1',
+  //           dssApproverBranch: 'Тестовый филиал ФСК',
+  //           dssApproverOrganization: 'ПАО ФСК ЕЭС',
+  //           dsdtInit: null,
+  //           dsdtDueDate: null,
+  //           dsdtDecision: null,
+  //           dsdtAcquire: null,
+  //           dsbAdditional: false,
+  //           dsidParentApprover: null,
+  //           dsidApproverRoot: '00000002000372ve',
+  //           approvers: null,
+  //           deletable: true,
+  //           isFederated: false,
+  //           canDistribute: false,
+  //           canRecall: false,
+  //           canCreateChat: false,
+  //           report: null,
+  //           reportsCount: 0,
+  //           statusName: 'new',
+  //           agentPerson: null,
+  //           delegate: null,
+  //           deputy: null,
+  //           dssGroupName: null,
+  //         },
+  //       ],
+  //       editable: true,
+  //       changePerformersPermit: false,
+  //       changeTermPermit: false,
+  //       deletable: true,
+  //       appendBefore: true,
+  //       appendAfter: true,
+  //       autoApprove: true,
+  //       fixedApprovalPeriod: true,
+  //       increasedTerm: false,
+  //       stageType: 'string', //- тип этапа
+  //       term: 2, //- кол-во раб дней на этап
+  //       endDate: null,
+  //       finishDate: null,
+  //       creator: 'Delova',
+  //     },
+  //   ],
+  // },
+]
+
+const columns = [
+  {
+    // id: 'name',
+    // className: 'w-full',
+    sizes: 2000,
+    // // label: 'Наименование',
+  },
+]
 
 const ApprovalSheet = (props) => {
   console.log(1)
@@ -27,15 +384,19 @@ const ApprovalSheet = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data },
+    tabState: { data = myData },
   } = tabItemState
 
+  console.log(data, 'data')
+
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_APPROVAL_SHEET, {
-      id,
-      type,
-    })
-    return data
+    // const { data } = await api.post(URL_APPROVAL_SHEET, {
+    //   id,
+    //   type,
+    // })
+    // // const content =
+    // const asa = data.map(({ stages }) => stages)
+    // console.log(asa, 'asa')
   }, [api, id, type])
 
   useAutoReload(loadData, tabItemState)
@@ -62,6 +423,11 @@ const ApprovalSheet = (props) => {
     [],
   )
 
+  const onTableUpdate = useCallback(
+    (data) => setTabState({ data }),
+    [setTabState],
+  )
+
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4 form-element-sizes-32">
@@ -82,6 +448,17 @@ const ApprovalSheet = (props) => {
           </ButtonForIcon>
         </div>
       </div>
+      {data.map(({ stages }, key) => (
+        <Tree
+          key={key}
+          // defaultExpandAll={true}
+          valueKey="id"
+          options={stages}
+          rowComponent={RowSelector}
+          onUpdateOptions={() => null}
+          childrenKey="approvers"
+        />
+      ))}
     </div>
   )
 }
