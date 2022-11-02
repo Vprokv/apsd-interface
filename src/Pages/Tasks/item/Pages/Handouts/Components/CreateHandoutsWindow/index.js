@@ -1,28 +1,37 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import Button, {
   LoadableBaseButton,
   SecondaryBlueButton,
 } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { ApiContext } from '@/contants'
+import {
+  ApiContext,
+  DEFAULT_DATE_FORMAT,
+  PRESENT_DATE_FORMAT,
+} from '@/contants'
 import { useParams } from 'react-router-dom'
 import { FilterForm, TitlesContainer } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import LoadableSelect from '@/Components/Inputs/Select'
+import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_ENTITY_LIST, URL_HANDOUTS_CREATE } from '@/ApiList'
-import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
+import dayjs from 'dayjs'
 
-const CreateHandoutsWindow = (props) => {
+const CreateHandoutsWindow = ({ setChange }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
-  const [value, sendValue] = useState({})
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -48,18 +57,13 @@ const CreateHandoutsWindow = (props) => {
     [],
   )
 
-  const onSave = useCallback(async () => {
-    // await api.post(URL_HANDOUTS_CREATE, filterValue)
-    changeModalState(false)
-  }, [changeModalState, filterValue, api])
-
   const fields = useMemo(
     () => [
       {
         id: 'operationId',
         component: LoadableSelect,
         placeholder: 'Выберите операцию',
-        valueKey: 'dss_name',
+        valueKey: 'r_object_id',
         labelKey: 'dss_name',
         loadFunction: async () => {
           const { data } = await api.post(URL_ENTITY_LIST, {
@@ -79,22 +83,19 @@ const CreateHandoutsWindow = (props) => {
         placeholder: 'Выберите архивариуса',
       },
       {
-        id: 'workerId',
-        component: (props) => <UserSelect {...props} sendValue={sendValue} />,
+        id: 'worker',
+        component: UserSelect,
         multiple: false,
-        returnObjects: true,
+        returnOption: true,
         placeholder: 'Выберите участников',
       },
       {
-        id: 'departmentId',
-        component: LoadableSelect,
+        id: 'departmentName',
+        component: Select,
         placeholder: 'Выберите департамент',
-        valueKey: 'dss_name',
-        labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
+        valueKey: 'department',
+        labelKey: 'department',
+        options: filterValue?.workerId && [filterValue?.workerId],
       },
       {
         id: 'comment',
@@ -102,8 +103,39 @@ const CreateHandoutsWindow = (props) => {
         placeholder: 'Введите комментарий',
       },
     ],
-    [api, sendValue],
+    [api, filterValue],
   )
+  useEffect(() => {
+    const { worker } = filterValue
+    worker
+      ? setFilterValue({ ...filterValue, departmentName: worker.department })
+      : setFilterValue(({ departmentName, ...item }) => item)
+  }, [filterValue.worker])
+
+  const createDate = useMemo(() => {
+    const { worker, operationDate, ...other } = filterValue
+    return {
+      ...other,
+      workerId: worker?.emplId,
+      // departmentId: '00xxxxxx000001d8',
+      // operationDate: '2022-11-01T07:31:36.973Z',
+      documentId: id,
+      operationDate:
+        operationDate &&
+        dayjs(operationDate, PRESENT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT),
+    }
+  }, [filterValue, id])
+
+  const onSave = useCallback(async () => {
+    await api.post(URL_HANDOUTS_CREATE, createDate)
+    setChange()
+    changeModalState(false)
+  }, [changeModalState, createDate, api, setChange])
+
+  const onClose = useCallback(() => {
+    setFilterValue({})
+    changeModalState(false)()
+  }, [changeModalState])
 
   return (
     <div className="flex items-center ml-auto ">
@@ -130,7 +162,7 @@ const CreateHandoutsWindow = (props) => {
         <div className="flex items-center justify-end mt-8">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-            onClick={changeModalState(false)}
+            onClick={onClose}
           >
             Закрыть
           </Button>
@@ -146,6 +178,8 @@ const CreateHandoutsWindow = (props) => {
   )
 }
 
-CreateHandoutsWindow.propTypes = {}
+CreateHandoutsWindow.propTypes = {
+  setChange: PropTypes.func.isRequired,
+}
 
 export default CreateHandoutsWindow

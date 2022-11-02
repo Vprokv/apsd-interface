@@ -14,6 +14,15 @@ export const AddUserOptionsFullName = (v) => ({
   fullName: `${v.lastName} ${v.firstName} ${v.middleName}`,
 })
 
+export const baseLoadFunction = async ({ api, filter, search }) => {
+  const {
+    data: { content },
+  } = await api.post(URL_EMPLOYEE_LIST, {
+    filter,
+  })
+  return content
+}
+
 export const SearchButton = styled.button.attrs({ type: 'button' })`
   background-color: var(--light-blue);
   border-radius: 6px;
@@ -25,7 +34,7 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
   width: var(--form--elements_height);
 `
 
-const UserSelect = (props) => {
+const UserSelect = ({ filter, ...props }) => {
   const { loadFunction, source, docId } = props
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ source, docId })
@@ -56,6 +65,7 @@ const UserSelect = (props) => {
         </SearchButton>
         <AddEmployee
           {...props}
+          filter={filter}
           open={addEmployeeWindow}
           onClose={closeEmployeeWindow}
         />
@@ -64,18 +74,19 @@ const UserSelect = (props) => {
   )
 }
 
-UserSelect.propTypes = {}
+UserSelect.propTypes = {
+  filter: PropTypes.object,
+  loadFunction: PropTypes.func,
+  source: PropTypes.string.isRequired,
+  docId: PropTypes.string,
+}
 UserSelect.defaultProps = {
-  loadFunction: (api) => (filter) => async (search) => {
-    const {
-      data: { content },
-    } = await api.post(URL_EMPLOYEE_LIST, {
-      filter,
-    })
-    return content
-  },
+  loadFunction: (api) => (filter) => (search) =>
+    baseLoadFunction({ api, filter, search }),
   valueKey: 'emplId',
   labelKey: 'fullName',
   options: [],
+  filter: undefined,
+  docId: undefined,
 }
 export default UserSelect

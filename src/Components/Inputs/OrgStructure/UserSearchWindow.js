@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -38,6 +38,7 @@ import { AddUserOptionsFullName } from '../UserSelect'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import useDefaultFilter from './useDefaultFilter'
 import PropTypes from 'prop-types'
+import log from "tailwindcss/lib/util/log";
 
 const columns = [
   {
@@ -102,6 +103,7 @@ const OrgStructureWindow = (props) => {
   const {
     organization: [{ branches, ...organizationOptions }],
   } = useRecoilValue(userAtom)
+
   const { valueKeys, cache } = useLoadableCache({
     ...props,
     optionsMap: useMemo(
@@ -342,6 +344,19 @@ const OrgStructureWindow = (props) => {
 OrgStructureWindow.propTypes = {
   onClose: PropTypes.func,
   sendValue: PropTypes.func,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  onInput: PropTypes.func.isRequired,
+  loadFunction: PropTypes.func.isRequired,
+  filter: PropTypes.object,
+  setFilter: PropTypes.func.isRequired,
+  options: PropTypes.array,
+  onSort: PropTypes.func.isRequired,
+  sortQuery: PropTypes.object,
+  pagination: PropTypes.object,
+  valueKey: PropTypes.string.isRequired,
+  multiple: PropTypes.bool,
+  returnOption: PropTypes.bool,
+  id: PropTypes.string.isRequired,
 }
 
 OrgStructureWindow.defaultProps = {
@@ -355,6 +370,7 @@ const OrgStructureWindowWrapper = ({
   open,
   type,
   docId,
+  filter: baseFilter,
   ...props
 }) => {
   const api = useContext(ApiContext)
@@ -363,6 +379,10 @@ const OrgStructureWindowWrapper = ({
   const defaultFilter = useDefaultFilter({ type, docId })
   const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
+
+  useEffect(() => {
+    setFilter({ ...defaultFilter, ...baseFilter })
+  }, [baseFilter, defaultFilter])
 
   const pagination = usePagination({
     stateId: WINDOW_ADD_EMPLOYEE,
@@ -405,8 +425,11 @@ const OrgStructureWindowWrapper = ({
       offset,
       sort,
     })
-    content.forEach(AddUserOptionsFullName)
-    setModalWindowOptions(content)
+
+    const data = content.map(AddUserOptionsFullName)
+    console.log(data, 'data')
+
+    setModalWindowOptions(data)
   }, [api, filter, pagination.paginationState, sort])
 
   const closeFunc = useCallback(() => {
@@ -439,12 +462,17 @@ const OrgStructureWindowWrapper = ({
 OrgStructureWindowWrapper.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
+  filter: PropTypes.object,
+  type: PropTypes.string,
+  docId: PropTypes.string,
 }
 
 OrgStructureWindowWrapper.defaultProps = {
   open: () => null,
   onClose: () => null,
-  type: '',
+  type: undefined,
+  docId: undefined,
+  filter: {},
 }
 
 export default OrgStructureWindowWrapper
