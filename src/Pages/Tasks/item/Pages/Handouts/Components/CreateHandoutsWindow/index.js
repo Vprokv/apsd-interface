@@ -133,8 +133,8 @@ const CreateHandoutsWindow = ({ setChange }) => {
   }, [changeModalState, createDate, api, setChange])
 
   const onClose = useCallback(() => {
-    changeModalState(false)
     setFilterValue({})
+    changeModalState(false)()
   }, [changeModalState])
 
   return (

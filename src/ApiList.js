@@ -31,6 +31,9 @@ export const URL_TECHNICAL_OBJECTS_CREATE = '/apsd/title/technical_objects/add'
 export const URL_HANDOUTS_LIST = '/apsd/original/accounting/list'
 export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
 
+// APPROVAL SHEET
+export const URL_APPROVAL_SHEET = '/sedo/approve/stage/get_all'
+
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'
 export const URL_DOCUMENT_APSD_CREATION_OPTIONS = '/apsd/classification'
@@ -58,4 +61,3 @@ export const URL_STORAGE_SECTION = '/apsd/archive/section'
 
 // CONTENT
 export const URL_CONTENT_LIST = '/apsd/content/list/version'
-
