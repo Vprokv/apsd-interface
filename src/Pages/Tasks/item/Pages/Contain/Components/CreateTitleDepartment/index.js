@@ -68,7 +68,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
                 <NestedButton
                   level={level}
                   type="button"
-                  className={`flex items-center w-full h-8 ${
+                  className={`flex items-center w-full h-10 border-b-2 ${
                     selected === id ? 'bg-light-gray' : ''
                   }`}
                   onClick={() => setSelected(id)}
@@ -79,12 +79,12 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
                     onClick={toggleDisplayedFlag}
                     className={`${
                       isDisplayed ? 'rotate-180' : ''
-                    } mr-1.5 color-text-secondary`}
+                    } mt-1 color-text-secondary`}
                   />
                   <span className="mr-auto ml-2">{name}</span>
                 </NestedButton>
                 {isDisplayed && (
-                  <div className="flex flex-col  pl-4">
+                  <div className="flex flex-col">
                     {sections.map(renderEntities(level + 1))}
                   </div>
                 )}
@@ -127,7 +127,7 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
         <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
         <div className="flex ml-auto">
           <Button
-            className="ml-2 bg-form-input-color flex items-center w-60 rounded-lg"
+            className="bg-form-input-color flex items-center w-60 rounded-lg justify-center"
             onClick={changeModalState(false)}
           >
             Отменить

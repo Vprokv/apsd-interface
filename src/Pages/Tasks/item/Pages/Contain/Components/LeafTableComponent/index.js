@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import Icon from '@/components_ocean/Components/Icon'
 import {
@@ -7,8 +7,12 @@ import {
 } from '@/components_ocean/Components/Tables/Plugins/constants'
 import styled from 'styled-components'
 import angleIcon from '@/Icons/angleIcon'
-import { Dot } from '@Components/Components/Tree/Icons/Dot'
+import sortIcons from '@/Icons/sortIcons'
+import PdfBadgeIcon from '@/Icons/PdfBadgeIcon'
+import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import { LoadContainChildrenContext } from '../../constants'
+import ContextMenu from '@/components_ocean/Components/ContextMenu'
+import { StyledContextMenu } from './style'
 
 const LeafContainer = styled.div`
   padding-left: ${({ subRow }) => subRow * 15}px;
@@ -24,6 +28,9 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
   } = useContext(TreeStateContext)
   const loadChildren = useContext(LoadContainChildrenContext)
 
+  const [open, setOpen] = useState(false)
+  const [target, setTarget] = useState({})
+
   const subRow = useContext(TreeStateLevelContext)
 
   const onOpenNestedTable = useCallback(async () => {
@@ -34,19 +41,62 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
     onChange(id)()
   }, [ParentValue, loadChildren, nestedDataKey, onChange, onInput, valueKey])
 
+  const openContextMenu = useCallback((event) => {
+    setTarget(event.target)
+    setOpen(true)
+  }, [])
+
+  const closeContextMenu = useCallback(() => {
+    setOpen(false)
+  }, [])
   return (
     <LeafContainer subRow={subRow} className={`${className} flex items-center`}>
       {ParentValue.expand ? (
-        <Icon
-          icon={angleIcon}
-          size={10}
-          className={`ml-1 ${expanded ? '' : 'rotate-180'}`}
-          onClick={onOpenNestedTable}
-        />
+        <>
+          <Icon
+            icon={angleIcon}
+            size={10}
+            className={`mr-1 color-text-secondary cursor-pointer ${
+              !expanded ? '' : 'rotate-180'
+            }`}
+            onClick={onOpenNestedTable}
+          />
+          <Icon
+            icon={sortIcons}
+            size={12}
+            className="mr-1 color-blue-1 cursor-pointer"
+          />
+        </>
       ) : (
-        <Icon icon={Dot} size={4} className="mr-1" />
+        <>
+          <Icon icon={PdfBadgeIcon} size={24} className="mr-1 color-red" />
+          <Icon
+            icon={sortIcons}
+            size={12}
+            className="mr-1 color-blue-1 cursor-pointer"
+          />
+        </>
       )}
-      {children}
+      <>
+        {children}
+        <Icon
+          icon={ThreeDotIcon}
+          size={14}
+          className="ml-1 color-blue-1 cursor-pointer"
+          onClick={openContextMenu}
+        />
+        {open && (
+          <ContextMenu width={240} target={target} onClose={closeContextMenu}>
+            <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
+              <div className="mb-3 cursor-pointer">Передать состав титула</div>
+              <div className="mb-3 cursor-pointer opacity-50">
+                Утвердить состав титула
+              </div>
+              <div className="cursor-pointer">Экспорт данных</div>
+            </StyledContextMenu>
+          </ContextMenu>
+        )}
+      </>
     </LeafContainer>
   )
 }
