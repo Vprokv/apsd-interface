@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
-import PropTypes from 'prop-types'
 import {
   NavigationContainer,
   NavigationItem,
@@ -40,11 +39,6 @@ const pages = {
     label: 'Состав титула',
     path: 'structure',
     Component: Contain,
-  },
-  'approval-sheet': {
-    label: 'Жизненный цикл',
-    path: 'lifecycle',
-    Component: Lifecycle,
   },
   links: {
     label: 'Связанные документы',
