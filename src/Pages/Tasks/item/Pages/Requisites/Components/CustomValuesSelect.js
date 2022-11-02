@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { CustomValuesContext } from '../constants'
 import Select from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { AddUserOptionsFullName } from '../../../../../../Components/Inputs/UserSelect'
+import { AddUserOptionsFullName } from '@/Components/Inputs/UserSelect'
 import Classification from './Classification'
 
 const useCustomOptions = (id) => {
