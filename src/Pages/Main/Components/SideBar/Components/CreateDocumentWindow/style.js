@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import Icon from '@Components/Components/Icon'
 
-
 export const DocumentTypesContainer = styled.div`
   width: 37.8%;
   border-right: 1px solid var(--separator);

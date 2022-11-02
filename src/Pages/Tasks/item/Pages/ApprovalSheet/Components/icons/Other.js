@@ -23,4 +23,3 @@ const OtherIcon = {
 }
 
 export default OtherIcon
-

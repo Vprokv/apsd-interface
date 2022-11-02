@@ -44,5 +44,4 @@ export const FormWindow = styled(ModalWindow)`
   margin: auto;
 `
 
-
 export default ModalWindowWrapper

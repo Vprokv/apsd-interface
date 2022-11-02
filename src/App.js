@@ -19,7 +19,7 @@ import {
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext } from './contants'
 import { TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import {TASK_LIST_ARCHIVE_PATH} from "./routePaths";
+import { TASK_LIST_ARCHIVE_PATH } from './routePaths'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -62,7 +62,7 @@ function App() {
   )
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       // TODO включить что-то из этого, пока оба запроса валятся
       // const {data} = axios.get(URL_SYSTEM_META)
       // const {data} = axios.get("/settings.json")
@@ -112,7 +112,10 @@ function App() {
           ) : (
             <Route element={<Main />}>
               <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
-              <Route path={routePath.TASK_LIST_ARCHIVE_PATH} element={<ArchiveList />} />
+              <Route
+                path={routePath.TASK_LIST_ARCHIVE_PATH}
+                element={<ArchiveList />}
+              />
               <Route
                 path={routePath.TASK_NEW_ITEM_PATH}
                 element={<TaskNewItem />}

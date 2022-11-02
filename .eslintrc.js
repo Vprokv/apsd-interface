@@ -55,13 +55,14 @@ module.exports = {
     'no-trailing-spaces': 'error',
     'no-console': 'warn',
     'no-unused-vars': [
-      'error',
+      'warn',
       {
         argsIgnorePattern: '^_',
       },
     ],
     'react/no-unescaped-entities': 'off',
-    'react/require-default-props': 'error',
+    'react/prop-types': 'warn',
+    'react/require-default-props': 'warn',
     'sort-imports': [
       'error',
       {

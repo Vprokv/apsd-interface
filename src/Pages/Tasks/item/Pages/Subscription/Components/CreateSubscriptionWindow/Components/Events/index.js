@@ -6,7 +6,7 @@ const Events = ({ events = [] }) => {
 
   return useMemo(
     () => (
-      <div className={`word-wrap-anywhere font-size-14`}>
+      <div className={'word-wrap-anywhere font-size-14'}>
         {events.reduce((acc, val, i, arr) => {
           if (value.has(val)) {
             acc.push(

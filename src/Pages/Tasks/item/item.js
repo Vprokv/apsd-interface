@@ -40,16 +40,6 @@ const pages = {
     path: 'structure',
     Component: Contain,
   },
-  links: {
-    label: 'Связанные документы',
-    path: 'links',
-    Component: Links,
-  },
-  handouts: {
-    label: 'Учёт оригиналов',
-    path: 'handouts',
-    Component: Handouts,
-  },
   audit: {
     label: 'История',
     path: 'history',

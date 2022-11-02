@@ -27,7 +27,7 @@ import log from 'tailwindcss/lib/util/log'
 import ObjectCard from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow/Components/ObjectCard'
 import closeIcon from '@/Icons/closeIcon'
 import { value } from 'lodash/seq'
-import {LoadableBaseButton} from "@/Components/Button";
+import { LoadableBaseButton } from '@/Components/Button'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },

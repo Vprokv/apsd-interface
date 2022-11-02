@@ -113,7 +113,12 @@ ArchiveItem.defaultProps = {
 
 // кастим сектионИд в ид
 export const LevelOneArchiveItem = ({ sectionId, ...props }) => (
-  <ArchiveItem {...props} id={sectionId} buttonComponent={SecondArchiveButton} childrenComponent={LevelTwoArchiveItem}/>
+  <ArchiveItem
+    {...props}
+    id={sectionId}
+    buttonComponent={SecondArchiveButton}
+    childrenComponent={LevelTwoArchiveItem}
+  />
 )
 LevelOneArchiveItem.propTypes = {
   sectionId: PropTypes.string.isRequired,

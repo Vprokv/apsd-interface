@@ -196,7 +196,11 @@ const Requisites = () => {
       )
     })
 
-    return { fields: Array.from(fieldsCopy.values()), rules, interceptors:  interceptorsFunctions}
+    return {
+      fields: Array.from(fieldsCopy.values()),
+      rules,
+      interceptors: interceptorsFunctions,
+    }
   }, [values, parsedDesign])
 
   return (

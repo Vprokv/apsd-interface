@@ -12,7 +12,13 @@ const useCustomOptions = (id, value) => {
   const customValues = useContext(CustomValuesContext)
   return useMemo(() => {
     const v = customValues[id] || null
-    return v ? (Array.isArray(v) ? v : typeof v === "object" ? [v] : [{[value]: v}]) : []
+    return v
+      ? Array.isArray(v)
+        ? v
+        : typeof v === 'object'
+        ? [v]
+        : [{ [value]: v }]
+      : []
   }, [customValues, id])
 }
 
@@ -64,7 +70,9 @@ const WithCustomValuesInput = (Component) => {
     return (
       <Component
         {...props}
-        value={customOptions.length > 0 ? customOptions[0][props.value] : props.value}
+        value={
+          customOptions.length > 0 ? customOptions[0][props.value] : props.value
+        }
       />
     )
   }
@@ -81,4 +89,3 @@ export const CustomValuesOrgStructure = WithCustomValuesUserSelect(UserSelect)
 export const CustomValuesClassification = WithCustomValuesInput(Classification)
 export const CustomValuesInput = WithCustomValuesInput(Input)
 export const CustomValuesTextArea = WithCustomValuesInput(TextArea)
-

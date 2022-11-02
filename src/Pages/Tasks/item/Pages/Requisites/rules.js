@@ -24,10 +24,10 @@ import Classification from './Components/Classification'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import {
   CustomValuesClassification,
+  CustomValuesInput,
   CustomValuesOrgStructure,
   CustomValuesSelect,
-  CustomValuesInput,
-  CustomValuesTextArea
+  CustomValuesTextArea,
 } from './Components/CustomValuesSelect'
 import { WithFiltersUserSelect } from './Components/WithFilters'
 import TextArea from '@Components/Components/Inputs/TextArea'
