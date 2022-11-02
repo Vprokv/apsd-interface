@@ -18,26 +18,21 @@ import {
   VALIDATION_RULE_REQUIRED_WITHOUT_ALL,
   VALIDATION_RULE_SIZE,
 } from '@Components/Logic/Validator/constants'
-import createRegExpFromString from '../../../../../components_ocean/Utils/createRegExpFromString'
+import createRegExpFromString from '@/components_ocean/Utils/createRegExpFromString'
 import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
 import Classification from './Components/Classification'
 import { URL_ENTITY_LIST } from '@/ApiList'
-import {
-  CustomValuesOrgStructure,
-  CustomValuesSelect,
-} from './Components/CustomValuesSelect'
-import { WithFiltersUserSelect } from './Components/WithFilters'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import Input from '@Components/Components/Inputs/Input'
+import Select from '@/Components/Inputs/Select'
+import UserSelect from '@/Components/Inputs/UserSelect'
 
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import refsTransmission from '../../../../../RefsTransmission'
-const WithCustomValuesFiltersUserSelect = WithFiltersUserSelect(
-  CustomValuesOrgStructure,
-)
-
+import CustomValuesPipe from './PipeComponents/CustomValues'
+import FiltersPipe from './PipeComponents/Filters'
 export const VisibleIf = (key, values) => ({
   condition: `${key} === "${values[0]}"`,
 })
@@ -149,19 +144,17 @@ export const validationRules = {
 
 const getLoadFunction = (accumulator) => {
   const {
-    backConfig: { dss_component_reference, dss_attr_name, filters },
+    backConfig: { dss_component_reference, dss_attr_name },
     nextProps,
     api,
   } = accumulator
 
-  if (filters) {
-    console.log(1, filters)
-  }
   if (dss_component_reference) {
-    nextProps.loadFunction = async () => {
+    nextProps.loadFunction = (filters) => async () => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         id: dss_attr_name,
         type: dss_component_reference,
+        filters,
       })
       return data
     }
@@ -184,37 +177,43 @@ const getMultiply = (accumulator) => {
 
 export const propsTransmission = {
   Classification: (accumulator) => {
+    accumulator.nextProps.component = Classification
     getLoadFunction(accumulator)
     getMultiply(accumulator)
-    accumulator.nextProps.component = Classification
+    CustomValuesPipe(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   Combobox: (accumulator) => {
+    accumulator.nextProps.component = Select
     getLoadFunction(accumulator)
     getMultiply(accumulator)
-    accumulator.nextProps.component = CustomValuesSelect
+    CustomValuesPipe(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   DocStatus: (accumulator) => {
+    accumulator.nextProps.component = NoFieldType
     getLoadFunction(accumulator)
     getMultiply(accumulator)
+    CustomValuesPipe(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   DocumentPicker: (accumulator) => {
+    accumulator.nextProps.component = DocumentSelect
     getLoadFunction(accumulator)
     getMultiply(accumulator)
-    accumulator.nextProps.component = DocumentSelect
+    CustomValuesPipe(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   Orgstructure: (accumulator) => {
+    accumulator.nextProps.component = UserSelect
     getMultiply(accumulator)
     accumulator.nextProps.refKey = 'userSelect'
-    if (accumulator.backConfig.filters) {
-      accumulator.nextProps.filters = accumulator.backConfig.filters
-      accumulator.nextProps.component = WithCustomValuesFiltersUserSelect
-    } else {
-      accumulator.nextProps.component = CustomValuesOrgStructure
-    }
+    CustomValuesPipe(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   Text: (accumulator) => {
