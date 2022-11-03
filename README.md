@@ -1,3 +1,8 @@
+## Git workflow
+1. Делаем клон от ветки `master` в локальную ветку обязательно с номером задачи и желательно с кратким описанием 
+`feature/APSD-1_content_tab` или `bug/APSD-2_save_document`
+2. После завершения работы над задачей делаем [мерж реквест](../merge_requests/new) обратно в `master`
+
 ## Как сделать локальный клон проекта?
 * `git clone git@gitlab.id-mt.ru:sedo/apsd-ui.git`
 * `git submodule add git@gitlab.id-mt.ru:sedo/components_ocean.git ./src/components_ocean`
