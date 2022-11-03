@@ -9,9 +9,7 @@ import PropTypes from 'prop-types'
 import {
   ApiContext,
   DocumentTypeContext,
-  TASK_ITEM_DOCUMENT,
   TASK_ITEM_NEW_DOCUMENT,
-  TASK_ITEM_REQUISITES,
 } from '../../../contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import { URL_DOCUMENT_CLASSIFICATION, URL_TASK_ITEM } from '@/ApiList'

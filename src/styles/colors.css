@@ -38,6 +38,10 @@
     color: var(--light-gray);
 }
 
+.bg-notifications {
+    background-color: var(--notifications);
+}
+
 .color-white {
     color: var(--white);
 }

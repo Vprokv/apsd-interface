@@ -182,4 +182,5 @@ CreateHandoutsWindow.propTypes = {
   setChange: PropTypes.func.isRequired,
 }
 
+
 export default CreateHandoutsWindow

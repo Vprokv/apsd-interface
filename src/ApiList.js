@@ -33,6 +33,8 @@ export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
 
 // APPROVAL SHEET
 export const URL_APPROVAL_SHEET = '/sedo/approve/stage/get_all'
+export const URL_APPROVAL_SHEET_DELETE = '/sedo/approve/stage/delete'
+export const URL_APPROVAL_SHEET_CREATE = '/sedo/approve/stage/create'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'
