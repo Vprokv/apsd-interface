@@ -24,6 +24,7 @@ import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/con
 import CreateVolume from './Components/CreateVolume'
 import EditVolume from '@/Pages/Tasks/item/Pages/Contain/Components/EditVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
+import DateCell from "./Components/DateCell";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -75,11 +76,17 @@ const columns = [
     id: 'Даты разраб.(план/факт)',
     label: 'Даты разраб.(план/факт)',
     sizes: 200,
+    component: ({ ParentValue }) => (
+      <DateCell/>
+    )
   },
   {
     id: 'Дата согл.(план/факт)',
     label: 'Дата сог.(план/факт)',
     sizes: 200,
+    component: ({ ParentValue }) => (
+      <DateCell hot/>
+    )
   },
   {
     id: 'Просрочка разработки',

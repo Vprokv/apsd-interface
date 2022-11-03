@@ -37,7 +37,7 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
   width: var(--form--elements_height);
 `
 
-const UserSelect = ({ filter, ...props }) => {
+const UserSelect = (props) => {
   const { loadFunction, source, docId } = props
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ source, docId })
@@ -68,7 +68,6 @@ const UserSelect = ({ filter, ...props }) => {
         </SearchButton>
         <AddEmployee
           {...props}
-          filter={filter}
           open={addEmployeeWindow}
           onClose={closeEmployeeWindow}
         />
@@ -78,7 +77,6 @@ const UserSelect = ({ filter, ...props }) => {
 }
 
 UserSelect.propTypes = {
-  filter: PropTypes.object,
   loadFunction: PropTypes.func,
   source: PropTypes.string.isRequired,
   docId: PropTypes.string,
@@ -89,7 +87,6 @@ UserSelect.defaultProps = {
   valueKey: 'emplId',
   labelKey: 'fullDescription',
   options: [],
-  filter: undefined,
   docId: undefined,
 }
 export default UserSelect

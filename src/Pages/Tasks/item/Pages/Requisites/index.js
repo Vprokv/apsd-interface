@@ -146,7 +146,7 @@ const Requisites = () => {
             label: dss_attr_label,
             placeholder: dss_placeholder,
             disabled: dsb_readonly,
-            ...transmission({ api, backConfig: attr, nextProps: {} }),
+            ...transmission({ api, backConfig: attr, nextProps: {}, type }),
             style: {
               gridColumn: `${col + 1}/${col + width + 1}`,
               gridRow: `grid-row: ${row + 1}/${row + height + 1}`,
@@ -158,7 +158,7 @@ const Requisites = () => {
               if (!acc.interceptors.has(field)) {
                 acc.interceptors.set(field, [])
               }
-              acc.interceptors[field].push(dss_attr_name)
+              acc.interceptors.get(field).push(dss_attr_name)
             })
           }
 
@@ -169,7 +169,7 @@ const Requisites = () => {
           rules: new Map(),
           visibility: new Map(),
           disabled: new Map(),
-          interceptors: {},
+          interceptors: new Map(),
         },
       ),
     [api, data],

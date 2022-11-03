@@ -111,8 +111,7 @@ function TaskItem(props) {
     if (!documentTabs) {
       return {}
     }
-
-    return [...documentTabs].reduce(
+    return [...documentTabs, { name: 'content' }].reduce(
       (acc, { name }) => {
         if (pages[name]) {
           const { path, label, Component } = pages[name]

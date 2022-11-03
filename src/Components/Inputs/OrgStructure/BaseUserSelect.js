@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
+import PropTypes from 'prop-types'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import Select from '../Select'
 import { ApiContext } from '@/contants'
@@ -13,7 +14,7 @@ export const AddUserOptionsFullName = (v = {}) => ({
     : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`,
 })
 
-const UserSelect = ({ loadFunction, ...props }) => {
+const UserSelect = ({ loadFunction, filter, ...props }) => {
   const api = useContext(ApiContext)
   const {
     organization: [
@@ -25,8 +26,8 @@ const UserSelect = ({ loadFunction, ...props }) => {
   } = useRecoilValue(userAtom)
 
   const customSelectFilter = useMemo(() => {
-    return { organization, branchId }
-  }, [organization, branchId])
+    return { organization, branchId, ...filter }
+  }, [organization, branchId, filter])
 
   const loadRefSelectFunc = useCallback(
     async (search) => {
@@ -38,7 +39,10 @@ const UserSelect = ({ loadFunction, ...props }) => {
   return <Select {...props} loadFunction={loadRefSelectFunc} />
 }
 
-UserSelect.propTypes = {}
+UserSelect.propTypes = {
+  filter: PropTypes.object,
+  loadFunction: PropTypes.func,
+}
 UserSelect.defaultProps = {
   loadFunction: (api) => (filter) => async (search) => {
     const {
@@ -51,6 +55,7 @@ UserSelect.defaultProps = {
   valueKey: 'emplId',
   labelKey: 'fullDescription',
   widthButton: true,
+  filter: {},
 }
 
 export default UserSelect
