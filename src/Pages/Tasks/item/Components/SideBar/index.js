@@ -9,6 +9,7 @@ import Button from '@/Components/Button'
 import { DocumentTypeContext } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
 import useSaveApi from './useApi'
+import SideBarButton from '@/Pages/Tasks/item/Components/SideBar/SideBarButton'
 
 const SideBar = (props) => {
   const documentType = useContext(DocumentTypeContext)
@@ -16,67 +17,54 @@ const SideBar = (props) => {
     tabState: { data: { documentActions } = [], data: { values = {} } = {} },
     initialState,
   } = useTabItem({ stateId: documentType })
-  const { saveFunc } = useSaveApi({ documentType, values, initialState })
+  const getFunc = useSaveApi({ documentType, values, initialState })
 
   const buttons = useMemo(() => {
     return {
       save: {
         icon: SaveIcon,
         title: 'Сохранить',
-        handleClick: saveFunc,
+        type: 'save',
       },
       delete: {
         icon: DeleteIcon,
         title: 'Удалить',
-        handleClick: () => null,
+        type: 'delete',
       },
       export_doc: {
         icon: OtherIcon,
         title: 'Выгрузить документ',
-        handleClick: () => null,
+        type: 'export_doc',
       },
       sent_to_curator: {
         icon: PrintIcon,
         title: 'Печать карточки',
-        handleClick: () => null,
+        type: 'sent_to_curator',
       },
       print_card: {
         icon: OtherIcon,
         title: 'Отправить куратору',
-        handleClick: () => null,
+        type: 'print_card',
       },
     }
-  }, [saveFunc])
+  }, [])
 
   const documentButtons = useMemo(() => {
     if (!documentActions) {
       return []
     }
-    return documentActions?.reduce((acc, { name }) => {
-      if (buttons[name]) {
-        const { icon, title, handleClick } = buttons[name]
-        acc.push(
-          <Button
-            className="font-weight-light"
-            key={title}
-            onClick={handleClick}
-          >
-            <div className="flex items-center">
-              <img src={icon} alt="" className="mr-2" />
-              <div
-                className={
-                  'break-words font-size-12 whitespace-pre-line text-left'
-                }
-              >
-                {title}
-              </div>
-            </div>
-          </Button>,
-        )
-      }
+
+    return documentActions?.reduce((acc, button) => {
+      acc.push(
+        <SideBarButton
+          key={button.name}
+          button={button}
+          func={getFunc(button.name)}
+        />,
+      )
       return acc
     }, [])
-  }, [documentActions, buttons])
+  }, [documentActions, getFunc])
 
   return <SidebarContainer>{documentButtons}</SidebarContainer>
 }

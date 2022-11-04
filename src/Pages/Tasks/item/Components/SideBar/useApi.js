@@ -1,7 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useCallback, useContext, useMemo } from 'react'
 import { ApiContext, TASK_ITEM_NEW_DOCUMENT } from '@/contants'
-import { URL_DOCUMENT_CREATE, URL_DOCUMENT_UPDATE } from '@/ApiList'
+import {
+  URL_DOCUMENT_CREATE,
+  URL_DOCUMENT_UPDATE,
+  URL_TASK_PROMOTE,
+} from '@/ApiList'
 
 const useApi = ({ documentType, values }) => {
   const api = useContext(ApiContext)
@@ -30,14 +34,20 @@ const useApi = ({ documentType, values }) => {
     [navigate, documentType, type],
   )
 
-  return {
-    saveFunc: async () => {
+  const functions = {
+    save: async () => {
       const {
         data: { id },
       } = await api.post(url, val)
       id && actions(id)()
     },
+    default: (signal) => async () => {
+      await api.post(URL_TASK_PROMOTE, { id, type, signal })
+    },
   }
+
+  return (type) =>
+    functions[type] ? functions[type] : functions['default'](type)
 }
 
 export default useApi
