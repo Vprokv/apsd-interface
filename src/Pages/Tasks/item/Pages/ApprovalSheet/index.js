@@ -20,7 +20,6 @@ import {
   TypeContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
-import log from 'tailwindcss/lib/util/log'
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
@@ -35,8 +34,6 @@ const ApprovalSheet = (props) => {
     setTabState,
     tabState: { data = [], change = true },
   } = tabItemState
-
-  console.log(change, 'change')
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {

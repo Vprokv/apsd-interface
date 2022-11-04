@@ -19,36 +19,6 @@ const SideBar = (props) => {
   } = useTabItem({ stateId: documentType })
   const getFunc = useSaveApi({ documentType, values, initialState })
 
-  const buttons = useMemo(() => {
-    return {
-      save: {
-        icon: SaveIcon,
-        title: 'Сохранить',
-        type: 'save',
-      },
-      delete: {
-        icon: DeleteIcon,
-        title: 'Удалить',
-        type: 'delete',
-      },
-      export_doc: {
-        icon: OtherIcon,
-        title: 'Выгрузить документ',
-        type: 'export_doc',
-      },
-      sent_to_curator: {
-        icon: PrintIcon,
-        title: 'Печать карточки',
-        type: 'sent_to_curator',
-      },
-      print_card: {
-        icon: OtherIcon,
-        title: 'Отправить куратору',
-        type: 'print_card',
-      },
-    }
-  }, [])
-
   const documentButtons = useMemo(() => {
     if (!documentActions) {
       return []

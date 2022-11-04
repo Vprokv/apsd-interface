@@ -46,6 +46,13 @@ export const URL_DOCUMENT_CLASSIFICATION =
 export const URL_DOCUMENT_CREATE = '/sedo/document/create'
 export const URL_DOCUMENT_UPDATE = '/sedo/document/update'
 
+//LINK
+export const URL_LINK_LIST = '/apsd/link/list'
+export const URL_LINK_CREATE = '/apsd/link/create'
+export const URL_LINK_DELETE = '/apsd/link/delete'
+export const URL_LINK_UPDATE = '/apsd/link/update'
+export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/search'
+
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'
 
