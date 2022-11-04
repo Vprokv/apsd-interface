@@ -4,6 +4,6 @@ export const LoadContext = React.createContext({
   loadData: () => null,
 })
 
-export const typeContext = React.createContext({
+export const TypeContext = React.createContext({
   type: '',
 })

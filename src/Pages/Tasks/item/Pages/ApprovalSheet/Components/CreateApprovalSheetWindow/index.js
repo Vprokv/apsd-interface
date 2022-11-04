@@ -6,10 +6,7 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import Button, {
-  LoadableBaseButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import Button, { LoadableBaseButton } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -18,6 +15,12 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE } from '@/ApiList'
+import plusIcon from '@/Icons/plusIcon'
+import Icon from '@Components/Components/Icon'
+import {
+  LoadContext,
+  TypeContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 
 const fields = [
   {
@@ -42,6 +45,8 @@ const fields = [
 const CreateApprovalSheetWindow = ({ loadData }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
+  // const loadData = useContext(LoadContext)
+  const stageType = useContext(TypeContext)
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
 
@@ -64,28 +69,24 @@ const CreateApprovalSheetWindow = ({ loadData }) => {
     [],
   )
 
-  console.log(filterValue, 'filterValue')
-
   const stage = useMemo(() => {
     const { approvers, ...other } = filterValue
     return {
       ...other,
       documentId: id,
-      stageType: 'apsd_approve',
+      stageType,
       autoApprove: false,
       approvers: approvers?.map((val) => {
         return { dsidApproverEmpl: val }
       }),
     }
-  }, [filterValue, id])
-
-  console.log(stage, 'stages')
+  }, [filterValue, id, stageType])
 
   const onSave = useCallback(async () => {
     await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
-    loadData()
-    changeModalState(false)
-  }, [changeModalState, stage, api])
+    await loadData()
+    changeModalState(false)()
+  }, [changeModalState, stage, api, loadData])
 
   const onClose = useCallback(() => {
     setFilterValue({})
@@ -94,9 +95,9 @@ const CreateApprovalSheetWindow = ({ loadData }) => {
 
   return (
     <div className="flex items-center ml-auto ">
-      <SecondaryBlueButton onClick={changeModalState(true)} className="mr-2">
-        Добавить этап
-      </SecondaryBlueButton>
+      <Button onClick={changeModalState(true)} className="color-blue-1">
+        <Icon icon={plusIcon} />
+      </Button>
       <StandardSizeModalWindow
         title="Добавить этап"
         open={open}
@@ -133,8 +134,6 @@ const CreateApprovalSheetWindow = ({ loadData }) => {
   )
 }
 
-CreateApprovalSheetWindow.propTypes = {
-  loadData: PropTypes.func.isRequired,
-}
+CreateApprovalSheetWindow.propTypes = {}
 
 export default CreateApprovalSheetWindow

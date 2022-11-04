@@ -17,7 +17,7 @@ const Row = styled.div`
   align-content: center;
 `
 
-const RowComponent = ({ node }) => {
+const RowComponent = (props) => {
   const {
     dssApproverFio,
     dssApproverPosition,
@@ -25,8 +25,7 @@ const RowComponent = ({ node }) => {
     performerComment = 'comment',
     dsdtDecision,
     dsdtDueDate,
-  } = node
-  console.log(node, 'node')
+  } = props.node
 
   return (
     <Row>
@@ -36,7 +35,7 @@ const RowComponent = ({ node }) => {
           hot={dsdtDecision < dsdtDueDate}
           plan={dsdtDecision}
           fact={dsdtDueDate}
-          className="m-40"
+          className="m-48"
         />
         <DocumentState value={dssStatus} className="mr-40" />
         <div>{performerComment}</div>
