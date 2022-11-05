@@ -20,6 +20,7 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/Search'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -149,7 +150,7 @@ const Links = () => {
           inputWrapper={EmptyInputWrapper}
         />
         <div className="flex items-center ml-auto">
-          <SecondaryBlueButton className="mr-2 ">Связать</SecondaryBlueButton>
+          <LinksWindow />
           <ButtonForIcon className="mr-2 color-text-secondary">
             <Icon icon={EditIcon} />
           </ButtonForIcon>
