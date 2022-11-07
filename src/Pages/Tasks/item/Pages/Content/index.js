@@ -3,7 +3,11 @@ import Icon from '@Components/Components/Icon'
 import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { useParams } from 'react-router-dom'
-import { URL_CONTENT_LIST } from '@/ApiList'
+import {
+  URL_CONTENT_LIST,
+  URL_DELETE_VERSION,
+  URL_UPDATE_VERSION,
+} from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -18,6 +22,7 @@ import DownloadWindow from './Components/DownloadWindow'
 import EmptyInputWrapper from '@Components/Components/Forms/EmptyInputWrapper'
 import XlsIcon from '@/Icons/XlsIcon'
 import WarningIcon from '@/Icons/warningIcon'
+import Switch from '@/Components/Inputs/Switch'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -25,7 +30,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'titleId',
+    valueKey: 'id',
   },
 }
 
@@ -70,7 +75,7 @@ const filterFormConfig = [
   {
     id: 'fullVersion',
     widthButton: false,
-    component: CheckBox,
+    component: Switch,
     label: 'Отобразить все версии',
   },
 ]
@@ -78,6 +83,7 @@ const filterFormConfig = [
 const Content = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
+  const [selectState, setSelectState] = useState([])
   const [filterValue, setFilterValue] = useState(false)
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
 
@@ -86,6 +92,7 @@ const Content = () => {
   })
 
   const {
+    setTabState,
     tabState: { data },
   } = tabItemState
 
@@ -107,9 +114,33 @@ const Content = () => {
     () => setAddSubscriptionWindowState(false),
     [],
   )
+  // id версии, не контента
+  const deleteVersion = useCallback(async () => {
+    await api.post(URL_DELETE_VERSION, {
+      versionId: id,
+    })
+  }, [])
+
+  const editVersion = useCallback(async () => {
+    // "file": {
+    //         "contentId": "string" - id контента
+    //         "contentType":"string", - id из справочника ddt_dict_type_content
+    //         "comment":"string", - коммент
+    //         "regNumber":"string" - шифр/рег номер
+    //         "versionDate": "date" - дата версии
+    //     },
+    await api.post(URL_UPDATE_VERSION, {
+      versionId: id,
+    })
+  }, [])
+
+  const onTableUpdate = useCallback(
+    (data) => setTabState({ data }),
+    [setTabState],
+  )
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
-      <div className="flex items-center color-text-secondary">
+      <div className="flex items-center form-element-sizes-32">
         <Form
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
@@ -130,10 +161,10 @@ const Content = () => {
             <Icon icon={XlsIcon} />
           </ButtonForIcon>
 
-          <ButtonForIcon className="ml-4">
+          <ButtonForIcon className="ml-4" onClick={editVersion}>
             <Icon icon={editIcon} />
           </ButtonForIcon>
-          <ButtonForIcon className="ml-2">
+          <ButtonForIcon className="ml-2" onClick={deleteVersion}>
             <Icon icon={deleteIcon} />
           </ButtonForIcon>
         </div>
@@ -143,6 +174,9 @@ const Content = () => {
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
+        onInput={onTableUpdate}
+        selectState={selectState}
+        onSelect={setSelectState}
       />
       <DownloadWindow
         open={addSubscriptionWindow}

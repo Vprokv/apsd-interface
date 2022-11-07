@@ -17,7 +17,7 @@ import {
   URL_USER_OBJECT,
 } from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
-import { ApiContext } from './contants'
+import { ApiContext, TokenContext } from './contants'
 import { TaskItem, TaskNewItem } from './Pages/Tasks/item'
 import { TASK_LIST_ARCHIVE_PATH } from './routePaths'
 
@@ -40,7 +40,7 @@ function App() {
     return data
   }, [apiInstance])
 
-  const { userState, loginRequest, userObjectLoading, dropToken } =
+  const { userState, loginRequest, userObjectLoading, dropToken, token } =
     useTokenStorage({
       authorizationRequest,
       userObjectRequest,
@@ -90,53 +90,57 @@ function App() {
 
   return (
     <ApiContext.Provider value={apiInstance}>
-      <Suspense fallback={<div>Загрузка...</div>}>
-        <Routes>
-          {userState === null ? (
-            <>
-              <Route
-                path={routePath.LOGIN_PAGE_PATH}
-                element={<Login loginRequest={loginRequest} />}
-              />
-              <Route
-                path={routePath.RESET_PASSWORD_PAGE_PATH}
-                element={<ResetPassword loginRequest={changePasswordRequest} />}
-              />
-              {!userObjectLoading && (
+      <TokenContext.Provider value={token}>
+        <Suspense fallback={<div>Загрузка...</div>}>
+          <Routes>
+            {userState === null ? (
+              <>
+                <Route
+                  path={routePath.LOGIN_PAGE_PATH}
+                  element={<Login loginRequest={loginRequest} />}
+                />
+                <Route
+                  path={routePath.RESET_PASSWORD_PAGE_PATH}
+                  element={
+                    <ResetPassword loginRequest={changePasswordRequest} />
+                  }
+                />
+                {!userObjectLoading && (
+                  <Route
+                    path="*"
+                    element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+                  />
+                )}
+              </>
+            ) : (
+              <Route element={<Main />}>
+                <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
+                <Route
+                  path={routePath.TASK_LIST_ARCHIVE_PATH}
+                  element={<ArchiveList />}
+                />
+                <Route
+                  path={routePath.TASK_NEW_ITEM_PATH}
+                  element={<TaskNewItem />}
+                />
+                <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
+                <Route
+                  path={routePath.VOLUME_ITEM_PATH}
+                  element={<VolumeItem />}
+                />
+                <Route
+                  path={routePath.DELETED_ITEM_PATH}
+                  element={<BasketList />}
+                />
                 <Route
                   path="*"
-                  element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+                  element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
                 />
-              )}
-            </>
-          ) : (
-            <Route element={<Main />}>
-              <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
-              <Route
-                path={routePath.TASK_LIST_ARCHIVE_PATH}
-                element={<ArchiveList />}
-              />
-              <Route
-                path={routePath.TASK_NEW_ITEM_PATH}
-                element={<TaskNewItem />}
-              />
-              <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
-              <Route
-                path={routePath.VOLUME_ITEM_PATH}
-                element={<VolumeItem />}
-              />
-              <Route
-                path={routePath.DELETED_ITEM_PATH}
-                element={<BasketList />}
-              />
-              <Route
-                path="*"
-                element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
-              />
-            </Route>
-          )}
-        </Routes>
-      </Suspense>
+              </Route>
+            )}
+          </Routes>
+        </Suspense>
+      </TokenContext.Provider>
     </ApiContext.Provider>
   )
 }

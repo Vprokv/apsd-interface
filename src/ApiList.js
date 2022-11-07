@@ -46,7 +46,7 @@ export const URL_DOCUMENT_CLASSIFICATION =
 export const URL_DOCUMENT_CREATE = '/sedo/document/create'
 export const URL_DOCUMENT_UPDATE = '/sedo/document/update'
 
-//LINK
+// LINK
 export const URL_LINK_LIST = '/apsd/link/list'
 export const URL_LINK_CREATE = '/apsd/link/create'
 export const URL_LINK_DELETE = '/apsd/link/delete'
@@ -70,5 +70,10 @@ export const URL_STORAGE_SECTION = '/apsd/archive/section'
 
 // CONTENT
 export const URL_CONTENT_LIST = '/apsd/content/list/version'
+export const URL_CREATE_VERSION = '/apsd/content/create/version'
+export const URL_UPDATE_VERSION = '/apsd/content/update/version'
+export const URL_DELETE_VERSION = '/apsd/content/delete/version'
+export const URL_UPLOAD_FILE_VERSION = '/sedo/content/uploadfiles'
+
 export const URL_CONTENT_SEARCH = '/sedo/content/eehd/search'
 export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/create'

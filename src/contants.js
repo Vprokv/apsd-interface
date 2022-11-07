@@ -1,6 +1,7 @@
 import React from 'react'
 
 export const ApiContext = React.createContext(() => null)
+export const TokenContext = React.createContext(null)
 
 export const TASK_LIST = 'TASK_LIST'
 export const TASK_LIST_ARCHIVE = 'TASK_LIST_ARCHIVE'

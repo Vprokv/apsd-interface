@@ -7,7 +7,6 @@ const API_URL = 'http://192.168.42.105/'
 //     : window.location.origin
 
 axios.defaults.baseURL = API_URL
-// axios.defaults.baseURL = http://192.168.42.105/
 
 export default function ({ token, ...apiParams }) {
   const api = axios.create({
@@ -19,6 +18,7 @@ export default function ({ token, ...apiParams }) {
   if (token) {
     api.interceptors.request.use(
       (config) => {
+        console.log(config.data)
         config.data = config.data ? { ...config.data, token } : { token }
         return config
       },
