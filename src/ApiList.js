@@ -10,6 +10,7 @@ export const URL_TASK_ITEM = '/sedo/document/get'
 export const URL_TASK_LIST_V2 = '/sedo/task/list/v2'
 export const URL_TASK_LIST_FILTERS = '/apsd/task/filters'
 export const URL_TASK_STATISTIC = '/sedo/task/statistic'
+export const URL_TASK_PROMOTE = '/sedo/task/promote'
 // ITEM
 // TITLE CONTAIN
 export const URL_TITLE_CONTAIN = '/apsd/structure/list'
@@ -33,6 +34,8 @@ export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
 
 // APPROVAL SHEET
 export const URL_APPROVAL_SHEET = '/sedo/approve/stage/get_all'
+export const URL_APPROVAL_SHEET_DELETE = '/sedo/approve/stage/delete'
+export const URL_APPROVAL_SHEET_CREATE = '/sedo/approve/stage/create'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'
@@ -42,6 +45,12 @@ export const URL_DOCUMENT_CLASSIFICATION =
   '/sedo/document/create/from_classification'
 export const URL_DOCUMENT_CREATE = '/sedo/document/create'
 export const URL_DOCUMENT_UPDATE = '/sedo/document/update'
+
+//LINK
+export const URL_LINK_LIST = '/apsd/link/list'
+export const URL_LINK_CREATE = '/apsd/link/create'
+export const URL_LINK_DELETE = '/apsd/link/delete'
+export const URL_LINK_UPDATE = '/apsd/link/update'
 
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'
@@ -61,3 +70,5 @@ export const URL_STORAGE_SECTION = '/apsd/archive/section'
 
 // CONTENT
 export const URL_CONTENT_LIST = '/apsd/content/list/version'
+export const URL_CONTENT_SEARCH = '/sedo/content/eehd/search'
+export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/create'

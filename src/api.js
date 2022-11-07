@@ -1,12 +1,13 @@
 import axios from 'axios'
 
-// const API_URL ='http://192.168.42.105/'
-const API_URL =
-  process.env.NODE_ENV !== 'production'
-    ? process.env.REACT_APP_API_BASE_URL
-    : window.location.origin
+const API_URL = 'http://192.168.42.105/'
+// const API_URL =
+//   process.env.NODE_ENV !== 'production'
+//     ? process.env.REACT_APP_API_BASE_URL
+//     : window.location.origin
 
 axios.defaults.baseURL = API_URL
+// axios.defaults.baseURL = http://192.168.42.105/
 
 export default function ({ token, ...apiParams }) {
   const api = axios.create({

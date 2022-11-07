@@ -17,6 +17,7 @@ import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
 import { URL_TASK_ITEM } from '@/ApiList'
 import Content from './Pages/Content'
 import ApprovalSheet from './Pages/ApprovalSheet'
+import Search from '@/Pages/Tasks/item/Pages/Links/Components/Search'
 
 const pages = {
   requisites: {
@@ -52,7 +53,7 @@ const pages = {
   },
   links: {
     label: 'Связанные документы',
-    path: 'links',
+    path: 'links/*',
     Component: Links,
   },
   handouts: {
@@ -62,7 +63,7 @@ const pages = {
   },
   'approval-sheet': {
     label: 'Жизненный цикл',
-    path: 'approval-sheet',
+    path: 'approval-sheet/',
     Component: ApprovalSheet,
   },
 }
@@ -111,7 +112,7 @@ function TaskItem(props) {
     if (!documentTabs) {
       return {}
     }
-    return [...documentTabs, { name: 'content' }].reduce(
+    return [...documentTabs].reduce(
       (acc, { name }) => {
         if (pages[name]) {
           const { path, label, Component } = pages[name]
