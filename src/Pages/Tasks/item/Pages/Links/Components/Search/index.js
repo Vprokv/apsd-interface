@@ -9,11 +9,12 @@ import {
   NavigationItem,
 } from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
-import Button, { SecondaryBlueButton } from '@/Components/Button'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { ApiContext } from '@/contants'
-import { TypeContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import Button, {
+  LoadableBaseButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
+import { SaveContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const pages = [
   {
@@ -42,7 +43,7 @@ const pages = [
   },
 ]
 
-const Search = (props) => {
+const Search = () => {
   const { routes, headers } = useMemo(
     () =>
       pages.reduce(
@@ -77,12 +78,8 @@ const Search = (props) => {
 }
 
 const LinksWindow = () => {
-  const api = useContext(ApiContext)
-  const { id } = useParams()
-  // const loadData = useContext(LoadContext)
-  const stageType = useContext(TypeContext)
-  const [open, setOpenState] = useState(false)
-  const [filterValue, setFilterValue] = useState({})
+  const [open, setOpenState] = useState(true)
+  const [save, setSave] = useState({})
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -91,35 +88,46 @@ const LinksWindow = () => {
     [],
   )
 
+  const onSave = useCallback(async () => {
+    const { create, clearState } = save
+    await create()
+    clearState()
+    changeModalState(false)()
+  }, [changeModalState, save])
+
+  console.log(save, 'save')
+
   return (
-    <div className="flex items-center ml-auto ">
-      <SecondaryBlueButton onClick={changeModalState(true)} className="mr-2 ">
-        Связать
-      </SecondaryBlueButton>
-      <CreateLinkComponent
-        title="Добавить cвязь"
-        open={open}
-        onClose={changeModalState(false)}
-      >
-        <div className="flex flex-col overflow-hidden h-full">
-          <Search />
-        </div>
-        <div className="flex items-center justify-end mt-8">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-            onClick={changeModalState(false)}
-          >
-            Закрыть
-          </Button>
-          {/*<LoadableBaseButton*/}
-          {/*  className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"*/}
-          {/*  onClick={onSave}*/}
-          {/*>*/}
-          {/*  Сохранить*/}
-          {/*</LoadableBaseButton>*/}
-        </div>
-      </CreateLinkComponent>
-    </div>
+    <SaveContext.Provider value={setSave}>
+      <div className="flex items-center ml-auto ">
+        <SecondaryBlueButton onClick={changeModalState(true)} className="mr-2 ">
+          Связать
+        </SecondaryBlueButton>
+        <CreateLinkComponent
+          title="Добавить cвязь"
+          open={open}
+          onClose={changeModalState(false)}
+        >
+          <div className="flex flex-col overflow-hidden h-full">
+            <Search save={onSave} />
+          </div>
+          <div className="flex items-center justify-end mt-8">
+            <Button
+              className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
+              onClick={changeModalState(false)}
+            >
+              Закрыть
+            </Button>
+            <LoadableBaseButton
+              className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
+              onClick={onSave}
+            >
+              Сохранить
+            </LoadableBaseButton>
+          </div>
+        </CreateLinkComponent>
+      </div>
+    </SaveContext.Provider>
   )
 }
 

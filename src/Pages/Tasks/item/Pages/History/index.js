@@ -12,6 +12,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -175,17 +176,15 @@ const History = () => {
     })()
   }, [api, setTabState, id, preparedFilterValues, sort])
 
-  const emptyWrapper = ({ children }) => children
-
   return (
     <div className="px-4 pb-4 w-full overflow-hidden flex-container">
       <div className="flex items-center  py-4">
         <FilterForm
           fields={filterFormConfig}
-          inputWrapper={emptyWrapper}
+          inputWrapper={EmptyInputWrapper}
           value={filter}
           onInput={b}
-        ></FilterForm>
+        />
       </div>
       <ListTable
         value={data}

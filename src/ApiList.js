@@ -51,7 +51,6 @@ export const URL_LINK_LIST = '/apsd/link/list'
 export const URL_LINK_CREATE = '/apsd/link/create'
 export const URL_LINK_DELETE = '/apsd/link/delete'
 export const URL_LINK_UPDATE = '/apsd/link/update'
-export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/search'
 
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'
@@ -72,3 +71,4 @@ export const URL_STORAGE_SECTION = '/apsd/archive/section'
 // CONTENT
 export const URL_CONTENT_LIST = '/apsd/content/list/version'
 export const URL_CONTENT_SEARCH = '/sedo/content/eehd/search'
+export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/create'
