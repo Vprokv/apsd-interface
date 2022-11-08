@@ -27,6 +27,7 @@ import {
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
+import log from 'tailwindcss/lib/util/log'
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
@@ -39,8 +40,16 @@ const ApprovalSheet = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [], change = true },
+    tabState: { data = [], change },
   } = tabItemState
+
+  const setChange = useCallback(() => {
+    const { change } = tabState
+
+    return change
+      ? setTabState({ change: !change })
+      : setTabState({ change: true })
+  }, [setTabState, tabState])
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
@@ -50,14 +59,6 @@ const ApprovalSheet = (props) => {
 
     return data
   }, [api, id, type, change])
-
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
 
   useAutoReload(loadData, tabItemState)
 
@@ -132,7 +133,7 @@ const ApprovalSheet = (props) => {
                       {name}
                     </div>
                     <CreateApprovalSheetWindow
-                      loadData={loadData}
+                      loadData={setChange}
                       stageType={type}
                     />
                   </LevelStage>
