@@ -20,6 +20,13 @@ import {
   TypeContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
+import {
+  LevelStage,
+  ParentStage,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
+import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
+import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
+import angleIcon from '@/Icons/angleIcon'
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
@@ -97,18 +104,52 @@ const ApprovalSheet = (props) => {
           </div>
         </div>
         <ScrollBar>
-          {data.map(({ stages, type }, key) => (
-            <TypeContext.Provider key={key} value={type}>
-              <Tree
-                key={key}
-                defaultExpandAll={true}
-                valueKey="id"
-                options={stages}
-                rowComponent={RowSelector}
-                onUpdateOptions={() => null}
-                childrenKey="approvers"
-              />
-            </TypeContext.Provider>
+          {data.map(({ stages, type, name }, key) => (
+            <WithToggleNavigationItem key={type} id={type}>
+              {({ isDisplayed, toggleDisplayedFlag }) => (
+                <div className="flex flex-col" key={type}>
+                  <LevelStage>
+                    {!!stages.length && (
+                      <button
+                        className="pl-2"
+                        type="button"
+                        onClick={toggleDisplayedFlag}
+                      >
+                        <Icon
+                          icon={angleIcon}
+                          size={10}
+                          className={`color-text-secondary ${
+                            isDisplayed ? '' : 'rotate-180'
+                          }`}
+                        />
+                      </button>
+                    )}
+                    <div
+                      className={`${
+                        !stages.length ? 'ml-6' : 'ml-2'
+                      } my-4 flex bold`}
+                    >
+                      {name}
+                    </div>
+                    <CreateApprovalSheetWindow
+                      loadData={loadData}
+                      stageType={type}
+                    />
+                  </LevelStage>
+                  {isDisplayed && (
+                    <Tree
+                      key={key}
+                      defaultExpandAll={true}
+                      valueKey="id"
+                      options={stages}
+                      rowComponent={RowSelector}
+                      onUpdateOptions={() => null}
+                      childrenKey="approvers"
+                    />
+                  )}
+                </div>
+              )}
+            </WithToggleNavigationItem>
           ))}
         </ScrollBar>
       </div>

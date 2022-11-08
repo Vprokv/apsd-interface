@@ -13,7 +13,7 @@ import Button, {
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import {
   ApiContext,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   PRESENT_DATE_FORMAT,
 } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -26,6 +26,7 @@ import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_ENTITY_LIST, URL_HANDOUTS_CREATE } from '@/ApiList'
 import dayjs from 'dayjs'
+import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
 
 const CreateHandoutsWindow = ({ setChange }) => {
   const api = useContext(ApiContext)
@@ -40,25 +41,14 @@ const CreateHandoutsWindow = ({ setChange }) => {
     [],
   )
 
-  const titles = useMemo(
-    () =>
-      [
-        'Операция',
-        'Дата операции',
-        'Архивариус',
-        'Сотрудник',
-        'Подразделение',
-        'Комментарий',
-      ].map((val) => (
-        <div key={val} className="h-10 mb-4 font-size-14  flex items-center">
-          {val}
-        </div>
-      )),
-    [],
-  )
-
   const fields = useMemo(
     () => [
+      {
+        id: '1',
+        component: EmptyInput,
+        value: 'Операция',
+        disabled: true,
+      },
       {
         id: 'operationId',
         component: LoadableSelect,
@@ -73,14 +63,32 @@ const CreateHandoutsWindow = ({ setChange }) => {
         },
       },
       {
+        id: '2',
+        component: EmptyInput,
+        value: 'Дата операции',
+        disabled: true,
+      },
+      {
         id: 'operationDate',
         component: DatePickerComponent,
         placeholder: 'Выберите дату',
       },
       {
+        id: '3',
+        component: EmptyInput,
+        value: 'Архивариус',
+        disabled: true,
+      },
+      {
         id: 'archivistId',
         component: BaseUserSelect,
         placeholder: 'Выберите архивариуса',
+      },
+      {
+        id: '4',
+        component: EmptyInput,
+        value: 'Сотрудник',
+        disabled: true,
       },
       {
         id: 'worker',
@@ -90,12 +98,24 @@ const CreateHandoutsWindow = ({ setChange }) => {
         placeholder: 'Выберите участников',
       },
       {
+        id: '4',
+        component: EmptyInput,
+        value: 'Поддразделение',
+        disabled: true,
+      },
+      {
         id: 'departmentName',
         component: Select,
         placeholder: 'Выберите департамент',
         valueKey: 'department',
         labelKey: 'department',
         options: filterValue?.workerId && [filterValue?.workerId],
+      },
+      {
+        id: '5',
+        component: EmptyInput,
+        value: 'Комментарий',
+        disabled: true,
       },
       {
         id: 'comment',
@@ -117,19 +137,19 @@ const CreateHandoutsWindow = ({ setChange }) => {
     return {
       ...other,
       workerId: worker?.emplId,
-      // departmentId: '00xxxxxx000001d8',
-      // operationDate: '2022-11-01T07:31:36.973Z',
       documentId: id,
       operationDate:
         operationDate &&
-        dayjs(operationDate, PRESENT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT),
+        dayjs(operationDate, PRESENT_DATE_FORMAT).format(
+          DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+        ),
     }
   }, [filterValue, id])
 
   const onSave = useCallback(async () => {
     await api.post(URL_HANDOUTS_CREATE, createDate)
     setChange()
-    changeModalState(false)
+    changeModalState(false)()
   }, [changeModalState, createDate, api, setChange])
 
   const onClose = useCallback(() => {
@@ -148,16 +168,13 @@ const CreateHandoutsWindow = ({ setChange }) => {
         onClose={changeModalState(false)}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex py-4">
-            <TitlesContainer>{titles}</TitlesContainer>
-            <FilterForm
-              className="form-element-sizes-40"
-              fields={fields}
-              value={filterValue}
-              onInput={setFilterValue}
-              inputWrapper={EmptyInputWrapper}
-            />
-          </div>
+          <FilterForm
+            className="form-element-sizes-40"
+            fields={fields}
+            value={filterValue}
+            onInput={setFilterValue}
+            inputWrapper={EmptyInputWrapper}
+          />
         </div>
         <div className="flex items-center justify-end mt-8">
           <Button
@@ -181,6 +198,5 @@ const CreateHandoutsWindow = ({ setChange }) => {
 CreateHandoutsWindow.propTypes = {
   setChange: PropTypes.func.isRequired,
 }
-
 
 export default CreateHandoutsWindow

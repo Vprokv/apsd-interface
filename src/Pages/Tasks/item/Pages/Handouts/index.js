@@ -19,40 +19,48 @@ import LeafTableComponent from '@/Pages/Tasks/item/Pages/Contain/Components/Leaf
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import CreateHandoutsWindow from '@/Pages/Tasks/item/Pages/Handouts/Components/CreateHandoutsWindow'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
-  treePlugin: {
-    valueKey: 'id',
-    nestedDataKey: 'children',
-    component: LeafTableComponent,
-  },
 }
 
 const columns = [
   {
     id: 'operationId',
     label: 'Операция',
+    component: BaseCell,
+    sizes: 160,
   },
   {
     id: 'operationDate',
     label: 'Дата получения',
+    component: BaseCell,
+    sizes: 200,
   },
   {
     id: 'archivistFullName',
     label: 'Архивариус',
+    component: BaseCell,
+    sizes: 150,
   },
   {
     id: 'workerFullName',
     label: 'Сотрудник',
+    component: BaseCell,
+    sizes: 150,
   },
   {
     id: 'departmentName',
     label: 'Подразделение',
+    component: BaseCell,
+    sizes: 315,
   },
   {
     id: 'comment',
     label: 'Комментарий',
+    component: BaseCell,
+    sizes: 400,
   },
 ]
 
