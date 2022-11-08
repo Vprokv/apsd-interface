@@ -13,7 +13,7 @@ import Button, {
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import {
   ApiContext,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   PRESENT_DATE_FORMAT,
 } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -122,14 +122,16 @@ const CreateHandoutsWindow = ({ setChange }) => {
       documentId: id,
       operationDate:
         operationDate &&
-        dayjs(operationDate, PRESENT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT),
+        dayjs(operationDate, PRESENT_DATE_FORMAT).format(
+          DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+        ),
     }
   }, [filterValue, id])
 
   const onSave = useCallback(async () => {
     await api.post(URL_HANDOUTS_CREATE, createDate)
     setChange()
-    changeModalState(false)
+    changeModalState(false)()
   }, [changeModalState, createDate, api, setChange])
 
   const onClose = useCallback(() => {
@@ -181,6 +183,5 @@ const CreateHandoutsWindow = ({ setChange }) => {
 CreateHandoutsWindow.propTypes = {
   setChange: PropTypes.func.isRequired,
 }
-
 
 export default CreateHandoutsWindow

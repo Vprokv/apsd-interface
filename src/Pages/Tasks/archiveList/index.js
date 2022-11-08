@@ -11,29 +11,36 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { TabStateManipulation } from '@Components/Logic/Tab'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import usePagination from '@apsd/components/Logic/usePagination'
+import Pagination from '@/Components/Pagination'
 
 const columns = [
   {
     id: 'name',
     label: 'Раздел/том',
     className: 'flex items-center h-10',
+    component: BaseCell,
     sizes: 300,
   },
   {
     id: 'kind',
     label: 'Вид/Тип',
     className: 'flex items-center h-full',
+    component: BaseCell,
     sizes: 200,
   },
   {
     id: 'code',
     label: 'Код/Рег. номер',
     className: 'flex items-center h-full',
+    component: BaseCell,
     sizes: 200,
   },
   {
     id: 'creationDate',
     className: 'flex items-center h-full',
+    component: BaseCell,
     label: 'Дата создания',
     sizes: 250,
   },
@@ -41,18 +48,21 @@ const columns = [
     id: 'authorName',
     label: 'Автор',
     className: 'flex items-center h-full',
+    component: BaseCell,
     sizes: 200,
   },
   {
     id: 'signerName',
     label: 'Подписант',
     className: 'flex items-center h-full',
+    component: BaseCell,
     sizes: 200,
   },
   {
     id: 'status',
     label: 'Статус',
     className: 'flex items-center h-full',
+    component: BaseCell,
     sizes: 200,
   },
 ]
@@ -84,18 +94,30 @@ const ArchiveList = () => {
   })
 
   const {
+    tabState,
+    setTabState,
     tabState: { data },
   } = tabItemState
 
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: TASK_LIST_ARCHIVE,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
+  })
+
   const loadData = useCallback(async () => {
+    const { limit, offset } = paginationState
     const {
       data: { content },
     } = await api.post(URL_STORAGE_DOCUMENT, {
       filter: { titleId: id, sectionId: sectionId || undefined },
+      limit,
+      offset,
     })
 
     return content
-  }, [api, id, sectionId])
+  }, [api, id, paginationState, sectionId])
 
   useAutoReload(loadData, tabItemState)
 
@@ -116,6 +138,15 @@ const ArchiveList = () => {
         sortQuery={sortQuery}
         onSort={onSort}
       />
+      <Pagination
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+      </Pagination>
     </div>
   )
 }

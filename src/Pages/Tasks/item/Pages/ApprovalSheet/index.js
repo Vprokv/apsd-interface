@@ -97,17 +97,21 @@ const ApprovalSheet = (props) => {
           </div>
         </div>
         <ScrollBar>
-          {data.map(({ stages, type }, key) => (
+          {data.map(({ stages, type, name }, key) => (
             <TypeContext.Provider key={key} value={type}>
-              <Tree
-                key={key}
-                defaultExpandAll={true}
-                valueKey="id"
-                options={stages}
-                rowComponent={RowSelector}
-                onUpdateOptions={() => null}
-                childrenKey="approvers"
-              />
+              <div className="border-solid">
+                {name}
+                <Tree
+                  key={key}
+                  defaultExpandAll={true}
+                  valueKey="id"
+                  options={stages}
+                  rowComponent={RowSelector}
+                  onUpdateOptions={() => null}
+                  childrenKey="approvers"
+                />
+              </div>
+
             </TypeContext.Provider>
           ))}
         </ScrollBar>
