@@ -27,7 +27,7 @@ const Row = styled.div`
   //border-top: 1px solid var(--separator);
 `
 
-const StageRowComponent = ({node}) => {
+const StageRowComponent = ({ node }) => {
   const { term, id, name } = node
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
@@ -46,7 +46,6 @@ const StageRowComponent = ({node}) => {
         <div className="mr-12 w-24">{`Срок (дней): ${term}`}</div>
         <div>{'Дата завершения: '}</div>
         <div className="flex items-center ml-auto">
-          <CreateApprovalSheetWindow loadData={loadData}/>
           <Button className="color-blue-1">
             <Icon icon={AddUserIcon} />
           </Button>

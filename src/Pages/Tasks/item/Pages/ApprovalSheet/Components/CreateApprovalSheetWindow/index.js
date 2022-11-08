@@ -1,12 +1,11 @@
 import React, {
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import Button, { LoadableBaseButton } from '@/Components/Button'
+import Button, {LoadableBaseButton, SecondaryBlueButton} from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -17,10 +16,7 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE } from '@/ApiList'
 import plusIcon from '@/Icons/plusIcon'
 import Icon from '@Components/Components/Icon'
-import {
-  LoadContext,
-  TypeContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { TypeContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 
 const fields = [
   {
@@ -42,11 +38,10 @@ const fields = [
   },
 ]
 
-const CreateApprovalSheetWindow = ({ loadData }) => {
+const CreateApprovalSheetWindow = ({ loadData, stageType }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   // const loadData = useContext(LoadContext)
-  const stageType = useContext(TypeContext)
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
 
