@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Files from '@/Pages/Tasks/item/Pages/Links/Components/Search/Components/Pages/Files'
-import InsideDocument from '@/Pages/Tasks/item/Pages/Links/Components/Search/Components/Pages/InsideDocuments'
-import DocumentEAXD from '@/Pages/Tasks/item/Pages/Links/Components/Search/Components/Pages/EAXD'
-import DocumentASUD from '@/Pages/Tasks/item/Pages/Links/Components/Search/Components/Pages/ASUD'
+import Files from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files'
+import InsideDocument from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments'
+import DocumentEAXD from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/EAXD'
+import DocumentASUD from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/ASUD'
 import {
   NavigationContainer,
   NavigationItem,
@@ -78,7 +78,7 @@ const Search = () => {
 }
 
 const LinksWindow = () => {
-  const [open, setOpenState] = useState(true)
+  const [open, setOpenState] = useState(false)
   const [save, setSave] = useState({})
 
   const changeModalState = useCallback(

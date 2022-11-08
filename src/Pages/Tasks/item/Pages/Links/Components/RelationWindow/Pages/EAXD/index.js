@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import EmptyInput from '../../../../Input/style'
+import EmptyInput from '../../../Input/style'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -17,7 +17,7 @@ import {
   URL_LINK_CREATE_RELATION,
 } from '@/ApiList'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { TableForm } from '@/Pages/Tasks/item/Pages/Links/Components/Search/Components/Pages/EAXD/styles'
+import { TableForm } from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/EAXD/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import Input from '@/Components/Fields/Input'
 import { useRecoilValue } from 'recoil'
@@ -27,7 +27,7 @@ import { SaveContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 const fields = [
   {
     key: 'dssNumber',
-    title: 'Шифр/Рег.номер',
+    title: 'Регистрационный номер',
   },
   {
     key: 'dssDescription',
@@ -80,6 +80,21 @@ const DocumentEAXD = (props) => {
 
   const formFields = useMemo(
     () => [
+      {
+        id: '0',
+        component: EmptyInput,
+        value: 'Шифр/Рег.номер',
+        disabled: true,
+      },
+      {
+        id: 'reg2',
+        component: Input,
+      },
+      {
+        id: '00',
+        component: EmptyInput,
+        disabled: true,
+      },
       {
         id: '1',
         component: EmptyInput,
