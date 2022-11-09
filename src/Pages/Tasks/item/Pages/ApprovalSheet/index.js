@@ -20,6 +20,14 @@ import {
   TypeContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
+import {
+  LevelStage,
+  ParentStage,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
+import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
+import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
+import angleIcon from '@/Icons/angleIcon'
+import log from 'tailwindcss/lib/util/log'
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
@@ -32,8 +40,16 @@ const ApprovalSheet = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [], change = true },
+    tabState: { data = [], change },
   } = tabItemState
+
+  const setChange = useCallback(() => {
+    const { change } = tabState
+
+    return change
+      ? setTabState({ change: !change })
+      : setTabState({ change: true })
+  }, [setTabState, tabState])
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
@@ -43,14 +59,6 @@ const ApprovalSheet = (props) => {
 
     return data
   }, [api, id, type, change])
-
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
 
   useAutoReload(loadData, tabItemState)
 
@@ -97,18 +105,52 @@ const ApprovalSheet = (props) => {
           </div>
         </div>
         <ScrollBar>
-          {data.map(({ stages, type }, key) => (
-            <TypeContext.Provider key={key} value={type}>
-              <Tree
-                key={key}
-                defaultExpandAll={true}
-                valueKey="id"
-                options={stages}
-                rowComponent={RowSelector}
-                onUpdateOptions={() => null}
-                childrenKey="approvers"
-              />
-            </TypeContext.Provider>
+          {data.map(({ stages, type, name }, key) => (
+            <WithToggleNavigationItem key={type} id={type}>
+              {({ isDisplayed, toggleDisplayedFlag }) => (
+                <div className="flex flex-col" key={type}>
+                  <LevelStage>
+                    {!!stages.length && (
+                      <button
+                        className="pl-2"
+                        type="button"
+                        onClick={toggleDisplayedFlag}
+                      >
+                        <Icon
+                          icon={angleIcon}
+                          size={10}
+                          className={`color-text-secondary ${
+                            isDisplayed ? '' : 'rotate-180'
+                          }`}
+                        />
+                      </button>
+                    )}
+                    <div
+                      className={`${
+                        !stages.length ? 'ml-6' : 'ml-2'
+                      } my-4 flex bold`}
+                    >
+                      {name}
+                    </div>
+                    <CreateApprovalSheetWindow
+                      loadData={setChange}
+                      stageType={type}
+                    />
+                  </LevelStage>
+                  {isDisplayed && (
+                    <Tree
+                      key={key}
+                      defaultExpandAll={true}
+                      valueKey="id"
+                      options={stages}
+                      rowComponent={RowSelector}
+                      onUpdateOptions={() => null}
+                      childrenKey="approvers"
+                    />
+                  )}
+                </div>
+              )}
+            </WithToggleNavigationItem>
           ))}
         </ScrollBar>
       </div>

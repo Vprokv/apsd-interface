@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import {
   NavigationContainer,
   NavigationItem,
-} from '../../../Components/DocumentNavigation'
+} from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import SideBar from './Components/SideBar'
 import Requisites from './Pages/Requisites'

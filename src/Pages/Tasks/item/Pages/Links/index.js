@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST, URL_LINK_LIST } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_LINK_DELETE, URL_LINK_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -20,7 +20,7 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/Search'
+import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -139,6 +139,10 @@ const Links = () => {
     [api],
   )
 
+  const onDelete = useCallback(async () => {
+    await api.post(URL_LINK_DELETE, { linkIds: selectState })
+  }, [selectState])
+
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4 form-element-sizes-32">
@@ -154,7 +158,10 @@ const Links = () => {
           <ButtonForIcon className="mr-2 color-text-secondary">
             <Icon icon={EditIcon} />
           </ButtonForIcon>
-          <ButtonForIcon className="mr-2 color-text-secondary">
+          <ButtonForIcon
+            onClick={onDelete}
+            className="mr-2 color-text-secondary"
+          >
             <Icon icon={EditIcon} />
           </ButtonForIcon>
           <ButtonForIcon className="color-text-secondary">

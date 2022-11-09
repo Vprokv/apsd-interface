@@ -1,12 +1,11 @@
 import React, {
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import Button, { LoadableBaseButton } from '@/Components/Button'
+import Button, {LoadableBaseButton, SecondaryBlueButton} from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -17,16 +16,27 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE } from '@/ApiList'
 import plusIcon from '@/Icons/plusIcon'
 import Icon from '@Components/Components/Icon'
-import {
-  LoadContext,
-  TypeContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {LoadContext, TypeContext} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import log from "tailwindcss/lib/util/log";
+import EmptyInput from "@/Pages/Tasks/item/Pages/Links/Components/Input/style";
 
 const fields = [
+  {
+    id: '1',
+    component: EmptyInput,
+    value: 'Наименование этапа *',
+    disabled: true,
+  },
   {
     id: 'name',
     component: SearchInput,
     placeholder: 'Наименование этапа',
+  },
+  {
+    id: '2',
+    component: EmptyInput,
+    value: 'Участник этапа',
+    disabled: true,
   },
   {
     id: 'approvers',
@@ -36,17 +46,22 @@ const fields = [
     placeholder: 'Выберите участников',
   },
   {
+    id: '3',
+    component: EmptyInput,
+    value: 'Срок в рабочих днях *',
+    disabled: true,
+  },
+  {
     id: 'term',
     component: SearchInput,
     placeholder: 'Срок в рабочих днях',
   },
 ]
 
-const CreateApprovalSheetWindow = ({ loadData }) => {
+const CreateApprovalSheetWindow = ({ stageType }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
-  // const loadData = useContext(LoadContext)
-  const stageType = useContext(TypeContext)
+  const loadData = useContext(LoadContext)
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
 
@@ -54,18 +69,6 @@ const CreateApprovalSheetWindow = ({ loadData }) => {
     (nextState) => () => {
       setOpenState(nextState)
     },
-    [],
-  )
-
-  const titles = useMemo(
-    () =>
-      ['Наименование этапа *', 'Участник этапа', 'Срок в рабочих днях *'].map(
-        (val) => (
-          <div key={val} className="h-10 mb-4 font-size-14  flex items-center">
-            {val}
-          </div>
-        ),
-      ),
     [],
   )
 
@@ -105,7 +108,6 @@ const CreateApprovalSheetWindow = ({ loadData }) => {
       >
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex py-4">
-            <TitlesContainer>{titles}</TitlesContainer>
             <FilterForm
               className="form-element-sizes-40"
               fields={fields}
