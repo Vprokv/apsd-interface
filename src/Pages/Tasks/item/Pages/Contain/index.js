@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import {useCallback, useContext, useEffect, useMemo, useState} from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { URL_ENTITY_LIST, URL_TITLE_CONTAIN } from '@/ApiList'
@@ -24,7 +24,7 @@ import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/con
 import CreateVolume from './Components/CreateVolume'
 import EditVolume from '@/Pages/Tasks/item/Pages/Contain/Components/EditVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
-import DateCell from "./Components/DateCell";
+import DateCell from './Components/DateCell'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -76,17 +76,13 @@ const columns = [
     id: 'Даты разраб.(план/факт)',
     label: 'Даты разраб.(план/факт)',
     sizes: 200,
-    component: ({ ParentValue }) => (
-      <DateCell/>
-    )
+    component: ({ ParentValue }) => <DateCell />,
   },
   {
     id: 'Дата согл.(план/факт)',
     label: 'Дата сог.(план/факт)',
     sizes: 200,
-    component: ({ ParentValue }) => (
-      <DateCell hot/>
-    )
+    component: ({ ParentValue }) => <DateCell hot />,
   },
   {
     id: 'Просрочка разработки',
@@ -111,7 +107,6 @@ const Contain = () => {
     stateId: TASK_ITEM_STRUCTURE,
   })
   const {
-    tabState,
     setTabState,
     tabState: { data, change },
   } = tabItemState
@@ -163,6 +158,7 @@ const Contain = () => {
     (data) => setTabState({ data }),
     [setTabState],
   )
+
   return (
     <LoadContainChildrenContext.Provider value={loadData}>
       <div className="flex-container p-4 w-full overflow-hidden">

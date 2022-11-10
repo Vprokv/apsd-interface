@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -23,6 +23,9 @@ import EmptyInputWrapper from '@Components/Components/Forms/EmptyInputWrapper'
 import XlsIcon from '@/Icons/XlsIcon'
 import WarningIcon from '@/Icons/warningIcon'
 import Switch from '@/Components/Inputs/Switch'
+import EditVersionWindow from './Components/EditVersionWindow'
+import EditRow from './Components/EditRow'
+import { EditVersion } from './constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -31,14 +34,25 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'id',
+    returnObjects: true,
   },
 }
+
+const filterFormConfig = [
+  {
+    id: 'fullVersion',
+    widthButton: false,
+    component: Switch,
+    label: 'Отобразить все версии',
+  },
+]
 
 const columns = [
   {
     id: 'contentName',
     label: 'Описание',
     sizes: 190,
+    component: ({ ParentValue }) => <EditRow value={ParentValue} />,
   },
   {
     id: 'versionDate',
@@ -71,21 +85,14 @@ const columns = [
   // }
 ]
 
-const filterFormConfig = [
-  {
-    id: 'fullVersion',
-    widthButton: false,
-    component: Switch,
-    label: 'Отобразить все версии',
-  },
-]
-
 const Content = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [filterValue, setFilterValue] = useState(false)
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
+  const [openEditWindow, setOpenEditWindow] = useState(false)
+  const [dataVersion, setDataVersion] = useState({})
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -114,30 +121,37 @@ const Content = () => {
     () => setAddSubscriptionWindowState(false),
     [],
   )
-  // id версии, не контента
-  const deleteVersion = useCallback(async () => {
-    await api.post(URL_DELETE_VERSION, {
-      versionId: id,
-    })
-  }, [])
 
-  const editVersion = useCallback(async () => {
-    // "file": {
-    //         "contentId": "string" - id контента
-    //         "contentType":"string", - id из справочника ddt_dict_type_content
-    //         "comment":"string", - коммент
-    //         "regNumber":"string" - шифр/рег номер
-    //         "versionDate": "date" - дата версии
-    //     },
-    await api.post(URL_UPDATE_VERSION, {
-      versionId: id,
-    })
-  }, [])
+  const deleteVersion = useCallback(async () => {
+    if (selectState && selectState.length > 0) {
+      await Promise.all([
+        selectState.map(({ id }) => {
+          return api.post(URL_DELETE_VERSION, {
+            id,
+          })
+        }),
+      ])
+      loadData()
+    }
+  }, [selectState])
+
+  const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
+
+  const editVersion = useCallback(async (value) => {
+    setDataVersion(value)
+    setOpenEditWindow(true)
+  }, [dataVersion])
 
   const onTableUpdate = useCallback(
     (data) => setTabState({ data }),
     [setTabState],
   )
+
+  const idContent = useMemo(() => {
+    if (data && data.length > 0) {
+      return data.find((item) => item.version === 'Основная').id
+    }
+  }, [data])
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       <div className="flex items-center form-element-sizes-32">
@@ -160,27 +174,31 @@ const Content = () => {
           <ButtonForIcon className="ml-2">
             <Icon icon={XlsIcon} />
           </ButtonForIcon>
-
-          <ButtonForIcon className="ml-4" onClick={editVersion}>
-            <Icon icon={editIcon} />
-          </ButtonForIcon>
           <ButtonForIcon className="ml-2" onClick={deleteVersion}>
             <Icon icon={deleteIcon} />
           </ButtonForIcon>
         </div>
       </div>
-      <ListTable
-        value={data}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        onInput={onTableUpdate}
-        selectState={selectState}
-        onSelect={setSelectState}
-      />
+      <EditVersion.Provider value={editVersion}>
+        <ListTable
+          value={data}
+          columns={columns}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          onInput={onTableUpdate}
+          selectState={selectState}
+          onSelect={setSelectState}
+        />
+      </EditVersion.Provider>
       <DownloadWindow
+        contentId={idContent}
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}
+      />
+      <EditVersionWindow
+        formData={dataVersion}
+        open={openEditWindow}
+        onClose={closeEditWindow}
       />
     </div>
   )

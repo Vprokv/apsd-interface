@@ -17,7 +17,7 @@ import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
 import { URL_TASK_ITEM } from '@/ApiList'
 import Content from './Pages/Content'
 import ApprovalSheet from './Pages/ApprovalSheet'
-import Search from '@/Pages/Tasks/item/Pages/Links/Components/Search'
+import Search from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
 
 const pages = {
   requisites: {

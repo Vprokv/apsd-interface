@@ -20,7 +20,7 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/Search'
+import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },

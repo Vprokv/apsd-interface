@@ -6,45 +6,23 @@ import InputComponent from '@Components/Components/Inputs/Input'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import Form from '@Components/Components/Forms'
 import DatePicker from '@/Components/Inputs/DatePicker'
-import UserSelect from '@/Components/Inputs/UserSelect'
-import dayjs from 'dayjs'
 import LoadableSelect from '@/Components/Inputs/Select'
-import {
-  ApiContext,
-  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  TokenContext,
-} from '@/contants'
-import {
-  URL_CREATE_VERSION,
-  URL_ENTITY_LIST,
-  URL_UPLOAD_FILE_VERSION,
-} from '@/ApiList'
+import { ApiContext, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
+import { URL_ENTITY_LIST, URL_UPDATE_VERSION } from '@/ApiList'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
-import FileInput from '@/components_ocean/Components/Inputs/FileInput'
-import axios from 'axios'
-import { useParams } from 'react-router-dom'
 
 const rules = {}
-const initFormValue = {
-  versionDate: dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
-}
 
-const DownloadWindow = ({ onClose, contentId }) => {
-  const { id } = useParams()
-  const [values, setValues] = useState(initFormValue)
+const EditVersionWindow = ({ onClose, formData }) => {
+  const [values, setValues] = useState(formData)
   const api = useContext(ApiContext)
-  const token = useContext(TokenContext)
 
   const onSave = useCallback(async () => {
-    const { contentType, comment, regNumber, versionDate, files } = values
-    const [{ dsc_content, dss_content_name }] = files
-    await api.post(URL_CREATE_VERSION, {
-      documentId: id,
+    const { contentType, comment, regNumber, versionDate, contentId } = values
+    await api.post(URL_UPDATE_VERSION, {
       file: {
-        fileKey: dsc_content,
-        contentName: dss_content_name,
         contentId,
         contentType,
         comment,
@@ -54,43 +32,18 @@ const DownloadWindow = ({ onClose, contentId }) => {
     })
     onClose()
   }, [api, onClose, values])
+
   const userObject = useRecoilValue(userAtom)
 
-  useEffect(() => {
-    setValues((values) => ({
-      ...values,
-      author: userObject.r_object_id,
-    }))
-  }, [userObject.r_object_id])
-
-  const uploadFunction = useCallback(
-    async (files, requestParams) => {
-      const FData = new FormData()
-      files.forEach(({ fileData }) => {
-        FData.append('files', fileData)
-      })
-      FData.append('token', token)
-      const { data } = await axios.post(URL_UPLOAD_FILE_VERSION, FData, {
-        ...requestParams,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      return data
-    },
-    [token],
-  )
-
   const fieldMap = useMemo(() => {
-    const {
-      r_object_id,
-      dss_last_name,
-      dss_first_name,
-      dss_middle_name,
-      position_name,
-      department_name,
-    } = userObject
     return [
+      {
+        disabled: true,
+        label: 'Описание',
+        id: 'contentName',
+        component: InputComponent,
+        placeholder: 'Введите данные',
+      },
       {
         label: 'Тип файла',
         id: 'contentType',
@@ -124,25 +77,8 @@ const DownloadWindow = ({ onClose, contentId }) => {
         placeholder: 'Введите данные',
         dateFormat: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
       },
-      {
-        label: 'Автор',
-        id: 'author',
-        component: UserSelect,
-        options: [
-          {
-            emplId: r_object_id,
-            fullDescription: `${dss_last_name} ${dss_first_name} ${dss_middle_name}, ${position_name}, ${department_name}`,
-          },
-        ],
-        placeholder: 'Введите данные',
-      },
-      {
-        id: 'files',
-        component: FileInput,
-        uploadFunction: uploadFunction,
-      },
     ]
-  }, [api, uploadFunction, userObject])
+  }, [api, userObject])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
@@ -174,17 +110,17 @@ const DownloadWindow = ({ onClose, contentId }) => {
   )
 }
 
-DownloadWindow.propTypes = {
+EditVersionWindow.propTypes = {
   onClose: PropTypes.func,
 }
-DownloadWindow.defaultProps = {
+EditVersionWindow.defaultProps = {
   onClose: () => null,
 }
 
-const DownloadWindowWrapper = (props) => (
-  <StandardSizeModalWindow {...props} title="Добавление файла/версии">
-    <DownloadWindow {...props} />
+const EditVersionWindowWrapper = (props) => (
+  <StandardSizeModalWindow {...props} title="Редактирование версии">
+    <EditVersionWindow {...props} />
   </StandardSizeModalWindow>
 )
 
-export default DownloadWindowWrapper
+export default EditVersionWindowWrapper
