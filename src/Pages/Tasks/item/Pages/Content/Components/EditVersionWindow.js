@@ -16,7 +16,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 const rules = {}
 
 const EditVersionWindow = ({ onClose, formData }) => {
-  const [values, setValues] = useState(formData[0])
+  const [values, setValues] = useState(formData)
   const api = useContext(ApiContext)
 
   const onSave = useCallback(async () => {
@@ -37,6 +37,13 @@ const EditVersionWindow = ({ onClose, formData }) => {
 
   const fieldMap = useMemo(() => {
     return [
+      {
+        disabled: true,
+        label: 'Описание',
+        id: 'contentName',
+        component: InputComponent,
+        placeholder: 'Введите данные',
+      },
       {
         label: 'Тип файла',
         id: 'contentType',

@@ -24,6 +24,8 @@ import XlsIcon from '@/Icons/XlsIcon'
 import WarningIcon from '@/Icons/warningIcon'
 import Switch from '@/Components/Inputs/Switch'
 import EditVersionWindow from './Components/EditVersionWindow'
+import EditRow from './Components/EditRow'
+import { EditVersion } from './constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -36,11 +38,21 @@ const plugins = {
   },
 }
 
+const filterFormConfig = [
+  {
+    id: 'fullVersion',
+    widthButton: false,
+    component: Switch,
+    label: 'Отобразить все версии',
+  },
+]
+
 const columns = [
   {
     id: 'contentName',
     label: 'Описание',
     sizes: 190,
+    component: ({ ParentValue }) => <EditRow value={ParentValue} />,
   },
   {
     id: 'versionDate',
@@ -73,15 +85,6 @@ const columns = [
   // }
 ]
 
-const filterFormConfig = [
-  {
-    id: 'fullVersion',
-    widthButton: false,
-    component: Switch,
-    label: 'Отобразить все версии',
-  },
-]
-
 const Content = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
@@ -89,6 +92,7 @@ const Content = () => {
   const [filterValue, setFilterValue] = useState(false)
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
+  const [dataVersion, setDataVersion] = useState({})
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -119,21 +123,24 @@ const Content = () => {
   )
 
   const deleteVersion = useCallback(async () => {
-    const { id: versionId } = selectState
     if (selectState && selectState.length > 0) {
-      await api.post(URL_DELETE_VERSION, {
-        versionId,
-      })
+      await Promise.all([
+        selectState.map(({ id }) => {
+          return api.post(URL_DELETE_VERSION, {
+            id,
+          })
+        }),
+      ])
+      loadData()
     }
   }, [selectState])
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
-  const editVersion = useCallback(async () => {
-    if (selectState && selectState.length > 0) {
-      setOpenEditWindow(true)
-    }
-  }, [selectState])
+  const editVersion = useCallback(async (value) => {
+    setDataVersion(value)
+    setOpenEditWindow(true)
+  }, [dataVersion])
 
   const onTableUpdate = useCallback(
     (data) => setTabState({ data }),
@@ -167,31 +174,29 @@ const Content = () => {
           <ButtonForIcon className="ml-2">
             <Icon icon={XlsIcon} />
           </ButtonForIcon>
-
-          <ButtonForIcon className="ml-4" onClick={editVersion}>
-            <Icon icon={editIcon} />
-          </ButtonForIcon>
           <ButtonForIcon className="ml-2" onClick={deleteVersion}>
             <Icon icon={deleteIcon} />
           </ButtonForIcon>
         </div>
       </div>
-      <ListTable
-        value={data}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        onInput={onTableUpdate}
-        selectState={selectState}
-        onSelect={setSelectState}
-      />
+      <EditVersion.Provider value={editVersion}>
+        <ListTable
+          value={data}
+          columns={columns}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          onInput={onTableUpdate}
+          selectState={selectState}
+          onSelect={setSelectState}
+        />
+      </EditVersion.Provider>
       <DownloadWindow
         contentId={idContent}
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}
       />
       <EditVersionWindow
-        formData={selectState}
+        formData={dataVersion}
         open={openEditWindow}
         onClose={closeEditWindow}
       />
