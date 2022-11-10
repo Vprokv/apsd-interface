@@ -2,13 +2,13 @@ import MainLogo from '../../main_logo.png'
 import Icon from '@Components/Components/Icon'
 import doubleShevronIcon from '@/Icons/doubleShevronIcon'
 import settingsIcon from '@/Icons/settingsIcon'
-import searchIcon from '@/Icons/searchIcon'
 import notificationIcon from '@/Icons/notificationIcon'
 import angleIcon from '@/Icons/angleIcon'
 import { Avatar, IconsGroup } from './styles'
 import tempImg from './temp_avatar.png'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
+import Search from '@/Pages/Main/Components/Header/Components/Search'
 
 const Header = () => {
   const { dss_first_name, dss_last_name, dsid_avatar } =
@@ -21,7 +21,7 @@ const Header = () => {
       </button>
       <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2.5">
         <Icon className="mr-5" icon={settingsIcon} />
-        <Icon className="mr-5 text-white" icon={searchIcon} />
+        <Search />
         <Icon icon={notificationIcon} />
       </IconsGroup>
       <div className="pl-10 text-white flex items-center">
