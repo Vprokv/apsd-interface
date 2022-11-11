@@ -31,7 +31,6 @@ const Title = ({ value, onInput }) => {
       typeLabel: 'Том',
     },
   ])
-  console.log(value, 'value')
 
   const loadFunction = useCallback(async () => {
     const { data } = await api.post(URL_TYPE_CONFIG, {
@@ -57,7 +56,7 @@ const Title = ({ value, onInput }) => {
         labelKey="typeLabel"
       />
     ),
-    [loadFunction, options, value],
+    [loadFunction, onInput, options, value],
   )
 
   return (

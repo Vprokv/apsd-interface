@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   SecondaryBlueButton,
@@ -49,10 +49,16 @@ const Index = (props) => {
     [],
   )
 
+
   const buttons = useMemo(
     () =>
       types.map(({ label, Component, key, ...item }) => (
-        <Component className="mb-5 w-64" key={key} {...item} onClick={useButtonFunc(key)}>
+        <Component
+          className="mb-5 w-64"
+          key={key}
+          {...item}
+          // onClick={useButtonFunc(key)}
+        >
           {label}
         </Component>
       )),
