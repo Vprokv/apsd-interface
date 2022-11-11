@@ -141,7 +141,7 @@ const Links = () => {
 
   const onDelete = useCallback(async () => {
     await api.post(URL_LINK_DELETE, { linkIds: selectState })
-  }, [selectState])
+  }, [api, selectState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
