@@ -19,7 +19,8 @@ import {
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import { TASK_LIST_ARCHIVE_PATH } from './routePaths'
+import { SEARCH_PAGE_PATH, TASK_LIST_ARCHIVE_PATH } from './routePaths'
+import Search from '@/Pages/Search'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -136,6 +137,7 @@ function App() {
                   path="*"
                   element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
                 />
+                <Route path={routePath.SEARCH_PAGE_PATH} element={<Search />} />
               </Route>
             )}
           </Routes>
