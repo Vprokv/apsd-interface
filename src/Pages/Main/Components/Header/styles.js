@@ -19,3 +19,17 @@ export const Avatar = styled.img`
   border: 2px solid var(--blue-1);
   outline: 2px solid #fff;
 `
+
+export const UserContextMenuContainer = styled.div`
+  background: #ffffff;
+  border: 1px solid var(--separator);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+`
+
+export const ContextMenuElement = styled.button`
+  transition: background-color 500ms ease-in-out;
+  &:hover {
+    background-color: #dddddd;
+  }
+`

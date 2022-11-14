@@ -1,8 +1,8 @@
 import React, { useCallback, useContext } from 'react'
-import { TabStateManipulation } from '@apsd/components/Logic/Tab'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 import { ButtonForIcon } from '../styles'
 import searchIcon from '@/Icons/searchIcon'
-import Icon from '@apsd/components/Components/Icon'
+import Icon from '@Components/Components/Icon'
 import { useNavigate } from 'react-router-dom'
 import { SEARCH_PAGE_PATH } from '@/routePaths'
 

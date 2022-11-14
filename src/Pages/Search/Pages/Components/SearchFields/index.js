@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { FilterForm } from './styles'
-import { EmptyInputWrapper } from '@apsd/components/Components/Forms'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import { ApiContext } from '@/contants'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'

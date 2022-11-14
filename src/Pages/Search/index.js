@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import useTabItem from '@apsd/components/Logic/Tab/TabItem'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 import { TASK_ITEM_DOCUMENT } from '@/contants'
 import {
   NavigationContainer,

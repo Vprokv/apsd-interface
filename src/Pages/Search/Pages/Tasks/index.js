@@ -5,7 +5,7 @@ import SearchFields from '@/Pages/Search/Pages/Components/SearchFields'
 import CheckBoxes from '@/Pages/Search/Pages/Components/CheckBox'
 import Buttons from '@/Pages/Search/Pages/Components/Buttons'
 import { Cont } from '@/Pages/Search/Pages/Documents'
-import useTabItem from '@apsd/components/Logic/Tab/TabItem'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE } from '@/contants'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
 

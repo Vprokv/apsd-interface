@@ -12,7 +12,7 @@ import {
   TASK_ITEM_NEW_DOCUMENT,
 } from '../../../contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
-import { URL_DOCUMENT_CLASSIFICATION, URL_TASK_ITEM } from '@/ApiList'
+import { URL_DOCUMENT_CLASSIFICATION, URL_DOCUMENT_ITEM } from '@/ApiList'
 import { useParams } from 'react-router-dom'
 import { BaseItem } from './baseItem'
 
