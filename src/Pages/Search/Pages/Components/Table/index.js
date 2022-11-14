@@ -84,7 +84,7 @@ const Table = () => {
 
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => openNewTab(navigate(`/task/${id}/${type}`)),
+    (id, type) => () => openNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openNewTab],
   )
 
