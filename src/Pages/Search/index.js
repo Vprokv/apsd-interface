@@ -7,8 +7,8 @@ import {
   NavigationItem,
 } from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Documents from "@/Pages/Search/Pages/Documents";
-import Tasks from "@/Pages/Search/Pages/Tasks";
+import Documents from '@/Pages/Search/Pages/Documents'
+import Tasks from '@/Pages/Search/Pages/Tasks'
 
 const Search = (props) => {
   useTabItem({

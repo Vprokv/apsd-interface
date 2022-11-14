@@ -18,6 +18,7 @@ import ContextMenu from '@Components/Components/ContextMenu'
 import { useCallback, useContext, useState } from 'react'
 import LogoutIcon from '@/Pages/Main/Icons/LogoutIcon'
 import { TokenContext } from '@/contants'
+import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
 
 const Header = () => {
   const { dss_first_name, dss_last_name, dsid_avatar } =
@@ -33,9 +34,13 @@ const Header = () => {
         <Icon icon={doubleShevronIcon} />
       </button>
       <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2.5">
-        <Icon className="mr-5" icon={settingsIcon} />
+        <ButtonForIcon>
+          <Icon icon={settingsIcon} />
+        </ButtonForIcon>
         <Search />
-        <Icon icon={notificationIcon} />
+        <ButtonForIcon>
+          <Icon icon={notificationIcon} />
+        </ButtonForIcon>
       </IconsGroup>
       <div className="pl-10 flex items-center">
         <div className="text-right mr-4 font-medium">

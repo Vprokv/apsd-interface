@@ -16,7 +16,7 @@ const Search = () => {
   )
 
   return (
-    <ButtonForIcon className="bg-blue-1 items-center mr-5" onClick={openSearch}>
+    <ButtonForIcon className="items-center" onClick={openSearch}>
       <Icon className="text-white" icon={searchIcon} />
     </ButtonForIcon>
   )
