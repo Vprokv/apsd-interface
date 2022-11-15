@@ -1,19 +1,33 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { FilterForm } from './styles'
-import { EmptyInputWrapper } from '@apsd/components/Components/Forms'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import { ApiContext } from '@/contants'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
 
-const SearchFields = ({ data }) => {
+const SearchFields = () => {
+  const {
+    tabState: { data = [], filter = {} },
+  } = useContext(TabStateContext)
+
   const api = useContext(ApiContext)
-  const [filter, setFilter] = useState({})
+  // const [filter, setFilter] = useState({})
   const { setTabState } = useContext(TabStateContext)
 
-  useEffect(() => {
-    setTabState({ filter })
-  }, [filter])
+  const onInput = useCallback(
+    (val) => {
+      const prevFilter = { ...filter }
+      setTabState({ filter: { ...prevFilter, ...val } })
+    },
+    [filter, setTabState],
+  )
 
   const parseDesign = useMemo(
     () =>
@@ -33,6 +47,7 @@ const SearchFields = ({ data }) => {
             dsb_and_search_operator,
             dsb_starts_with_search_operator,
             multiple,
+            range,
           },
         ) => {
           const loadData = getLoadFunction(api)(dss_component_reference)
@@ -43,6 +58,7 @@ const SearchFields = ({ data }) => {
             id: dss_attr_name,
             placeholder: dss_attr_label,
             multiple,
+            range,
           })
 
           return acc
@@ -57,7 +73,7 @@ const SearchFields = ({ data }) => {
       fields={parseDesign}
       inputWrapper={EmptyInputWrapper}
       value={filter}
-      onInput={setFilter}
+      onInput={onInput}
     />
   )
 }

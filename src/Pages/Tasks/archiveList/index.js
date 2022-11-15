@@ -12,7 +12,7 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import usePagination from '@apsd/components/Logic/usePagination'
+import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 
 const columns = [
@@ -85,7 +85,7 @@ const ArchiveList = () => {
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => openNewTab(navigate(`/task/${id}/${type}`)),
+    (id, type) => () => openNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openNewTab],
   )
   const tabItemState = useTabItem({

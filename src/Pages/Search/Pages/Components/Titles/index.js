@@ -1,7 +1,12 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { TabStateContext } from '@/Pages/Search/Pages/constans'
 
-const Index = ({ data }) => {
+const Index = () => {
+  const {
+    tabState: { data = [] },
+  } = useContext(TabStateContext)
+
   const titles = useMemo(
     () =>
       data.map(({ dss_attr_label }) => (
