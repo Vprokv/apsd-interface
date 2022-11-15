@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { CloseIcon, Container } from './styles'
 import closeIcon from '@/Icons/closeIcon'
 
-const Tab = ({ name, onClose, active, onClick, closeable }) => {
+const Tab = ({ name, onClose, active, onClick, closeable } = {}) => {
   const handleClose = (e) => {
     e.stopPropagation()
     onClose()
