@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@appthreat/cdxgen": "^4.0.41",
-    "@Components": "file:src/components_ocean",
+    "@apsd/components": "file:src/components_ocean",
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.19.4",
     "@babel/preset-react": "^7.18.6",

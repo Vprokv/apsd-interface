@@ -137,10 +137,13 @@ const Content = () => {
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
-  const editVersion = useCallback(async (value) => {
-    setDataVersion(value)
-    setOpenEditWindow(true)
-  }, [dataVersion])
+  const editVersion = useCallback(
+    async (value) => {
+      setDataVersion(value)
+      setOpenEditWindow(true)
+    },
+    [dataVersion],
+  )
 
   const onTableUpdate = useCallback(
     (data) => setTabState({ data }),
