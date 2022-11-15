@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Titles from '@/Pages/Search/Pages/Components/Titles'
 import SearchFields from '@/Pages/Search/Pages/Components/SearchFields'
@@ -6,10 +6,13 @@ import CheckBoxes from '@/Pages/Search/Pages/Components/CheckBox'
 import Buttons from '@/Pages/Search/Pages/Components/Buttons'
 import { Cont } from '@/Pages/Search/Pages/Documents'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { SEARCH_PAGE } from '@/contants'
+import { SEARCH_PAGE, SEARCH_PAGE_TASKS } from '@/contants'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import Table from '@/Pages/Search/Pages/Components/Table'
 import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
+import { URL_SEARCH_ATTRIBUTES } from '@/ApiList'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { useParams } from 'react-router-dom'
 
 const pageData = [
   {
@@ -54,13 +57,17 @@ const pageData = [
 
 const Tasks = () => {
   const tabItemState = useTabItem({
-    stateId: SEARCH_PAGE,
+    stateId: SEARCH_PAGE_TASKS,
   })
 
   const { tabState, setTabState } = tabItemState
   const [checked, setChecked] = useState(() => new Map())
 
-  useEffect(() => setTabState({ data: pageData }), [setTabState])
+  const loadData = useCallback(async () => {
+    return pageData
+  }, [])
+
+  useAutoReload(loadData, tabItemState)
 
   const getButtonFunc = useButtonFunc({
     tabState,
