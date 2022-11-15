@@ -3,14 +3,14 @@ import Select from '@/Components/Inputs/Select'
 import { NoFieldType } from '@/Pages/Tasks/item/Pages/Requisites/rules'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import Input from '@apsd/components/Components/Inputs/Input'
-import TextArea from '@apsd/components/Components/Inputs/TextArea'
+import Input from '@Components/Components/Inputs/Input'
+import TextArea from '@Components/Components/Inputs/TextArea'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { useContext } from 'react'
 import { ApiContext } from '@/contants'
 import { URL_ENTITY_LIST } from '@/ApiList'
-import BaseUserSelect from "@/Components/Inputs/OrgStructure/BaseUserSelect";
+import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 
 const fields = {
   Classification: Classification,
@@ -18,8 +18,9 @@ const fields = {
   TextualCombobox: Select,
   DocStatus: NoFieldType,
   DocumentPicker: DocumentSelect,
-  Orgstructure: UserSelect,
-  UserSelect: BaseUserSelect,
+  Orgstructure: (props) => <UserSelect returnObjects={true} {...props} />,
+  UserSelect: (props) => <BaseUserSelect returnObjects={true} {...props} />,
+  // UserSelect:(props) =>  BaseUserSelect,
   Text: Input,
   TextArea: TextArea,
   Date: DatePicker,
@@ -28,7 +29,6 @@ const fields = {
 
 export const getField = (type) => fields[type] ?? fields.DocStatus
 export const getLoadFunction = (api) => (type) => {
-  console.log(type, 'type')
   if (!type) {
     return {}
   }

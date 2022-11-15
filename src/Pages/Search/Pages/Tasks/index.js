@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Titles from '@/Pages/Search/Pages/Components/Titles'
 import SearchFields from '@/Pages/Search/Pages/Components/SearchFields'
 import CheckBoxes from '@/Pages/Search/Pages/Components/CheckBox'
 import Buttons from '@/Pages/Search/Pages/Components/Buttons'
 import { Cont } from '@/Pages/Search/Pages/Documents'
-import useTabItem from '@apsd/components/Logic/Tab/TabItem'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE } from '@/contants'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
+import Table from '@/Pages/Search/Pages/Components/Table'
+import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
 
 const pageData = [
   {
@@ -19,6 +21,7 @@ const pageData = [
   {
     dss_attr_name: 'dss_date-reg',
     dss_attr_label: 'Дата регистрации',
+    range: true,
     dss_component_type: 'Date',
     multiple: false,
   },
@@ -49,25 +52,34 @@ const pageData = [
   },
 ]
 
-const Tasks = (props) => {
+const Tasks = () => {
   const tabItemState = useTabItem({
     stateId: SEARCH_PAGE,
   })
 
-  const {
+  const { tabState, setTabState } = tabItemState
+  const [checked, setChecked] = useState(() => new Map())
+
+  useEffect(() => setTabState({ data: pageData }), [setTabState])
+
+  const getButtonFunc = useButtonFunc({
     tabState,
     setTabState,
-    tabState: { data = pageData, searchValues = [] },
-  } = tabItemState
+  })
 
   return (
-    <TabStateContext.Provider value={{ tabState, setTabState }}>
-      <Cont>
-        <Titles data={data} />
-        <SearchFields data={data} />
-        <CheckBoxes data={data} />
-        <Buttons />
-      </Cont>
+    <TabStateContext.Provider
+      value={{ tabState, setTabState, getButtonFunc, checked, setChecked }}
+    >
+      <div className="flex flex-col">
+        <Cont>
+          <Titles />
+          <SearchFields />
+          <CheckBoxes />
+          <Buttons />
+        </Cont>
+        <Table />
+      </div>
     </TabStateContext.Provider>
   )
 }

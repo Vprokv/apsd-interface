@@ -149,7 +149,7 @@ const Content = () => {
 
   const idContent = useMemo(() => {
     if (data && data.length > 0) {
-      return data.find((item) => item.version === 'Основная').id
+      return data.find((item) => item.version === 'Основная').contentId
     }
   }, [data])
   return (

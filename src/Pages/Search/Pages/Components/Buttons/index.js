@@ -5,14 +5,10 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import { ApiContext } from '@/contants'
-import { URL_SEARCH_LIST } from '@/ApiList'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
-import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
 
 const Index = (props) => {
-  const api = useContext(ApiContext)
-  const { tabState, setTabState } = useContext(TabStateContext)
+  const { getButtonFunc } = useContext(TabStateContext)
 
   const types = useMemo(
     () => [
@@ -42,13 +38,17 @@ const Index = (props) => {
       {
         label: 'Очистить',
         Component: SecondaryGreyButton,
-        disabled: true,
         key: 'delete',
+      },
+      {
+        label: 'Экспорт',
+        Component: SecondaryGreyButton,
+        disabled: true,
+        key: 'exp',
       },
     ],
     [],
   )
-
 
   const buttons = useMemo(
     () =>
@@ -56,13 +56,14 @@ const Index = (props) => {
         <Component
           className="mb-5 w-64"
           key={key}
+          // id={key}
           {...item}
-          // onClick={useButtonFunc(key)}
+          onClick={getButtonFunc(key)}
         >
           {label}
         </Component>
       )),
-    [types],
+    [getButtonFunc, types],
   )
 
   return <div className="flex flex-col "> {buttons}</div>

@@ -18,8 +18,12 @@ import {
 } from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
-import { TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import { SEARCH_PAGE_PATH, TASK_LIST_ARCHIVE_PATH } from './routePaths'
+import { DocumentItem, TaskNewItem, TaskItem } from './Pages/Tasks/item'
+import {
+  SEARCH_PAGE_PATH,
+  TASK_ITEM_PATH,
+  TASK_LIST_ARCHIVE_PATH,
+} from './routePaths'
 import Search from '@/Pages/Search'
 
 // Апи на получения токена базовое и не требует
@@ -91,7 +95,9 @@ function App() {
 
   return (
     <ApiContext.Provider value={apiInstance}>
-      <TokenContext.Provider value={token}>
+      <TokenContext.Provider
+        value={useMemo(() => ({ token, dropToken }), [dropToken, token])}
+      >
         <Suspense fallback={<div>Загрузка...</div>}>
           <Routes>
             {userState === null ? (
@@ -115,6 +121,10 @@ function App() {
               </>
             ) : (
               <Route element={<Main />}>
+                <Route
+                  path={routePath.DOCUMENT_ITEM_PATH}
+                  element={<DocumentItem />}
+                />
                 <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
                 <Route
                   path={routePath.TASK_LIST_ARCHIVE_PATH}

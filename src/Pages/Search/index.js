@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import useTabItem from '@apsd/components/Logic/Tab/TabItem'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 import { TASK_ITEM_DOCUMENT } from '@/contants'
 import {
   NavigationContainer,
   NavigationItem,
 } from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Documents from "@/Pages/Search/Pages/Documents";
-import Tasks from "@/Pages/Search/Pages/Tasks";
+import Documents from '@/Pages/Search/Pages/Documents'
+import Tasks from '@/Pages/Search/Pages/Tasks'
 
 const Search = (props) => {
   useTabItem({

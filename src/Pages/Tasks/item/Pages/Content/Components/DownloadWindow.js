@@ -22,8 +22,7 @@ import {
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
-import FileInput from '@/components_ocean/Components/Inputs/FileInput'
-import axios from 'axios'
+import FileInput from '@/Components/Inputs/FileInput'
 import { useParams } from 'react-router-dom'
 
 const rules = {}
@@ -35,7 +34,6 @@ const DownloadWindow = ({ onClose, contentId }) => {
   const { id } = useParams()
   const [values, setValues] = useState(initFormValue)
   const api = useContext(ApiContext)
-  const token = useContext(TokenContext)
 
   const onSave = useCallback(async () => {
     const { contentType, comment, regNumber, versionDate, files } = values
@@ -62,24 +60,6 @@ const DownloadWindow = ({ onClose, contentId }) => {
       author: userObject.r_object_id,
     }))
   }, [userObject.r_object_id])
-
-  const uploadFunction = useCallback(
-    async (files, requestParams) => {
-      const FData = new FormData()
-      files.forEach(({ fileData }) => {
-        FData.append('files', fileData)
-      })
-      FData.append('token', token)
-      const { data } = await axios.post(URL_UPLOAD_FILE_VERSION, FData, {
-        ...requestParams,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      return data
-    },
-    [token],
-  )
 
   const fieldMap = useMemo(() => {
     const {
@@ -139,10 +119,9 @@ const DownloadWindow = ({ onClose, contentId }) => {
       {
         id: 'files',
         component: FileInput,
-        uploadFunction: uploadFunction,
       },
     ]
-  }, [api, uploadFunction, userObject])
+  }, [api, userObject])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">

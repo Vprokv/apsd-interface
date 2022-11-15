@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Form from '@apsd/components/Components/Forms'
+import Form from '@Components/Components/Forms'
 
 export const FilterForm = styled(Form)`
   --form--elements_height: 40px;

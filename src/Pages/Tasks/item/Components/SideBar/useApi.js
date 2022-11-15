@@ -29,7 +29,7 @@ const useApi = ({ documentType, values }) => {
   const actions = useCallback(
     (id) =>
       documentType === TASK_ITEM_NEW_DOCUMENT
-        ? () => navigate(`/task/${id}/${type}`)
+        ? () => navigate(`/document/${id}/${type}`)
         : () => null,
     [navigate, documentType, type],
   )

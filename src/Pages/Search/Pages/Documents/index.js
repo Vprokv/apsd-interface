@@ -1,11 +1,17 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useParams } from 'react-router-dom'
 import { ApiContext, SEARCH_PAGE } from '@/contants'
-import useTabItem from '@apsd/components/Logic/Tab/TabItem'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_SEARCH_ATTRIBUTES, URL_TYPE_CONFIG } from '@/ApiList'
 import { documentTypes } from '@/Pages/Search/Pages/constans'
-import useAutoReload from '@apsd/components/Logic/Tab/useAutoReload'
-import Form from '@apsd/components/Components/Forms'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import Form from '@Components/Components/Forms'
 import Titles from '../Components/Titles'
 import Buttons from '../Components/Buttons'
 import SearchFields from '@/Pages/Search/Pages/Components/SearchFields'
@@ -13,6 +19,8 @@ import styled from 'styled-components'
 import CheckBoxes from '@/Pages/Search/Pages/Components/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
+import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
+import Table from '@/Pages/Search/Pages/Components/Table'
 
 export const Cont = styled(Form)`
   margin: 20px 30px 0 30px;
@@ -69,7 +77,7 @@ const Title = ({ value, onInput }) => {
 
 const Documents = (props) => {
   const api = useContext(ApiContext)
-  // const [qq, onInput] = useState('ddt_project_calc_type_doc')
+  const [checked, setChecked] = useState(() => new Map())
 
   const tabItemState = useTabItem({
     stateId: SEARCH_PAGE,
@@ -93,16 +101,31 @@ const Documents = (props) => {
 
   useAutoReload(loadData, tabItemState)
 
+  const getButtonFunc = useButtonFunc({
+    tabState,
+    setTabState,
+  })
+
   return (
-    <TabStateContext.Provider value={{ tabState, setTabState }}>
+    <TabStateContext.Provider
+      value={{
+        tabState,
+        setTabState,
+        value,
+        getButtonFunc,
+        checked,
+        setChecked,
+      }}
+    >
       <div className="flex flex-col">
         <Title value={value} onInput={onInput} />
         <Cont>
-          <Titles data={data} />
-          <SearchFields data={data} />
-          <CheckBoxes data={data} />
+          <Titles />
+          <SearchFields />
+          <CheckBoxes />
           <Buttons />
         </Cont>
+        <Table />
       </div>
     </TabStateContext.Provider>
   )

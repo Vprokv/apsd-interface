@@ -14,10 +14,11 @@ import Links from './Pages/Links'
 import Handouts from './Pages/Handouts'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_DOCUMENT } from '@/contants'
-import { URL_TASK_ITEM } from '@/ApiList'
+import { URL_DOCUMENT_ITEM } from '@/ApiList'
 import Content from './Pages/Content'
 import ApprovalSheet from './Pages/ApprovalSheet'
 import Search from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
+import PropTypes from 'prop-types'
 
 const pages = {
   requisites: {
@@ -68,7 +69,7 @@ const pages = {
   },
 }
 
-function TaskItem(props) {
+function TaskItem({ requestUrl }) {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
 
@@ -89,7 +90,7 @@ function TaskItem(props) {
 
   const loadDataFunction = useMemo(() => {
     return loadDataHelper(async () => {
-      const { data } = await api.post(URL_TASK_ITEM, {
+      const { data } = await api.post(requestUrl, {
         id,
         type,
       })
@@ -150,6 +151,11 @@ function TaskItem(props) {
   )
 }
 
-TaskItem.propTypes = {}
+TaskItem.propTypes = {
+  requestUrl: PropTypes.string,
+}
+TaskItem.defaultProps = {
+  requestUrl: URL_DOCUMENT_ITEM,
+}
 
 export default TaskItem
