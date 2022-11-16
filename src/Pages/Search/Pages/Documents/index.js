@@ -86,7 +86,7 @@ const Documents = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [], value = 'ddt_project_calc_type_doc' },
+    tabState: { value = 'ddt_project_calc_type_doc' },
   } = tabItemState
 
   const loadData = useCallback(async () => {

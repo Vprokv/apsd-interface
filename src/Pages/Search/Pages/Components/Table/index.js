@@ -8,6 +8,10 @@ import { useNavigate } from 'react-router-dom'
 import { TabStateManipulation } from '@apsd/components/Logic/Tab'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import ScrollBar from '@apsd/components/Components/ScrollBar'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import { MultipleContext } from '@/Pages/Search/constans'
 
 const fio = (f, i, o) => `${f} ${i} ${o}`
 
@@ -81,6 +85,7 @@ const Table = () => {
     tabState: { searchValues = [] },
   } = useContext(TabStateContext)
   const { openNewTab } = useContext(TabStateManipulation)
+  const { multiple, setSelected, selected } = useContext(MultipleContext)
 
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
@@ -94,6 +99,22 @@ const Table = () => {
     [handleDoubleClick],
   )
 
+  const plugins = useMemo(
+    () =>
+      multiple
+        ? {
+            selectPlugin: {
+              driver: FlatSelect,
+              component: CheckBox,
+              style: { margin: 'auto 0' },
+              valueKey: 'id',
+              returnObjects: true,
+            },
+          }
+        : {},
+    [multiple],
+  )
+
   return (
     <ScrollBar className="mx-4">
       {!!searchValues.length && (
@@ -102,6 +123,9 @@ const Table = () => {
           headerCellComponent={HeaderCell}
           columns={columns}
           value={searchValues}
+          plugins={plugins}
+          selectState={selected}
+          onSelect={setSelected}
         />
       )}
     </ScrollBar>
