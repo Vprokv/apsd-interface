@@ -21,14 +21,11 @@ const columns = [
   },
 ]
 
-const CreateRelationTable = ({ selected, view }) => {
+const CreateRelationTable = ({ selected, value, setValue }) => {
   console.log(selected, 'selected')
-  const [value, setValue] = useState(selected)
-
-  console.log(value, 'value')
 
   return (
-    view && (
+    !!value?.length && (
       <ListTable
         headerCellComponent={HeaderCell}
         columns={columns}

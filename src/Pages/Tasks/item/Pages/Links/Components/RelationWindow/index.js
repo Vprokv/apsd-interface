@@ -14,7 +14,7 @@ import Button, {
   SecondaryBlueButton,
 } from '@/Components/Button'
 import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
-import {StateContext} from '@/Pages/Tasks/item/Pages/Links/constans'
+import { StateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const pages = [
   {

@@ -7,8 +7,8 @@ import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/Relat
 import { StateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const InsideDocument = (props) => {
-  const [selected, setSelected] = useState([])
-  const [view, setView] = useState(false)
+  const [selected, setSelected] = useState()
+  const [value, setValue] = useState([])
   const close = useContext(StateContext)
 
   return (
@@ -20,13 +20,13 @@ const InsideDocument = (props) => {
             setSelected={setSelected}
             selected={selected}
           />
-          <CreateRelationTable selected={selected} view={view} />
+          <CreateRelationTable selected={selected} value={value} />
         </ScrollBar>
       </div>
       <UnderButtons
         leftFunc={close}
         rightLabel="Добавить связь"
-        rightFunc={useCallback(() => setView(true), [setView])}
+        rightFunc={useCallback(() => setValue(selected), [selected])}
       />
     </>
   )
