@@ -417,7 +417,6 @@ const OrgStructureWindowWrapper = ({
     })
 
     const data = content.map(AddUserOptionsFullName)
-    console.log(data, 'data')
 
     setModalWindowOptions(data)
   }, [api, filter, pagination.paginationState, sort])

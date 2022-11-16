@@ -23,6 +23,7 @@ import Input from '@/Components/Fields/Input'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { SaveContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 const fields = [
   {
@@ -53,8 +54,6 @@ const DocumentEAXD = (props) => {
   const [filter, setFilter] = useState({})
   const [search, setSearch] = useState('')
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
-  const setSave = useContext(SaveContext)
-  console.log(setSave, 'setSave')
 
   const onClick = useCallback(() => {
     const { data } = api.post(URL_CONTENT_SEARCH, {
@@ -196,28 +195,26 @@ const DocumentEAXD = (props) => {
     })
   }, [api, filter, id, type, r_object_id, dss_user_name])
 
-  const clearState = useCallback(() => {
-    setSearch('')
-    setFilter({})
-  }, [])
-
-  useEffect(() => {
-    setSave({ create, clearState })
-  }, [setSave, create, clearState])
-
   return (
-    <div className="flex flex-col my-4">
-      <TableForm>
-        <div className="flex items-center font-size-14 px-4">Штрихкод ЕЭХД</div>
-        <Input value={search} onInput={setSearch} />
-        <div className="w-64 mr-auto">
-          <SecondaryBlueButton onClick={onClick} className="w-64">
-            Искать
-          </SecondaryBlueButton>
+    <>
+      <div className="flex flex-col overflow-hidden h-full">
+        <div className="flex flex-col my-4">
+          <TableForm>
+            <div className="flex items-center font-size-14 px-4">
+              Штрихкод ЕЭХД
+            </div>
+            <Input value={search} onInput={setSearch} />
+            <div className="w-64 mr-auto">
+              <SecondaryBlueButton onClick={onClick} className="w-64">
+                Искать
+              </SecondaryBlueButton>
+            </div>
+          </TableForm>
+          {disabledFields}
         </div>
-      </TableForm>
-      {disabledFields}
-    </div>
+      </div>
+      <UnderButtons rightLabel="Связать" rightFunc={create} />
+    </>
   )
 }
 

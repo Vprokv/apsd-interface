@@ -14,7 +14,7 @@ import Button, {
   SecondaryBlueButton,
 } from '@/Components/Button'
 import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
-import { SaveContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import { StateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const pages = [
   {
@@ -25,7 +25,7 @@ const pages = [
   },
   {
     label: 'Внутренние документы',
-    path: 'insideDocuments',
+    path: 'insideDocuments/*',
     fieldKey: 'search/insideDocuments',
     Component: InsideDocument,
   },
@@ -68,10 +68,7 @@ const Search = () => {
       <NavigationContainer>{headers}</NavigationContainer>
       <Routes>
         {routes}
-        <Route
-          path="search"
-          element={<Navigate to={'search/files'} replace />}
-        />
+        <Route path="*" element={<Navigate to={'files'} replace />} />
       </Routes>
     </div>
   )
@@ -98,7 +95,7 @@ const LinksWindow = () => {
   console.log(save, 'save')
 
   return (
-    <SaveContext.Provider value={setSave}>
+    <StateContext.Provider value={changeModalState(false)}>
       <div className="flex items-center ml-auto ">
         <SecondaryBlueButton onClick={changeModalState(true)} className="mr-2 ">
           Связать
@@ -111,23 +108,9 @@ const LinksWindow = () => {
           <div className="flex flex-col overflow-hidden h-full">
             <Search save={onSave} />
           </div>
-          <div className="flex items-center justify-end mt-8">
-            <Button
-              className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-              onClick={changeModalState(false)}
-            >
-              Закрыть
-            </Button>
-            <LoadableBaseButton
-              className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-              onClick={onSave}
-            >
-              Сохранить
-            </LoadableBaseButton>
-          </div>
         </CreateLinkComponent>
       </div>
-    </SaveContext.Provider>
+    </StateContext.Provider>
   )
 }
 

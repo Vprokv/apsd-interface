@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import FileInput from '@/Components/Inputs/FileInput'
 import Option from '@Components/Components/Inputs/FileInput/Option'
@@ -13,6 +13,7 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
+import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
@@ -103,6 +104,7 @@ const Files = (props) => {
           headerCellComponent={HeaderCell}
         />
       </ScrollBar>
+      <UnderButtons rightLabel="Cвязать" />
     </div>
   )
 }

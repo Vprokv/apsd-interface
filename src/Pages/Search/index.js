@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ITEM_DOCUMENT } from '@/contants'
@@ -9,8 +9,9 @@ import {
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Documents from '@/Pages/Search/Pages/Documents'
 import Tasks from '@/Pages/Search/Pages/Tasks'
+import { MultipleContext } from '@/Pages/Search/constans'
 
-const Search = (props) => {
+export const SearchComponent = ({ multiple, setSelected, selected }) => {
   useTabItem({
     setTabName: useCallback(() => 'Поиск', []),
     stateId: ITEM_DOCUMENT,
@@ -53,8 +54,7 @@ const Search = (props) => {
   )
 
   return (
-    <div className="flex-container w-full overflow-hidden">
-      <div className=" text-3xl font-medium ml-4 my-4">Расширенный поиск</div>
+    <MultipleContext.Provider value={{ multiple, setSelected, selected }}>
       <NavigationContainer>{headers}</NavigationContainer>
       <div className="flex h-full w-full overflow-hidden">
         {!!routes?.length && (
@@ -64,6 +64,32 @@ const Search = (props) => {
           </Routes>
         )}
       </div>
+    </MultipleContext.Provider>
+  )
+}
+
+SearchComponent.defaultProps = {
+  multiple: false,
+  setSelected: () => null,
+  selected: [],
+}
+
+SearchComponent.propTypes = {
+  multiple: PropTypes.bool,
+  setSelected: PropTypes.func,
+  selected: PropTypes.array,
+}
+
+const Search = () => {
+  useTabItem({
+    setTabName: useCallback(() => 'Поиск', []),
+    stateId: ITEM_DOCUMENT,
+  })
+
+  return (
+    <div className="flex-container w-full overflow-hidden">
+      <div className=" text-3xl font-medium ml-4 my-4">Расширенный поиск</div>
+      <SearchComponent />
     </div>
   )
 }
