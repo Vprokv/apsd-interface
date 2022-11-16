@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import BaseButton, { LoadableButton } from '@Components/Components/Button'
 
 const button = styled(BaseButton)``
+
 export default button
 
 export const SecondaryBlueButton = styled(BaseButton)`

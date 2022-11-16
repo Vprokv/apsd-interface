@@ -144,7 +144,9 @@ function TaskList() {
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => navigate(`/task/${id}/${type}`),
+    ({ taskId, type }) =>
+      () =>
+        navigate(`/task/${taskId}/${type}`),
     [navigate],
   )
 

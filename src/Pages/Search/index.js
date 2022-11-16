@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { TASK_ITEM_DOCUMENT } from '@/contants'
+import { ITEM_DOCUMENT } from '@/contants'
 import {
   NavigationContainer,
   NavigationItem,
@@ -13,7 +13,7 @@ import Tasks from '@/Pages/Search/Pages/Tasks'
 const Search = (props) => {
   useTabItem({
     setTabName: useCallback(() => 'Поиск', []),
-    stateId: TASK_ITEM_DOCUMENT,
+    stateId: ITEM_DOCUMENT,
   })
 
   const pages = useMemo(

@@ -1,0 +1,36 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { LoadableBaseButton } from '@/Components/Button'
+
+const DocumentActions = ({ documentActions }) => (
+  <>
+    {documentActions.map(({ key, caption, handler, icon }) => (
+      <LoadableBaseButton
+        key={key}
+        className="font-weight-light"
+        onClick={handler}
+      >
+        <div className="flex items-center">
+          <img src={icon} alt="" className="mr-2" />
+          <div className="break-words font-size-12 whitespace-pre-line text-left">
+            {caption}
+          </div>
+        </div>
+      </LoadableBaseButton>
+    ))}
+  </>
+)
+
+DocumentActions.propTypes = {
+  documentActions: PropTypes.arrayOf({
+    key: PropTypes.string.isRequired,
+    captions: PropTypes.string.isRequired,
+    handler: PropTypes.func.isRequired,
+    icon: PropTypes.string.isRequired,
+  }),
+}
+
+DocumentActions.defaultProps = {
+  documentActions: [],
+}
+export default React.memo(DocumentActions)

@@ -1,10 +1,16 @@
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
-import Input from '@Components/Components/Inputs/Input'
 
 export const FilterForm = styled(Form)`
   --form--elements_height: 32px;
   display: grid;
   grid-template-columns: 200px 200px 200px;
   grid-column-gap: 0.5rem;
+`
+
+export const SidebarContainer = styled.div`
+  width: 12.5rem;
+  border-right: 2px solid var(--separator);
+  padding: 1rem 0.2rem;
+  height: 100%;
 `

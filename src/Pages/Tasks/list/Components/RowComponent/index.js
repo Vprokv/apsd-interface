@@ -2,16 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GridContainer } from './styles'
 
-const RowComponent = ({
-  className,
-  children,
-  style,
-  onDoubleClick,
-  value: { id, type },
-}) => (
+const RowComponent = ({ className, children, style, onDoubleClick, value }) => (
   <GridContainer
-    onDoubleClick={onDoubleClick(id, type)}
-    id={id}
+    onDoubleClick={onDoubleClick(value)}
     className={className}
     style={style}
   >

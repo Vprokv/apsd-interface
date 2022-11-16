@@ -1,3 +1,3 @@
-export { default as DocumentItem } from './item'
-export { default as TaskNewItem } from './newItem'
-export { default as TaskItem } from './task'
+export { default as DocumentItem } from './Document'
+export { default as TaskNewItem } from './NewDocument'
+export { default as TaskItem } from './Task'

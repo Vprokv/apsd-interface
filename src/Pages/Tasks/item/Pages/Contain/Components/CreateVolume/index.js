@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, DocumentTypeContext } from '@/contants'
+import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import Button, { LoadableSecondaryBlueButton } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
@@ -12,6 +12,7 @@ import angleIcon from '@/Icons/angleIcon'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { NestedButton } from '../../styles'
+import { DocumentTypeContext } from '../../../../constants'
 
 const CreateVolume = ({
   className,
