@@ -85,7 +85,9 @@ const ArchiveList = () => {
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => openNewTab(navigate(`/document/${id}/${type}`)),
+    ({ id, type }) =>
+      () =>
+        openNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openNewTab],
   )
   const tabItemState = useTabItem({

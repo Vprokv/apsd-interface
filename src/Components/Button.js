@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import BaseButton, { LoadableButton } from '@Components/Components/Button'
 
 const button = styled(BaseButton)``
+
 export default button
 
 export const SecondaryBlueButton = styled(BaseButton)`
@@ -56,4 +57,9 @@ export const ButtonForIcon = styled.button`
   border: 1px solid var(--separator);
   box-sizing: border-box;
   border-radius: 6px;
+
+  &:disabled {
+    background: var(--separator);
+    color: var(--text-secondary);
+  }
 `
