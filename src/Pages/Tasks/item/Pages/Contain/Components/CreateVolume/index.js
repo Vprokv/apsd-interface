@@ -1,8 +1,8 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
-import Button, { LoadableSecondaryBlueButton } from '@/Components/Button'
+import Button  from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { URL_DOCUMENT_APSD_CREATION_OPTIONS } from '@/ApiList'
@@ -14,11 +14,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { NestedButton } from '../../styles'
 import { DocumentTypeContext } from '../../../../constants'
 
-const CreateVolume = ({
-  className,
-  parent: { id: parentId, name: parentName },
-  setChange,
-}) => {
+const CreateVolume = ({ addVolumeState }) => {
   const documentType = useContext(DocumentTypeContext)
   const {
     tabState: { data: { values: { dss_description } } = {} },
@@ -31,12 +27,24 @@ const CreateVolume = ({
   const [open, setOpenState] = useState(false)
   const [entities, setEntities] = useState([])
   const [selected, setSelected] = useState({})
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenState(nextState)
+
+  const handleCancel = useCallback(() => {
+    if (addVolumeState.onCancel) {
+      addVolumeState.onCancel()
+    }
+    setOpenState(false)
+  }, [addVolumeState])
+
+  const handleClose = useCallback(
+    (data) => {
+      if (addVolumeState.onCreate) {
+        addVolumeState.onCreate(data)
+      }
+      setOpenState(false)
     },
-    [],
+    [addVolumeState],
   )
+
   const openModalWindow = useCallback(async () => {
     const {
       data: { children },
@@ -44,10 +52,17 @@ const CreateVolume = ({
       classificationName: 'Том',
     })
     setEntities(children)
-    changeModalState(true)()
-  }, [api, changeModalState])
+    setOpenState(true)
+  }, [api])
+
+  useEffect(() => {
+    if (addVolumeState.row) {
+      openModalWindow()
+    }
+  }, [addVolumeState, openModalWindow])
 
   const handleClick = useCallback(async () => {
+    const { row: { id: parentId, name: parentName } = {} } = addVolumeState
     const { id: docTypeId, typeName } = selected
     openNewTab(`/task/new/${docTypeId}/${typeName}`, {
       values: {
@@ -65,19 +80,9 @@ const CreateVolume = ({
         },
       },
     })
-    setChange()
-    changeModalState(false)()
+    handleClose()
     setSelected({})
-  }, [
-    selected,
-    openNewTab,
-    id,
-    parentId,
-    dss_description,
-    parentName,
-    setChange,
-    changeModalState,
-  ])
+  }, [addVolumeState, selected, openNewTab, id, dss_description, handleClose])
 
   const renderEntities = useCallback(
     (level = 1) =>
@@ -134,47 +139,40 @@ const CreateVolume = ({
   )
 
   return (
-    <>
-      <LoadableSecondaryBlueButton
-        className={className}
-        onClick={openModalWindow}
-        disabled={!parentId}
-      >
-        Том
-      </LoadableSecondaryBlueButton>
-      <StandardSizeModalWindow
-        title="Выбор разделов титула"
-        open={open}
-        onClose={changeModalState(false)}
-      >
-        <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
-        <div className="flex items-center justify-end">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-            onClick={changeModalState(false)}
-          >
-            Отменить
-          </Button>
-          <Button
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-            onClick={handleClick}
-          >
-            Выбрать
-          </Button>
-        </div>
-      </StandardSizeModalWindow>
-    </>
+    <StandardSizeModalWindow
+      title="Выбор разделов титула"
+      open={open}
+      onClose={handleCancel}
+    >
+      <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
+      <div className="flex items-center justify-end">
+        <Button
+          className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
+          onClick={handleCancel}
+        >
+          Отменить
+        </Button>
+        <Button
+          className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
+          onClick={handleClick}
+        >
+          Выбрать
+        </Button>
+      </div>
+    </StandardSizeModalWindow>
   )
 }
 
 CreateVolume.propTypes = {
-  className: PropTypes.string,
-  parent: PropTypes.object,
+  addVolumeState: PropTypes.shape({
+    onCreate: PropTypes.func,
+    onCancel: PropTypes.func,
+    row: PropTypes.object,
+  }),
 }
 
 CreateVolume.defaultProps = {
-  className: '',
-  parent: {},
+  addVolumeState: {},
 }
 
 export default CreateVolume

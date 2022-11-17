@@ -1,7 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { URL_ENTITY_LIST, URL_TITLE_CONTAIN, URL_TITLE_CONTAIN_DEPARTMENT } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_TITLE_CONTAIN,
+  URL_TITLE_CONTAIN_DEPARTMENT,
+} from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
@@ -11,11 +15,7 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  ButtonForIcon,
-  LoadableSecondaryBlueButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
@@ -107,13 +107,15 @@ const Contain = () => {
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
   const [selectState, setSelectState] = useState([])
+  const [addDepartmentState, setAddDepartmentState] = useState({})
+  const [addVolumeState, setAddVolumeState] = useState({})
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
   })
   const {
     setTabState,
-    tabState: { data, change },
+    tabState: { data },
   } = tabItemState
 
   const loadData = useCallback(
@@ -124,18 +126,45 @@ const Contain = () => {
       })
       return data
     },
-    [api, id, change],
+    [api, id],
   )
 
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
+  const containActions = useMemo(
+    () => ({
+      addDepartment: (id) =>
+        new Promise((resolve, reject) => {
+          setAddDepartmentState({
+            onCreate: () => {
+              resolve()
+              setAddDepartmentState({})
+            },
+            onCancel: () => {
+              reject()
+              setAddDepartmentState({})
+            },
+            id,
+          })
+        }),
+      addVolume: (row) =>
+        new Promise((resolve, reject) => {
+          setAddVolumeState({
+            onCreate: () => {
+              resolve()
+              setAddVolumeState({})
+            },
+            onCancel: () => {
+              reject()
+              setAddVolumeState({})
+            },
+            row,
+          })
+        }),
+      loadData,
+    }),
+    [loadData],
   )
 
-  useAutoReload(loadData, tabItemState)
+  const fetchData = useAutoReload(loadData, tabItemState)
 
   const fields = useMemo(
     () => [
@@ -164,12 +193,8 @@ const Contain = () => {
     [setTabState],
   )
 
-  const openModalWindow = useCallback(() => {
-
-  }, [])
-
   return (
-    <LoadContainChildrenContext.Provider value={loadData}>
+    <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
         <div className="flex items-center form-element-sizes-32 w-full mb-4">
           <FilterForm
@@ -180,23 +205,11 @@ const Contain = () => {
             inputWrapper={EmptyInputWrapper}
           />
           <div className="flex items-center ml-auto">
-            <LoadableSecondaryBlueButton
-              setChange={setChange}
-              onClick={openModalWindow}
-              parentId={selectState[0]?.id ?? selectState[0] ?? null}
-            >
-              Раздел
-            </LoadableSecondaryBlueButton>
             <CreateTitleDepartment
               className="mr-2"
-              setChange={setChange}
-              parentId={selectState[0]?.id ?? selectState[0] ?? null}
+              addDepartmentState={addDepartmentState}
             />
-            <CreateVolume
-              className="mr-2"
-              parent={selectState[0]}
-              setChange={setChange}
-            />
+            <CreateVolume className="mr-2" addVolumeState={addVolumeState} />
             <SecondaryBlueButton className="mr-2" disabled>
               Связь
             </SecondaryBlueButton>
@@ -204,7 +217,7 @@ const Contain = () => {
               <EditVolume selected={selectState[0]} />
               <DeleteContain
                 selected={selectState[0] ?? {}}
-                setChange={setChange}
+                setChange={fetchData}
                 setSelectState={setSelectState}
               />
               <ButtonForIcon className="mr-2">
@@ -217,7 +230,6 @@ const Contain = () => {
           </div>
         </div>
         <ListTable
-          key={change}
           plugins={plugins}
           headerCellComponent={HeaderCell}
           columns={columns}
