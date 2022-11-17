@@ -14,11 +14,13 @@ import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import {StateContext} from "@/Pages/Tasks/item/Pages/Links/constans";
 
 const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
   const { id } = useParams()
   const api = useContext(ApiContext)
+  const close = useContext(StateContext)
   const [files, setFiles] = useState([])
   const onFileInput = useCallback(
     (file) => {
@@ -128,7 +130,7 @@ const Files = (props) => {
           headerCellComponent={HeaderCell}
         />
       </ScrollBar>
-      <UnderButtons rightLabel="Cвязать" rightFunc={save} />
+      <UnderButtons leftFunc={close} rightLabel="Cвязать" rightFunc={save} />
     </div>
   )
 }

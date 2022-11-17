@@ -22,7 +22,7 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import Input from '@/Components/Fields/Input'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import { SaveContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import {SaveContext, StateContext} from '@/Pages/Tasks/item/Pages/Links/constans'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 const fields = [
@@ -54,6 +54,7 @@ const DocumentEAXD = (props) => {
   const [filter, setFilter] = useState({})
   const [search, setSearch] = useState('')
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
+  const close = useContext(StateContext)
 
   const onClick = useCallback(() => {
     const { data } = api.post(URL_CONTENT_SEARCH, {
@@ -213,7 +214,7 @@ const DocumentEAXD = (props) => {
           {disabledFields}
         </div>
       </div>
-      <UnderButtons rightLabel="Связать" rightFunc={create} />
+      <UnderButtons leftFunc={close} rightLabel="Связать" rightFunc={create} />
     </>
   )
 }
