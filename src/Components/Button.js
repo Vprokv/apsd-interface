@@ -57,4 +57,9 @@ export const ButtonForIcon = styled.button`
   border: 1px solid var(--separator);
   box-sizing: border-box;
   border-radius: 6px;
+
+  &:disabled {
+    background: var(--separator);
+    color: var(--text-secondary);
+  }
 `

@@ -14,11 +14,13 @@ import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import {StateContext} from "@/Pages/Tasks/item/Pages/Links/constans";
 
 const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
   const { id } = useParams()
   const api = useContext(ApiContext)
+  const close = useContext(StateContext)
   const [files, setFiles] = useState([])
   const onFileInput = useCallback(
     (file) => {
@@ -26,10 +28,11 @@ const Files = (props) => {
     },
     [files],
   )
+
   const save = useCallback(() => {
     api.post(URL_LINK_CREATE, {
-      relatedFiles: files.map(
-        ({ file: { dsc_content }, ...documentPayload }) => ({
+      linkObjects: files.map(
+        ({ file: [{ dsc_content }], ...documentPayload }) => ({
           parentId: id,
           contentId: dsc_content,
           authorEmpl: userObject.r_object_id,
@@ -90,6 +93,29 @@ const Files = (props) => {
         },
         sizes: 170,
       },
+      {
+        label: 'Тип связи',
+        id: 'linkType',
+        style: {
+          alignItems: 'center',
+          marginRight: '0.5rem',
+        },
+        component: (props) => (
+          <LoadableSelect
+            {...props}
+            valueKey="r_object_id"
+            labelKey="dss_name"
+            placeholder="Тип файла"
+            loadFunction={async () => {
+              const { data } = await api.post(URL_ENTITY_LIST, {
+                type: 'ddt_dict_link_type',
+              })
+              return data
+            }}
+          />
+        ),
+        sizes: 170,
+      },
     ],
     [api],
   )
@@ -104,7 +130,7 @@ const Files = (props) => {
           headerCellComponent={HeaderCell}
         />
       </ScrollBar>
-      <UnderButtons rightLabel="Cвязать" />
+      <UnderButtons leftFunc={close} rightLabel="Cвязать" rightFunc={save} />
     </div>
   )
 }

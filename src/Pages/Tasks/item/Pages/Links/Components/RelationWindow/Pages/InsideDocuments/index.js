@@ -35,11 +35,9 @@ const InsideDocument = (props) => {
     [comment, setComment],
   )
 
-  console.log(value, 'value')
-
   const linkObjects = useMemo(
     () =>
-      value.map(({ id, type, values: { dss_reg_number }, valuesCustom }) => {
+      value.map(({ id, type, valuesCustom }) => {
         return {
           parentId,
           childId: id,
@@ -61,6 +59,9 @@ const InsideDocument = (props) => {
     await api.post(URL_LINK_CREATE, { linkObjects })
   }, [api, linkObjects])
 
+  const onSelect = useCallback(() => setValue(selected), [selected])
+  const clear = useCallback(() => setValue([]), [])
+
   return (
     <StateRelationContext.Provider
       value={{ linkType, onLink, comment, onComment }}
@@ -79,11 +80,11 @@ const InsideDocument = (props) => {
         <UnderButtons
           leftFunc={close}
           rightLabel="Добавить связь"
-          rightFunc={useCallback(() => setValue(selected), [selected])}
+          rightFunc={onSelect}
         />
       ) : (
         <UnderButtons
-          leftFunc={useCallback(() => setValue([]), [])}
+          leftFunc={clear}
           leftLabel="Вернуться назад"
           rightLabel="Связать"
           rightFunc={onCreate}

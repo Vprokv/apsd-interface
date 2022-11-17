@@ -32,7 +32,4 @@ export const PRESENT_DATE_FORMAT = 'DD.MM.YYYY'
 
 export const DATE_FORMAT_DD_MM_YYYY_HH_mm_ss = 'DD.MM.YYYY HH:mm:ss'
 
-// export const EditVersion = React.createContext({
-//   state: {},
-//   onChange: () => null
-// })
+export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)

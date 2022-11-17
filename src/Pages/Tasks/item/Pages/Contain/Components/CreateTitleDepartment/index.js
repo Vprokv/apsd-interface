@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import Button, {
@@ -18,18 +18,32 @@ import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDep
 import { useParams } from 'react-router-dom'
 import { NestedButton } from '../../styles'
 
-const CreateTitleDepartment = ({ className, setChange, parentId }) => {
+const CreateTitleDepartment = ({ className, addDepartmentState }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
   const [openTitle, setOpenTitleState] = useState(false)
   const [entities, setEntities] = useState([])
   const [selected, setSelected] = useState(null)
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenState(nextState)
+  const changeModalState = useCallback((nextState) => {
+    setOpenState(nextState)
+  }, [])
+
+  const handleCancel = useCallback(() => {
+    if (addDepartmentState.onCancel) {
+      addDepartmentState.onCancel()
+    }
+    changeModalState(false)
+  }, [addDepartmentState, changeModalState])
+
+  const handleClose = useCallback(
+    (data) => {
+      if (addDepartmentState.onCreate) {
+        addDepartmentState.onCreate(data)
+      }
+      changeModalState(false)
     },
-    [],
+    [addDepartmentState, changeModalState],
   )
 
   const changeModalStateTitle = useCallback(
@@ -42,19 +56,24 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
   const openModalWindow = useCallback(async () => {
     const { data } = await api.post(URL_TITLE_CONTAIN_DEPARTMENT)
     setEntities(data)
-    changeModalState(true)()
+    changeModalState(true)
   }, [api, changeModalState])
 
+  useEffect(() => {
+    if (addDepartmentState.id) {
+      openModalWindow()
+    }
+  }, [addDepartmentState, openModalWindow])
+
   const handleClick = useCallback(async () => {
-    await api.post(URL_TITLE_CONTAIN_CREATE, {
+    const { data } = await api.post(URL_TITLE_CONTAIN_CREATE, {
       titleId: id,
       partId: selected,
-      parentId,
+      parentId: addDepartmentState.id,
     })
     setSelected(null)
-    setChange()
-    changeModalState(false)()
-  }, [api, id, selected, parentId, setChange, changeModalState])
+    handleClose(data)
+  }, [api, id, selected, addDepartmentState.id, handleClose])
 
   const renderEntities = useCallback(
     (level = 1) =>
@@ -122,13 +141,13 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
       <StandardSizeModalWindow
         title="Выбор разделов титула"
         open={open}
-        onClose={changeModalState(false)}
+        onClose={handleCancel}
       >
         <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
         <div className="flex ml-auto">
           <Button
             className="bg-form-input-color flex items-center w-60 rounded-lg justify-center"
-            onClick={changeModalState(false)}
+            onClick={handleCancel}
           >
             Отменить
           </Button>
@@ -139,11 +158,10 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
             Создать новый
           </LoadableBaseButton>
           <NewTitle
-            setChange={setChange}
             open={openTitle}
             onClose={changeModalStateTitle(false)}
-            parentId={parentId}
-            closeParent={changeModalState(false)}
+            parentId={addDepartmentState.id}
+            closeParent={handleClose}
           />
           <LoadableBaseButton
             className="ml-2 text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
@@ -159,12 +177,15 @@ const CreateTitleDepartment = ({ className, setChange, parentId }) => {
 
 CreateTitleDepartment.propTypes = {
   className: PropTypes.string,
-  setChange: PropTypes.func,
-  parentId: PropTypes.oneOfType([PropTypes.string, PropTypes.oneOf([null])]),
+  addDepartmentState: PropTypes.shape({
+    onCreate: PropTypes.func,
+    onCancel: PropTypes.func,
+    id: PropTypes.string,
+  }),
 }
 
 CreateTitleDepartment.defaultProps = {
-  parentId: null,
+  addDepartmentState: {},
   className: '',
 }
 

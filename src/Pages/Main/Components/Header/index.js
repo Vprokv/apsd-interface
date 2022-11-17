@@ -34,10 +34,10 @@ const Header = () => {
         <Icon icon={doubleShevronIcon} />
       </button>
       <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2.5">
+        <Search />
         <ButtonForIcon>
           <Icon icon={settingsIcon} />
         </ButtonForIcon>
-        <Search />
         <ButtonForIcon>
           <Icon icon={notificationIcon} />
         </ButtonForIcon>
@@ -52,7 +52,9 @@ const Header = () => {
           type="button"
           className="flex items-center"
         >
-          <Avatar className="mr-2" src={tempImg} />
+          <div className="rounded-full border-solid border-white border-2 mr-2 w-12 h-12 flex items-center justify-center">
+            <img className="w-10 h-10 rounded-full" src={tempImg} />
+          </div>
           <Icon icon={angleIcon} size={10} />
           {contextMenuState && (
             <ContextMenu onClose={closeContextMenu} width={240}>

@@ -73,7 +73,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
   )
 
   return (
-    <DocumentTypeContext.Provider value={ITEM_DOCUMENT}>
+    <DocumentTypeContext.Provider value={TASK_ITEM_NEW_DOCUMENT}>
       <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
         <SidebarContainer>
           <DocumentActions documentActions={wrappedDocumentActions} />

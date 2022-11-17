@@ -14,23 +14,22 @@ export const MiniModalWindow = styled(ModalWindow)`
   margin: auto;
 `
 
-const NewTitle = ({ onClose, parentId, closeParent, setChange, open }) => {
+const NewTitle = ({ onClose, parentId, closeParent, open }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [value, onInput] = useState('')
 
   const handleClick = useCallback(async () => {
-    await api.post(URL_TITLE_CONTAIN_SAVE, {
+    const { data } = await api.post(URL_TITLE_CONTAIN_SAVE, {
       titleId: id,
       parentId,
       name: value,
       code: value,
     })
     onInput('')
-    setChange()
     onClose()
-    closeParent()
-  }, [api, id, parentId, value, setChange, onClose, closeParent])
+    closeParent(data)
+  }, [api, id, parentId, value, onClose, closeParent])
 
   return (
     <MiniModalWindow
@@ -66,10 +65,14 @@ const NewTitle = ({ onClose, parentId, closeParent, setChange, open }) => {
 }
 
 NewTitle.propTypes = {
-  onClose: PropTypes.func,
-  closeParent: PropTypes.func,
-  setChange: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
+  closeParent: PropTypes.func.isRequired,
   parentId: PropTypes.string,
   open: PropTypes.bool,
+}
+
+NewTitle.defaultProps = {
+  parentId: undefined,
+  open: false,
 }
 export default NewTitle
