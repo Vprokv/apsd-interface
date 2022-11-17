@@ -14,12 +14,19 @@ import { LoadContainChildrenContext } from '../../constants'
 import ContextMenu from '@/components_ocean/Components/ContextMenu'
 import { StyledContextMenu, StyledItem } from './style'
 import Button from '@/Components/Button'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 
 const LeafContainer = styled.div`
   padding-left: ${({ subRow }) => subRow * 15}px;
 `
 
-const Leaf = ({ ParentValue, children, className, onInput }) => {
+const Leaf = ({
+  ParentValue,
+  children,
+  className,
+  onInput,
+  ParentValue: { tomId, type },
+}) => {
   const {
     valueKey,
     defaultExpandAll,
@@ -27,6 +34,7 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
     state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
     onChange,
   } = useContext(TreeStateContext)
+  const { openNewTab } = useContext(TabStateManipulation)
   const { loadData, addDepartment, addVolume } = useContext(
     LoadContainChildrenContext,
   )
@@ -106,6 +114,8 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
     valueKey,
   ])
 
+  const edit = useCallback(() => openNewTab(`/document/${tomId}/${type}`), [])
+
   return (
     <LeafContainer subRow={subRow} className={`${className} flex items-center`}>
       {ParentValue.expand ? (
@@ -147,24 +157,20 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
         {open && (
           <ContextMenu width={240} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
-              <StyledItem className="mb-3 cursor-pointer">
-                Передать состав титула
-              </StyledItem>
-              <StyledItem className="mb-3 cursor-pointer opacity-50">
+              <StyledItem className="mb-3">Передать состав титула</StyledItem>
+              <StyledItem className="mb-3 opacity-50">
                 Утвердить состав титула
               </StyledItem>
-              <StyledItem className="mb-3 cursor-pointer">
-                Экспорт данных
-              </StyledItem>
-              <StyledItem
-                className="mb-3 cursor-pointer"
-                onClick={addSubsection}
-              >
+              <StyledItem className="mb-3">Экспорт данных</StyledItem>
+              {(tomId || type) && (
+                <StyledItem className="mb-3" onClick={edit}>
+                  Редактировать
+                </StyledItem>
+              )}
+              <StyledItem className="mb-3" onClick={addSubsection}>
                 Добавить подраздел
               </StyledItem>
-              <StyledItem className="cursor-pointer" onClick={addTome}>
-                Добавить том
-              </StyledItem>
+              <StyledItem onClick={addTome}>Добавить том</StyledItem>
             </StyledContextMenu>
           </ContextMenu>
         )}

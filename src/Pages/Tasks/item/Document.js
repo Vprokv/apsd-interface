@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import Document from './Components/Layout'
+import Layout from './Components/Layout'
 import {
   URL_BUSINESS_DOCUMENT_RECALL,
   URL_CONTENT_SEND_EEHD,
@@ -33,7 +33,7 @@ import { SidebarContainer } from './styles'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
 
-const Task = () => {
+const Document = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [message, setMessage] = useState('')
@@ -122,11 +122,11 @@ const Task = () => {
 
   return (
     <DocumentTypeContext.Provider value={ITEM_DOCUMENT}>
-      <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
+      <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
         <SidebarContainer>
           <DocumentActions documentActions={wrappedDocumentActions} />
         </SidebarContainer>
-      </Document>
+      </Layout>
       <FormWindow open={message} onClose={closeModalWindow}>
         <div className="text-center mt-4 mb-12">{message}</div>
         <SecondaryGreyButton
@@ -141,4 +141,4 @@ const Task = () => {
   )
 }
 
-export default Task
+export default Document

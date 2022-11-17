@@ -1,11 +1,7 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import {
-  URL_ENTITY_LIST,
-  URL_TITLE_CONTAIN,
-  URL_TITLE_CONTAIN_DEPARTMENT,
-} from '@/ApiList'
+import { URL_ENTITY_LIST, URL_TITLE_CONTAIN } from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
@@ -26,7 +22,6 @@ import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 import CreateVolume from './Components/CreateVolume'
-import EditVolume from '@/Pages/Tasks/item/Pages/Contain/Components/EditVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 import DateCell from './Components/DateCell'
 
@@ -214,7 +209,6 @@ const Contain = () => {
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
-              <EditVolume selected={selectState[0]} />
               <DeleteContain
                 selected={selectState[0] ?? {}}
                 setChange={fetchData}
