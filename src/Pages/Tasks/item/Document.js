@@ -25,8 +25,8 @@ import {
   defaultPages,
   DocumentTypeContext,
 } from './constants'
-import DefaultIcon from './Icons/DefaultIcon.svg'
-import SaveIcon from './Icons/SaveIcon.svg'
+import DefaultIcon from './icons/DefaultIcon.svg'
+import SaveIcon from './icons/SaveIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'

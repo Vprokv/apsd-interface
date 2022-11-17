@@ -9,8 +9,8 @@ import Handouts from '@/Pages/Tasks/item/Pages/Handouts'
 import ApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet'
 import React from 'react'
 import { ITEM_DOCUMENT } from '@/contants'
-import PrintIcon from './Icons/PrintIcon.svg'
-import UploadDoc from './Icons/UploadDoc.svg'
+import PrintIcon from './icons/PrintIcon.svg'
+import UploadDoc from './icons/UploadDoc.svg'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 

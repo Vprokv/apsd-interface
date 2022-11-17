@@ -10,7 +10,7 @@ import useDocumentTabs from './Hooks/useDocumentTabs'
 import { SidebarContainer } from '@/Pages/Tasks/item/styles'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import useDocumentActions from './Hooks/useDocumentActions'
-import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
+import SaveIcon from '@/Pages/Tasks/item/icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 export const NewTaskItem = ({ classificationId, type }) => {
