@@ -21,6 +21,8 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
+import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
+import DownloadIcon from '@/Icons/DownloadIcon'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -28,7 +30,8 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'id',
+    valueKey: 'contentId',
+    returnObjects: true,
   },
 }
 
@@ -77,6 +80,35 @@ const columns = [
   },
 ]
 
+const searchValues = [
+  {
+    linkId: 'asasa',
+    contentId: 'axdsdsasa',
+    linkType: 'Во исполнение',
+    stageName: 'asdfsvsasa',
+    linkDate: '18.11.2022',
+    authorFullName: 'asasas',
+    description: 'asasdsdcda',
+    regNumber: 'ascsdcasa',
+    regDate: 'assdcsdcdasa',
+    documentTypeLabel: 'Договор 2',
+    comment: 'csdcsdc',
+  },
+  {
+    linkId: 'asqwqwqwqasa',
+    contentId: 'asasa',
+    linkType: 'Подписание',
+    stageName: 'asasa',
+    linkDate: '18.11.2022',
+    authorFullName: 'asasa',
+    description: 'asasa',
+    regNumber: 'asasa',
+    regDate: 'asasa',
+    documentTypeLabel: 'Договор',
+    comment: 'asasa',
+  },
+]
+
 const Links = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -99,7 +131,7 @@ const Links = () => {
       filter,
     })
 
-    return data
+    return searchValues
   }, [api, id, type, change])
 
   useAutoReload(loadData, tabItemState)
@@ -156,15 +188,14 @@ const Links = () => {
         <div className="flex items-center ml-auto">
           <LinksWindow />
           <ButtonForIcon className="mr-2 color-text-secondary">
-            <Icon icon={EditIcon} />
+            <Icon icon={DownloadIcon} />
           </ButtonForIcon>
+          <EditLinksWindow value={selectState} />
           <ButtonForIcon
             onClick={onDelete}
-            className="mr-2 color-text-secondary"
+            disabled={!selectState.length}
+            className="color-text-secondary"
           >
-            <Icon icon={EditIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon className="color-text-secondary">
             <Icon icon={DeleteIcon} />
           </ButtonForIcon>
         </div>

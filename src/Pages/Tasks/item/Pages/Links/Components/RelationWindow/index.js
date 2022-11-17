@@ -76,7 +76,6 @@ const Search = () => {
 
 const LinksWindow = () => {
   const [open, setOpenState] = useState(false)
-  const [save, setSave] = useState({})
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -84,15 +83,6 @@ const LinksWindow = () => {
     },
     [],
   )
-
-  const onSave = useCallback(async () => {
-    const { create, clearState } = save
-    await create()
-    clearState()
-    changeModalState(false)()
-  }, [changeModalState, save])
-
-  console.log(save, 'save')
 
   return (
     <StateContext.Provider value={changeModalState(false)}>
@@ -106,7 +96,7 @@ const LinksWindow = () => {
           onClose={changeModalState(false)}
         >
           <div className="flex flex-col overflow-hidden h-full">
-            <Search save={onSave} />
+            <Search />
           </div>
         </CreateLinkComponent>
       </div>
