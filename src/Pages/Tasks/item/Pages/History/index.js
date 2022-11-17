@@ -6,7 +6,7 @@ import { FilterForm } from '../../styles'
 import DatePickerComponent from '@/Components/Inputs/DatePicker'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ApiContext, TASK_ITEM_DOCUMENT, TASK_ITEM_HISTORY } from '@/contants'
+import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_HISTORY } from '@/contants'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ListTable from '@Components/Components/Tables/ListTable'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
@@ -99,7 +99,7 @@ const History = () => {
   const {
     tabState: { data: documentData },
   } = useTabItem({
-    stateId: TASK_ITEM_DOCUMENT,
+    stateId: ITEM_DOCUMENT,
   })
 
   const sort = useMemo(() => {

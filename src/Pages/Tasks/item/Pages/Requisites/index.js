@@ -1,13 +1,10 @@
-import { useCallback, useContext, useEffect, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import ScrollBar from '@Components/Components/ScrollBar'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { RequisitesForm } from './styles'
 import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
-import {
-  ApiContext,
-  DocumentTypeContext,
-  TASK_ITEM_REQUISITES,
-} from '@/contants'
+import { ApiContext, TASK_ITEM_REQUISITES } from '@/contants'
+import { DocumentTypeContext } from '../../constants'
 import { useParams } from 'react-router-dom'
 import {
   NoFieldType,
@@ -17,17 +14,18 @@ import {
   visibleRules,
 } from './rules'
 import { CustomValuesContext } from './constants'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const Requisites = () => {
   const { type } = useParams()
   const documentType = useContext(DocumentTypeContext)
   const api = useContext(ApiContext)
-  const {
-    tabState: { data },
-    setTabState,
-  } = useTabItem({
+  const tabItemState = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
   })
+  const {
+    tabState: { data },
+  } = tabItemState
   const {
     tabState: { data: documentData, data: { values, valuesCustom } = {} },
     setTabState: setDocumentState,
@@ -46,12 +44,14 @@ const Requisites = () => {
     [documentData, setDocumentState],
   )
 
-  useEffect(async () => {
+  const loadData = useCallback(async () => {
     const {
       data: { children },
     } = await api.post(`/sedo/type/config/${type}/design`)
-    setTabState({ data: children })
-  }, [api, setTabState, type])
+    return children
+  }, [api, type])
+
+  useAutoReload(loadData, tabItemState)
 
   const parsedDesign = useMemo(
     () =>
