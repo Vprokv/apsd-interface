@@ -12,7 +12,7 @@ import PdfBadgeIcon from '@/Icons/PdfBadgeIcon'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import { LoadContainChildrenContext } from '../../constants'
 import ContextMenu from '@/components_ocean/Components/ContextMenu'
-import { StyledContextMenu } from './style'
+import { StyledContextMenu, StyledItem } from './style'
 
 const LeafContainer = styled.div`
   padding-left: ${({ subRow }) => subRow * 15}px;
@@ -49,6 +49,17 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
   const closeContextMenu = useCallback(() => {
     setOpen(false)
   }, [])
+
+  const addSubsection = useCallback(async () => {
+    const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+    await loadChildren(id)
+  }, [])
+
+  const addTome = useCallback(async () => {
+    const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+    await loadChildren(id)
+  }, [])
+
   return (
     <LeafContainer subRow={subRow} className={`${className} flex items-center`}>
       {ParentValue.expand ? (
@@ -88,11 +99,24 @@ const Leaf = ({ ParentValue, children, className, onInput }) => {
         {open && (
           <ContextMenu width={240} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
-              <div className="mb-3 cursor-pointer">Передать состав титула</div>
-              <div className="mb-3 cursor-pointer opacity-50">
+              <StyledItem className="mb-3 cursor-pointer">
+                Передать состав титула
+              </StyledItem>
+              <StyledItem className="mb-3 cursor-pointer opacity-50">
                 Утвердить состав титула
-              </div>
-              <div className="cursor-pointer">Экспорт данных</div>
+              </StyledItem>
+              <StyledItem className="mb-3 cursor-pointer">
+                Экспорт данных
+              </StyledItem>
+              <StyledItem
+                className="mb-3 cursor-pointer"
+                onClick={addSubsection}
+              >
+                Добавить подраздел
+              </StyledItem>
+              <StyledItem className="cursor-pointer" onClick={addTome}>
+                Добавить том
+              </StyledItem>
             </StyledContextMenu>
           </ContextMenu>
         )}

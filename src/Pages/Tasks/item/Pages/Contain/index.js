@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { URL_ENTITY_LIST, URL_TITLE_CONTAIN } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_TITLE_CONTAIN, URL_TITLE_CONTAIN_DEPARTMENT } from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
@@ -11,7 +11,11 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  LoadableSecondaryBlueButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
@@ -46,6 +50,7 @@ const columns = [
   {
     id: 'name',
     label: 'Наименование',
+    sizes: 300,
   },
   {
     id: 'linkName',
@@ -159,6 +164,10 @@ const Contain = () => {
     [setTabState],
   )
 
+  const openModalWindow = useCallback(() => {
+
+  }, [])
+
   return (
     <LoadContainChildrenContext.Provider value={loadData}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -171,6 +180,13 @@ const Contain = () => {
             inputWrapper={EmptyInputWrapper}
           />
           <div className="flex items-center ml-auto">
+            <LoadableSecondaryBlueButton
+              setChange={setChange}
+              onClick={openModalWindow}
+              parentId={selectState[0]?.id ?? selectState[0] ?? null}
+            >
+              Раздел
+            </LoadableSecondaryBlueButton>
             <CreateTitleDepartment
               className="mr-2"
               setChange={setChange}

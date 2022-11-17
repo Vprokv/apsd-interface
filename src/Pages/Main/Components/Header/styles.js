@@ -8,20 +8,13 @@ export const IconsGroup = styled.div`
     top: 0;
     bottom: 0;
     width: 2px;
-    background-color: var(--light-blue);
+    background-color: var(--white);
+    opacity: 0.5;
   }
 `
 
-export const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid var(--blue-1);
-  outline: 2px solid #fff;
-`
-
 export const UserContextMenuContainer = styled.div`
-  background: #ffffff;
+  background: var(--white);
   border: 1px solid var(--separator);
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
