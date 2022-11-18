@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom'
 const useDocumentTabs = (documentTabs, pages) =>
   useMemo(() => {
     if (!documentTabs) {
-      return {}
+      return { headers: [], routes: [], defaultPath: pages[0].path }
     }
     const tabs = documentTabs.reduce((acc, item) => {
       acc[item.name] = item
