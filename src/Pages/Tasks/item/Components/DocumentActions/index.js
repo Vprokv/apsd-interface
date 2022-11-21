@@ -7,7 +7,9 @@ const DocumentActions = ({ documentActions }) => (
     {documentActions.map(({ key, caption, handler, icon }) => (
       <LoadableBaseButton
         key={key}
-        className="font-weight-light"
+        className={`font-weight-light ${
+          caption === 'Вернуть на доработку' ? 'mb-8' : ''
+        } `}
         onClick={handler}
       >
         <div className="flex items-center">

@@ -14,6 +14,8 @@ import UploadDoc from './Icons/UploadDoc.svg'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
+export const DocumentIdContext = React.createContext(null)
+
 export const defaultPages = [
   {
     path: 'requisites',

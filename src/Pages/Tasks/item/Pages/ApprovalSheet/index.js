@@ -28,11 +28,13 @@ import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Co
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import log from 'tailwindcss/lib/util/log'
+import { DocumentIdContext } from '../../constants'
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [filterValue, setFilterValue] = useState({})
+  const documentId = useContext(DocumentIdContext)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -53,7 +55,7 @@ const ApprovalSheet = (props) => {
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
-      id,
+      id: documentId,
       type,
     })
 
