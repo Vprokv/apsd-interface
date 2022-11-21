@@ -21,14 +21,16 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
 import Table from '@/Pages/Search/Pages/Components/Table'
+import SearchOperator from '@/Pages/Search/Pages/Components/SearchOperator'
 
 export const Cont = styled(Form)`
   margin: 20px 30px 0 30px;
   display: grid;
-  grid-row-gap: 20px;
+  //grid-row-gap: 20px;
+  grid-gap: 20px;
   align-items: flex-start;
+  width: 100%;
   grid-template-columns: 1fr 3fr 1fr 1fr;
-  //grid-row-gap: 15px;
 `
 
 const Title = ({ value, onInput }) => {
@@ -77,7 +79,8 @@ const Title = ({ value, onInput }) => {
 
 const Documents = (props) => {
   const api = useContext(ApiContext)
-  const [checked, setChecked] = useState(() => new Map())
+  // const [checked, setChecked] = useState(() => new Map())
+  const [operator, setOperator] = useState(() => new Map())
 
   const tabItemState = useTabItem({
     stateId: SEARCH_PAGE,
@@ -102,6 +105,7 @@ const Documents = (props) => {
   useAutoReload(loadData, tabItemState)
 
   const getButtonFunc = useButtonFunc({
+    operator,
     tabState,
     setTabState,
   })
@@ -113,8 +117,10 @@ const Documents = (props) => {
         setTabState,
         value,
         getButtonFunc,
-        checked,
-        setChecked,
+        // checked,
+        // setChecked,
+        operator,
+        setOperator,
       }}
     >
       <div className="flex flex-col">
@@ -122,7 +128,8 @@ const Documents = (props) => {
         <Cont>
           <Titles />
           <SearchFields />
-          <CheckBoxes />
+          {/*<CheckBoxes />*/}
+          <SearchOperator />
           <Buttons />
         </Cont>
         <Table />

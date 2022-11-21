@@ -18,12 +18,6 @@ const Index = (props) => {
         key: 'search',
       },
       {
-        label: 'Добавить условие',
-        Component: SecondaryBlueButton,
-        disabled: true,
-        key: 'add',
-      },
-      {
         label: 'Применить шаблон',
         Component: SecondaryBlueButton,
         disabled: true,
@@ -66,7 +60,7 @@ const Index = (props) => {
     [getButtonFunc, types],
   )
 
-  return <div className="flex flex-col "> {buttons}</div>
+  return <div className="flex flex-col ml-auto"> {buttons}</div>
 }
 
 Index.propTypes = {}
