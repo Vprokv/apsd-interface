@@ -39,14 +39,7 @@ const SearchFields = () => {
             dss_attr_name,
             dss_component_type,
             dss_component_reference,
-            dss_default_search_operator,
-            dsb_equals_search_operator,
-            dsb_or_search_operator,
-            dsb_not_equal_search_operator,
-            dsb_contains_search_operator,
-            dsb_and_search_operator,
-            dsb_starts_with_search_operator,
-            multiple,
+            // multiple,
             range,
           },
         ) => {
@@ -57,7 +50,7 @@ const SearchFields = () => {
             component: getField(dss_component_type),
             id: dss_attr_name,
             placeholder: dss_attr_label,
-            multiple,
+            multiple: false,
             range,
           })
 

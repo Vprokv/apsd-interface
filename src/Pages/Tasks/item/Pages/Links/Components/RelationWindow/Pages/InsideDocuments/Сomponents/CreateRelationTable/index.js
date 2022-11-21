@@ -1,61 +1,94 @@
-import React, { useCallback, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
-import DocumentDescription from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable/Components/DocumentDescription'
-import LinkType from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable/Components/Input'
-import { StateRelationContext } from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/constans'
-import Comment from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable/Components/Comment'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import LoadableSelect from '@/Components/Inputs/Select'
+import { URL_ENTITY_LIST } from '@/ApiList'
+import { ApiContext } from '@/contants'
+import TextArea from '@Components/Components/Inputs/TextArea'
 
-const columns = [
-  {
-    id: 'childId',
-    label: 'ID Документа',
-    sizes: 200,
-    component: ({
-      ParentValue: {
-        id,
-        // values: { id },
+const CreateRelationTable = ({ value, setLink }) => {
+  const api = useContext(ApiContext)
+
+  const columns = useMemo(
+    () => [
+      {
+        id: 'regNumber',
+        label: 'Шифр/Рег.номер',
+        sizes: 250,
+        component: ({
+          ParentValue: {
+            values: { dss_reg_number = '', r_creation_date },
+          },
+        }) => (
+          <BaseCell
+            className="h-12"
+            value={`${dss_reg_number} от ${r_creation_date}`}
+          />
+        ),
       },
-    }) => <BaseCell value={id} />,
-  },
-  {
-    id: 'regNumber',
-    label: 'Шифр/Рег.номер',
-    sizes: 200,
-    component: ({
-      ParentValue: {
-        values: { dss_reg_number = '' },
+      {
+        id: 'description',
+        className: 'flex items-center',
+        label: 'Краткое содержание',
+        component: ({
+          ParentValue: {
+            valuesCustom: { dss_description },
+          },
+        }) => <BaseCell className="h-12" value={dss_description} />,
+        sizes: 215,
       },
-    }) => <BaseCell value={dss_reg_number} disabled />,
-  },
-  {
-    id: 'linkType',
-    label: 'Тип связи',
-    sizes: 250,
-    component: LinkType,
-  },
+      {
+        label: 'Тип связи',
+        id: 'linkType',
+        style: {
+          alignItems: 'center',
+          marginRight: '0.5rem',
+        },
+        component: (props) => (
+          <LoadableSelect
+            {...props}
+            valueKey="r_object_id"
+            className="form-element-sizes-32"
+            labelKey="dss_name"
+            placeholder="Выберите тип связи"
+            loadFunction={async () => {
+              const { data } = await api.post(URL_ENTITY_LIST, {
+                type: 'ddt_dict_link_type',
+              })
+              return data
+            }}
+          />
+        ),
+        sizes: 220,
+      },
+      {
+        id: 'comment',
+        label: 'Комментарий',
+        className: 'h-12',
+        component: TextArea,
+        style: {
+          alignItems: 'center',
+          marginRight: '0.5rem',
+        },
+        sizes: 200,
+      },
+    ],
+    [api],
+  )
 
-  {
-    id: 'comment',
-    label: 'Комментарий',
-    sizes: 250,
-    component: Comment,
-  },
-]
-
-const CreateRelationTable = ({ value }) => {
   return (
-    <>
+    <div className=" w-full my-4">
       {!!value?.length && (
         <ListTable
+          onInput={setLink}
           headerCellComponent={HeaderCell}
           columns={columns}
           value={value}
         />
       )}
-    </>
+    </div>
   )
 }
 

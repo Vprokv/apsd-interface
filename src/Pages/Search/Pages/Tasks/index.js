@@ -13,6 +13,7 @@ import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
 import { URL_SEARCH_ATTRIBUTES } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useParams } from 'react-router-dom'
+import SearchOperator from "@/Pages/Search/Pages/Components/SearchOperator";
 
 const pageData = [
   {
@@ -82,7 +83,7 @@ const Tasks = () => {
         <Cont>
           <Titles />
           <SearchFields />
-          <CheckBoxes />
+          <SearchOperator />
           <Buttons />
         </Cont>
         <Table />

@@ -10,34 +10,32 @@ import { useParams } from 'react-router-dom'
 import { ApiContext } from '@/contants'
 import { URL_LINK_CREATE } from '@/ApiList'
 
-const InsideDocument = (props) => {
+const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
+  value ? (
+    <UnderButtons
+      leftFunc={close}
+      rightLabel="Добавить связь"
+      rightFunc={onSelect}
+    />
+  ) : (
+    <UnderButtons
+      leftFunc={clear}
+      leftLabel="Вернуться назад"
+      rightLabel="Связать"
+      rightFunc={onCreate}
+    />
+  )
+
+const InsideDocument = () => {
   const api = useContext(ApiContext)
   const [selected, setSelected] = useState()
   const { id: parentId } = useParams()
   const [value, setValue] = useState([])
   const close = useContext(StateContext)
 
-  const [linkType, setLinkType] = useState(() => new Map())
-  const [comment, setComment] = useState(() => new Map())
-
-  const onLink = useCallback(
-    (val) => (a) => {
-      const prevChecked = new Map(linkType)
-      return setLinkType(prevChecked.set(val, a))
-    },
-    [linkType, setLinkType],
-  )
-  const onComment = useCallback(
-    (val) => (a) => {
-      const prevChecked = new Map(comment)
-      return setComment(prevChecked.set(val, a))
-    },
-    [comment, setComment],
-  )
-
   const linkObjects = useMemo(
     () =>
-      value.map(({ id, type, valuesCustom }) => {
+      value.map(({ id, comment, linkType, type, valuesCustom }) => {
         return {
           parentId,
           childId: id,
@@ -48,11 +46,11 @@ const InsideDocument = (props) => {
           authorEmpl: valuesCustom.dsid_author_empl.emplId,
           authorName: valuesCustom.dsid_author_empl.userName,
           stageName: valuesCustom.status,
-          comment: comment.has(id) && comment.get(id),
-          linkType: linkType.has(id) && linkType.get(id),
+          comment,
+          linkType,
         }
       }),
-    [value, parentId, comment, linkType],
+    [parentId, value],
   )
 
   const onCreate = useCallback(async () => {
@@ -63,34 +61,31 @@ const InsideDocument = (props) => {
   const clear = useCallback(() => setValue([]), [])
 
   return (
-    <StateRelationContext.Provider
-      value={{ linkType, onLink, comment, onComment }}
-    >
+    <>
       <div className="flex flex-col overflow-hidden h-full">
-        <ScrollBar className="my-4">
-          <SearchComponent
-            multiple={true}
-            setSelected={setSelected}
-            selected={selected}
-          />
-          <CreateRelationTable selected={selected} value={value} />
-        </ScrollBar>
+        {!value.length && (
+          <ScrollBar className="my-4">
+            <SearchComponent
+              multiple={true}
+              setSelected={setSelected}
+              selected={selected}
+            />
+          </ScrollBar>
+        )}
+        <CreateRelationTable
+          selected={selected}
+          setLink={setValue}
+          value={value}
+        />
       </div>
-      {!value.length ? (
-        <UnderButtons
-          leftFunc={close}
-          rightLabel="Добавить связь"
-          rightFunc={onSelect}
-        />
-      ) : (
-        <UnderButtons
-          leftFunc={clear}
-          leftLabel="Вернуться назад"
-          rightLabel="Связать"
-          rightFunc={onCreate}
-        />
-      )}
-    </StateRelationContext.Provider>
+      <Buttons
+        value={!value.length}
+        onSelect={onSelect}
+        clear={clear}
+        onCreate={onCreate}
+        close={close}
+      />
+    </>
   )
 }
 

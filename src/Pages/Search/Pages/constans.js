@@ -6,6 +6,8 @@ export const TabStateContext = React.createContext({
     filter: {},
     searchValues: [],
   },
+  operator: new Map(),
+  setOperator: () => null,
   checked: new Map(),
   value: '',
   getButtonFunc: () => () => {},
