@@ -112,7 +112,7 @@ const ApprovalSheet = (props) => {
               {({ isDisplayed, toggleDisplayedFlag }) => (
                 <div className="flex flex-col" key={type}>
                   <LevelStage>
-                    {!!stages.length && (
+                    {!!stages?.length && (
                       <button
                         className="pl-2"
                         type="button"

@@ -11,6 +11,7 @@ import React from 'react'
 import { ITEM_DOCUMENT } from '@/contants'
 import PrintIcon from './Icons/PrintIcon.svg'
 import UploadDoc from './Icons/UploadDoc.svg'
+import Remarks from "@/Pages/Tasks/item/Pages/Remarks";
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
@@ -62,15 +63,20 @@ export const defaultPages = [
     key: 'approval-sheet',
     Component: ApprovalSheet,
   },
+  {
+    path: 'remarks',
+    key: 'remarks',
+    Component: Remarks,
+  },
 ]
 
 export const defaultDocumentHandlers = {
   print_card: {
     icon: PrintIcon,
-    handler: () => alert('не реализованный функционал'),
+    handler: () => alert('Функционал не реализован'),
   },
   export_doc: {
     icon: UploadDoc,
-    handler: () => alert('не реализованный функционал'),
+    handler: () => alert('Функционал не реализован'),
   },
 }
