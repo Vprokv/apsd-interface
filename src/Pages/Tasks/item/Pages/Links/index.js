@@ -39,6 +39,7 @@ const columns = [
   {
     id: 'documentTypeLabel',
     label: 'Документ',
+    className: 'h-10 flex items-center',
     component: BaseCell,
     sizes: 195,
   },
@@ -153,6 +154,7 @@ const Links = () => {
         id: 'authorName',
         component: UserSelect,
         placeholder: 'Автор связи',
+        valueKey: 'userName',
       },
       {
         id: 'linkType',

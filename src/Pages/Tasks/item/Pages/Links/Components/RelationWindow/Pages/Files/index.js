@@ -58,7 +58,7 @@ const Files = (props) => {
           marginRight: '0.5rem',
         },
         component: Input,
-        sizes: 170,
+        sizes: 200,
       },
       {
         label: 'Тип файла',
@@ -72,7 +72,7 @@ const Files = (props) => {
             {...props}
             valueKey="r_object_id"
             labelKey="dss_name"
-            placeholder="Тип файла"
+            placeholder="Выберите тип файла"
             loadFunction={async () => {
               const { data } = await api.post(URL_ENTITY_LIST, {
                 type: 'ddt_dict_type_content',
@@ -81,7 +81,7 @@ const Files = (props) => {
             }}
           />
         ),
-        sizes: 170,
+        sizes: 220,
       },
       {
         id: 'comment',
@@ -91,7 +91,7 @@ const Files = (props) => {
           alignItems: 'center',
           marginRight: '0.5rem',
         },
-        sizes: 170,
+        sizes: 200,
       },
       {
         label: 'Тип связи',
@@ -105,7 +105,7 @@ const Files = (props) => {
             {...props}
             valueKey="r_object_id"
             labelKey="dss_name"
-            placeholder="Тип файла"
+            placeholder="Выберите тип связи"
             loadFunction={async () => {
               const { data } = await api.post(URL_ENTITY_LIST, {
                 type: 'ddt_dict_link_type',
@@ -114,7 +114,7 @@ const Files = (props) => {
             }}
           />
         ),
-        sizes: 170,
+        sizes: 220,
       },
     ],
     [api],

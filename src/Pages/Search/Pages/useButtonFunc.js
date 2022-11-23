@@ -252,7 +252,12 @@ const searchValues = [
   },
 ]
 
-const useButtonFunc = ({ tabState: { filter = {} }, value, setTabState }) => {
+const useButtonFunc = ({
+  tabState: { filter = {} },
+  value,
+  setTabState,
+  operator,
+}) => {
   const api = useContext(ApiContext)
 
   const searchData = useMemo(() => {
@@ -261,7 +266,7 @@ const useButtonFunc = ({ tabState: { filter = {} }, value, setTabState }) => {
       Object.keys(filter).reduce((acc, val) => {
         acc.push({
           attr: val,
-          operator: 'EQ',
+          operator: operator.get(val)?.ID,
           arguments: [filter[val]],
         })
         return acc
@@ -275,9 +280,9 @@ const useButtonFunc = ({ tabState: { filter = {} }, value, setTabState }) => {
   }, [filter, value])
 
   const onSearch = useCallback(async () => {
-    // const { data } = api.post(URL_SEARCH_LIST, searchData)
-    // setTabState({ searchValues: data })
-    setTabState({ searchValues })
+    const { data } = api.post(URL_SEARCH_LIST, searchData)
+    setTabState({ searchValues: data })
+    // setTabState({ searchValues })
   }, [api, searchData, setTabState])
 
   const onRemove = useCallback(() => setTabState({ filter: {} }), [setTabState])
