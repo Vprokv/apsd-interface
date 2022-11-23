@@ -108,7 +108,7 @@ ArchiveItem.defaultProps = {
   level: 0,
   parentName: 123123,
   buttonComponent: OthersLevelsArchiveButton,
-  childrenComponent: OthersLevelsArchiveButton,
+  childrenComponent: ArchiveItem,
 }
 
 // кастим сектионИд в ид

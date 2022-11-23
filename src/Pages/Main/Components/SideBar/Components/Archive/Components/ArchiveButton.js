@@ -30,7 +30,7 @@ export const SecondArchiveButton = ({
   sectionId,
 }) => {
   const handleClick = useCallback(() => {
-    onOpenNewTab(`/task/list/${parentName}/${name}/${sectionId}`)()
+    onOpenNewTab(`/task/list/${parentName}/${name}/${sectionId}`)
   }, [onOpenNewTab, parentName, name, sectionId])
   return <ArchiveButton name={name} onClick={handleClick} />
 }
@@ -54,7 +54,7 @@ export const OthersLevelsArchiveButton = ({
       `/task/list/${parentName}/${name}/${id}${
         sectionId ? `/${sectionId}` : ''
       }`,
-    )()
+    )
   }, [onOpenNewTab, parentName, name, id, sectionId])
   return <ArchiveButton name={name} onClick={handleClick} />
 }
