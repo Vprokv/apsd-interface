@@ -1,12 +1,14 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import LoadableSelect from '@/Components/Inputs/Select'
 import Input from '@/Components/Fields/Input'
 import { LinkContainer } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
+import { URL_ENTITY_LIST } from '@/ApiList'
+import { ApiContext } from '@/contants'
 
 const Field = ({ onInput, prevValue }) => {
-  console.log(prevValue, 'prevValue')
+  const api = useContext(ApiContext)
 
   return (
     <LinkContainer>
@@ -15,6 +17,14 @@ const Field = ({ onInput, prevValue }) => {
         id="id"
         value={prevValue?.id}
         onInput={onInput('id')}
+        valueKey="r_object_id"
+        labelKey="dss_name"
+        loadFunction={async () => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_ndt',
+          })
+          return data
+        }}
       />
       <Input
         id="comment"

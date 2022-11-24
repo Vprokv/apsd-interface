@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_APPROVAL_SHEET, URL_REMARK_LIST } from '@/ApiList'
+import {
+  URL_APPROVAL_SHEET,
+  URL_ENTITY_LIST,
+  URL_REMARK_DELETE,
+  URL_REMARK_LIST,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -28,6 +33,7 @@ import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowCompone
 import { Button } from '@Components/Components/Button'
 import editIcon from '@/Icons/editIcon'
 import deleteIcon from '@/Icons/deleteIcon'
+import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 
 const mockData = [
   {
@@ -42,8 +48,8 @@ const mockData = [
     remarkCreationDate: 'date', //- дата создания замечания
     remarkType: 'Внутреннее', //- тип замечания (наименование)
     setRemark: 'Не включено в свод', //- свод замечаний
-    answerMemberFullName: 'Пилипчук Р.П.', //- кто ответил на замечание
-    answerMemberPosition: 'Начальник службы', //- должность
+    // answerMemberFullName: 'Пилипчук Р.П.', //- кто ответил на замечание
+    // answerMemberPosition: 'Начальник службы', //- должность
     answerText: 'string', //- текст ответа
     answerCreationDate: 'string', //- дата ответа
     ndtLinks: [
@@ -61,6 +67,7 @@ const Remarks = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
+  const [selectState, setSelectState] = useState()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -70,8 +77,6 @@ const Remarks = (props) => {
     setTabState,
     tabState: { data = [], change },
   } = tabItemState
-
-  console.log(data, 'data')
 
   const setChange = useCallback(() => {
     const { change } = tabState
@@ -99,12 +104,14 @@ const Remarks = (props) => {
         id: 'statusId',
         component: LoadableSelect,
         placeholder: 'Статус',
-        valueKey: 'dss_name',
+        valueKey: 'r_object_id',
         labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
+        loadFunction: async () => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_status_remark',
+          })
+          return data
+        },
       },
       {
         id: 'authorId',
@@ -120,7 +127,12 @@ const Remarks = (props) => {
     [api],
   )
 
-  const onDelete = useCallback(() => null, [])
+  const onDelete = useCallback(async () => {
+    await api.post(URL_REMARK_DELETE, {
+      remarkIds: selectState,
+    })
+    setChange()
+  }, [api, selectState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -140,14 +152,17 @@ const Remarks = (props) => {
         </div>
       </div>
       {data.map((val, key) => (
-        <RowComponent key={key} {...val}>
+        <RowComponent
+          key={key}
+          selectState={selectState}
+          setSelectState={setSelectState}
+          {...val}
+        >
           <div className="flex h-full items-center">
             <div className="mr-12 font-medium">{val?.stageName}</div>
             <div className="mr-12 w-24">{val?.stageStatus}</div>
             <div className="flex items-center ml-auto">
-              <Button className="color-blue-1">
-                <Icon icon={editIcon} />
-              </Button>
+              <EditRemark {...val} />
               <LoadableBaseButton onClick={onDelete} className="color-blue-1">
                 <Icon icon={deleteIcon} />
               </LoadableBaseButton>
