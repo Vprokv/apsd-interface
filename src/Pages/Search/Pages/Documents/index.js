@@ -54,8 +54,9 @@ const Title = ({ value, onInput }) => {
     return data
   }, [api])
 
-  const input = useMemo(
-    () => (
+  return (
+    <Cont>
+      <div className="flex h-10 font-size-14 items-center">Тип документа</div>
       <LoadableSelect
         placeholder="Выберете тип документа"
         options={options}
@@ -65,14 +66,6 @@ const Title = ({ value, onInput }) => {
         valueKey="typeName"
         labelKey="typeLabel"
       />
-    ),
-    [loadFunction, onInput, options, value],
-  )
-
-  return (
-    <Cont>
-      <div className="flex h-10 font-size-14 items-center">Тип документа</div>
-      {input}
     </Cont>
   )
 }

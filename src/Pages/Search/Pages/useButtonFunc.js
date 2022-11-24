@@ -6,8 +6,8 @@ import log from 'tailwindcss/lib/util/log'
 
 const searchValues = [
   {
-    type: 'ddt_project_calc_type_doc', //- системный тип
-    id: '00xxxxxx00007zvw', //- id документа
+    type: 'ddt_project_calc_type_doc', // - системный тип
+    id: '00xxxxxx00007zvw', // - id документа
     globalId: null,
     values: {
       r_object_id: '0000000200037r0s',
@@ -185,14 +185,14 @@ const searchValues = [
         fullDescription: null,
       },
       r_modifier_name: 'Autotest1',
-      dss_type_label: 'Исходящие документы', //- тип документа
-      dss_description: 'Новое описание', //- описание документа
+      dss_type_label: 'Исходящие документы', // - тип документа
+      dss_description: 'Новое описание', // - описание документа
       dsb_has_resolutions: false,
       dss_addressee_organization: null,
       dsid_dispatch_empl: [],
       dsid_delivery: null,
       dsid_dispatch_sort: null,
-      dss_status_display: 'Новый', //- статус документа
+      dss_status_display: 'Новый', // - статус документа
       dss_document_type: 'ddt_outcoming_type_doc',
       dss_agent_index: ['Автотест3 А. Т. Автотест3 А. Т.'],
       dsb_required_addressee: true,
@@ -200,7 +200,7 @@ const searchValues = [
       dsb_deffered_send: false,
       dsid_classification_display: 'Исходящие документы',
       dss_signer_branch: 'Тестовый филиал ФСК',
-      dss_reg_number: 'ВР-2341', //- регномер
+      dss_reg_number: 'ВР-2341', // - регномер
       dsid_stamp: 'Общего пользования',
       dsb_blank: false,
       dss_home: 'ASUD_FSK',
@@ -253,8 +253,7 @@ const searchValues = [
 ]
 
 const useButtonFunc = ({
-  tabState: { filter = {} },
-  value,
+  tabState: { filter = {}, value },
   setTabState,
   operator,
 }) => {
@@ -266,14 +265,14 @@ const useButtonFunc = ({
       Object.keys(filter).reduce((acc, val) => {
         acc.push({
           attr: val,
-          operator: operator.get(val)?.ID,
+          operator: operator.get(val)?.ID || "CONTAINS",
           arguments: [filter[val]],
         })
         return acc
       }, [])
 
     return {
-      types: value && [value],
+      types: ['ddt_project_calc_type_doc'],
       inVersions: false,
       queryItems,
     }

@@ -1,7 +1,11 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { URL_ENTITY_LIST, URL_TITLE_CONTAIN } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_TITLE_CONTAIN,
+  URL_TITLE_CONTAIN_DELETE,
+} from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
@@ -124,6 +128,50 @@ const Contain = () => {
     [api, id],
   )
 
+  const deleteData = useCallback(async () => {
+    await Promise.all(
+      selectState.map(({ id }) =>
+        api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
+      ),
+    )
+    const removeDeletedDocs = (acc, { id, children, ...rest }) => {
+      if (selectState.every((r) => r.id !== id)) {
+        acc.push({
+          id,
+          ...rest,
+          children: children
+            ? children.reduce(removeDeletedDocs, [])
+            : undefined,
+        })
+      }
+
+      return acc
+    }
+    setTabState({
+      data: data.reduce(removeDeletedDocs, []),
+    })
+    setSelectState([])
+  }, [api, data, selectState, setTabState])
+
+  const addDepartment = useCallback(async () => {
+    setAddDepartmentState({
+      onCreate: async () => {
+        const newData = await loadData()
+        setTabState({
+          data: newData.map((nD) => {
+            const oldRow = data.find((r) => r.id === nD.id)
+
+            return oldRow ? { ...oldRow, ...nD } : nD
+          }),
+        })
+        setAddDepartmentState({})
+      },
+      onCancel: () => {
+        setAddDepartmentState({})
+      },
+    })
+  }, [data, loadData, setTabState])
+
   const containActions = useMemo(
     () => ({
       addDepartment: (id) =>
@@ -159,7 +207,7 @@ const Contain = () => {
     [loadData],
   )
 
-  const fetchData = useAutoReload(loadData, tabItemState)
+  useAutoReload(loadData, tabItemState)
 
   const fields = useMemo(
     () => [
@@ -203,6 +251,7 @@ const Contain = () => {
             <CreateTitleDepartment
               className="mr-2"
               addDepartmentState={addDepartmentState}
+              onAddDepartment={addDepartment}
             />
             <CreateVolume className="mr-2" addVolumeState={addVolumeState} />
             <SecondaryBlueButton className="mr-2" disabled>
@@ -210,9 +259,8 @@ const Contain = () => {
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
               <DeleteContain
-                selected={selectState[0] ?? {}}
-                setChange={fetchData}
-                setSelectState={setSelectState}
+                selectState={selectState}
+                onDeleteData={deleteData}
               />
               <ButtonForIcon className="mr-2">
                 <Icon icon={SortIcon} />

@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// const API_URL = 'http://10.20.56.47/'
 const API_URL = 'http://192.168.42.105/'
 // const API_URL =
 //   process.env.NODE_ENV !== 'production'
