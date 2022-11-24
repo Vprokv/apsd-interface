@@ -137,8 +137,6 @@ const Links = () => {
 
   useAutoReload(loadData, tabItemState)
 
-  console.log(filter, 'filter')
-
   const fields = useMemo(
     () => [
       {

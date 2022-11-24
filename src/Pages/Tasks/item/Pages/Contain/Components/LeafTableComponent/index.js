@@ -90,29 +90,14 @@ const Leaf = ({
 
   const addTome = useCallback(async () => {
     try {
-      const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
       closeContextMenu()
       setLoading(true)
       await addVolume(ParentValue)
-      onInput(
-        (await loadData(id)).map((row) => {
-          const oldRow = children.find((r) => r.id === row.id)
-          return oldRow || row
-        }),
-        nestedDataKey,
-      )
+      onInput(undefined, nestedDataKey)
     } finally {
       setLoading(false)
     }
-  }, [
-    ParentValue,
-    addVolume,
-    closeContextMenu,
-    loadData,
-    nestedDataKey,
-    onInput,
-    valueKey,
-  ])
+  }, [ParentValue, addVolume, closeContextMenu, nestedDataKey, onInput])
 
   const edit = useCallback(() => openNewTab(`/document/${tomId}/${type}`), [])
 

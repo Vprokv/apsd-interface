@@ -27,7 +27,6 @@ import {
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
-import log from 'tailwindcss/lib/util/log'
 import { DocumentIdContext } from '../../constants'
 
 const ApprovalSheet = (props) => {
@@ -112,7 +111,7 @@ const ApprovalSheet = (props) => {
               {({ isDisplayed, toggleDisplayedFlag }) => (
                 <div className="flex flex-col" key={type}>
                   <LevelStage>
-                    {!!stages.length && (
+                    {!!stages?.length && (
                       <button
                         className="pl-2"
                         type="button"

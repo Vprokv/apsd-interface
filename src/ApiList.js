@@ -55,6 +55,13 @@ export const URL_LINK_CREATE = '/apsd/link/create'
 export const URL_LINK_DELETE = '/apsd/link/delete'
 export const URL_LINK_UPDATE = '/apsd/link/update'
 
+//REMARK
+export const URL_REMARK_LIST = '/apsd/remark/list'
+export const URL_REMARK_CREATE = '/apsd/remark/create'
+export const URL_REMARK_DELETE = '/apsd/remark/delete'
+export const URL_REMARK_ANSWER = '/apsd/remark/answer'
+export const URL_REMARK_UPDATE = '/apsd/remark/update'
+
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'
 

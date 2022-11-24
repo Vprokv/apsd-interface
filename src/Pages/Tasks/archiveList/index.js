@@ -14,6 +14,7 @@ import { TabStateManipulation } from '@Components/Logic/Tab'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
+import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 
 const columns = [
   {
@@ -48,14 +49,18 @@ const columns = [
     id: 'authorName',
     label: 'Автор',
     className: 'flex items-center h-full',
-    component: BaseCell,
+    component: ({ ParentValue: { authorName, authorPosition } }) => (
+      <BaseSubCell value={authorName} subValue={authorPosition} />
+    ),
     sizes: 200,
   },
   {
     id: 'signerName',
     label: 'Подписант',
     className: 'flex items-center h-full',
-    component: BaseCell,
+    component: ({ ParentValue: { signerName, signerPosition } }) => (
+      <BaseSubCell value={signerName} subValue={signerPosition} />
+    ),
     sizes: 200,
   },
   {
