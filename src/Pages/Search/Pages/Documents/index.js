@@ -24,7 +24,7 @@ import Table from '@/Pages/Search/Pages/Components/Table'
 import SearchOperator from '@/Pages/Search/Pages/Components/SearchOperator'
 
 export const Cont = styled(Form)`
-  margin: 20px 30px 0 30px;
+  margin-top: 20px;
   display: grid;
   //grid-row-gap: 20px;
   grid-gap: 20px;
@@ -42,12 +42,15 @@ const Title = ({ value, onInput }) => {
     },
   ])
 
+  // todo не понятный запрос
+  // не чего не возвращает
   const loadFunction = useCallback(async () => {
     const { data } = await api.post(URL_TYPE_CONFIG, {
-      type: 'documentType',
-      id: 'types',
-      filters: {},
-      sortType: null,
+      // type: 'documentType',
+      // id: 'types',
+      // filters: {},
+      // sortType: null,
+      typeConfig: 'ddt_startup_complex_type_doc',
     })
 
     setOptions(data)
@@ -121,7 +124,7 @@ const Documents = (props) => {
         <Cont>
           <Titles />
           <SearchFields />
-          {/*<CheckBoxes />*/}
+          {/* <CheckBoxes />*/}
           <SearchOperator />
           <Buttons />
         </Cont>

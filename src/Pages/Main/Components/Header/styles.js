@@ -10,6 +10,8 @@ export const IconsGroup = styled.div`
     width: 2px;
     background-color: var(--white);
     opacity: 0.5;
+    height: 38px;
+    margin: auto;
   }
 `
 
