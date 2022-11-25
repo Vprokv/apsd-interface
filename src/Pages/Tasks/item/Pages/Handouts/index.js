@@ -1,7 +1,14 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext, TASK_ITEM_HANDOUTS } from '@/contants'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_ENTITY_LIST, URL_HANDOUTS_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -20,6 +27,8 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import CreateHandoutsWindow from '@/Pages/Tasks/item/Pages/Handouts/Components/CreateHandoutsWindow'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import Pagination from '../../../../../Components/Pagination'
+import usePagination from '../../../../../components_ocean/Logic/usePagination'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -70,6 +79,7 @@ const Handouts = (props) => {
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
   const [selectState, setSelectState] = useState([])
+  const { search } = useLocation()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_HANDOUTS,
@@ -78,45 +88,96 @@ const Handouts = (props) => {
     tabState,
     setTabState,
     tabState: { data = [] },
+    loadDataHelper,
+    shouldReloadDataFlag,
   } = tabItemState
 
-  const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_HANDOUTS_LIST, {
-      documentId: id,
-    })
-    return data
-  }, [api, id])
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: TASK_ITEM_HANDOUTS,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
+  })
 
-  useAutoReload(loadData, tabItemState)
+  const loadDataFunction = useMemo(() => {
+    const { limit, offset } = paginationState
+    return loadDataHelper(async () => {
+      const { data } = await api.post(
+        URL_HANDOUTS_LIST,
+        {
+          documentId: id,
+          filter: {
+            ...filterValue,
+          },
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce(
+                  (acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc.filter[key] = JSON.parse(value)
+                    return acc
+                  },
+                  { filter: {} },
+                )
+            : {}),
+        },
+        {
+          params: {
+            limit,
+            offset,
+            sort: {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            },
+          },
+        },
+      )
+      return data
+    })
+  }, [sortQuery, api, loadDataHelper, paginationState, search, filterValue, id])
+
+  const refLoadDataFunction = useRef(loadDataFunction)
+
+  useEffect(() => {
+    if (
+      shouldReloadDataFlag ||
+      loadDataFunction !== refLoadDataFunction.current
+    ) {
+      loadDataFunction()
+    }
+    refLoadDataFunction.current = loadDataFunction
+  }, [loadDataFunction, shouldReloadDataFlag])
 
   const fields = useMemo(
     () => [
       {
-        id: '1',
+        id: 'departmentName',
         component: LoadableSelect,
         placeholder: 'Место хранение (подразделение)',
         valueKey: 'dss_name',
         labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
+        loadFunction: async () => {
+          const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
+          return data
+        },
       },
       {
-        id: 'query',
+        id: 'comment',
         component: SearchInput,
         placeholder: 'Комментарий',
       },
       {
-        id: '2',
+        id: 'operationId',
         component: LoadableSelect,
         placeholder: 'Тип операции',
         valueKey: 'dss_name',
         labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
+        loadFunction: async () => {
+          const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
+          return data
+        },
       },
     ],
     [],
@@ -159,6 +220,15 @@ const Handouts = (props) => {
         value={data}
         onInput={onTableUpdate}
       />
+      <Pagination
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+      </Pagination>
     </div>
   )
 }

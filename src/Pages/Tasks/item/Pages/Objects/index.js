@@ -12,7 +12,7 @@ import SortCellComponent from '../../../../../Components/ListTableComponents/Sor
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import Select from '../../../../../Components/Inputs/Select'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
 import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
@@ -26,7 +26,8 @@ import filterIcon from '../../../list/icons/filterIcon'
 import editIcon from '../../../../../Icons/editIcon'
 import CreateObjectsWindow from './Components/CreateObjectsWindow'
 import { ButtonForIcon } from '@/Components/Button'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import Pagination from '../../../../../Components/Pagination'
+import usePagination from '../../../../../components_ocean/Logic/usePagination'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -122,6 +123,8 @@ const Objects = (props) => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
+  const { search } = useLocation()
+
   const openCreateObjectsWindow = useCallback(
     () => setCreateObjectsWindow(true),
     [],
@@ -137,17 +140,73 @@ const Objects = (props) => {
 
   const {
     tabState: { data: { technicalObjects = [] } = {} },
+    tabState,
+    loadDataHelper,
+    shouldReloadDataFlag,
+    setTabState,
   } = tabItemState
 
-  const loadDataFunction = useCallback(async () => {
-    const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
-      documentId: id,
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: URL_TECHNICAL_OBJECTS_LIST,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
+  })
+
+  const loadDataFunction = useMemo(() => {
+    const { limit, offset } = paginationState
+    return loadDataHelper(async () => {
+      const { data } = await api.post(
+        URL_TECHNICAL_OBJECTS_LIST,
+        {
+          documentId: id,
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce(
+                  (acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc.filter[key] = JSON.parse(value)
+                    return acc
+                  },
+                  { filter: {} },
+                )
+            : {}),
+        },
+        {
+          params: {
+            limit,
+            offset,
+            // todo для фильтрации которая еще не сделана
+            // "filter": {
+            //   "code" : "string" - фильтр Код
+            //   "type": "string" - фильтр Тип
+            // },
+            sort: {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            },
+          },
+        },
+      )
+      return data
     })
-    return data
-  }, [id, api])
+  }, [sortQuery, api, loadDataHelper, paginationState, search, id])
 
-  useAutoReload(loadDataFunction, tabItemState)
+  const refLoadDataFunction = useRef(loadDataFunction)
 
+  useEffect(() => {
+    if (
+      shouldReloadDataFlag ||
+      loadDataFunction !== refLoadDataFunction.current
+    ) {
+      loadDataFunction()
+    }
+    refLoadDataFunction.current = loadDataFunction
+  }, [loadDataFunction, shouldReloadDataFlag])
+
+  // todo этот код нужен?
   const [a, b] = useState({})
 
   return (
@@ -195,6 +254,15 @@ const Objects = (props) => {
         onSort={onSort}
         valueKey="id"
       />
+      <Pagination
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+      </Pagination>
     </div>
   )
 }

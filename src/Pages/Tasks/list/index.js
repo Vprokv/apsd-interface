@@ -181,7 +181,7 @@ function TaskList() {
       )
       return data
     })
-  }, [sortQuery, api, loadDataHelper, paginationState, search])
+  }, [sortQuery, api, loadDataHelper, paginationState, search, a])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
