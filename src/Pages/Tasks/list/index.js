@@ -44,6 +44,7 @@ import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import Filter from './Components/Filter'
 import { ButtonForIcon } from '@/Components/Button'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -129,10 +130,9 @@ function TaskList() {
     shouldReloadDataFlag,
     loadDataHelper,
     tabState: { data },
-  } = useTabItem({
-    setTabName: useCallback(() => TabNames[search], [search]),
-    stateId: TASK_LIST,
-  })
+  } = useTabItem({ stateId: TASK_LIST })
+
+  useSetTabName(useCallback(() => TabNames[search], [search]))
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
     state: tabState,

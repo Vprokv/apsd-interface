@@ -1,15 +1,10 @@
-import Button, {
-  ButtonForIcon,
-  LoadableBaseButton,
-  LoadableSecondaryBlueButton,
-} from '@/Components/Button'
+import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
+import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
-import { ApiContext } from '@/contants'
-import { URL_TITLE_CONTAIN_DELETE } from '@/ApiList'
 
 export const MiniModalWindow = styled(ModalWindow)`
   width: 28.22%;
@@ -17,8 +12,7 @@ export const MiniModalWindow = styled(ModalWindow)`
   margin: auto;
 `
 
-const DeleteContain = ({ selected: { id }, setChange, setSelectState }) => {
-  const api = useContext(ApiContext)
+const DeleteContain = ({ selectState, onDeleteData }) => {
   const [open, setOpenState] = useState(false)
 
   const changeModalState = useCallback(
@@ -29,18 +23,16 @@ const DeleteContain = ({ selected: { id }, setChange, setSelectState }) => {
   )
 
   const iconClick = useCallback(() => {
-    if (!id) {
+    if (!selectState.length > 0) {
       return
     }
     changeModalState(true)()
-  }, [id, changeModalState])
+  }, [changeModalState, selectState.length])
 
-  const handleClick = useCallback(async () => {
-    await api.post(URL_TITLE_CONTAIN_DELETE, { partId: id })
-    setSelectState([])
-    setChange()
+  const handleConfirm = useCallback(async () => {
+    await onDeleteData()
     changeModalState(false)()
-  }, [changeModalState, id, setChange, api])
+  }, [onDeleteData, changeModalState])
 
   return (
     <>
@@ -65,7 +57,7 @@ const DeleteContain = ({ selected: { id }, setChange, setSelectState }) => {
             </Button>
             <LoadableBaseButton
               className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-              onClick={handleClick}
+              onClick={handleConfirm}
             >
               Да
             </LoadableBaseButton>
@@ -76,6 +68,12 @@ const DeleteContain = ({ selected: { id }, setChange, setSelectState }) => {
   )
 }
 
-DeleteContain.defaultProps = {}
+DeleteContain.defaultProps = {
+  selectState: PropTypes.array,
+  onDeleteData: PropTypes.func.isRequired,
+}
+DeleteContain.defaultProps = {
+  selectState: [],
+}
 
 export default DeleteContain

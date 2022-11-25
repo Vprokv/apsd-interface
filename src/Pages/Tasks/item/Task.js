@@ -16,6 +16,7 @@ import DefaultIcon from './Icons/DefaultIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 const Task = () => {
   const { id } = useParams()
@@ -36,17 +37,21 @@ const Task = () => {
     return data
   }, [api, id])
 
-  const {
-    tabState: { data: { values: { dss_work_number = 'Документ' } = {} } = {} },
-  } = useTabItem({ stateId: ITEM_TASK })
-
   const tabItemState = useTabItem({
-    setTabName: useCallback(() => dss_work_number, [dss_work_number]),
     stateId: ITEM_TASK,
   })
   const {
-    tabState: { data: { documentActions, taskActions, documentTabs } = {} },
+    tabState: {
+      data: {
+        documentActions,
+        taskActions,
+        documentTabs,
+        values: { dss_work_number = 'Документ' } = {},
+      } = {},
+    },
   } = tabItemState
+
+  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
   useAutoReload(loadData, tabItemState)
 
