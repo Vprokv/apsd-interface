@@ -17,21 +17,9 @@ import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
-import PostponeIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/Postpone'
-import OtherIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/Other'
-import ScrollBar from '@Components/Components/ScrollBar'
-import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
-import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
-import angleIcon from '@/Icons/angleIcon'
-import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
-import Tree from '@Components/Components/Tree'
-import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
-import XlsIcon from '@/Icons/XlsIcon'
 import ExportIcon from '@/Icons/ExportIcon'
 import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
-import { Button } from '@Components/Components/Button'
-import editIcon from '@/Icons/editIcon'
 import deleteIcon from '@/Icons/deleteIcon'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 
@@ -47,7 +35,7 @@ const mockData = [
     remarkText: 'Градостроительный кодекс РФ от 18.12.2021', //- текст замечания
     remarkCreationDate: 'date', //- дата создания замечания
     remarkType: 'Внутреннее', //- тип замечания (наименование)
-    setRemark: 'Не включено в свод', //- свод замечаний
+    setRemark: true, //- свод замечаний
     // answerMemberFullName: 'Пилипчук Р.П.', //- кто ответил на замечание
     // answerMemberPosition: 'Начальник службы', //- должность
     answerText: 'string', //- текст ответа
@@ -55,7 +43,7 @@ const mockData = [
     ndtLinks: [
       //- ссылки на НДТ
       {
-        id: 'string', //- id из справочника
+        id: '00xxxxxx0000lvta', //- id из справочника
         name: 'name', //- наименование из справочника
         comment: 'string', // - коммент к ссылке
       },
@@ -91,7 +79,7 @@ const Remarks = (props) => {
     //   documentId: id,
     //   filter,
     // })
-
+    //
     // return data
     return mockData
   }, [api, id, type, change])

@@ -32,13 +32,14 @@ import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnsw
 
 const UserComponent = ({ ParentValue }) => {
   const {
+    itsRemark,
     remarkMemberFullName,
     remarkMemberPosition,
     answerMemberFullName,
     answerMemberPosition,
   } = ParentValue
 
-  return remarkMemberFullName ? (
+  return itsRemark ? (
     <UserCard fio={remarkMemberFullName} position={remarkMemberPosition} />
   ) : answerMemberFullName ? (
     <UserCard fio={answerMemberFullName} position={answerMemberPosition} />

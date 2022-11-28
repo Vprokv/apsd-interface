@@ -17,6 +17,7 @@ import UserComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowCompon
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
+import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 
 const Row = styled.div`
   height: 46px;
@@ -64,7 +65,9 @@ const columns = [
     id: 'remarkText',
     label: 'Значение',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({ ParentValue: { itsRemark, remarkText } }) => (
+      <BaseCell value={itsRemark ? remarkText : ''} />
+    ),
     sizes: 500,
   },
   {
@@ -78,7 +81,17 @@ const columns = [
     id: 'setRemark',
     label: 'Свод замечаний',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({ ParentValue: { setRemark, itsRemark } }) => (
+      <BaseCell
+        value={
+          itsRemark && setRemark
+            ? 'Включено в свод замечаний'
+            : itsRemark && !setRemark
+            ? 'Не включено'
+            : ''
+        }
+      />
+    ),
     sizes: 250,
   },
 ]
@@ -97,6 +110,7 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
 
     return [
       {
+        itsRemark: true,
         remarkMemberFullName,
         number,
         remarkMemberPosition,

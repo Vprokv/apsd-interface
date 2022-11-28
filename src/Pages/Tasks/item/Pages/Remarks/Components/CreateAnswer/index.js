@@ -8,7 +8,6 @@ import Button, {
 import { ApiContext } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect from '@/Components/Inputs/Select'
 import Input from '@/Components/Fields/Input'
@@ -21,8 +20,12 @@ import {
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useParams } from 'react-router-dom'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { TextArea } from '@Components/Components/Inputs/TextArea'
+import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 
-const CreateAnswer = ({ remarkText, number }) => {
+const CreateAnswer = ({ remarkText, remarkId }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
@@ -35,41 +38,60 @@ const CreateAnswer = ({ remarkText, number }) => {
   )
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
 
+  const rules = {
+    solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
+    text: [{ name: VALIDATION_RULE_REQUIRED }],
+  }
+
   const fields = [
     {
       id: 'remarkText',
-      component: Input,
+      component: CustomInput,
       placeholder: 'Введите текст замечания',
+      label: 'Текст замечания',
       disabled: true,
     },
     {
-      id: 'remarkTypeId',
+      id: 'solutionId',
       component: LoadableSelect,
       placeholder: 'Выберите тип',
+      isRequired: false,
+      label: 'Решение',
       valueKey: 'dss_name',
       labelKey: 'dss_name',
       loadFunction: async () => {
         const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_remark_type',
+          type: 'ddt_dict_status_solution',
         })
         return data
       },
     },
     {
       id: 'text',
-      component: Input,
-      placeholder: 'Введите текст замечания',
+      label: 'Текст ответа',
+      isRequired: true,
+      className: '',
+      component: CustomInput,
+      placeholder: 'Введите текст ответа',
     },
   ]
 
   const onSave = useCallback(async () => {
+    // eslint-disable-next-line no-unused-vars
+    const { remarkText, ...other } = filter
     await api.post(URL_REMARK_ANSWER, {
       documentId: id,
       memberId: r_object_id,
       memberName: dss_user_name,
-      ...filter,
+      remarkId,
+      ...other,
     })
-  }, [api, dss_user_name, filter, id, r_object_id])
+  }, [api, dss_user_name, filter, id, r_object_id, remarkId])
+
+  const onClose = useCallback(() => {
+    changeModalState(false)()
+    setFilterValue({ remarkText })
+  }, [changeModalState, remarkText])
 
   return (
     <div>
@@ -79,7 +101,7 @@ const CreateAnswer = ({ remarkText, number }) => {
       <StandardSizeModalWindow
         title="Добавить ответ"
         open={open}
-        onClose={changeModalState(false)}
+        onClose={onClose}
       >
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4">
@@ -88,14 +110,13 @@ const CreateAnswer = ({ remarkText, number }) => {
               fields={fields}
               value={filter}
               onInput={setFilterValue}
-              inputWrapper={EmptyInputWrapper}
+              inputWrapper={InputWrapper}
+              rules={rules}
             />
-            <div className="flex form-element-sizes-40">
-              <LinkNdt links={filter} setLinks={setFilterValue} />
-            </div>
+            <LinkNdt links={filter} setLinks={setFilterValue} />
           </div>
         </div>
-        <UnderButtons leftFunc={changeModalState(false)} rightFunc={onSave} />
+        <UnderButtons leftFunc={onClose} rightFunc={onSave} />
       </StandardSizeModalWindow>
     </div>
   )

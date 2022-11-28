@@ -7,16 +7,17 @@ import Button, {
 } from '@/Components/Button'
 import { ApiContext } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { FilterForm } from './styles'
+import { CustomInput, FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
+import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import Input from '@/Components/Fields/Input'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_CREATE } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useParams } from 'react-router-dom'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 
 const CreateRemark = (props) => {
   const api = useContext(ApiContext)
@@ -36,19 +37,37 @@ const CreateRemark = (props) => {
       id: 'remarkTypeId',
       component: LoadableSelect,
       placeholder: 'Выберите тип',
-      valueKey: 'dss_name',
+      label: 'Тип замечания',
+      valueKey: 'r_object_id',
       labelKey: 'dss_name',
       loadFunction: async () => {
         const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_remark_type',
+          type: 'ddt_dict_type_remark',
         })
         return data
       },
     },
     {
       id: 'text',
-      component: Input,
+      label: 'Текст замечания',
+      component: CustomInput,
       placeholder: 'Введите текст замечания',
+    },
+    {
+      id: 'setRemark',
+      label: 'Свод замечаний',
+      placeholder: 'Выберите замечание',
+      options: [
+        {
+          ID: true,
+          SYS_NAME: 'Включено',
+        },
+        {
+          ID: false,
+          SYS_NAME: 'Не включено',
+        },
+      ],
+      component: Select,
     },
   ]
 
@@ -61,6 +80,11 @@ const CreateRemark = (props) => {
     })
   }, [api, dss_user_name, filter, id, r_object_id])
 
+  const onClose = useCallback(() => {
+    changeModalState(false)()
+    setFilterValue({})
+  }, [changeModalState])
+
   return (
     <div>
       <SecondaryBlueButton onClick={changeModalState(true)}>
@@ -69,7 +93,7 @@ const CreateRemark = (props) => {
       <StandardSizeModalWindow
         title="Добавить замечание"
         open={open}
-        onClose={changeModalState(false)}
+        onClose={onClose}
       >
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4">
@@ -78,21 +102,21 @@ const CreateRemark = (props) => {
               fields={fields}
               value={filter}
               onInput={setFilterValue}
-              inputWrapper={EmptyInputWrapper}
+              inputWrapper={InputWrapper}
             />
-            <div className="flex form-element-sizes-40">
+            <div className="flex">
               <LinkNdt links={filter} setLinks={setFilterValue}>
-                <SecondaryBlueButton className="ml-4">
+                <SecondaryBlueButton className="ml-4 form-element-sizes-32">
                   Импорт значений
                 </SecondaryBlueButton>
-                <SecondaryBlueButton className="ml-4">
+                <SecondaryBlueButton className="ml-4 form-element-sizes-32">
                   Скачать шаблон таблицы
                 </SecondaryBlueButton>
               </LinkNdt>
             </div>
           </div>
         </div>
-        <UnderButtons leftFunc={changeModalState(false)} rightFunc={onSave} />
+        <UnderButtons leftFunc={onClose} rightFunc={onSave} />
       </StandardSizeModalWindow>
     </div>
   )
