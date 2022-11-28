@@ -124,7 +124,7 @@ const Content = () => {
     defaultLimit: 10,
   })
 
-  const loadDataFunction = useMemo(() => {
+  const loadData = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
       const { data } = await api.post(
@@ -169,17 +169,17 @@ const Content = () => {
     id,
   ])
 
-  const refLoadDataFunction = useRef(loadDataFunction)
+  const refLoadDataFunction = useRef(loadData)
+
+  // todo замена useEffect и refLoadDataFunction
+  // useAutoReload(loadData, tabItemState)
 
   useEffect(() => {
-    if (
-      shouldReloadDataFlag ||
-      loadDataFunction !== refLoadDataFunction.current
-    ) {
-      loadDataFunction()
+    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
+      loadData()
     }
-    refLoadDataFunction.current = loadDataFunction
-  }, [loadDataFunction, shouldReloadDataFlag])
+    refLoadDataFunction.current = loadData
+  }, [loadData, shouldReloadDataFlag])
 
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
@@ -199,7 +199,7 @@ const Content = () => {
           })
         }),
       ])
-      loadDataFunction()
+      loadData()
     }
   }, [selectState])
 

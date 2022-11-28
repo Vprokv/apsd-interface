@@ -26,7 +26,8 @@ export const CloseIcon = styled(Icon)`
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: var(--secondary);
+  background: ${({ active }) =>
+    active ? 'var(--blue-1)' : 'var(--secondary)'};
   padding: 3px 3px 3px;
   transition: background-color 250ms ease-in-out;
   &:hover {

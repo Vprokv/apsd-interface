@@ -28,6 +28,7 @@ import CreateObjectsWindow from './Components/CreateObjectsWindow'
 import { ButtonForIcon } from '@/Components/Button'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -123,6 +124,7 @@ const Objects = (props) => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
+  const [filterValue, setFilterValue] = useState({})
   const { search } = useLocation()
 
   const openCreateObjectsWindow = useCallback(
@@ -144,6 +146,7 @@ const Objects = (props) => {
     loadDataHelper,
     shouldReloadDataFlag,
     setTabState,
+    tabState: { data },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -153,7 +156,7 @@ const Objects = (props) => {
     defaultLimit: 10,
   })
 
-  const loadDataFunction = useMemo(() => {
+  const loadData = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
       const { data } = await api.post(
@@ -194,29 +197,26 @@ const Objects = (props) => {
     })
   }, [sortQuery, api, loadDataHelper, paginationState, search, id])
 
-  const refLoadDataFunction = useRef(loadDataFunction)
+  const refLoadDataFunction = useRef(loadData)
+
+  // todo если загружать данные через него,
+  // то почему то они не приходят в таблицу
+  // useAutoReload(loadData, tabItemState)
 
   useEffect(() => {
-    if (
-      shouldReloadDataFlag ||
-      loadDataFunction !== refLoadDataFunction.current
-    ) {
-      loadDataFunction()
+    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
+      loadData()
     }
-    refLoadDataFunction.current = loadDataFunction
-  }, [loadDataFunction, shouldReloadDataFlag])
-
-  // todo этот код нужен?
-  const [a, b] = useState({})
-
+    refLoadDataFunction.current = loadData
+  }, [loadData, shouldReloadDataFlag])
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
       <div className="flex items-center py-4">
         <FilterForm
           fields={filterFormConfig}
           inputWrapper={emptyWrapper}
-          value={a}
-          onInput={b}
+          value={filterValue}
+          onInput={setFilterValue}
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
@@ -233,7 +233,7 @@ const Objects = (props) => {
           </ButtonForIcon>
         </div>
         <CreateObjectsWindow
-          loadDataFunction={loadDataFunction}
+          loadDataFunction={loadData}
           open={addCreateObjectsWindow}
           onClose={closeCreateObjectsWindow}
         />

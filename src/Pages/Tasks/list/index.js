@@ -45,6 +45,7 @@ import SortCellComponent from '../../../Components/ListTableComponents/SortCellC
 import Filter from './Components/Filter'
 import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -130,6 +131,7 @@ function TaskList() {
     shouldReloadDataFlag,
     loadDataHelper,
     tabState: { data },
+    tabItemState,
   } = useTabItem({ stateId: TASK_LIST })
 
   useSetTabName(useCallback(() => TabNames[search], [search]))
@@ -150,7 +152,7 @@ function TaskList() {
     [navigate],
   )
 
-  const loadDataFunction = useMemo(() => {
+  const loadData = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
       const { data } = await api.post(
@@ -183,17 +185,17 @@ function TaskList() {
     })
   }, [sortQuery, api, loadDataHelper, paginationState, search, a])
 
-  const refLoadDataFunction = useRef(loadDataFunction)
+  const refLoadDataFunction = useRef(loadData)
+
+  // todo замена useEffect и refLoadDataFunction
+  // useAutoReload(loadData, tabItemState)
 
   useEffect(() => {
-    if (
-      shouldReloadDataFlag ||
-      loadDataFunction !== refLoadDataFunction.current
-    ) {
-      loadDataFunction()
+    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
+      loadData()
     }
-    refLoadDataFunction.current = loadDataFunction
-  }, [loadDataFunction, shouldReloadDataFlag])
+    refLoadDataFunction.current = loadData
+  }, [loadData, shouldReloadDataFlag])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">

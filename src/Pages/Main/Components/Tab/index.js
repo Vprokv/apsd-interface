@@ -17,6 +17,7 @@ const Tab = ({ name, onClose, active, onClick, closeable }) => {
       <span className="truncate">{name}</span>
       {closeable && (
         <CloseIcon
+          active={active}
           icon={closeIcon}
           size={6}
           className="ml-1 text-white"

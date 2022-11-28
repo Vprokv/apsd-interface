@@ -39,6 +39,8 @@ export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
 export const URL_APPROVAL_SHEET = '/sedo/approve/stage/get_all'
 export const URL_APPROVAL_SHEET_DELETE = '/sedo/approve/stage/delete'
 export const URL_APPROVAL_SHEET_CREATE = '/sedo/approve/stage/create'
+export const URL_APPROVAL_SHEET_CREATE_AND_START =
+  '/sedo/approve/additional/create_and_start'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'
@@ -55,7 +57,7 @@ export const URL_LINK_CREATE = '/apsd/link/create'
 export const URL_LINK_DELETE = '/apsd/link/delete'
 export const URL_LINK_UPDATE = '/apsd/link/update'
 
-//REMARK
+// REMARK
 export const URL_REMARK_LIST = '/apsd/remark/list'
 export const URL_REMARK_CREATE = '/apsd/remark/create'
 export const URL_REMARK_DELETE = '/apsd/remark/delete'
@@ -94,6 +96,6 @@ export const URL_SEARCH_ATTRIBUTES = '/apsd/search/attributes'
 export const URL_TYPE_CONFIG = '/apsd/type/config?limit=100&offset=0'
 export const URL_SEARCH_LIST = '/apsd/search?limit=101&offset=0'
 
-//INTEGRATION
+// INTEGRATION
 export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/send/letter'
 export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
