@@ -132,7 +132,7 @@ const Links = () => {
       filter,
     })
 
-    return searchValues
+    return data
   }, [api, id, type, change])
 
   useAutoReload(loadData, tabItemState)

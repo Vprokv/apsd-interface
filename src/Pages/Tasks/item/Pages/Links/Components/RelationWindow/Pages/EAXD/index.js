@@ -56,26 +56,12 @@ const DocumentEAXD = (props) => {
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
   const close = useContext(StateContext)
 
-  const onClick = useCallback(() => {
-    const { data } = api.post(URL_CONTENT_SEARCH, {
+  const onClick = useCallback(async() => {
+    const { data } = await api.post(URL_CONTENT_SEARCH, {
       eehdBarcode: search,
       documentId: id,
     })
-    setFilter({
-      dssNumber: 'Test/03/ВН-11', //- заполняем поле шифр/рег номер
-      eehdDocumentType: 'ddt_12_06_03_type_doc',
-      eehdDocumentId: '00000000000BDvDQ',
-      dsidContentType: '00xxxxxx0000010d',
-      dssDescription: 'ГА. Служебная записка (общий)', // - поле краткое содержание
-      // SUCCESS: true,
-      eehdBarcode: '0003232487418804', //- поле ШК
-      dsdtDocumentDate: '13.05.2021 14:34:01', //- дата регистрации
-      dssAuthorFio: 'Королев Иван Анатольевич', // - автором заполняем текущего пользователя, по идеи должен сходится с тем что в атрибуте
-      dssFilename: 'Тестовый Вх.doc',
-      content:
-        'http://msk-dc-uhk.moesk.ru/ebox/content/download?documentType\u003dddt_12_06_03_type_doc\u0026documentId\u003d00000000000BDvDQ',
-      status: 'OK',
-    })
+    setFilter(data)
   }, [search, id, api])
 
   const formFields = useMemo(
@@ -183,6 +169,7 @@ const DocumentEAXD = (props) => {
       linkObjects: [
         {
           parentId: id,
+          documentType: type,
           contentId,
           regNumber: filter.dssNumber,
           regDate: filter.dssNumber,

@@ -23,6 +23,7 @@ import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultDocumentHandlers,
   defaultPages,
+  DocumentIdContext,
   DocumentTypeContext,
 } from './constants'
 import DefaultIcon from './Icons/DefaultIcon.svg'
@@ -127,21 +128,23 @@ const Document = () => {
 
   return (
     <DocumentTypeContext.Provider value={ITEM_DOCUMENT}>
-      <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
-        <SidebarContainer>
-          <DocumentActions documentActions={wrappedDocumentActions} />
-        </SidebarContainer>
-      </Layout>
-      <FormWindow open={message} onClose={closeModalWindow}>
-        <div className="text-center mt-4 mb-12">{message}</div>
-        <SecondaryGreyButton
-          type="button"
-          className="w-40 m-auto"
-          onClick={closeModalWindow}
-        >
-          Закрыть
-        </SecondaryGreyButton>
-      </FormWindow>
+      <DocumentIdContext.Provider value={id}>
+        <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
+          <SidebarContainer>
+            <DocumentActions documentActions={wrappedDocumentActions} />
+          </SidebarContainer>
+        </Layout>
+        <FormWindow open={message} onClose={closeModalWindow}>
+          <div className="text-center mt-4 mb-12">{message}</div>
+          <SecondaryGreyButton
+            type="button"
+            className="w-40 m-auto"
+            onClick={closeModalWindow}
+          >
+            Закрыть
+          </SecondaryGreyButton>
+        </FormWindow>
+      </DocumentIdContext.Provider>
     </DocumentTypeContext.Provider>
   )
 }
