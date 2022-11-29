@@ -149,7 +149,7 @@ const DocumentSearch = ({
         id: 'type',
         component: LoadableSelect,
         placeholder: 'Том',
-        label: 'Выберете тип документа',
+        label: 'Выберите тип документа',
         valueKey: 'typeName',
         labelKey: 'typeLabel',
         loadFunction: documentTypeLoadFunction(api),
@@ -176,7 +176,9 @@ const DocumentSearch = ({
 
           return {
             ...loadData,
-            component: SearchOperatorSelector(getField(dss_component_type)),
+            component: SearchOperatorSelector(dss_component_type)(
+              getField(dss_component_type),
+            ),
             id: dss_attr_name,
             placeholder: dss_attr_label,
             label: dss_attr_label,

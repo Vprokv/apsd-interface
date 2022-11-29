@@ -8,6 +8,7 @@ import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
+import DateWithButton from "@/Pages/Search/Pages/Components/DateWithButton";
 
 const fields = {
   Classification: Classification,
@@ -19,7 +20,7 @@ const fields = {
   // UserSelect:(props) =>  BaseUserSelect,
   Text: Input,
   TextArea: TextArea,
-  Date: DatePicker,
+  Date: DateWithButton,
   Checkbox: CheckBox,
 }
 

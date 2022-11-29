@@ -84,11 +84,9 @@ const tableConfig = [
   },
 ]
 
-const defaultFilter = { type: 'ddt_project_calc_type_doc' }
-
 const defaultSearchState = {}
 
-const PageTaskSelect = ({}) => {
+const PageTaskSelect = () => {
   const { openNewTab } = useContext(TabStateManipulation)
 
   const navigate = useNavigate()
@@ -105,7 +103,7 @@ const PageTaskSelect = ({}) => {
 
   const {
     setTabState,
-    tabState: { filter = defaultFilter, searchState = defaultSearchState },
+    tabState: { filter = {}, searchState = defaultSearchState },
   } = tabItemState
 
   const rowComponent = useMemo(
@@ -118,6 +116,7 @@ const PageTaskSelect = ({}) => {
     (id) => (state) => setTabState({ [id]: state }),
     [setTabState],
   )
+
   return (
     <TaskSearch
       filter={filter}
