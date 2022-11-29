@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE } from '@/contants'
+import { SecondaryBlueButton } from '@/Components/Button'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
@@ -19,7 +20,9 @@ const PageDocumentSelect = ({ props }) => {
 
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => openNewTab(navigate(`/document/${id}/${type}`)),
+    ({ id, type }) =>
+      () =>
+        openNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openNewTab],
   )
 
@@ -48,14 +51,22 @@ const PageDocumentSelect = ({ props }) => {
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
     >
-      <ScrollBar className="px-4">
-        <ListTable
-          rowComponent={rowComponent}
-          headerCellComponent={HeaderCell}
-          columns={tableConfig}
-          value={searchState.results}
-        />
-      </ScrollBar>
+      {(onClick) => (
+        <ScrollBar className="px-4 ">
+          <SecondaryBlueButton
+            onClick={onClick}
+            className="ml-auto form-element-sizes-32"
+          >
+            Изменить условие
+          </SecondaryBlueButton>
+          <ListTable
+            rowComponent={rowComponent}
+            headerCellComponent={HeaderCell}
+            columns={tableConfig}
+            value={searchState.results}
+          />
+        </ScrollBar>
+      )}
     </DocumentSearch>
   )
 }

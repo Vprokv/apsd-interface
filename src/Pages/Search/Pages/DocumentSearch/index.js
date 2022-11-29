@@ -76,19 +76,21 @@ export const tableConfig = [
     sizes: 200,
     component: ({
       ParentValue: {
-        values: {},
+        values: { dsdt_reg_date = '' },
       },
-    }) => <BaseCell />,
+    }) => <BaseCell value={dsdt_reg_date} />,
   },
   {
     id: 'dsdt_creation_date',
-    label: 'Дата создангия',
+    label: 'Дата создания',
     sizes: 200,
     component: ({
       ParentValue: {
         values: { dsdt_creation_date = '' },
       },
-    }) => <BaseCell value={dsdt_creation_date} />,
+    }) => (
+      <BaseCell className="h-10 flex " value={dsdt_creation_date} /> //items-center
+    ),
   },
   {
     id: 'Этап',
@@ -106,6 +108,16 @@ export const tableConfig = [
     sizes: 200,
     component: ({
       ParentValue: {
+        values: {},
+      },
+    }) => <BaseCell />,
+  },
+  {
+    id: 'Автор',
+    label: 'Автор',
+    sizes: 200,
+    component: ({
+      ParentValue: {
         valuesCustom: {
           dsid_author_empl: { lastName, middleName, firstName },
         },
@@ -113,21 +125,11 @@ export const tableConfig = [
     }) => (
       <BaseCell
         value={
-          (useMemo(() => `${lastName} ${firstName} ${middleName}`),
+          (useMemo(() => `${lastName} ${firstName}.  ${middleName}. `),
           [lastName, middleName, firstName])
         }
       />
     ),
-  },
-  {
-    id: 'Контрольный срок',
-    label: 'Автор',
-    sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
   },
 ]
 
@@ -206,11 +208,11 @@ const DocumentSearch = ({
   )
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
-      type: 'ddt_project_calc_type_doc',
+      type: filter.type,
     })
 
     setAttributes(data)
-  }, [api])
+  }, [api, filter.type])
 
   const onSearch = useCallback(async () => {
     const { type, ...filters } = filter
@@ -246,7 +248,9 @@ const DocumentSearch = ({
 
   return (
     <div className="flex w-full p-6">
-      {renderTable ? children : (
+      {renderTable ? (
+        children(() => setRenderTable(false))
+      ) : (
         <>
           <Form
             className="w-full grid grid-row-gap-5 h-min mr-4"
