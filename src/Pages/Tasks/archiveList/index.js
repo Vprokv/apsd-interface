@@ -15,6 +15,7 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 const columns = [
   {
@@ -95,10 +96,9 @@ const ArchiveList = () => {
         openNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openNewTab],
   )
-  const tabItemState = useTabItem({
-    setTabName: useCallback(() => `${parentName}/${name}`, [name, parentName]),
-    stateId: TASK_LIST_ARCHIVE,
-  })
+  const tabItemState = useTabItem({ stateId: TASK_LIST_ARCHIVE })
+
+  useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
 
   const {
     tabState,

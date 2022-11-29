@@ -7,12 +7,12 @@ import { ApiContext, TASK_ITEM_REQUISITES } from '@/contants'
 import { DocumentTypeContext } from '../../constants'
 import { useParams } from 'react-router-dom'
 import {
-  NoFieldType,
   propsTransmission,
   readOnlyRules,
   validationRules,
   visibleRules,
 } from './rules'
+import NoFieldType from '@/Components/NoFieldType'
 import { CustomValuesContext } from './constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 

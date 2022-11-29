@@ -8,7 +8,11 @@ import React, {
 import { useParams } from 'react-router-dom'
 import { ApiContext, SEARCH_PAGE } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_SEARCH_ATTRIBUTES, URL_TYPE_CONFIG } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_SEARCH_ATTRIBUTES,
+  URL_TYPE_CONFIG,
+} from '@/ApiList'
 import { documentTypes } from '@/Pages/Search/Pages/constans'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Form from '@Components/Components/Forms'
@@ -22,60 +26,20 @@ import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import useButtonFunc from '@/Pages/Search/Pages/useButtonFunc'
 import Table from '@/Pages/Search/Pages/Components/Table'
 import SearchOperator from '@/Pages/Search/Pages/Components/SearchOperator'
+import { FilterForm } from '@/Pages/Search/Pages/Components/SearchFields/styles'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
+import Title from '@/Pages/Search/Pages/Documents/Components/Title'
 
 export const Cont = styled(Form)`
-  margin: 20px 30px 0 30px;
+  margin-top: 20px;
   display: grid;
   //grid-row-gap: 20px;
   grid-gap: 20px;
   align-items: flex-start;
   width: 100%;
-  grid-template-columns: 1fr 3fr 1fr 1fr;
+  grid-template-columns: 3fr 1fr 1fr;
 `
-
-const Title = ({ value, onInput }) => {
-  const api = useContext(ApiContext)
-  const [options, setOptions] = useState([
-    {
-      typeName: 'ddt_project_calc_type_doc',
-      typeLabel: 'Том',
-    },
-  ])
-
-  const loadFunction = useCallback(async () => {
-    const { data } = await api.post(URL_TYPE_CONFIG, {
-      type: 'documentType',
-      id: 'types',
-      filters: {},
-      sortType: null,
-    })
-
-    setOptions(data)
-    return data
-  }, [api])
-
-  const input = useMemo(
-    () => (
-      <LoadableSelect
-        placeholder="Выберете тип документа"
-        options={options}
-        value={value}
-        onInput={onInput}
-        loadFunction={loadFunction}
-        valueKey="typeName"
-        labelKey="typeLabel"
-      />
-    ),
-    [loadFunction, onInput, options, value],
-  )
-
-  return (
-    <Cont>
-      <div className="flex h-10 font-size-14 items-center">Тип документа</div>
-      {input}
-    </Cont>
-  )
-}
 
 const Documents = (props) => {
   const api = useContext(ApiContext)
@@ -89,7 +53,7 @@ const Documents = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { value = 'ddt_project_calc_type_doc' },
+    tabState: { value = 'ddt_startup_complex_type_doc' },
   } = tabItemState
 
   const loadData = useCallback(async () => {
@@ -104,11 +68,11 @@ const Documents = (props) => {
 
   useAutoReload(loadData, tabItemState)
 
-  const getButtonFunc = useButtonFunc({
-    operator,
-    tabState,
-    setTabState,
-  })
+  // const getButtonFunc = useButtonFunc({
+  //   operator,
+  //   tabState,
+  //   setTabState,
+  // })
 
   return (
     <TabStateContext.Provider
@@ -116,21 +80,19 @@ const Documents = (props) => {
         tabState,
         setTabState,
         value,
-        getButtonFunc,
+        // getButtonFunc,
         // checked,
         // setChecked,
         operator,
         setOperator,
       }}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col mx-4">
         <Title value={value} onInput={onInput} />
         <Cont>
-          <Titles />
           <SearchFields />
-          {/*<CheckBoxes />*/}
           <SearchOperator />
-          <Buttons />
+          <Buttons setTabState={setTabState} operator={operator} />
         </Cont>
         <Table />
       </div>

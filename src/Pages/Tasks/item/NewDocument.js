@@ -12,6 +12,7 @@ import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import useDocumentActions from './Hooks/useDocumentActions'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 export const NewTaskItem = ({ classificationId, type }) => {
   const api = useContext(ApiContext)
@@ -21,14 +22,13 @@ export const NewTaskItem = ({ classificationId, type }) => {
     tabState: { data: { values: { dss_work_number = 'Документ' } = {} } = {} },
   } = useTabItem({ stateId: TASK_ITEM_NEW_DOCUMENT })
 
-  const tabItemState = useTabItem({
-    setTabName: useCallback(() => dss_work_number, [dss_work_number]),
-    stateId: TASK_ITEM_NEW_DOCUMENT,
-  })
+  const tabItemState = useTabItem({ stateId: TASK_ITEM_NEW_DOCUMENT })
   const {
     initialState,
     tabState: { data: { documentActions, documentTabs, values } = {} },
   } = tabItemState
+
+  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
   const refValues = useRef()
   useEffect(() => {

@@ -11,7 +11,7 @@ function TaskItem({
       <NavigationContainer>{headers}</NavigationContainer>
       <div className="flex h-full w-full overflow-hidden">
         {children}
-        {routes.length > 0 && (
+        {routes?.length > 0 && (
           <Routes>
             {routes}
             <Route path="*" element={<Navigate to={defaultPath} replace />} />

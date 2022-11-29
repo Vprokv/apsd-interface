@@ -12,7 +12,7 @@ import SortCellComponent from '../../../../../Components/ListTableComponents/Sor
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import Select from '../../../../../Components/Inputs/Select'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
 import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
@@ -26,6 +26,8 @@ import filterIcon from '../../../list/icons/filterIcon'
 import editIcon from '../../../../../Icons/editIcon'
 import CreateObjectsWindow from './Components/CreateObjectsWindow'
 import { ButtonForIcon } from '@/Components/Button'
+import Pagination from '../../../../../Components/Pagination'
+import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
@@ -122,6 +124,9 @@ const Objects = (props) => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
+  const [filterValue, setFilterValue] = useState({})
+  const { search } = useLocation()
+
   const openCreateObjectsWindow = useCallback(
     () => setCreateObjectsWindow(true),
     [],
@@ -137,27 +142,81 @@ const Objects = (props) => {
 
   const {
     tabState: { data: { technicalObjects = [] } = {} },
+    tabState,
+    loadDataHelper,
+    shouldReloadDataFlag,
+    setTabState,
+    tabState: { data },
   } = tabItemState
 
-  const loadDataFunction = useCallback(async () => {
-    const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
-      documentId: id,
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: URL_TECHNICAL_OBJECTS_LIST,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
+  })
+
+  const loadData = useMemo(() => {
+    const { limit, offset } = paginationState
+    return loadDataHelper(async () => {
+      const { data } = await api.post(
+        URL_TECHNICAL_OBJECTS_LIST,
+        {
+          documentId: id,
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce(
+                  (acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc.filter[key] = JSON.parse(value)
+                    return acc
+                  },
+                  { filter: {} },
+                )
+            : {}),
+        },
+        {
+          params: {
+            limit,
+            offset,
+            // todo для фильтрации которая еще не сделана
+            // "filter": {
+            //   "code" : "string" - фильтр Код
+            //   "type": "string" - фильтр Тип
+            // },
+            sort: {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            },
+          },
+        },
+      )
+      return data
     })
-    return data
-  }, [id, api])
+  }, [sortQuery, api, loadDataHelper, paginationState, search, id])
 
-  useAutoReload(loadDataFunction, tabItemState)
+  const refLoadDataFunction = useRef(loadData)
 
-  const [a, b] = useState({})
+  // todo если загружать данные через него,
+  // то почему то они не приходят в таблицу
+  // useAutoReload(loadData, tabItemState)
 
+  useEffect(() => {
+    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
+      loadData()
+    }
+    refLoadDataFunction.current = loadData
+  }, [loadData, shouldReloadDataFlag])
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
       <div className="flex items-center py-4">
         <FilterForm
           fields={filterFormConfig}
           inputWrapper={emptyWrapper}
-          value={a}
-          onInput={b}
+          value={filterValue}
+          onInput={setFilterValue}
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
@@ -174,7 +233,7 @@ const Objects = (props) => {
           </ButtonForIcon>
         </div>
         <CreateObjectsWindow
-          loadDataFunction={loadDataFunction}
+          loadDataFunction={loadData}
           open={addCreateObjectsWindow}
           onClose={closeCreateObjectsWindow}
         />
@@ -195,6 +254,15 @@ const Objects = (props) => {
         onSort={onSort}
         valueKey="id"
       />
+      <Pagination
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+      </Pagination>
     </div>
   )
 }

@@ -16,11 +16,15 @@ import DefaultIcon from './Icons/DefaultIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import PrintIcon from './Icons/PrintIcon.svg'
+import CreatingAdditionalAgreementWindow from './Components/CreatingAdditionalAgreementWindow'
 
 const Task = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [idDocument, setIdDocument] = useState('')
+  const [showWindow, setShowWindow] = useState(false)
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_TASK_ITEM, {
@@ -36,23 +40,32 @@ const Task = () => {
     return data
   }, [api, id])
 
-  const {
-    tabState: { data: { values: { dss_work_number = 'Документ' } = {} } = {} },
-  } = useTabItem({ stateId: ITEM_TASK })
-
   const tabItemState = useTabItem({
-    setTabName: useCallback(() => dss_work_number, [dss_work_number]),
     stateId: ITEM_TASK,
   })
   const {
-    tabState: { data: { documentActions, taskActions, documentTabs } = {} },
+    tabState: {
+      data: {
+        documentActions,
+        taskActions,
+        documentTabs,
+        values: { dss_work_number = 'Документ' } = {},
+        approverId,
+      } = {},
+    },
   } = tabItemState
+
+  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
   useAutoReload(loadData, tabItemState)
 
-  const wrappedTaskActions = useMemo(
-    () =>
-      (taskActions || []).map(({ caption, name }) => ({
+  const closeWindow = useCallback(() => {
+    setShowWindow(false)
+  }, [])
+
+  const TaskHandlers = useMemo(
+    () => ({
+      defaultHandler: ({ caption, name }) => ({
         key: name,
         caption,
         handler: async () => {
@@ -62,9 +75,17 @@ const Task = () => {
           })
         },
         icon: DefaultIcon,
-      })),
-    [api, id, taskActions],
+      }),
+      additional_agreement: {
+        icon: PrintIcon,
+        caption: 'Создание доп. согласования',
+        handler: () => setShowWindow(true),
+      },
+    }),
+    [api, id],
   )
+
+  const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
 
   const wrappedDocumentActions = useDocumentActions(
     documentActions,
@@ -82,6 +103,11 @@ const Task = () => {
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
             <DocumentActions documentActions={actions} />
+            <CreatingAdditionalAgreementWindow
+              approverId={approverId}
+              open={showWindow}
+              onClose={closeWindow}
+            />
           </SidebarContainer>
         </Document>
       </DocumentIdContext.Provider>

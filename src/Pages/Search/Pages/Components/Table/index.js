@@ -63,7 +63,7 @@ const columns = [
     component: ({
       ParentValue: {
         valuesCustom: {
-          dsid_signer_empl: { lastName, firstName, middleName },
+          dsid_signer_empl: { lastName = '', firstName = '', middleName = '' },
         },
       },
     }) => <BaseCell value={fio(lastName, firstName, middleName)} />,
@@ -87,9 +87,13 @@ const Table = () => {
   const { openNewTab } = useContext(TabStateManipulation)
   const { multiple, setSelected, selected } = useContext(MultipleContext)
 
+  console.log(searchValues, 'searchValues')
+
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    (id, type) => () => openNewTab(navigate(`/document/${id}/${type}`)),
+    ({ id, type }) =>
+      () =>
+        openNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openNewTab],
   )
 

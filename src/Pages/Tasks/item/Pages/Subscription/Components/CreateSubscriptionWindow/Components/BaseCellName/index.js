@@ -8,7 +8,7 @@ const BaseCellName = ({ value, className }) => {
       `${lastName} ${(firstName && `${firstName[0]}.`) || ''} ${
         (middleName && `${middleName[0]}.`) || ''
       }`,
-    [value],
+    [firstName, lastName, middleName],
   )
   return (
     <div className={`${className} word-wrap-anywhere font-size-14`}>{fio}</div>

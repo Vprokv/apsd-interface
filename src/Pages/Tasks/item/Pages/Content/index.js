@@ -1,8 +1,15 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import Icon from '@Components/Components/Icon'
 import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import {
   URL_CONTENT_LIST,
   URL_DELETE_VERSION,
@@ -26,6 +33,8 @@ import Switch from '@/Components/Inputs/Switch'
 import EditVersionWindow from './Components/EditVersionWindow'
 import EditRow from './Components/EditRow'
 import { EditVersion } from './constants'
+import Pagination from '../../../../../Components/Pagination'
+import usePagination from '../../../../../components_ocean/Logic/usePagination'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -93,6 +102,8 @@ const Content = () => {
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
+  const [sortQuery, onSort] = useState({})
+  const { search } = useLocation()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -101,17 +112,74 @@ const Content = () => {
   const {
     setTabState,
     tabState: { data },
+    tabState,
+    loadDataHelper,
+    shouldReloadDataFlag,
   } = tabItemState
 
-  const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_CONTENT_LIST, {
-      documentId: id,
-      isCurrentVersion: filterValue.fullVersion,
-    })
-    return data
-  }, [filterValue.fullVersion, api, id])
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: TASK_ITEM_CONTENT,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
+  })
 
-  useAutoReload(loadData, tabItemState)
+  const loadData = useMemo(() => {
+    const { limit, offset } = paginationState
+    return loadDataHelper(async () => {
+      const { data } = await api.post(
+        URL_CONTENT_LIST,
+        {
+          documentId: id,
+          isCurrentVersion: filterValue.fullVersion,
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce(
+                  (acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc.filter[key] = JSON.parse(value)
+                    return acc
+                  },
+                  { filter: {} },
+                )
+            : {}),
+        },
+        {
+          params: {
+            limit,
+            offset,
+            sort: {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            },
+          },
+        },
+      )
+      return data
+    })
+  }, [
+    sortQuery,
+    api,
+    loadDataHelper,
+    paginationState,
+    search,
+    filterValue.fullVersion,
+    id,
+  ])
+
+  const refLoadDataFunction = useRef(loadData)
+
+  // todo замена useEffect и refLoadDataFunction
+  // useAutoReload(loadData, tabItemState)
+
+  useEffect(() => {
+    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
+      loadData()
+    }
+    refLoadDataFunction.current = loadData
+  }, [loadData, shouldReloadDataFlag])
 
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
@@ -191,7 +259,18 @@ const Content = () => {
           onInput={onTableUpdate}
           selectState={selectState}
           onSelect={setSelectState}
+          sortQuery={sortQuery}
+          onSort={onSort}
         />
+        <Pagination
+          className="mt-2"
+          limit={paginationState.limit}
+          page={paginationState.page}
+          setLimit={setLimit}
+          setPage={setPage}
+        >
+          {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+        </Pagination>
       </EditVersion.Provider>
       <DownloadWindow
         contentId={idContent}

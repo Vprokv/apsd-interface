@@ -13,6 +13,11 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import NumberComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent/Components/NumberComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
+import UserComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent/Components/UserComponent'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 
 const Row = styled.div`
   height: 46px;
@@ -24,6 +29,15 @@ const Row = styled.div`
   align-content: center;
   //border-top: 1px solid var(--separator);
 `
+
+const plugins = {
+  selectPlugin: {
+    driver: FlatSelect,
+    component: CheckBox,
+    style: { margin: 'auto 0' },
+    valueKey: 'number',
+  },
+}
 
 const columns = [
   {
@@ -37,7 +51,7 @@ const columns = [
     id: 'user',
     label: 'Участник/Подраздедение',
     className: 'h-10 flex items-center',
-    component: NumberComponent,
+    component: UserComponent,
     sizes: 300,
   },
   {
@@ -51,7 +65,9 @@ const columns = [
     id: 'remarkText',
     label: 'Значение',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({ ParentValue: { itsRemark, remarkText } }) => (
+      <BaseCell value={itsRemark ? remarkText : ''} />
+    ),
     sizes: 500,
   },
   {
@@ -65,18 +81,22 @@ const columns = [
     id: 'setRemark',
     label: 'Свод замечаний',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({ ParentValue: { setRemark, itsRemark } }) => (
+      <BaseCell
+        value={
+          itsRemark && setRemark
+            ? 'Включено в свод замечаний'
+            : itsRemark && !setRemark
+            ? 'Не включено'
+            : ''
+        }
+      />
+    ),
     sizes: 250,
   },
 ]
 
-const RowComponent = ({ children, ...props }) => {
-  const api = useContext(ApiContext)
-  const loadData = useContext(LoadContext)
-  const [selectState, setSelectState] = useState()
-
-  console.log(props, 'props')
-
+const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
   const data = useMemo(() => {
     const {
       remarkMemberFullName,
@@ -90,6 +110,7 @@ const RowComponent = ({ children, ...props }) => {
 
     return [
       {
+        itsRemark: true,
         remarkMemberFullName,
         number,
         remarkMemberPosition,
@@ -97,7 +118,7 @@ const RowComponent = ({ children, ...props }) => {
         remarkText,
         setRemark,
       },
-      item,
+      { ...item, remarkText, number },
     ]
   }, [props])
 
@@ -109,7 +130,7 @@ const RowComponent = ({ children, ...props }) => {
       <ListTable
         value={data}
         columns={columns}
-        // plugins={plugins}
+        plugins={plugins}
         headerCellComponent={HeaderCell}
         selectState={selectState}
         onSelect={setSelectState}

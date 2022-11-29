@@ -7,15 +7,18 @@ import {
   NavigationItem,
 } from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Documents from '@/Pages/Search/Pages/Documents'
-import Tasks from '@/Pages/Search/Pages/Tasks'
+import Documents from '@/Pages/Search/Pages/DocumentSearch/PageDocumentSelect'
+
+import Tasks from '@/Pages/Search/Pages/TaskSearch'
 import { MultipleContext } from '@/Pages/Search/constans'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 export const SearchComponent = ({ multiple, setSelected, selected }) => {
   useTabItem({
-    setTabName: useCallback(() => 'Поиск', []),
     stateId: ITEM_DOCUMENT,
   })
+
+  useSetTabName(useCallback(() => 'Поиск', []))
 
   const pages = useMemo(
     () => [
@@ -81,10 +84,9 @@ SearchComponent.propTypes = {
 }
 
 const Search = () => {
-  useTabItem({
-    setTabName: useCallback(() => 'Поиск', []),
-    stateId: ITEM_DOCUMENT,
-  })
+  useTabItem({ stateId: ITEM_DOCUMENT })
+
+  useSetTabName(useCallback(() => 'Поиск', []))
 
   return (
     <div className="flex-container w-full overflow-hidden">

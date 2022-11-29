@@ -32,6 +32,7 @@ import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 const Document = () => {
   const { id, type } = useParams()
@@ -45,17 +46,21 @@ const Document = () => {
     return data
   }, [api, id, type])
 
-  const {
-    tabState: { data: { values: { dss_work_number = 'Документ' } = {} } = {} },
-  } = useTabItem({ stateId: ITEM_DOCUMENT })
-
   const tabItemState = useTabItem({
-    setTabName: useCallback(() => dss_work_number, [dss_work_number]),
     stateId: ITEM_DOCUMENT,
   })
   const {
-    tabState: { data: { documentActions, documentTabs, values } = {} },
+    tabState: {
+      data: {
+        documentActions,
+        documentTabs,
+        values,
+        values: { dss_work_number = 'Документ' } = {},
+      } = {},
+    },
   } = tabItemState
+
+  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
   const refValues = useRef()
   useEffect(() => {
     refValues.current = values

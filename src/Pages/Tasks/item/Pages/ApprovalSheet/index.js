@@ -128,7 +128,7 @@ const ApprovalSheet = (props) => {
                     )}
                     <div
                       className={`${
-                        !stages.length ? 'ml-6' : 'ml-2'
+                        !stages?.length ? 'ml-6' : 'ml-2'
                       } my-4 flex bold`}
                     >
                       {name}

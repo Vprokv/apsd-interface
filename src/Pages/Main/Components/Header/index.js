@@ -28,18 +28,18 @@ const Header = () => {
   const openContextMenu = useCallback(() => setContextMenuState(true), [])
   const closeContextMenu = useCallback(() => setContextMenuState(false), [])
   return (
-    <div className="bg-blue-1 flex items-center py-4 pl-6 pr-5 text-white">
+    <div className="bg-blue-1 flex items-center py-2.5 pl-6 pr-5 text-white">
       <img src={MainLogo} className="mr-20" />
-      <button type="button" className="bg-blue-4 p-2 rounded-md">
-        <Icon icon={doubleShevronIcon} />
+      <button type="button" className="bg-blue-4 rounded-md h-8 pl-1 pr-1">
+        <Icon icon={doubleShevronIcon} size="22" />
       </button>
       <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2.5">
         <Search />
-        <ButtonForIcon>
-          <Icon icon={settingsIcon} />
+        <ButtonForIcon className="ml-2 mr-2">
+          <Icon icon={settingsIcon} size="20" />
         </ButtonForIcon>
         <ButtonForIcon>
-          <Icon icon={notificationIcon} />
+          <Icon icon={notificationIcon} size="24" />
         </ButtonForIcon>
       </IconsGroup>
       <div className="pl-10 flex items-center">

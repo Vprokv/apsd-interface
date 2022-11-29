@@ -8,6 +8,6 @@ export const SideBarContainer = styled.div`
 `
 
 export const NavigationHeaderIcon = styled(Icon)`
-  color: #dde2ff;
+  color: var(--secondary);
   margin-right: 1.25rem;
 `

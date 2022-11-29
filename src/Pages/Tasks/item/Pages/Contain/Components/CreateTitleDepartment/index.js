@@ -18,7 +18,11 @@ import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDep
 import { useParams } from 'react-router-dom'
 import { NestedButton } from '../../styles'
 
-const CreateTitleDepartment = ({ className, addDepartmentState }) => {
+const CreateTitleDepartment = ({
+  className,
+  addDepartmentState,
+  onAddDepartment,
+}) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
@@ -30,17 +34,13 @@ const CreateTitleDepartment = ({ className, addDepartmentState }) => {
   }, [])
 
   const handleCancel = useCallback(() => {
-    if (addDepartmentState.onCancel) {
-      addDepartmentState.onCancel()
-    }
+    addDepartmentState.onCancel()
     changeModalState(false)
   }, [addDepartmentState, changeModalState])
 
   const handleClose = useCallback(
     (data) => {
-      if (addDepartmentState.onCreate) {
-        addDepartmentState.onCreate(data)
-      }
+      addDepartmentState.onCreate(data)
       changeModalState(false)
     },
     [addDepartmentState, changeModalState],
@@ -58,6 +58,11 @@ const CreateTitleDepartment = ({ className, addDepartmentState }) => {
     setEntities(data)
     changeModalState(true)
   }, [api, changeModalState])
+  
+  const handleAddDepartment = useCallback(() => {
+    onAddDepartment()
+    return openModalWindow()
+  }, [onAddDepartment, openModalWindow])
 
   useEffect(() => {
     if (addDepartmentState.id) {
@@ -134,7 +139,7 @@ const CreateTitleDepartment = ({ className, addDepartmentState }) => {
     <>
       <LoadableSecondaryBlueButton
         className={className}
-        onClick={openModalWindow}
+        onClick={handleAddDepartment}
       >
         Раздел
       </LoadableSecondaryBlueButton>
@@ -182,6 +187,7 @@ CreateTitleDepartment.propTypes = {
     onCancel: PropTypes.func,
     id: PropTypes.string,
   }),
+  onAddDepartment: PropTypes.func.isRequired,
 }
 
 CreateTitleDepartment.defaultProps = {

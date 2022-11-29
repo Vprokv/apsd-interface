@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_APPROVAL_SHEET, URL_REMARK_LIST } from '@/ApiList'
+import {
+  URL_APPROVAL_SHEET,
+  URL_ENTITY_LIST,
+  URL_REMARK_DELETE,
+  URL_REMARK_LIST,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -12,22 +17,11 @@ import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
-import PostponeIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/Postpone'
-import OtherIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/Other'
-import ScrollBar from '@Components/Components/ScrollBar'
-import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
-import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
-import angleIcon from '@/Icons/angleIcon'
-import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
-import Tree from '@Components/Components/Tree'
-import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
-import XlsIcon from '@/Icons/XlsIcon'
 import ExportIcon from '@/Icons/ExportIcon'
 import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
-import { Button } from '@Components/Components/Button'
-import editIcon from '@/Icons/editIcon'
 import deleteIcon from '@/Icons/deleteIcon'
+import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 
 const mockData = [
   {
@@ -41,15 +35,15 @@ const mockData = [
     remarkText: 'Градостроительный кодекс РФ от 18.12.2021', //- текст замечания
     remarkCreationDate: 'date', //- дата создания замечания
     remarkType: 'Внутреннее', //- тип замечания (наименование)
-    setRemark: 'Не включено в свод', //- свод замечаний
-    answerMemberFullName: 'Пилипчук Р.П.', //- кто ответил на замечание
-    answerMemberPosition: 'Начальник службы', //- должность
+    setRemark: true, //- свод замечаний
+    // answerMemberFullName: 'Пилипчук Р.П.', //- кто ответил на замечание
+    // answerMemberPosition: 'Начальник службы', //- должность
     answerText: 'string', //- текст ответа
     answerCreationDate: 'string', //- дата ответа
     ndtLinks: [
       //- ссылки на НДТ
       {
-        id: 'string', //- id из справочника
+        id: '00xxxxxx0000lvta', //- id из справочника
         name: 'name', //- наименование из справочника
         comment: 'string', // - коммент к ссылке
       },
@@ -61,6 +55,7 @@ const Remarks = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
+  const [selectState, setSelectState] = useState()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -70,8 +65,6 @@ const Remarks = (props) => {
     setTabState,
     tabState: { data = [], change },
   } = tabItemState
-
-  console.log(data, 'data')
 
   const setChange = useCallback(() => {
     const { change } = tabState
@@ -86,7 +79,7 @@ const Remarks = (props) => {
     //   documentId: id,
     //   filter,
     // })
-
+    //
     // return data
     return mockData
   }, [api, id, type, change])
@@ -99,12 +92,14 @@ const Remarks = (props) => {
         id: 'statusId',
         component: LoadableSelect,
         placeholder: 'Статус',
-        valueKey: 'dss_name',
+        valueKey: 'r_object_id',
         labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
+        loadFunction: async () => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_status_remark',
+          })
+          return data
+        },
       },
       {
         id: 'authorId',
@@ -120,7 +115,12 @@ const Remarks = (props) => {
     [api],
   )
 
-  const onDelete = useCallback(() => null, [])
+  const onDelete = useCallback(async () => {
+    await api.post(URL_REMARK_DELETE, {
+      remarkIds: selectState,
+    })
+    setChange()
+  }, [api, selectState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -140,14 +140,17 @@ const Remarks = (props) => {
         </div>
       </div>
       {data.map((val, key) => (
-        <RowComponent key={key} {...val}>
+        <RowComponent
+          key={key}
+          selectState={selectState}
+          setSelectState={setSelectState}
+          {...val}
+        >
           <div className="flex h-full items-center">
             <div className="mr-12 font-medium">{val?.stageName}</div>
             <div className="mr-12 w-24">{val?.stageStatus}</div>
             <div className="flex items-center ml-auto">
-              <Button className="color-blue-1">
-                <Icon icon={editIcon} />
-              </Button>
+              <EditRemark {...val} />
               <LoadableBaseButton onClick={onDelete} className="color-blue-1">
                 <Icon icon={deleteIcon} />
               </LoadableBaseButton>

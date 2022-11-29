@@ -35,6 +35,7 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
   color: white;
   height: var(--form--elements_height);
   width: var(--form--elements_height);
+  min-width: var(--form--elements_height);
 `
 
 const UserSelect = (props) => {
