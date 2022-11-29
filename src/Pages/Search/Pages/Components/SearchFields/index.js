@@ -11,6 +11,7 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import { ApiContext } from '@/contants'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 
 const SearchFields = () => {
   const {
@@ -50,6 +51,7 @@ const SearchFields = () => {
             component: getField(dss_component_type),
             id: dss_attr_name,
             placeholder: dss_attr_label,
+            label: dss_attr_label,
             multiple: false,
             range,
           })
@@ -64,7 +66,7 @@ const SearchFields = () => {
   return (
     <FilterForm
       fields={parseDesign}
-      inputWrapper={EmptyInputWrapper}
+      inputWrapper={InputWrapper}
       value={filter}
       onInput={onInput}
     />
