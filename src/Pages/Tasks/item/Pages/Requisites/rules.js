@@ -33,6 +33,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import refsTransmission from '../../../../../RefsTransmission'
 import CustomValuesPipe from './PipeComponents/CustomValues'
 import FiltersPipe from './PipeComponents/Filters'
+import NoFieldType from '@/Components/NoFieldType'
 export const VisibleIf = (key, values) => ({
   condition: `${key} === "${values[0]}"`,
 })
@@ -206,6 +207,10 @@ export const propsTransmission = {
     getMultiply(accumulator)
     CustomValuesPipe(accumulator)
     FiltersPipe(accumulator)
+    accumulator.nextProps.filters = {
+      typeConfig: accumulator.backConfig.dss_component_reference[0]
+    }
+    console.log(accumulator)
     return accumulator.nextProps
   },
   Orgstructure: (accumulator) => {
@@ -247,5 +252,3 @@ export const propsTransmission = {
   // TextualBranch
   // Филиал
 }
-
-export const NoFieldType = () => <div>no fieldType</div>

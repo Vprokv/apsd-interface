@@ -93,7 +93,7 @@ export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/create'
 
 // SEARCH
 export const URL_SEARCH_ATTRIBUTES = '/apsd/search/attributes'
-export const URL_TYPE_CONFIG = '/apsd/type/config?limit=100&offset=0'
+export const URL_TYPE_CONFIG = '/apsd/type/config'
 export const URL_SEARCH_LIST = '/apsd/search?limit=101&offset=0'
 
 // INTEGRATION

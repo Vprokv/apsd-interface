@@ -16,7 +16,7 @@ import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import ListTable from '../../../components_ocean/Components/Tables/ListTable'
-import RowComponent from './Components/RowComponent'
+import RowComponent from '../../ListTableComponents/EmitValueRowComponent'
 import HeaderCell from '../../ListTableComponents/HeaderCell'
 import SortCellComponent from '../../ListTableComponents/SortCellComponent'
 import { FlatSelect } from '../../../components_ocean/Components/Tables/Plugins/selectable'
@@ -38,7 +38,6 @@ import { AddUserOptionsFullName } from '../UserSelect'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import useDefaultFilter from './useDefaultFilter'
 import PropTypes from 'prop-types'
-import log from 'tailwindcss/lib/util/log'
 
 const columns = [
   {
@@ -246,7 +245,7 @@ const OrgStructureWindow = (props) => {
     onInput(selectState, id)
     sendValue({ valueKeys, cache })
     onClose()
-  }, [onInput, onClose, selectState, id, valueKeys, cache])
+  }, [onInput, selectState, id, sendValue, valueKeys, cache, onClose])
 
   const handleSelectClick = useCallback(
     (obj) => () => {

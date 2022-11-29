@@ -45,6 +45,9 @@ export const SecondaryGreyButton = styled(BaseButton)`
 `
 
 export const LoadableSecondaryBlueButton = LoadableButton(SecondaryBlueButton)
+export const LoadableSecondaryOverBlueButton = LoadableButton(
+  SecondaryOverBlueButton,
+)
 export const LoadableBaseButton = LoadableButton(button)
 
 export const ButtonForIcon = styled.button`
