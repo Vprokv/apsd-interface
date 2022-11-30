@@ -14,13 +14,17 @@ import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import {StateContext} from "@/Pages/Tasks/item/Pages/Links/constans";
+import {
+  StateContext,
+  UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
   const { id } = useParams()
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
+  const update = useContext(UpdateContext)
   const [files, setFiles] = useState([])
   const onFileInput = useCallback(
     (file) => {
@@ -29,19 +33,25 @@ const Files = (props) => {
     [files],
   )
 
-  const save = useCallback(() => {
-    api.post(URL_LINK_CREATE, {
+  const save = useCallback(async () => {
+    await api.post(URL_LINK_CREATE, {
       linkObjects: files.map(
-        ({ file: [{ dsc_content }], ...documentPayload }) => ({
+        ({
+          file: [{ dsc_content, dss_content_name }],
+          ...documentPayload
+        }) => ({
+          ...documentPayload,
           parentId: id,
+          documentType: dss_content_name,
           contentId: dsc_content,
           authorEmpl: userObject.r_object_id,
           authorName: userObject.dss_user_name,
-          ...documentPayload,
         }),
       ),
     })
-  }, [api, files, id, userObject])
+    update()
+    close()
+  }, [api, files, id, userObject, close, update])
   const columns = useMemo(
     () => [
       {

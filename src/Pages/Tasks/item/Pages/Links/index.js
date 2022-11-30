@@ -9,9 +9,8 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
-import EditIcon from '@/Icons/editIcon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
@@ -23,6 +22,7 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
 import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
 import DownloadIcon from '@/Icons/DownloadIcon'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -81,35 +81,6 @@ const columns = [
   },
 ]
 
-const searchValues = [
-  {
-    linkId: 'asasa',
-    contentId: 'axdsdsasa',
-    linkType: 'Во исполнение',
-    stageName: 'asdfsvsasa',
-    linkDate: '18.11.2022',
-    authorFullName: 'asasas',
-    description: 'asasdsdcda',
-    regNumber: 'ascsdcasa',
-    regDate: 'assdcsdcdasa',
-    documentTypeLabel: 'Договор 2',
-    comment: 'csdcsdc',
-  },
-  {
-    linkId: 'asqwqwqwqasa',
-    contentId: 'asasa',
-    linkType: 'Подписание',
-    stageName: 'asasa',
-    linkDate: '18.11.2022',
-    authorFullName: 'asasa',
-    description: 'asasa',
-    regNumber: 'asasa',
-    regDate: 'asasa',
-    documentTypeLabel: 'Договор',
-    comment: 'asasa',
-  },
-]
-
 const Links = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -123,8 +94,16 @@ const Links = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [], change = true },
+    tabState: { data = [], change },
   } = tabItemState
+
+  const setChange = useCallback(
+    () =>
+      setTabState(({ change }) => {
+        return { change: !change }
+      }),
+    [setTabState],
+  )
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_LINK_LIST, {
@@ -178,47 +157,49 @@ const Links = () => {
   }, [api, selectState])
 
   return (
-    <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-      <div className="flex items-center py-4 form-element-sizes-32">
-        <FilterForm
-          className="mr-2"
-          value={filter}
-          onInput={setFilterValue}
-          fields={fields}
-          inputWrapper={EmptyInputWrapper}
-        />
-        <div className="flex items-center ml-auto">
-          <LinksWindow />
-          <ButtonForIcon className="mr-2 color-text-secondary">
-            <Icon icon={DownloadIcon} />
-          </ButtonForIcon>
-          <EditLinksWindow value={selectState} />
-          <ButtonForIcon
-            onClick={onDelete}
-            disabled={!selectState.length}
-            className="color-text-secondary"
-          >
-            <Icon icon={DeleteIcon} />
-          </ButtonForIcon>
+    <UpdateContext.Provider value={setChange}>
+      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+        <div className="flex items-center py-4 form-element-sizes-32">
+          <FilterForm
+            className="mr-2"
+            value={filter}
+            onInput={setFilterValue}
+            fields={fields}
+            inputWrapper={EmptyInputWrapper}
+          />
+          <div className="flex items-center ml-auto">
+            <LinksWindow />
+            <ButtonForIcon className="mr-2 color-text-secondary">
+              <Icon icon={DownloadIcon} />
+            </ButtonForIcon>
+            <EditLinksWindow value={selectState} />
+            <ButtonForIcon
+              onClick={onDelete}
+              disabled={!selectState.length}
+              className="color-text-secondary"
+            >
+              <Icon icon={DeleteIcon} />
+            </ButtonForIcon>
+          </div>
         </div>
+        <ListTable
+          rowComponent={useMemo(
+            () => (props) =>
+              <RowComponent onDoubleClick={() => null} {...props} />,
+            [],
+          )}
+          value={data}
+          columns={columns}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          selectState={selectState}
+          onSelect={setSelectState}
+          sortQuery={sortQuery}
+          onSort={onSort}
+          valueKey="id"
+        />
       </div>
-      <ListTable
-        rowComponent={useMemo(
-          () => (props) =>
-            <RowComponent onDoubleClick={() => null} {...props} />,
-          [],
-        )}
-        value={data}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        selectState={selectState}
-        onSelect={setSelectState}
-        sortQuery={sortQuery}
-        onSort={onSort}
-        valueKey="id"
-      />
-    </div>
+    </UpdateContext.Provider>
   )
 }
 

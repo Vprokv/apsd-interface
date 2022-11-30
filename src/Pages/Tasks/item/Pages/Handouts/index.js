@@ -1,14 +1,7 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext, TASK_ITEM_HANDOUTS } from '@/contants'
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_ENTITY_LIST, URL_HANDOUTS_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -17,19 +10,14 @@ import { FilterForm } from './styles'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import Icon from '@Components/Components/Icon'
-import searchIcon from '@/Icons/searchIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import LeafTableComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent'
-import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
-import CheckBox from '@/Components/Inputs/CheckBox'
 import CreateHandoutsWindow from '@/Pages/Tasks/item/Pages/Handouts/Components/CreateHandoutsWindow'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
-import log from 'tailwindcss/lib/util/log'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -167,7 +155,7 @@ const Handouts = (props) => {
         },
       },
     ],
-    [],
+    [api],
   )
 
   const onTableUpdate = useCallback(
