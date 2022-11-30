@@ -28,28 +28,9 @@ const columns = [
     id: 'eventLabel',
     label: 'Событие',
     component: ({ ParentValue: { eventLabel } }) => (
-      <BaseCell value={eventLabel} className="flex items-center min-h-full" />
+      <BaseCell value={eventLabel} className="flex items-center h-10" />
     ),
-    sizes: 205,
-  },
-  {
-    id: 'stageIteration',
-    label: 'Внейшний цикл',
-    component: ({ ParentValue: { stageIteration } }) => (
-      <BaseCell
-        value={stageIteration?.toString() || ''}
-        className="flex items-center h-10"
-      />
-    ),
-    sizes: baseCellSize,
-  },
-  {
-    id: 'auditEventStatuses',
-    label: 'Состояние',
-    component: ({ ParentValue: { eventStatus } }) => (
-      <BaseCell value={eventStatus} className="flex items-center h-full" />
-    ),
-    sizes: baseCellSize,
+    sizes: 250,
   },
   {
     id: 'performerId',
@@ -64,7 +45,7 @@ const columns = [
       }`
       return <BaseCell value={fio} className="flex items-center h-full" />
     },
-    sizes: baseCellSize,
+    sizes: 250,
   },
   {
     id: 'fromDate',
@@ -72,7 +53,7 @@ const columns = [
     component: ({ ParentValue: { eventDate } }) => (
       <BaseCell value={eventDate} className="flex items-center h-full" />
     ),
-    sizes: baseCellSize,
+    sizes: 250,
   },
   {
     id: 'description',
@@ -161,7 +142,6 @@ const History = () => {
     }
 
     return { ...item, fromDate, toDate: fromDate }
-    // return {...item, fromDate: '2022-09-01T06:10:44.395Z', toDate: '2022-09-04T06:10:44.395Z'}
   }, [filter])
 
   useEffect(() => {

@@ -29,6 +29,7 @@ import CreateHandoutsWindow from '@/Pages/Tasks/item/Pages/Handouts/Components/C
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
+import log from 'tailwindcss/lib/util/log'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -51,13 +52,13 @@ const columns = [
     id: 'archivistFullName',
     label: 'Архивариус',
     component: BaseCell,
-    sizes: 150,
+    sizes: 200,
   },
   {
     id: 'workerFullName',
     label: 'Сотрудник',
     component: BaseCell,
-    sizes: 150,
+    sizes: 200,
   },
   {
     id: 'departmentName',
@@ -79,7 +80,6 @@ const Handouts = (props) => {
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
   const [selectState, setSelectState] = useState([])
-  const { search } = useLocation()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_HANDOUTS,
@@ -87,9 +87,7 @@ const Handouts = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [] },
-    loadDataHelper,
-    shouldReloadDataFlag,
+    tabState: { data = [], change },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -99,56 +97,45 @@ const Handouts = (props) => {
     defaultLimit: 10,
   })
 
-  const loadData = useMemo(() => {
+  const setChange = useCallback(
+    () =>
+      setTabState(({ change }) => {
+        return { change: !change }
+      }),
+    [setTabState],
+  )
+
+  const loadData = useCallback(async () => {
     const { limit, offset } = paginationState
-    return loadDataHelper(async () => {
-      const { data } = await api.post(
-        URL_HANDOUTS_LIST,
-        {
-          documentId: id,
-          filter: {
-            ...filterValue,
-          },
-          ...(search
-            ? search
-                .replace('?', '')
-                .split('&')
-                .reduce(
-                  (acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc.filter[key] = JSON.parse(value)
-                    return acc
-                  },
-                  { filter: {} },
-                )
-            : {}),
-        },
-        {
-          params: {
-            limit,
-            offset,
-            sort: {
-              property: sortQuery.key,
-              direction: sortQuery.direction,
-            },
+    const { data } = await api.post(
+      URL_HANDOUTS_LIST,
+      {
+        documentId: id,
+        filter: filterValue,
+      },
+      {
+        params: {
+          limit,
+          offset,
+          sort: {
+            property: sortQuery.key,
+            direction: sortQuery.direction,
           },
         },
-      )
-      return data
-    })
-  }, [sortQuery, api, loadDataHelper, paginationState, search, filterValue, id])
+      },
+    )
+    return data
+  }, [
+    api,
+    filterValue,
+    id,
+    paginationState,
+    sortQuery.direction,
+    sortQuery.key,
+    change,
+  ])
 
-  const refLoadDataFunction = useRef(loadData)
-
-  // todo замена useEffect и refLoadDataFunction
-  // useAutoReload(loadData, tabItemState)
-
-  useEffect(() => {
-    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
-      loadData()
-    }
-    refLoadDataFunction.current = loadData
-  }, [loadData, shouldReloadDataFlag])
+  useAutoReload(loadData, tabItemState)
 
   const fields = useMemo(
     () => [
@@ -188,14 +175,6 @@ const Handouts = (props) => {
     [setTabState],
   )
 
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
-
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       <div className="flex items-center form-element-sizes-32 w-full mb-4">
@@ -206,7 +185,7 @@ const Handouts = (props) => {
           fields={fields}
           inputWrapper={EmptyInputWrapper}
         />
-        <CreateHandoutsWindow />
+        <CreateHandoutsWindow setChange={setChange} />
       </div>
       <ListTable
         // key={change}
