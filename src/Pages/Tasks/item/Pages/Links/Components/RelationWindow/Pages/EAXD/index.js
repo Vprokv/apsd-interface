@@ -22,7 +22,10 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import Input from '@/Components/Fields/Input'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import {SaveContext, StateContext} from '@/Pages/Tasks/item/Pages/Links/constans'
+import {
+  SaveContext,
+  StateContext, UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Links/constans'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 const fields = [
@@ -55,8 +58,9 @@ const DocumentEAXD = (props) => {
   const [search, setSearch] = useState('')
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
   const close = useContext(StateContext)
+  const update = useContext(UpdateContext)
 
-  const onClick = useCallback(async() => {
+  const onClick = useCallback(async () => {
     const { data } = await api.post(URL_CONTENT_SEARCH, {
       eehdBarcode: search,
       documentId: id,
@@ -156,7 +160,7 @@ const DocumentEAXD = (props) => {
   }, [filter, formFields])
 
   const create = useCallback(async () => {
-    const { comment, linkType, ...item } = filter
+    const { comment, linkType, reg2, SUCCESS, ...item } = filter
     const {
       data: { id: contentId },
     } = await api.post(URL_LINK_CREATE_RELATION, {
@@ -181,6 +185,8 @@ const DocumentEAXD = (props) => {
         },
       ],
     })
+    update()
+    close()
   }, [api, filter, id, type, r_object_id, dss_user_name])
 
   return (

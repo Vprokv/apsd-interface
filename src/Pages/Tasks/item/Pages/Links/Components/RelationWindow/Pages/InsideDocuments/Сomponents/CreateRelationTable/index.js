@@ -16,14 +16,14 @@ const CreateRelationTable = ({ value, setLink }) => {
       {
         id: 'regNumber',
         label: 'Шифр/Рег.номер',
-        sizes: 250,
+        sizes: 300,
         component: ({
           ParentValue: {
             values: { dss_reg_number = '', r_creation_date },
           },
         }) => (
           <BaseCell
-            className="h-12"
+            className="h-12 flex items-center"
             value={`${dss_reg_number} от ${r_creation_date}`}
           />
         ),
@@ -36,8 +36,13 @@ const CreateRelationTable = ({ value, setLink }) => {
           ParentValue: {
             valuesCustom: { dss_description },
           },
-        }) => <BaseCell className="h-12" value={dss_description} />,
-        sizes: 215,
+        }) => (
+          <BaseCell
+            className="h-12 flex items-center"
+            value={dss_description}
+          />
+        ),
+        sizes: 250,
       },
       {
         label: 'Тип связи',
@@ -61,7 +66,7 @@ const CreateRelationTable = ({ value, setLink }) => {
             }}
           />
         ),
-        sizes: 220,
+        sizes: 250,
       },
       {
         id: 'comment',
@@ -72,7 +77,7 @@ const CreateRelationTable = ({ value, setLink }) => {
           alignItems: 'center',
           marginRight: '0.5rem',
         },
-        sizes: 200,
+        sizes: 250,
       },
     ],
     [api],

@@ -27,8 +27,6 @@ const SearchOperatorSelector = (type) =>
           [fullValue, id, onInput],
         )
 
-        console.log(type, 'type')
-
         return (
           <OperatorContainer className={className} style={style}>
             <Component

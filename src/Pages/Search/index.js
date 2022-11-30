@@ -13,7 +13,6 @@ import Tasks from '@/Pages/Search/Pages/TaskSearch/PageTaskSelect'
 import { MultipleContext } from '@/Pages/Search/constans'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
-
 export const SearchComponent = ({ multiple, setSelected, selected }) => {
   useTabItem({
     stateId: ITEM_DOCUMENT,
