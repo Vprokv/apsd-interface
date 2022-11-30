@@ -169,8 +169,8 @@ const DocumentEAXD = (props) => {
       linkObjects: [
         {
           parentId: id,
-          documentType: type,
           contentId,
+          documentType: type,
           regNumber: filter.dssNumber,
           regDate: filter.dssNumber,
           description: filter.dssDescription,

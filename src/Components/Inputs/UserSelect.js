@@ -14,7 +14,7 @@ export const AddUserOptionsFullName = (v = {}) => ({
   fullName: `${v.lastName} ${v.firstName} ${v.middleName}`,
   fullDescription: v.fullDescription
     ? v.fullDescription
-    : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`,
+    : `${v.lastName} ${v.firstName} ${v.middleName} , ${v.position}, ${v.department}`,
 })
 
 export const baseLoadFunction = async ({ api, filter, search }) => {
