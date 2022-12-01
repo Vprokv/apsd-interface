@@ -75,13 +75,12 @@ const Remarks = (props) => {
   }, [setTabState, tabState])
 
   const loadData = useCallback(async () => {
-    // const { data } = await api.post(URL_REMARK_LIST, {
-    //   documentId: id,
-    //   filter,
-    // })
-    //
-    // return data
-    return mockData
+    const { data } = await api.post(URL_REMARK_LIST, {
+      documentId: id,
+      filter,
+    })
+
+    return data
   }, [api, id, type, change])
 
   useAutoReload(loadData, tabItemState)

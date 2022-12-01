@@ -160,8 +160,6 @@ const DocumentEAXD = (props) => {
     )
   }, [filter, formFields])
 
-  console.log(filter, 'filter')
-
   const create = useCallback(async () => {
     const {
       comment,

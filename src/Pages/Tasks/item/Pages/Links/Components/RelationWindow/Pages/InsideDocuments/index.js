@@ -49,8 +49,6 @@ const InsideDocument = () => {
     [setTabState],
   )
 
-  console.log(value, 'value')
-
   const linkObjects = useMemo(
     () =>
       value.map(({ id, comment, linkType, type, valuesCustom }) => {
@@ -60,7 +58,6 @@ const InsideDocument = () => {
           documentType: type,
           regNumber: valuesCustom.dss_reg_number,
           regDate: valuesCustom.r_creation_date,
-          // regDate: "30.11.2022 15:26:00", //TODO
           description: valuesCustom.dss_description,
           authorEmpl: valuesCustom.dsid_author_empl.emplId,
           authorName: valuesCustom.dsid_author_empl.userName,
