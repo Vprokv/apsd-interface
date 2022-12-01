@@ -28,6 +28,7 @@ import {
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import AutoLoadableSelect from '../../../../Components/Inputs/AutoLoadableSelect'
 
 export const tableConfig = [
   {
@@ -144,13 +145,12 @@ const DocumentSearch = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
-  console.log(filter);
 
   const fields = useMemo(
     () => [
       {
         id: 'type',
-        component: LoadableSelect,
+        component: AutoLoadableSelect,
         placeholder: 'Выберите тип документа',
         label: 'Выберите тип документа',
         valueKey: 'typeName',
