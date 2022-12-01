@@ -24,7 +24,8 @@ import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import {
   SaveContext,
-  StateContext, UpdateContext,
+  StateContext,
+  UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Links/constans'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 
@@ -159,12 +160,36 @@ const DocumentEAXD = (props) => {
     )
   }, [filter, formFields])
 
+  console.log(filter, 'filter')
+
   const create = useCallback(async () => {
-    const { comment, linkType, reg2, SUCCESS, ...item } = filter
+    const {
+      comment,
+      linkType,
+      eehdBarcode,
+      dssNumber,
+      eehdDocumentType,
+      eehdDocumentId,
+      dssDescription,
+      dsdtDocumentDate,
+      dssAuthorFio,
+      dssFilename,
+      content,
+      status,
+    } = filter
     const {
       data: { id: contentId },
     } = await api.post(URL_LINK_CREATE_RELATION, {
-      ...item,
+      eehdBarcode,
+      dssNumber,
+      eehdDocumentType,
+      eehdDocumentId,
+      dssDescription,
+      dsdtDocumentDate,
+      dssAuthorFio,
+      dssFilename,
+      content,
+      status,
       documentId: id,
       documentType: type,
     })
@@ -175,11 +200,11 @@ const DocumentEAXD = (props) => {
           parentId: id,
           contentId,
           documentType: type,
-          regNumber: filter.dssNumber,
-          regDate: filter.dssNumber,
-          description: filter.dssDescription,
-          authorEmpl: r_object_id, //- id текущего пользователя
-          authorName: dss_user_name, //- логин текущего пользователя
+          regNumber: dssNumber,
+          regDate: dsdtDocumentDate,
+          description: dssDescription,
+          authorEmpl: r_object_id,
+          authorName: dss_user_name,
           comment,
           linkType,
         },

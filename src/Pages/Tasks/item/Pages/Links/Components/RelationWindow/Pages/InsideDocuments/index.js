@@ -9,6 +9,7 @@ import { ApiContext, INSIDE_DOCUMENT_WINDOW, SEARCH_PAGE } from '@/contants'
 import { URL_LINK_CREATE } from '@/ApiList'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/SearchComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import log from "tailwindcss/lib/util/log";
 
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
   value ? (
@@ -48,6 +49,8 @@ const InsideDocument = () => {
     [setTabState],
   )
 
+  console.log(value, 'value')
+
   const linkObjects = useMemo(
     () =>
       value.map(({ id, comment, linkType, type, valuesCustom }) => {
@@ -56,12 +59,12 @@ const InsideDocument = () => {
           childId: id,
           documentType: type,
           regNumber: valuesCustom.dss_reg_number,
-          // regDate: valuesCustom.r_creation_date,
-          regDate: "30.11.2022 15:26:00", //TODO
+          regDate: valuesCustom.r_creation_date,
+          // regDate: "30.11.2022 15:26:00", //TODO
           description: valuesCustom.dss_description,
           authorEmpl: valuesCustom.dsid_author_empl.emplId,
           authorName: valuesCustom.dsid_author_empl.userName,
-          stageName: valuesCustom.status,
+          stageName: valuesCustom.dss_status,
           comment,
           linkType,
         }

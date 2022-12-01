@@ -57,17 +57,20 @@ const DocumentSelect = ({
   })
 
   const renderValue = useMemo(() => {
-    const pattern = displayName.match(/[A-z_]+/gi)
-    const getLabel = (value) => {
-      const obj = cache.get(value)
-      return pattern.map((key) => obj.values[key]).join(' ')
-    }
-    if (Array.isArray(selectedState)) {
-      return selectedState.map(
-        returnOption ? (v) => getLabel(v[valueKey]) : (v) => v,
-      )
-    } else {
-      return getLabel(returnOption ? selectedState[valueKey] : selectedState)
+    if (selectedState) {
+      const pattern = displayName.match(/[A-z_]+/gi)
+      const getLabel = (value) => {
+        const obj = cache.get(value)
+        return pattern.map((key) => obj.values[key]).join(' ')
+      }
+
+      if (Array.isArray(selectedState)) {
+        return selectedState.map(
+          returnOption ? (v) => getLabel(v[valueKey]) : (v) => v,
+        )
+      } else {
+        return getLabel(returnOption ? selectedState[valueKey] : selectedState)
+      }
     }
   }, [cache, displayName, returnOption, selectedState, valueKey])
 
@@ -150,9 +153,11 @@ const DocumentSelect = ({
               <ScrollBar className="pr-6 py-4">
                 {useMemo(
                   () =>
-                    (Array.isArray(renderValue)
-                      ? renderValue
-                      : [renderValue]
+                    (renderValue
+                      ? Array.isArray(renderValue)
+                        ? renderValue
+                        : [renderValue]
+                      : []
                     ).map((key) => (
                       <div
                         className="bg-form-input-color p-3 flex mb-2 min-"
@@ -172,7 +177,7 @@ const DocumentSelect = ({
                         </Button>
                       </div>
                     )),
-                  [onRemoveSelectedValue, selectedState, value],
+                  [onRemoveSelectedValue, renderValue, value],
                 )}
               </ScrollBar>
             </SelectedItemsContainer>

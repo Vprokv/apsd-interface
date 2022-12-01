@@ -19,6 +19,7 @@ import Icon from '@Components/Components/Icon'
 import {LoadContext, TypeContext} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import log from "tailwindcss/lib/util/log";
 import EmptyInput from "@/Pages/Tasks/item/Pages/Links/Components/Input/style";
+import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
 
 const fields = [
   {
@@ -60,7 +61,7 @@ const fields = [
 
 const CreateApprovalSheetWindow = ({ stageType }) => {
   const api = useContext(ApiContext)
-  const { id } = useParams()
+  const id = useContext(DocumentIdContext)
   const loadData = useContext(LoadContext)
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})

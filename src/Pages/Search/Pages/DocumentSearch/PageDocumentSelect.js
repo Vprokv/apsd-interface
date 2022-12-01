@@ -13,6 +13,13 @@ import { SecondaryBlueButton } from '@/Components/Button'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
+const defaultOptions = [
+  {
+    typeName: 'ddt_project_calc_type_doc',
+    typeLabel: 'Том',
+  },
+]
+
 const defaultSearchState = {}
 
 const PageDocumentSelect = ({ props }) => {
@@ -50,6 +57,7 @@ const PageDocumentSelect = ({ props }) => {
       filter={filter}
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
+      options={defaultOptions}
     >
       {(closeTable) => (
         <>
