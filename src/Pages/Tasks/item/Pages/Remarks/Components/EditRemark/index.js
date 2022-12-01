@@ -26,6 +26,7 @@ import Icon from '@Components/Components/Icon'
 import editIcon from '@/Icons/editIcon'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const EditRemark = ({
   remarkText,
@@ -36,11 +37,11 @@ const EditRemark = ({
 }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
+  const update = useContext(UpdateContext)
   const [open, setOpenState] = useState(false)
   const [filter, setFilterValue] = useState({
     text: remarkText,
     ndtLinks,
-    remarkTypeId: remarkType,
     setRemark,
   })
   const changeModalState = useCallback(
@@ -99,7 +100,9 @@ const EditRemark = ({
       }),
       ...other,
     })
-  }, [api, filter, remarkId])
+    update()
+    changeModalState(false)()
+  }, [api, changeModalState, filter, remarkId])
 
   return (
     <div>

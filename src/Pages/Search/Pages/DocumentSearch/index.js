@@ -144,7 +144,6 @@ const DocumentSearch = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
-  console.log(filter);
 
   const fields = useMemo(
     () => [
@@ -224,13 +223,11 @@ const DocumentSearch = ({
     const { type, ...filters } = filter
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        if (value) {
-          acc.push({
-            attr: key,
-            operator: operator || defaultOperators[key],
-            arguments: [value],
-          })
-        }
+        acc.push({
+          attr: key,
+          operator: operator || defaultOperators[key],
+          arguments: [value],
+        })
         return acc
       },
       [],

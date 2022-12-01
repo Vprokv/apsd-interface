@@ -35,7 +35,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'number',
+    valueKey: 'remarkId',
   },
 }
 
@@ -100,11 +100,12 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
   const data = useMemo(() => {
     const {
       remarkMemberFullName,
-      number,
+      remarkId,
       remarkMemberPosition,
       remarkType,
       remarkText,
       setRemark,
+      number,
       ...item
     } = props
 
@@ -112,17 +113,16 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
       {
         itsRemark: true,
         remarkMemberFullName,
+        remarkId,
         number,
         remarkMemberPosition,
         remarkType,
         remarkText,
         setRemark,
       },
-      { ...item, remarkText, number },
+      { ...item, remarkText, remarkId },
     ]
   }, [props])
-
-  console.log(data, 'data')
 
   return (
     <>
