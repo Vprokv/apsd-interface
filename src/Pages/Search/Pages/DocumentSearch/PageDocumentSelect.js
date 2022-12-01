@@ -51,21 +51,23 @@ const PageDocumentSelect = ({ props }) => {
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
     >
-      {(onClick) => (
-        <ScrollBar className="px-4 ">
+      {(closeTable) => (
+        <>
           <SecondaryBlueButton
-            onClick={onClick}
+            onClick={closeTable}
             className="ml-auto form-element-sizes-32"
           >
             Изменить условие
           </SecondaryBlueButton>
-          <ListTable
-            rowComponent={rowComponent}
-            headerCellComponent={HeaderCell}
-            columns={tableConfig}
-            value={searchState.results}
-          />
-        </ScrollBar>
+          <ScrollBar className="px-4 ">
+            <ListTable
+              rowComponent={rowComponent}
+              headerCellComponent={HeaderCell}
+              columns={tableConfig}
+              value={searchState.results}
+            />
+          </ScrollBar>
+        </>
       )}
     </DocumentSearch>
   )

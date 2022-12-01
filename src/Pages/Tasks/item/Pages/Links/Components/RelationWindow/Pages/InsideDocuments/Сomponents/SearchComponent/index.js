@@ -9,8 +9,6 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import { SEARCH_PAGE } from '@/contants'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
@@ -60,24 +58,26 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
     >
-      {(onClick) => (
-        <ScrollBar className="px-4 ">
+      {(closeTable) => (
+        <>
           <SecondaryBlueButton
-            onClick={onClick}
+            onClick={closeTable}
             className="ml-auto form-element-sizes-32"
           >
             Изменить условие
           </SecondaryBlueButton>
-          <ListTable
-            rowComponent={rowComponent}
-            headerCellComponent={HeaderCell}
-            columns={tableConfig}
-            value={searchState.results}
-            selectState={selected}
-            onSelect={updateTabState('selected')}
-            plugins={plugins}
-          />
-        </ScrollBar>
+          <ScrollBar className="px-4 ">
+            <ListTable
+              rowComponent={rowComponent}
+              headerCellComponent={HeaderCell}
+              columns={tableConfig}
+              value={searchState.results}
+              selectState={selected}
+              onSelect={updateTabState('selected')}
+              plugins={plugins}
+            />
+          </ScrollBar>
+        </>
       )}
     </DocumentSearch>
   )

@@ -208,9 +208,13 @@ export const propsTransmission = {
     CustomValuesPipe(accumulator)
     FiltersPipe(accumulator)
     accumulator.nextProps.filters = {
-      typeConfig: accumulator.backConfig.dss_component_reference[0]
+      typeConfig: accumulator.backConfig.dss_component_reference[0],
     }
-    console.log(accumulator)
+    accumulator.nextProps.displayName =
+      accumulator.backConfig.dss_display_template
+    accumulator.nextProps.valueKey = 'id'
+    accumulator.nextProps.labelKey = 'displayName'
+    accumulator.nextProps.refKey = 'documentSelect'
     return accumulator.nextProps
   },
   Orgstructure: (accumulator) => {
