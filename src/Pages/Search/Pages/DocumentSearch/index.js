@@ -89,7 +89,7 @@ export const tableConfig = [
         values: { dsdt_creation_date = '' },
       },
     }) => (
-      <BaseCell className="h-10 flex " value={dsdt_creation_date} /> //items-center
+      <BaseCell className="h-10 flex " value={dsdt_creation_date} /> // items-center
     ),
   },
   {
@@ -149,7 +149,7 @@ const DocumentSearch = ({
         id: 'type',
         component: LoadableSelect,
         placeholder: 'Том',
-        label: 'Выберете тип документа',
+        label: 'Выберите тип документа',
         valueKey: 'typeName',
         labelKey: 'typeLabel',
         loadFunction: documentTypeLoadFunction(api),
@@ -176,7 +176,9 @@ const DocumentSearch = ({
 
           return {
             ...loadData,
-            component: SearchOperatorSelector(getField(dss_component_type)),
+            component: SearchOperatorSelector(dss_component_type)(
+              getField(dss_component_type),
+            ),
             id: dss_attr_name,
             placeholder: dss_attr_label,
             label: dss_attr_label,
@@ -218,24 +220,26 @@ const DocumentSearch = ({
     const { type, ...filters } = filter
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
+        if (value) {
+          acc.push({
+            attr: key,
+            operator: operator || defaultOperators[key],
+            arguments: [value],
+          })
+        }
         return acc
       },
       [],
     )
 
     const { data } = await api.post(URL_SEARCH_LIST, {
-      types: [type || 'ddt_project_calc_type_doc'],
+      types: [type],
       inVersions: false,
       queryItems,
     })
     setSearchState(data)
     setRenderTable(true)
-  }, [api, defaultOperators, filter])
+  }, [api, defaultOperators, filter, setSearchState])
 
   const onRemove = useCallback(() => setFilter({}), [])
 
@@ -247,11 +251,11 @@ const DocumentSearch = ({
   }, [filter])
 
   return (
-    <div className="flex w-full p-6">
+    <div className="flex flex-col w-full p-6 overflow-hidden">
       {renderTable ? (
         children(() => setRenderTable(false))
       ) : (
-        <>
+        <div className="flex overflow-hidden">
           <Form
             className="w-full grid grid-row-gap-5 h-min mr-4"
             value={filter}
@@ -280,7 +284,7 @@ const DocumentSearch = ({
               Экспорт
             </SecondaryGreyButton>
           </div>
-        </>
+        </div>
       )}
     </div>
   )

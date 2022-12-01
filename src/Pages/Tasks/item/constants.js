@@ -11,7 +11,7 @@ import React from 'react'
 import { ITEM_DOCUMENT } from '@/contants'
 import PrintIcon from './Icons/PrintIcon.svg'
 import UploadDoc from './Icons/UploadDoc.svg'
-import Remarks from "@/Pages/Tasks/item/Pages/Remarks";
+import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 

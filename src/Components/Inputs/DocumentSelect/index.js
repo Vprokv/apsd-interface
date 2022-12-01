@@ -21,10 +21,17 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import Button from '@/Components/Button'
+import Button, { SecondaryBlueButton } from '@/Components/Button'
 import closeIcon from '@/Icons/closeIcon'
+import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 
-const DocumentSelect = ({ className, filters, ...props }) => {
+const DocumentSelect = ({
+  className,
+  filters,
+  options,
+  displayName,
+  ...props
+}) => {
   const { multiple, returnOption, valueKey, value, onInput, id } = props
   const [open, setOpen] = useState(false)
   const [searchState, setSearchState] = useState({})
@@ -36,6 +43,34 @@ const DocumentSelect = ({ className, filters, ...props }) => {
     },
     [],
   )
+
+  const { cache } = useLoadableCache({
+    ...props,
+    optionsMap: useMemo(
+      () =>
+        [...options, ...(searchState.results || [])].reduce((acc, item) => {
+          acc[item[valueKey]] = item
+          return acc
+        }, {}),
+      [options, searchState.results, valueKey],
+    ),
+  })
+
+  const renderValue = useMemo(() => {
+    const pattern = displayName.match(/[A-z_]+/gi)
+    const getLabel = (value) => {
+      const obj = cache.get(value)
+      return pattern.map((key) => obj.values[key]).join(' ')
+    }
+    if (Array.isArray(selectedState)) {
+      return selectedState.map(
+        returnOption ? (v) => getLabel(v[valueKey]) : (v) => v,
+      )
+    } else {
+      return getLabel(returnOption ? selectedState[valueKey] : selectedState)
+    }
+  }, [cache, displayName, returnOption, selectedState, valueKey])
+
   const openModalWindow = useCallback(() => {
     changeModalState(true)()
     setSelectedState(value)
@@ -76,6 +111,28 @@ const DocumentSelect = ({ className, filters, ...props }) => {
     setSelectedState(undefined)
   }, [onInput, selectedState, id, changeModalState])
 
+  const tableSettings = useMemo(
+    () =>
+      multiple
+        ? {
+            plugins: {
+              selectPlugin: {
+                driver: FlatSelect,
+                component: CheckBox,
+                style: { margin: 'auto 0' },
+                valueKey,
+                returnObjects: returnOption,
+              },
+            },
+          }
+        : {
+            rowComponent: (props) => (
+              <RowComponent onClick={handleSelectClick} {...props} />
+            ),
+          },
+    [handleSelectClick, multiple, returnOption, valueKey],
+  )
+
   return (
     <div className={`${className} flex items-center w-full`}>
       <Select {...props} />
@@ -93,9 +150,9 @@ const DocumentSelect = ({ className, filters, ...props }) => {
               <ScrollBar className="pr-6 py-4">
                 {useMemo(
                   () =>
-                    (Array.isArray(selectedState)
-                      ? selectedState
-                      : [selectedState]
+                    (Array.isArray(renderValue)
+                      ? renderValue
+                      : [renderValue]
                     ).map((key) => (
                       <div
                         className="bg-form-input-color p-3 flex mb-2 min-"
@@ -125,39 +182,26 @@ const DocumentSelect = ({ className, filters, ...props }) => {
               filter={filter}
               setFilter={setFilter}
             >
-              <ScrollBar className="px-4">
-                <ListTable
-                  {...useMemo(
-                    () =>
-                      multiple
-                        ? {
-                            plugins: {
-                              selectPlugin: {
-                                driver: FlatSelect,
-                                component: CheckBox,
-                                style: { margin: 'auto 0' },
-                                valueKey,
-                                returnObjects: returnOption,
-                              },
-                            },
-                          }
-                        : {
-                            rowComponent: (props) => (
-                              <RowComponent
-                                onClick={handleSelectClick}
-                                {...props}
-                              />
-                            ),
-                          },
-                    [handleSelectClick, multiple, returnOption, valueKey],
-                  )}
-                  headerCellComponent={HeaderCell}
-                  columns={tableConfig}
-                  value={searchState.results}
-                  selectState={selectedState}
-                  onSelect={setSelectedState}
-                />
-              </ScrollBar>
+              {(closeTable) => (
+                <>
+                  <SecondaryBlueButton
+                    onClick={closeTable}
+                    className="ml-auto form-element-sizes-32"
+                  >
+                    Изменить условие
+                  </SecondaryBlueButton>
+                  <ScrollBar className="px-4">
+                    <ListTable
+                      {...tableSettings}
+                      headerCellComponent={HeaderCell}
+                      columns={tableConfig}
+                      value={searchState.results}
+                      selectState={selectedState}
+                      onSelect={setSelectedState}
+                    />
+                  </ScrollBar>
+                </>
+              )}
             </Documents>
           </div>
           <div className="flex items-center justify-end">

@@ -1,14 +1,14 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { SearchComponent } from '@/Pages/Search'
 import ScrollBar from '@Components/Components/ScrollBar'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable'
-import { StateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
-import { StateRelationContext } from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/constans'
+import {StateContext, UpdateContext} from '@/Pages/Tasks/item/Pages/Links/constans'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from '@/contants'
+import { ApiContext, INSIDE_DOCUMENT_WINDOW, SEARCH_PAGE } from '@/contants'
 import { URL_LINK_CREATE } from '@/ApiList'
+import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/SearchComponent'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
   value ? (
@@ -28,10 +28,25 @@ const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
 
 const InsideDocument = () => {
   const api = useContext(ApiContext)
-  const [selected, setSelected] = useState()
   const { id: parentId } = useParams()
-  const [value, setValue] = useState([])
   const close = useContext(StateContext)
+  const update = useContext(UpdateContext)
+
+  const tabItemState = useTabItem({
+    stateId: INSIDE_DOCUMENT_WINDOW,
+  })
+
+  const {
+    tabState: { selected = [], value = [] },
+    setTabState,
+  } = tabItemState
+
+  const updateTabState = useCallback(
+    (id) => (state) => {
+      setTabState({ [id]: state })
+    },
+    [setTabState],
+  )
 
   const linkObjects = useMemo(
     () =>
@@ -41,7 +56,8 @@ const InsideDocument = () => {
           childId: id,
           documentType: type,
           regNumber: valuesCustom.dss_reg_number,
-          regDate: valuesCustom.r_creation_date,
+          // regDate: valuesCustom.r_creation_date,
+          regDate: "30.11.2022 15:26:00", //TODO
           description: valuesCustom.dss_description,
           authorEmpl: valuesCustom.dsid_author_empl.emplId,
           authorName: valuesCustom.dsid_author_empl.userName,
@@ -55,10 +71,15 @@ const InsideDocument = () => {
 
   const onCreate = useCallback(async () => {
     await api.post(URL_LINK_CREATE, { linkObjects })
+    update()
+    close()
   }, [api, linkObjects])
 
-  const onSelect = useCallback(() => setValue(selected), [selected])
-  const clear = useCallback(() => setValue([]), [])
+  const onSelect = useCallback(
+    () => updateTabState('value')(selected),
+    [selected, updateTabState],
+  )
+  const clear = useCallback(() => updateTabState('value')([]), [updateTabState])
 
   return (
     <>
@@ -66,15 +87,14 @@ const InsideDocument = () => {
         {!value.length && (
           <ScrollBar className="my-4">
             <SearchComponent
-              multiple={true}
-              setSelected={setSelected}
-              selected={selected}
+              tabItemState={tabItemState}
+              updateTabState={updateTabState}
             />
           </ScrollBar>
         )}
         <CreateRelationTable
           selected={selected}
-          setLink={setValue}
+          setLink={updateTabState('value')}
           value={value}
         />
       </div>
