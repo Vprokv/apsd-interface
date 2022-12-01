@@ -28,6 +28,7 @@ import {
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import AutoLoadableSelect from '../../../../Components/Inputs/AutoLoadableSelect'
 
 export const tableConfig = [
   {
@@ -149,7 +150,7 @@ const DocumentSearch = ({
     () => [
       {
         id: 'type',
-        component: LoadableSelect,
+        component: AutoLoadableSelect,
         placeholder: 'Выберите тип документа',
         label: 'Выберите тип документа',
         valueKey: 'typeName',

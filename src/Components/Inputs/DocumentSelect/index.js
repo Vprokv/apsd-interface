@@ -24,6 +24,9 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import Button, { SecondaryBlueButton } from '@/Components/Button'
 import closeIcon from '@/Icons/closeIcon'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
+import Input from '../../Fields/Input'
+
+const changeInput = () => {}
 
 const DocumentSelect = ({
   className,
@@ -54,6 +57,7 @@ const DocumentSelect = ({
         }, {}),
       [options, searchState.results, valueKey],
     ),
+    value: selectedState,
   })
 
   const renderValue = useMemo(() => {
@@ -80,7 +84,9 @@ const DocumentSelect = ({
   }, [changeModalState, value])
   const loadDocType = useCallback(
     (api) => async () => {
-      const { data } = await api.post(URL_TYPE_CONFIG, filters)
+      const { data } = await api.post(URL_TYPE_CONFIG, {
+        typeConfig: filters.type,
+      })
       return data
     },
     [filters],
@@ -138,7 +144,12 @@ const DocumentSelect = ({
 
   return (
     <div className={`${className} flex items-center w-full`}>
-      <Select {...props} />
+      <Input
+        {...props}
+        value={renderValue}
+        onInput={changeInput}
+        onFocus={openModalWindow}
+      />
       <SearchButton onClick={openModalWindow} className="ml-1">
         <Icon icon={searchIcon} />
       </SearchButton>

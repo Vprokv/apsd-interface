@@ -208,7 +208,7 @@ export const propsTransmission = {
     CustomValuesPipe(accumulator)
     FiltersPipe(accumulator)
     accumulator.nextProps.filters = {
-      typeConfig: accumulator.backConfig.dss_component_reference[0],
+      type: accumulator.backConfig.dss_component_reference[0],
     }
     accumulator.nextProps.displayName =
       accumulator.backConfig.dss_display_template
