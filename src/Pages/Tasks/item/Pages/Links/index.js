@@ -40,14 +40,24 @@ const columns = [
     id: 'documentTypeLabel',
     label: 'Документ',
     className: 'h-10 flex items-center',
-    component: BaseCell,
-    sizes: 195,
+    component: (props) => (
+      <BaseCell
+        className="flex items-center break-words break-all"
+        {...props}
+      />
+    ),
+    sizes: 200,
   },
   {
     id: 'description',
     label: 'Краткое содержание',
-    component: BaseCell,
-    sizes: 215,
+    component: (props) => (
+      <BaseCell
+        className="flex items-center break-words break-all"
+        {...props}
+      />
+    ),
+    sizes: 250,
   },
   {
     id: 'authorFullName',
@@ -64,7 +74,12 @@ const columns = [
   {
     id: 'comment',
     label: 'Комментарий',
-    component: BaseCell,
+    component: (props) => (
+      <BaseCell
+        className="flex items-center break-words break-all"
+        {...props}
+      />
+    ),
     sizes: 220,
   },
   {

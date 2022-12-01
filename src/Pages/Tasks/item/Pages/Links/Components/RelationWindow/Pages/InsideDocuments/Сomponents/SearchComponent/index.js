@@ -26,6 +26,13 @@ const plugins = {
   },
 }
 
+const defaultOptions = [
+  {
+    typeName: 'ddt_project_calc_type_doc',
+    typeLabel: 'Том',
+  },
+]
+
 const SearchComponent = ({ tabItemState, updateTabState }) => {
   const { openNewTab } = useContext(TabStateManipulation)
 
@@ -38,7 +45,6 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
   )
 
   const {
-    setTabState,
     tabState: {
       filter = defaultFilter,
       searchState = defaultSearchState,
@@ -57,6 +63,7 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
       filter={filter}
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
+      options={defaultOptions}
     >
       {(closeTable) => (
         <>

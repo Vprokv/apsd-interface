@@ -59,7 +59,7 @@ const ApprovalSheet = (props) => {
     })
 
     return data
-  }, [api, id, type, change])
+  }, [api, documentId, type])
 
   useAutoReload(loadData, tabItemState)
 

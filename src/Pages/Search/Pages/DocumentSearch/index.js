@@ -139,19 +139,23 @@ const DocumentSearch = ({
   filter,
   setFilter,
   children,
+  options,
 }) => {
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
+  console.log(filter);
+
   const fields = useMemo(
     () => [
       {
         id: 'type',
         component: LoadableSelect,
-        placeholder: 'Том',
+        placeholder: 'Выберите тип документа',
         label: 'Выберите тип документа',
         valueKey: 'typeName',
         labelKey: 'typeLabel',
+        options,
         loadFunction: documentTypeLoadFunction(api),
       },
       ...attributes.map(
@@ -197,7 +201,7 @@ const DocumentSearch = ({
         },
       ),
     ],
-    [api, attributes, documentTypeLoadFunction],
+    [api, attributes, documentTypeLoadFunction, options],
   )
 
   const defaultOperators = useMemo(
@@ -304,6 +308,12 @@ DocumentSearch.defaultProps = {
     })
     return data
   },
+  options: [
+    {
+      typeName: 'ddt_startup_complex_type_doc',
+      typeLabel: 'Титул',
+    },
+  ],
 }
 
 export default DocumentSearch

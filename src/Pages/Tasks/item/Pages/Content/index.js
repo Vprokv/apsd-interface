@@ -35,6 +35,8 @@ import EditRow from './Components/EditRow'
 import { EditVersion } from './constants'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import log from 'tailwindcss/lib/util/log'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -95,7 +97,7 @@ const columns = [
 ]
 
 const Content = () => {
-  const { id } = useParams()
+  const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [filterValue, setFilterValue] = useState(false)
@@ -205,13 +207,10 @@ const Content = () => {
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
-  const editVersion = useCallback(
-    async (value) => {
-      setDataVersion(value)
-      setOpenEditWindow(true)
-    },
-    [dataVersion],
-  )
+  const editVersion = useCallback(async (value) => {
+    setDataVersion(value)
+    setOpenEditWindow(true)
+  }, [])
 
   const onTableUpdate = useCallback(
     (data) => setTabState({ data }),
@@ -219,8 +218,8 @@ const Content = () => {
   )
 
   const idContent = useMemo(() => {
-    if (data && data.length > 0) {
-      return data.find((item) => item.version === 'Основная').contentId
+    if (data?.length) {
+      return data.find((item) => item.version === 'Основная')?.contentId
     }
   }, [data])
   return (
