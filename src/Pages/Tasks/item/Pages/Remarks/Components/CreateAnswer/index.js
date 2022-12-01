@@ -24,11 +24,13 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import { TextArea } from '@Components/Components/Inputs/TextArea'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const CreateAnswer = ({ remarkText, remarkId }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
+  const update = useContext(UpdateContext)
   const [filter, setFilterValue] = useState({ remarkText })
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -57,7 +59,7 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
       placeholder: 'Выберите тип',
       isRequired: false,
       label: 'Решение',
-      valueKey: 'dss_name',
+      valueKey: 'r_object_id',
       labelKey: 'dss_name',
       loadFunction: async () => {
         const { data } = await api.post(URL_ENTITY_LIST, {
@@ -86,7 +88,18 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
       remarkId,
       ...other,
     })
-  }, [api, dss_user_name, filter, id, r_object_id, remarkId])
+    update()
+    changeModalState(false)()
+  }, [
+    api,
+    changeModalState,
+    dss_user_name,
+    filter,
+    id,
+    r_object_id,
+    remarkId,
+    update,
+  ])
 
   const onClose = useCallback(() => {
     changeModalState(false)()

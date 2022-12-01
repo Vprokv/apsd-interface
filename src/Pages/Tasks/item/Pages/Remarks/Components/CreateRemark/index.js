@@ -18,11 +18,13 @@ import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useParams } from 'react-router-dom'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const CreateRemark = (props) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
+  const update = useContext(UpdateContext)
   const [filter, setFilterValue] = useState({})
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -78,6 +80,8 @@ const CreateRemark = (props) => {
       memberName: dss_user_name,
       ...filter,
     })
+    update()
+    changeModalState(false)()
   }, [api, dss_user_name, filter, id, r_object_id])
 
   const onClose = useCallback(() => {

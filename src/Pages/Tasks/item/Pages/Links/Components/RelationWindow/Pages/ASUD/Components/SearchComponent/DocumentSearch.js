@@ -28,7 +28,6 @@ import {
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import AutoLoadableSelect from '../../../../Components/Inputs/AutoLoadableSelect'
 
 export const tableConfig = [
   {
@@ -150,7 +149,7 @@ const DocumentSearch = ({
     () => [
       {
         id: 'type',
-        component: AutoLoadableSelect,
+        component: LoadableSelect,
         placeholder: 'Выберите тип документа',
         label: 'Выберите тип документа',
         valueKey: 'typeName',
@@ -236,6 +235,7 @@ const DocumentSearch = ({
 
     const { data } = await api.post(URL_SEARCH_LIST, {
       types: [type],
+      sedoSearch: true,
       inVersions: false,
       queryItems,
     })
@@ -299,10 +299,11 @@ DocumentSearch.propTypes = {
 DocumentSearch.defaultProps = {
   documentTypeLoadFunction: (api) => async () => {
     const { data } = await api.post(`${URL_TYPE_CONFIG}?limit=100&offset=0`, {
-      type: 'documentType',
-      id: 'types',
-      filters: {},
-      sortType: null,
+      // type: 'documentType',
+      // id: 'types',
+      // filters: {},
+      // sortType: null,
+      typeConfig: 'ddt_sedo_search_type_doc',
     })
     return data
   },

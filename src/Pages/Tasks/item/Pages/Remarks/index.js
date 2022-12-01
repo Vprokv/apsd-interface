@@ -22,6 +22,7 @@ import ExportIcon from '@/Icons/ExportIcon'
 import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
 import deleteIcon from '@/Icons/deleteIcon'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const mockData = [
   {
@@ -66,13 +67,13 @@ const Remarks = (props) => {
     tabState: { data = [], change },
   } = tabItemState
 
-  const setChange = useCallback(() => {
-    const { change } = tabState
-
-    return change
-      ? setTabState({ change: !change })
-      : setTabState({ change: true })
-  }, [setTabState, tabState])
+  const setChange = useCallback(
+    () =>
+      setTabState(({ change }) => {
+        return { change: !change }
+      }),
+    [setTabState],
+  )
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_REMARK_LIST, {
@@ -81,7 +82,7 @@ const Remarks = (props) => {
     })
 
     return data
-  }, [api, id, type, change])
+  }, [api, id, type, filter, change])
 
   useAutoReload(loadData, tabItemState)
 
@@ -119,45 +120,52 @@ const Remarks = (props) => {
       remarkIds: selectState,
     })
     setChange()
-  }, [api, selectState])
+  }, [api, selectState, setChange])
 
   return (
-    <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-      <div className="flex items-center py-4 form-element-sizes-32">
-        <FilterForm
-          className="mr-2"
-          value={filter}
-          onInput={setFilterValue}
-          fields={fields}
-          inputWrapper={EmptyInputWrapper}
-        />
-        <div className="flex items-center ml-auto">
-          <CreateRemark />
-          <ButtonForIcon className="ml-2 color-text-secondary">
-            <Icon icon={ExportIcon} />
-          </ButtonForIcon>
+    <UpdateContext.Provider value={setChange}>
+      <div className="px-4 pb-4  w-full flex-container">
+        <div className="flex items-center py-4 form-element-sizes-32">
+          <FilterForm
+            className="mr-2"
+            value={filter}
+            onInput={setFilterValue}
+            fields={fields}
+            inputWrapper={EmptyInputWrapper}
+          />
+          <div className="flex items-center ml-auto">
+            <CreateRemark />
+            <ButtonForIcon className="ml-2 color-text-secondary">
+              <Icon icon={ExportIcon} />
+            </ButtonForIcon>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          {data.map((val, key) => (
+            <RowComponent
+              key={key}
+              selectState={selectState}
+              setSelectState={setSelectState}
+              {...val}
+            >
+              <div className="flex items-center">
+                <div className="mr-12 font-medium">{val?.stageName}</div>
+                <div className="mr-12 w-24">{val?.stageStatus}</div>
+                <div className="flex items-center ml-auto">
+                  <EditRemark {...val} />
+                  <LoadableBaseButton
+                    onClick={onDelete}
+                    className="color-blue-1"
+                  >
+                    <Icon icon={deleteIcon} />
+                  </LoadableBaseButton>
+                </div>
+              </div>
+            </RowComponent>
+          ))}
         </div>
       </div>
-      {data.map((val, key) => (
-        <RowComponent
-          key={key}
-          selectState={selectState}
-          setSelectState={setSelectState}
-          {...val}
-        >
-          <div className="flex h-full items-center">
-            <div className="mr-12 font-medium">{val?.stageName}</div>
-            <div className="mr-12 w-24">{val?.stageStatus}</div>
-            <div className="flex items-center ml-auto">
-              <EditRemark {...val} />
-              <LoadableBaseButton onClick={onDelete} className="color-blue-1">
-                <Icon icon={deleteIcon} />
-              </LoadableBaseButton>
-            </div>
-          </div>
-        </RowComponent>
-      ))}
-    </div>
+    </UpdateContext.Provider>
   )
 }
 
