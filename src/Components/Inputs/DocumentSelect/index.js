@@ -57,6 +57,7 @@ const DocumentSelect = ({
         }, {}),
       [options, searchState.results, valueKey],
     ),
+    value: selectedState,
   })
 
   const renderValue = useMemo(() => {
