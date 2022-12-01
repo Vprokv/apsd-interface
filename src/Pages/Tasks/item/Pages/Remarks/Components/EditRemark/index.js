@@ -41,7 +41,7 @@ const EditRemark = ({
   const [open, setOpenState] = useState(false)
   const [filter, setFilterValue] = useState({
     text: remarkText,
-    ndtLinks,
+    // ndtLinks,
     setRemark,
   })
   const changeModalState = useCallback(
