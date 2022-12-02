@@ -11,7 +11,8 @@ import { useParams } from 'react-router-dom'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DEFAULT_DATE_FORMAT, DEFAULT_DATE_FORMAT_OTHER,
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_DATE_FORMAT_OTHER,
   INSIDE_DOCUMENT_WINDOW,
   PRESENT_DATE_FORMAT,
   SEARCH_PAGE,
@@ -21,7 +22,9 @@ import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationW
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import log from 'tailwindcss/lib/util/log'
 import dayjs from 'dayjs'
-import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import { useRecoilValue } from 'recoil'
+import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
   value ? (
@@ -44,6 +47,7 @@ const InsideDocument = () => {
   const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
   const update = useContext(UpdateContext)
+  const { documentType } = useParams()
 
   const tabItemState = useTabItem({
     stateId: INSIDE_DOCUMENT_WINDOW,
@@ -53,6 +57,8 @@ const InsideDocument = () => {
     tabState: { selected = [], value = [] },
     setTabState,
   } = tabItemState
+
+  const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
 
   const updateTabState = useCallback(
     (id) => (state) => {
@@ -74,21 +80,23 @@ const InsideDocument = () => {
             DEFAULT_DATE_FORMAT_OTHER,
           ).format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
           description: valuesCustom.dss_description,
-          authorEmpl: valuesCustom.dsid_author_empl.emplId,
-          authorName: valuesCustom.dsid_author_empl.userName,
+          authorEmpl: r_object_id,
+          authorName: dss_user_name,
           stageName: valuesCustom.dss_status,
           comment,
           linkType,
         }
       }),
-    [parentId, value],
+    [dss_user_name, parentId, r_object_id, value],
   )
 
   const onCreate = useCallback(async () => {
     await api.post(URL_LINK_CREATE, { linkObjects })
     update()
     close()
-  }, [api, linkObjects])
+    updateTabState('value')([])
+    updateTabState('filter')({ type: 'ddt_project_calc_type_doc' })
+  }, [api, close, linkObjects, update, updateTabState])
 
   const onSelect = useCallback(
     () => updateTabState('value')(selected),
