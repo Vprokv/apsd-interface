@@ -17,7 +17,7 @@ import { DocumentTypeContext } from '../../../../constants'
 const CreateVolume = ({ addVolumeState }) => {
   const documentType = useContext(DocumentTypeContext)
   const {
-    tabState: { data: { values: { dss_description } } = {} },
+    tabState: { data = {} },
   } = useTabItem({
     stateId: documentType,
   })
@@ -70,10 +70,7 @@ const CreateVolume = ({ addVolumeState }) => {
         dsid_title_structure: parentId,
       },
       valuesCustom: {
-        dsid_startup_complex: {
-          r_object_id: id,
-          dss_description: dss_description,
-        },
+        dsid_startup_complex: data,
         dsid_title_structure: {
           r_object_id: parentId,
           dss_name: parentName,
@@ -82,7 +79,7 @@ const CreateVolume = ({ addVolumeState }) => {
     })
     handleClose()
     setSelected({})
-  }, [addVolumeState, selected, openNewTab, id, dss_description, handleClose])
+  }, [addVolumeState, selected, openNewTab, id, data, handleClose])
 
   const renderEntities = useCallback(
     (level = 1) =>
