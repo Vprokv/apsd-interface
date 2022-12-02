@@ -13,6 +13,7 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
+import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -70,6 +71,7 @@ const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
+  const documentId = useContext(DocumentIdContext)
   const [filter, b] = useState({}) // fromDate: '2022-09-01T06:10:44.395Z'
   const {
     tabState: { data },
@@ -148,13 +150,13 @@ const History = () => {
     ;(async () => {
       const {
         data: { content },
-      } = await api.post(`/sedo/audit/${id}`, {
+      } = await api.post(`/sedo/audit/${documentId}`, {
         filter: preparedFilterValues,
         sort,
       })
       setTabState({ data: content })
     })()
-  }, [api, setTabState, id, preparedFilterValues, sort])
+  }, [api, setTabState, preparedFilterValues, sort, documentId])
 
   return (
     <div className="px-4 pb-4 w-full overflow-hidden flex-container">
