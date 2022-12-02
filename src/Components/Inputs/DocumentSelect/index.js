@@ -47,6 +47,12 @@ const DocumentSelect = ({
     [],
   )
 
+  useEffect(() => {
+    if (open) {
+      setSelectedState(value)
+    }
+  }, [open, value])
+
   const { cache } = useLoadableCache({
     ...props,
     optionsMap: useMemo(

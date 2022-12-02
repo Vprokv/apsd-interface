@@ -21,6 +21,7 @@ import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationW
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import log from 'tailwindcss/lib/util/log'
 import dayjs from 'dayjs'
+import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
 
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
   value ? (
@@ -40,7 +41,7 @@ const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
 
 const InsideDocument = () => {
   const api = useContext(ApiContext)
-  const { id: parentId } = useParams()
+  const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
   const update = useContext(UpdateContext)
 
