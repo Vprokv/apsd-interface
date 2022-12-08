@@ -105,7 +105,6 @@ const Content = () => {
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
   const [sortQuery, onSort] = useState({})
-  const { search } = useLocation()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -113,7 +112,7 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data },
+    tabState: { data = [], change },
     tabState,
     loadDataHelper,
     shouldReloadDataFlag,
@@ -126,62 +125,47 @@ const Content = () => {
     defaultLimit: 10,
   })
 
-  const loadData = useMemo(() => {
+  const setChange = useCallback(
+    () =>
+      setTabState(({ change }) => {
+        return { change: !change }
+      }),
+    [setTabState],
+  )
+
+  const loadData = useCallback(async () => {
     const { limit, offset } = paginationState
-    return loadDataHelper(async () => {
-      const { data } = await api.post(
-        URL_CONTENT_LIST,
-        {
-          documentId: id,
-          isCurrentVersion: filterValue.fullVersion,
-          ...(search
-            ? search
-                .replace('?', '')
-                .split('&')
-                .reduce(
-                  (acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc.filter[key] = JSON.parse(value)
-                    return acc
-                  },
-                  { filter: {} },
-                )
-            : {}),
-        },
-        {
-          params: {
-            limit,
-            offset,
-            sort: {
-              property: sortQuery.key,
-              direction: sortQuery.direction,
-            },
+
+    const { data } = await api.post(
+      URL_CONTENT_LIST,
+      {
+        documentId: id,
+        isCurrentVersion: filterValue.fullVersion,
+      },
+      {
+        params: {
+          limit,
+          offset,
+          sort: {
+            property: sortQuery.key,
+            direction: sortQuery.direction,
           },
         },
-      )
-      return data
-    })
+      },
+    )
+
+    return data
   }, [
     sortQuery,
     api,
     loadDataHelper,
     paginationState,
-    search,
     filterValue.fullVersion,
     id,
+    change,
   ])
 
-  const refLoadDataFunction = useRef(loadData)
-
-  // todo замена useEffect и refLoadDataFunction
-  // useAutoReload(loadData, tabItemState)
-
-  useEffect(() => {
-    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
-      loadData()
-    }
-    refLoadDataFunction.current = loadData
-  }, [loadData, shouldReloadDataFlag])
+  useAutoReload(loadData, tabItemState)
 
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
@@ -201,9 +185,9 @@ const Content = () => {
           })
         }),
       ])
-      loadData()
+      setChange()
     }
-  }, [selectState])
+  }, [api, loadData, selectState])
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
@@ -272,6 +256,7 @@ const Content = () => {
         </Pagination>
       </EditVersion.Provider>
       <DownloadWindow
+        setChange={setChange}
         contentId={idContent}
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}

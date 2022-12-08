@@ -30,7 +30,7 @@ const initFormValue = {
   versionDate: dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
 }
 
-const DownloadWindow = ({ onClose, contentId }) => {
+const DownloadWindow = ({ onClose, contentId, setChange }) => {
   const { id } = useParams()
   const [values, setValues] = useState(initFormValue)
   const api = useContext(ApiContext)
@@ -50,6 +50,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
         versionDate,
       },
     })
+    setChange()
     onClose()
   }, [api, onClose, values])
   const userObject = useRecoilValue(userAtom)
