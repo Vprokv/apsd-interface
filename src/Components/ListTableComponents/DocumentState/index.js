@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
 
 const DocumentState = ({
-  ParentValue: { documentStatus, creationDate, dueDate },
+  ParentValue: { documentStatus, creationDate, dueDate, taskType },
 }) => {
   const formatDueTo = useMemo(
     () =>
@@ -15,9 +15,11 @@ const DocumentState = ({
       dayjs(dueDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
     [dueDate],
   )
+
+  // console.log(taskType, 'taskType')
   return (
     <div>
-      <div className="font-size-14 mb-1 font-medium">{documentStatus}</div>
+      <div className="font-size-14 mb-1 font-medium">{taskType}</div>
       <div className="flex items-center font-size-12">
         <div className="flex items-center justify-center mr-2">
           <Icon

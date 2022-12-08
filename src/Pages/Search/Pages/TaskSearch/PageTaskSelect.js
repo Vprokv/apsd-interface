@@ -13,24 +13,23 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 
 const tableConfig = [
   {
-    id: 'Задание',
+    id: 'taskType',
     label: 'Задание',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: BaseCell,
+    // component: ({
+    //   ParentValue: {
+    //     values: {},
+    //   },
+    // }) => <BaseCell />,
   },
   {
-    id: 'Исполнитель',
+    id: 'performerEmployee',
     label: 'Исполнитель',
     sizes: 200,
     component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+      ParentValue: { performerEmployee: { userName = '' } = {} },
+    }) => <BaseCell value={userName} />,
   },
   {
     id: 'Дата выдачи',
@@ -63,7 +62,7 @@ const tableConfig = [
     }) => <BaseCell />,
   },
   {
-    id: 'Документ',
+    id: 'documentDescription',
     label: 'Краткое содержание',
     sizes: 200,
     component: ({
@@ -73,8 +72,8 @@ const tableConfig = [
     }) => <BaseCell />,
   },
   {
-    id: 'Статус',
-    label: 'Краткое содержание',
+    id: 'documentStatus',
+    label: 'Статус',
     sizes: 200,
     component: ({
       ParentValue: {
@@ -82,9 +81,30 @@ const tableConfig = [
       },
     }) => <BaseCell />,
   },
+  {
+    id: 'insider',
+    label: 'От кого',
+    sizes: 200,
+    component: ({
+      ParentValue: {
+        fromWhomEmployee: {
+          firstName = '',
+          lastName = '',
+          middleName = '',
+        } = {},
+      },
+    }) => (
+      <BaseCell
+        className="h-10"
+        value={`${lastName} ${firstName} ${middleName} `}
+      />
+    ),
+  },
 ]
 
 const defaultSearchState = {}
+
+const defaultFilter = { type: 'ddt_task' }
 
 const PageTaskSelect = () => {
   const { openNewTab } = useContext(TabStateManipulation)
@@ -103,7 +123,7 @@ const PageTaskSelect = () => {
 
   const {
     setTabState,
-    tabState: { filter = {}, searchState = defaultSearchState },
+    tabState: { filter = defaultFilter, searchState = defaultSearchState },
   } = tabItemState
 
   const rowComponent = useMemo(
@@ -124,7 +144,7 @@ const PageTaskSelect = () => {
       setFilter={updateTabState('filter')}
     >
       {(onClick) => (
-        <ScrollBar className="px-4 ">
+        <ScrollBar className="w-full">
           <SecondaryBlueButton
             onClick={onClick}
             className="ml-auto form-element-sizes-32"

@@ -88,7 +88,7 @@ const columns = [
     sizes: baseCellSize,
   },
   {
-    id: 'taskType',
+    id: 'documentStatus',
     label: 'Статус тома',
     component: VolumeStatus,
     sizes: volumeStatusSize,

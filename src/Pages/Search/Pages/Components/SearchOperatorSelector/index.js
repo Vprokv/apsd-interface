@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import memoize from 'lodash/memoize'
 import Select from '@/Components/Inputs/Select'
 import { OperatorContainer } from './styles'
+import { operatorsComponent } from '@/Pages/Search/Pages/constans'
 
 const SearchOperatorSelector = (type) =>
   memoize((Component) => {
@@ -37,7 +38,7 @@ const SearchOperatorSelector = (type) =>
               className="mr-4"
               value={value}
             />
-            {type !== 'Date' && (
+            {!operatorsComponent[type] && (
               <Select
                 className="w-60 flex-0"
                 id="operator"

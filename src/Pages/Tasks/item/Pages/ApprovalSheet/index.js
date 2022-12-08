@@ -44,13 +44,13 @@ const ApprovalSheet = (props) => {
     tabState: { data = [], change },
   } = tabItemState
 
-  const setChange = useCallback(() => {
-    const { change } = tabState
-
-    return change
-      ? setTabState({ change: !change })
-      : setTabState({ change: true })
-  }, [setTabState, tabState])
+  const setChange = useCallback(
+    () =>
+      setTabState(({ change }) => {
+        return { change: !change }
+      }),
+    [setTabState],
+  )
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
@@ -59,7 +59,7 @@ const ApprovalSheet = (props) => {
     })
 
     return data
-  }, [api, documentId, type])
+  }, [api, documentId, type, change])
 
   useAutoReload(loadData, tabItemState)
 

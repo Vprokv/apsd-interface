@@ -3,13 +3,18 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST, URL_LINK_DELETE, URL_LINK_LIST } from '@/ApiList'
+import {
+  URL_DOWNLOAD_FILE,
+  URL_ENTITY_LIST,
+  URL_LINK_DELETE,
+  URL_LINK_LIST,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon } from '@/Components/Button'
+import {ButtonForIcon, SecondaryGreyButton} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -23,6 +28,8 @@ import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindo
 import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
 import DownloadIcon from '@/Icons/DownloadIcon'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import downloadFile from '@/Utils/DownloadFile'
+import {FormWindow} from "@/Components/ModalWindow";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -102,6 +109,9 @@ const Links = () => {
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
+  const [errorState, setErrorState] = useState()
+
+  console.log(selectState, 'selectState')
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
@@ -130,6 +140,42 @@ const Links = () => {
   }, [api, id, type, change])
 
   useAutoReload(loadData, tabItemState)
+
+  const downLoadContent = useCallback(async () => {
+    let errorString = ''
+
+    const res = await Promise.all(
+      selectState.map(
+        ({ id }) =>
+          new Promise((res) => {
+            api
+              .post(URL_DOWNLOAD_FILE, {
+                type: 'ddt_document_content',
+                column: 'dsc_content',
+                id,
+              })
+              .then((response) => {
+                res(response.data)
+              })
+              .catch(() => res(new Error('Документ не найден')))
+          }),
+      ),
+    )
+
+    res.forEach((val, i) => {
+      if (val instanceof Error) {
+        errorString = `${errorString}, Документ ${selectState[i]?.contentName} не найден`
+      } else {
+        downloadFile(val.data, selectState[i]?.contentName)
+      }
+    })
+
+    if (errorString.length) {
+      setErrorState(errorString.trim())
+    }
+  }, [api, selectState])
+
+  const disabled = useMemo(() => !selectState.length > 0, [selectState])
 
   const fields = useMemo(
     () => [
@@ -183,8 +229,22 @@ const Links = () => {
             inputWrapper={EmptyInputWrapper}
           />
           <div className="flex items-center ml-auto">
+            <FormWindow open={errorState} onClose={() => setErrorState('')}>
+              <div className="text-center mt-4 mb-12">{errorState}</div>
+              <SecondaryGreyButton
+                type="button"
+                className="w-40 m-auto"
+                onClick={() => setErrorState('')}
+              >
+                Закрыть
+              </SecondaryGreyButton>
+            </FormWindow>
             <LinksWindow />
-            <ButtonForIcon className="mr-2 color-text-secondary">
+            <ButtonForIcon
+              onClick={downLoadContent}
+              disabled={disabled}
+              className="mr-2 color-text-secondary"
+            >
               <Icon icon={DownloadIcon} />
             </ButtonForIcon>
             <EditLinksWindow value={selectState} />
