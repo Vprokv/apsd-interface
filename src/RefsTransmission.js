@@ -3,6 +3,10 @@ const refsMap = {
     valueKey: 'r_object_id',
     labelKey: 'dss_description',
   },
+  ddt_document_status: {
+    valueKey: 'dss_name',
+    labelKey: 'dss_caption',
+  },
 }
 
 const defaultObject = { valueKey: 'r_object_id', labelKey: 'dss_name' }
