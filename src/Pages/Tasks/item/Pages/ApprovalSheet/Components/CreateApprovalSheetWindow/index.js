@@ -1,11 +1,9 @@
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Button, {LoadableBaseButton, SecondaryBlueButton} from '@/Components/Button'
+import Button, {
+  LoadableBaseButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
@@ -16,10 +14,12 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE } from '@/ApiList'
 import plusIcon from '@/Icons/plusIcon'
 import Icon from '@Components/Components/Icon'
-import {LoadContext, TypeContext} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
-import log from "tailwindcss/lib/util/log";
-import EmptyInput from "@/Pages/Tasks/item/Pages/Links/Components/Input/style";
-import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
+import {
+  LoadContext,
+  TypeContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const fields = [
   {
@@ -88,7 +88,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
 
   const onSave = useCallback(async () => {
     await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
-    await loadData()
+    loadData()
     changeModalState(false)()
   }, [changeModalState, stage, api, loadData])
 
