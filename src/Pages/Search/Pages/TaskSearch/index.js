@@ -14,8 +14,7 @@ import {
   operators,
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
-import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_SEARCH_LIST } from '@/ApiList'
+import { URL_SEARCH_ATTRIBUTES, URL_SEARCH_LIST } from '@/ApiList'
 import Form from '@Components/Components/Forms'
 import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
 import {
@@ -24,106 +23,30 @@ import {
   SecondaryGreyButton,
 } from '@/Components/Button'
 
-const attrib = [
-  {
-    dss_attr_name: 'type',
-    dss_attr_label: 'Тип документа',
-    dss_component_type: 'Combobox',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'dss_reg_number',
-    dss_attr_label: 'Шифр/Рег. номер',
-    dss_component_type: 'Text',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Штрихкод',
-    dss_attr_label: 'Штрихкод',
-    dss_component_type: 'Text',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'dss_date-reg',
-    dss_attr_label: 'Дата регистрации документа',
-    range: true,
-    dss_component_type: 'Date',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Автор',
-    dss_attr_label: 'Автор',
-    dss_component_type: 'UserSelect',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'задания',
-    dss_attr_label: 'Тип задания',
-    dss_component_type: 'Combobox',
-    multiple: true,
-  },
-  {
-    dss_attr_name: 'dsid_state',
-    dss_attr_label: 'Состояние задания',
-    dss_component_type: 'Combobox',
-    dss_component_reference: 'ddt_state',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'dsid_signer_empl',
-    dss_attr_label: 'Исполнитель',
-    dss_component_type: 'UserSelect',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Дата создания',
-    dss_attr_label: 'Дата создания',
-    range: true,
-    dss_component_type: 'Date',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Контрольный срок',
-    dss_attr_label: 'Контрольный срок',
-    range: true,
-    dss_component_type: 'Date',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Дата выполнения',
-    dss_attr_label: 'Дата выполнения',
-    range: true,
-    dss_component_type: 'Date',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Исполнитель',
-    dss_attr_label: 'Исполнитель',
-    dss_component_type: 'UserSelect',
-    multiple: false,
-  },
-  {
-    dss_attr_name: 'Полнотестовый поиск',
-    dss_attr_label: 'Полнотестовый поиск',
-    dss_component_type: 'Text',
-    multiple: false,
-  },
-]
-
 const TaskSearch = ({
-  documentTypeLoadFunction,
   setSearchState,
   filter,
   setFilter,
   children,
 }) => {
   const api = useContext(ApiContext)
-  // const [attributes, setAttributes] = useState([])
+  const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
+
+  const loadData = useCallback(async () => {
+    const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
+      type: filter.type,
+    })
+
+    setAttributes(data)
+  }, [api, filter.type])
+
+
+  useEffect(loadData, [loadData])
 
   const fields = useMemo(
     () =>
-      attrib.map(
+      attributes.map(
         ({
           dss_attr_label,
           dss_attr_name,
@@ -149,6 +72,7 @@ const TaskSearch = ({
               getField(dss_component_type),
             ),
             id: dss_attr_name,
+            type: dss_attr_name,
             placeholder: dss_attr_label,
             label: dss_attr_label,
             multiple,
@@ -165,7 +89,7 @@ const TaskSearch = ({
           }
         },
       ),
-    [api],
+    [api, attributes],
   )
 
   const defaultOperators = useMemo(
@@ -198,12 +122,12 @@ const TaskSearch = ({
     setRenderTable(true)
   }, [api, defaultOperators, filter, setSearchState])
 
-  const onRemove = useCallback(() => setFilter({}), [])
+  const onRemove = useCallback(() => setFilter({}), [setFilter])
 
-  const isSearchDisabled = useMemo(
-    () => (filter && Object?.keys(filter)?.length === 0) || true,
-    [filter],
-  )
+  const isSearchDisabled = useMemo(() => {
+    const { type, ...keys } = filter
+    return Object.keys(keys).length === 0
+  }, [filter])
 
   return (
     <div className="flex w-full p-6">
