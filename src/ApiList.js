@@ -99,3 +99,6 @@ export const URL_SEARCH_LIST = '/apsd/search?limit=101&offset=0'
 // INTEGRATION
 export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/send/letter'
 export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
+
+//DOWNLOAD
+export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'

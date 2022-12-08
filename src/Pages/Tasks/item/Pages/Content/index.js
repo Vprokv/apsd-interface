@@ -7,12 +7,17 @@ import {
   useState,
 } from 'react'
 import Icon from '@Components/Components/Icon'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  SecondaryBlueButton,
+  SecondaryGreyButton,
+} from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { useLocation, useParams } from 'react-router-dom'
 import {
   URL_CONTENT_LIST,
   URL_DELETE_VERSION,
+  URL_DOWNLOAD_FILE,
   URL_UPDATE_VERSION,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -37,6 +42,9 @@ import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import log from 'tailwindcss/lib/util/log'
+import DownloadIcon from '@/Icons/DownloadIcon'
+import downloadFile from '@/Utils/DownloadFile'
+import { FormWindow } from '@/Components/ModalWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -105,6 +113,7 @@ const Content = () => {
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
   const [sortQuery, onSort] = useState({})
+  const [errorState, setErrorState] = useState()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -206,6 +215,43 @@ const Content = () => {
       return data.find((item) => item.version === 'Основная')?.contentId
     }
   }, [data])
+
+  const downLoadContent = useCallback(async () => {
+    let errorString = ''
+
+    const res = await Promise.all(
+      selectState.map(
+        ({ id }) =>
+          new Promise((res) => {
+            api
+              .post(URL_DOWNLOAD_FILE, {
+                type: 'ddt_apsd_content_version',
+                column: 'dsc_content',
+                id,
+              })
+              .then((response) => {
+                res(response.data)
+              })
+              .catch(() => res(new Error('Документ не найден')))
+          }),
+      ),
+    )
+
+    res.forEach((val, i) => {
+      if (val instanceof Error) {
+        errorString = `${errorString}, Документ ${selectState[i]?.contentName} не найден`
+      } else {
+        downloadFile(val.data, selectState[i]?.contentName)
+      }
+    })
+
+    if (errorString.length) {
+      setErrorState(errorString.trim())
+    }
+  }, [api, selectState])
+
+  const disabled = useMemo(() => !selectState.length > 0, [selectState])
+
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       <div className="flex items-center form-element-sizes-32">
@@ -222,6 +268,13 @@ const Content = () => {
           >
             Добавить файл /версию
           </SecondaryBlueButton>
+          <ButtonForIcon
+            onClick={downLoadContent}
+            disabled={disabled}
+            className="ml-2"
+          >
+            <Icon icon={DownloadIcon} />
+          </ButtonForIcon>
           <ButtonForIcon className="ml-2">
             <Icon icon={WarningIcon} />
           </ButtonForIcon>
@@ -233,6 +286,16 @@ const Content = () => {
           </ButtonForIcon>
         </div>
       </div>
+      <FormWindow open={errorState} onClose={() => setErrorState('')}>
+        <div className="text-center mt-4 mb-12">{errorState}</div>
+        <SecondaryGreyButton
+          type="button"
+          className="w-40 m-auto"
+          onClick={() => setErrorState('')}
+        >
+          Закрыть
+        </SecondaryGreyButton>
+      </FormWindow>
       <EditVersion.Provider value={editVersion}>
         <ListTable
           value={data}

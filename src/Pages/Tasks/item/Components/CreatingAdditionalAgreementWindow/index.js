@@ -11,7 +11,11 @@ import { URL_APPROVAL_SHEET_CREATE_AND_START } from '../../../../../ApiList'
 
 const rules = {}
 
-const CreatingAdditionalAgreementWindow = ({ onClose, approverId }) => {
+const CreatingAdditionalAgreementWindow = ({
+  onClose,
+  approverId,
+  closeCurrenTab,
+}) => {
   const api = useContext(ApiContext)
   const [values, setValues] = useState({})
 
@@ -34,11 +38,14 @@ const CreatingAdditionalAgreementWindow = ({ onClose, approverId }) => {
   }, [])
 
   const onSave = useCallback(async () => {
-    await api.post(URL_APPROVAL_SHEET_CREATE_AND_START, {
-      ...values,
-      parentPerformerId: approverId,
-    })
-  }, [api, values, approverId])
+    try {
+      await api.post(URL_APPROVAL_SHEET_CREATE_AND_START, {
+        ...values,
+        parentPerformerId: approverId,
+      })
+      closeCurrenTab()
+    } catch (_) {}
+  }, [api, values, approverId, closeCurrenTab])
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <Form
@@ -69,6 +76,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, approverId }) => {
 
 CreatingAdditionalAgreementWindow.propTypes = {
   onClose: PropTypes.func,
+  closeCurrenTab: PropTypes.func.isRequired,
 }
 CreatingAdditionalAgreementWindow.defaultProps = {
   onClose: () => null,
