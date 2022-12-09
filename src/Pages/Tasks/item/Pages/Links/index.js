@@ -141,6 +141,8 @@ const Links = () => {
 
   useAutoReload(loadData, tabItemState)
 
+  console.log(selectState, 'selected')
+
   const downLoadContent = useCallback(async () => {
     let errorString = ''
 
@@ -162,11 +164,13 @@ const Links = () => {
       ),
     )
 
+    console.log(res, 'res')
+
     res.forEach((val, i) => {
       if (val instanceof Error) {
-        errorString = `${errorString}, Документ ${selectState[i]?.contentName} не найден`
+        errorString = `${errorString}, Документ ${selectState[i]?.documentTypeLabel} не найден`
       } else {
-        downloadFile(val.data, selectState[i]?.contentName)
+        downloadFile(val.data, selectState[i]?.documentTypeLabel)
       }
     })
 
