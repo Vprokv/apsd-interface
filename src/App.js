@@ -18,7 +18,7 @@ import {
 } from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
-import { DocumentItem, TaskNewItem, TaskItem } from './Pages/Tasks/item'
+import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
 import {
   SEARCH_PAGE_PATH,
   TASK_ITEM_PATH,

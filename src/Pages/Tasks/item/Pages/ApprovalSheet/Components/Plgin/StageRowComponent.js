@@ -9,12 +9,12 @@ import { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import PostponeIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/Postpone'
 import editIcon from '@/Icons/editIcon'
 import deleteIcon from '@/Icons/deleteIcon'
-import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 import { Button } from '@Components/Components/Button'
 import { ApiContext } from '@/contants'
 import { URL_APPROVAL_SHEET, URL_APPROVAL_SHEET_DELETE } from '@/ApiList'
 import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
+import AddUserWindow from '../AddUserWindow/AddUserWindow'
 
 const Row = styled.div`
   height: 48px;
@@ -27,18 +27,16 @@ const Row = styled.div`
   //border-top: 1px solid var(--separator);
 `
 
-const StageRowComponent = ({ node }) => {
-  const { term, id, name } = node
+const StageRowComponent = ({ node }, props) => {
+  const { term, id, name, documentId } = node
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
-
   const onDelete = useCallback(async () => {
     await api.post(URL_APPROVAL_SHEET_DELETE, {
       id,
     })
     await loadData()
   }, [api, id, loadData])
-
   return (
     <Row>
       <div className="flex h-full items-center">
@@ -46,9 +44,7 @@ const StageRowComponent = ({ node }) => {
         <div className="mr-12 w-24">{`Срок (дней): ${term}`}</div>
         <div>{'Дата завершения: '}</div>
         <div className="flex items-center ml-auto">
-          <Button className="color-blue-1">
-            <Icon icon={AddUserIcon} />
-          </Button>
+          <AddUserWindow stageId={id} documentId={documentId} />
           <Button className="color-blue-1">
             <Icon icon={editIcon} />
           </Button>

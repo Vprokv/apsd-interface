@@ -3,13 +3,18 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST, URL_LINK_DELETE, URL_LINK_LIST } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_LINK_DELETE,
+  URL_LINK_LIST,
+  URL_PREVIEW_DOCUMENT,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -23,6 +28,7 @@ import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindo
 import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
 import DownloadIcon from '@/Icons/DownloadIcon'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import { TokenContext } from '@/contants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -103,6 +109,8 @@ const Links = () => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
 
+  const { token } = useContext(TokenContext)
+
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
@@ -171,6 +179,12 @@ const Links = () => {
     await api.post(URL_LINK_DELETE, { linkIds: selectState })
   }, [api, selectState])
 
+  const previewDocument = useCallback(async () => {
+    const { data } = await api.get(
+      `${URL_PREVIEW_DOCUMENT}:${selectState[0].contentId}:${token}`,
+    )
+  }, [api, selectState])
+
   return (
     <UpdateContext.Provider value={setChange}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -196,6 +210,11 @@ const Links = () => {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </div>
+        </div>
+        <div className="flex items-center py-4 form-element-sizes-32">
+          <SecondaryBlueButton onClick={previewDocument}>
+            Предпросмотр
+          </SecondaryBlueButton>
         </div>
         <ListTable
           rowComponent={useMemo(
