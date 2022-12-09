@@ -19,12 +19,20 @@ import { SidebarContainer } from './styles'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PrintIcon from './Icons/PrintIcon.svg'
 import CreatingAdditionalAgreementWindow from './Components/CreatingAdditionalAgreementWindow'
+import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 
 const Task = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [idDocument, setIdDocument] = useState('')
   const [showWindow, setShowWindow] = useState(false)
+  const { onCloseTab } = useContext(TabStateManipulation)
+  const { currentTabIndex } = useContext(CurrentTabContext)
+
+  const closeCurrenTab = useCallback(
+    () => onCloseTab(currentTabIndex),
+    [onCloseTab, currentTabIndex],
+  )
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_TASK_ITEM, {
@@ -69,10 +77,13 @@ const Task = () => {
         key: name,
         caption,
         handler: async () => {
-          await api.post(URL_TASK_COMPLETE, {
-            taskId: id,
-            signal: name,
-          })
+          try {
+            await api.post(URL_TASK_COMPLETE, {
+              taskId: id,
+              signal: name,
+            })
+            closeCurrenTab()
+          } catch (_) {}
         },
         icon: DefaultIcon,
       }),
@@ -82,7 +93,7 @@ const Task = () => {
         handler: () => setShowWindow(true),
       },
     }),
-    [api, id],
+    [api, closeCurrenTab, id],
   )
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
@@ -107,6 +118,7 @@ const Task = () => {
               approverId={approverId}
               open={showWindow}
               onClose={closeWindow}
+              closeCurrenTab={closeCurrenTab}
             />
           </SidebarContainer>
         </Document>

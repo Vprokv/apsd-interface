@@ -47,7 +47,6 @@ const InsideDocument = () => {
   const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
   const update = useContext(UpdateContext)
-  const { documentType } = useParams()
 
   const tabItemState = useTabItem({
     stateId: INSIDE_DOCUMENT_WINDOW,
@@ -82,7 +81,7 @@ const InsideDocument = () => {
           description: valuesCustom.dss_description,
           authorEmpl: r_object_id,
           authorName: dss_user_name,
-          stageName: valuesCustom.dss_status,
+          stageName: valuesCustom.dss_status.dss_name,
           comment,
           linkType,
         }

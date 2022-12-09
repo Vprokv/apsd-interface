@@ -189,6 +189,7 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
   )
   const { createData, handleSaveClick } = useCreateSubscription({
     filter,
+    events,
     documentId: id,
     sedo,
     email,

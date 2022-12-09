@@ -103,3 +103,6 @@ export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
 
 export const URL_PREVIEW_VERSION = 'preview/pdf/ddt_apsd_content_version'
 export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'
+
+//DOWNLOAD
+export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'

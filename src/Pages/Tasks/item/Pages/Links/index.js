@@ -8,13 +8,14 @@ import {
   URL_LINK_DELETE,
   URL_LINK_LIST,
   URL_PREVIEW_DOCUMENT,
+  URL_DOWNLOAD_FILE,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import { ButtonForIcon, SecondaryGreyButton, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -28,6 +29,9 @@ import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindo
 import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
 import DownloadIcon from '@/Icons/DownloadIcon'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import downloadFile from '@/Utils/DownloadFile'
+import { FormWindow } from '@/Components/ModalWindow'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { TokenContext } from '@/contants'
 
 const plugins = {
@@ -103,11 +107,13 @@ const columns = [
 ]
 
 const Links = () => {
-  const { id, type } = useParams()
+  const { type } = useParams()
+  const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
+  const [errorState, setErrorState] = useState()
 
   const { token } = useContext(TokenContext)
 
@@ -138,6 +144,51 @@ const Links = () => {
   }, [api, id, type, change])
 
   useAutoReload(loadData, tabItemState)
+
+  const downLoadContent = useCallback(async () => {
+    let errorString = ''
+
+    const res = await Promise.all(
+      selectState.reduce((acc, { contentId, documentTypeLabel }) => {
+        if (documentTypeLabel) {
+          acc.push(
+            new Promise((res) => {
+              api
+                .post(
+                  URL_DOWNLOAD_FILE,
+                  {
+                    type: 'ddt_document_content',
+                    column: 'dsc_content',
+                    id: contentId,
+                  },
+                  { responseType: 'blob' },
+                )
+                .then((response) => {
+                  console.log(response.headers['Content-Disposition'])
+                  res(response.data)
+                })
+                .catch(() => res(new Error('Документ не найден')))
+            }),
+          )
+        }
+        return acc
+      }, []),
+    )
+
+    res.forEach((val, i) => {
+      if (val instanceof Error) {
+        errorString = `${errorString}, Документ ${selectState[i]?.documentTypeLabel} не найден`
+      } else {
+        downloadFile(val, selectState[i]?.documentTypeLabel)
+      }
+    })
+
+    if (errorString.length) {
+      setErrorState(errorString.trim())
+    }
+  }, [api, selectState])
+
+  const disabled = useMemo(() => !selectState.length > 0, [selectState])
 
   const fields = useMemo(
     () => [
@@ -197,8 +248,22 @@ const Links = () => {
             inputWrapper={EmptyInputWrapper}
           />
           <div className="flex items-center ml-auto">
+            <FormWindow open={errorState} onClose={() => setErrorState('')}>
+              <div className="text-center mt-4 mb-12">{errorState}</div>
+              <SecondaryGreyButton
+                type="button"
+                className="w-40 m-auto"
+                onClick={() => setErrorState('')}
+              >
+                Закрыть
+              </SecondaryGreyButton>
+            </FormWindow>
             <LinksWindow />
-            <ButtonForIcon className="mr-2 color-text-secondary">
+            <ButtonForIcon
+              onClick={downLoadContent}
+              disabled={disabled}
+              className="mr-2 color-text-secondary"
+            >
               <Icon icon={DownloadIcon} />
             </ButtonForIcon>
             <EditLinksWindow value={selectState} />

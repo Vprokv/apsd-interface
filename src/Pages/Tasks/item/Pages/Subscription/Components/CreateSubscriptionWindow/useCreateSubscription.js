@@ -13,8 +13,8 @@ export const useCreateSubscription = ({
   sedo,
   email,
   documentId,
+  events,
 }) => {
-  console.log(email, 'email')
   const subscribers = useMemo(() => {
     return ids.reduce((acc, val) => {
       const obj = { id: val, channels: [] }
@@ -50,6 +50,7 @@ export const useCreateSubscription = ({
       return {
         documentId,
         subscribers,
+        events,
         ...date,
       }
     }, [date, documentId, subscribers]),

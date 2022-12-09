@@ -29,6 +29,7 @@ import {
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import AutoLoadableSelect from '../../../../Components/Inputs/AutoLoadableSelect'
+import { operatorsComponent } from '@/Pages/Search/Pages/constans'
 
 export const tableConfig = [
   {
@@ -145,6 +146,8 @@ const DocumentSearch = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
+
+  console.log(attributes, 'attributes')
 
   const fields = useMemo(
     () => [

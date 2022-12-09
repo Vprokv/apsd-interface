@@ -10,7 +10,6 @@ import { URL_ENTITY_LIST, URL_LINK_CREATE } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import ScrollBar from 'react-perfect-scrollbar'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
-import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -18,13 +17,14 @@ import {
   StateContext,
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Links/constans'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
-  const { id } = useParams()
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
   const update = useContext(UpdateContext)
+  const parentId = useContext(DocumentIdContext)
   const [files, setFiles] = useState([])
   const onFileInput = useCallback(
     (file) => {
@@ -41,7 +41,7 @@ const Files = (props) => {
           ...documentPayload
         }) => ({
           ...documentPayload,
-          parentId: id,
+          parentId,
           documentType: dss_content_name,
           contentId: dsc_content,
           authorEmpl: userObject.r_object_id,
@@ -51,7 +51,7 @@ const Files = (props) => {
     })
     update()
     close()
-  }, [api, files, id, userObject, close, update])
+  }, [api, files, parentId, userObject, close, update])
   const columns = useMemo(
     () => [
       {
