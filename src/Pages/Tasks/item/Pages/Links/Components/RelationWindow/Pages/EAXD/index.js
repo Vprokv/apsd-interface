@@ -28,6 +28,7 @@ import {
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Links/constans'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const fields = [
   {
@@ -55,6 +56,7 @@ const fields = [
 const DocumentEAXD = (props) => {
   const api = useContext(ApiContext)
   const { id, type } = useParams()
+  const parentId = useContext(DocumentIdContext)
   const [filter, setFilter] = useState({})
   const [search, setSearch] = useState('')
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
@@ -160,6 +162,8 @@ const DocumentEAXD = (props) => {
     )
   }, [filter, formFields])
 
+  console.log(filter, 'filter')
+
   const create = useCallback(async () => {
     const {
       comment,
@@ -188,16 +192,16 @@ const DocumentEAXD = (props) => {
       dssFilename,
       content,
       status,
-      documentId: id,
+      documentId: parentId,
       documentType: type,
     })
 
     await api.post(URL_LINK_CREATE, {
       linkObjects: [
         {
-          parentId: id,
+          parentId,
           contentId,
-          documentType: type,
+          documentType: eehdDocumentType,
           regNumber: dssNumber,
           regDate: dsdtDocumentDate,
           description: dssDescription,

@@ -47,7 +47,6 @@ const InsideDocument = () => {
   const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
   const update = useContext(UpdateContext)
-  const { documentType } = useParams()
 
   const tabItemState = useTabItem({
     stateId: INSIDE_DOCUMENT_WINDOW,
@@ -67,17 +66,12 @@ const InsideDocument = () => {
     [setTabState],
   )
 
-  // console.log(value, )
-
   const linkObjects = useMemo(
     () =>
       value.map(({ id, comment, linkType, type, valuesCustom }) => {
-        console.log(valuesCustom.dss_status, 'valuesCustom.dss_status.name')
-
         return {
           parentId,
           childId: id,
-          // childId: '000000030000312',
           documentType: type,
           regNumber: valuesCustom.dss_reg_number,
           regDate: dayjs(

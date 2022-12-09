@@ -14,7 +14,7 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import {ButtonForIcon, SecondaryGreyButton} from '@/Components/Button'
+import { ButtonForIcon, SecondaryGreyButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -29,7 +29,8 @@ import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinks
 import DownloadIcon from '@/Icons/DownloadIcon'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import downloadFile from '@/Utils/DownloadFile'
-import {FormWindow} from "@/Components/ModalWindow";
+import { FormWindow } from '@/Components/ModalWindow'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -104,14 +105,13 @@ const columns = [
 ]
 
 const Links = () => {
-  const { id, type } = useParams()
+  const { type } = useParams()
+  const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
-
-  console.log(selectState, 'selectState')
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
@@ -140,8 +140,6 @@ const Links = () => {
   }, [api, id, type, change])
 
   useAutoReload(loadData, tabItemState)
-
-  console.log(selectState, 'selected')
 
   const downLoadContent = useCallback(async () => {
     let errorString = ''
