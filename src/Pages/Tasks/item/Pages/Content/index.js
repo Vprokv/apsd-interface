@@ -224,11 +224,15 @@ const Content = () => {
         ({ id }) =>
           new Promise((res) => {
             api
-              .post(URL_DOWNLOAD_FILE, {
-                type: 'ddt_apsd_content_version',
-                column: 'dsc_content',
-                id,
-              })
+              .post(
+                URL_DOWNLOAD_FILE,
+                {
+                  type: 'ddt_apsd_content_version',
+                  column: 'dsc_content',
+                  id,
+                },
+                { responseType: 'blob' },
+              )
               .then((response) => {
                 res(response.data)
               })
@@ -241,7 +245,7 @@ const Content = () => {
       if (val instanceof Error) {
         errorString = `${errorString}, Документ ${selectState[i]?.contentName} не найден`
       } else {
-        downloadFile(val.data, selectState[i]?.contentName)
+        downloadFile(val, selectState[i]?.contentName)
       }
     })
 
