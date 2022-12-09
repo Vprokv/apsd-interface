@@ -67,12 +67,17 @@ const InsideDocument = () => {
     [setTabState],
   )
 
+  // console.log(value, )
+
   const linkObjects = useMemo(
     () =>
       value.map(({ id, comment, linkType, type, valuesCustom }) => {
+        console.log(valuesCustom.dss_status, 'valuesCustom.dss_status.name')
+
         return {
           parentId,
           childId: id,
+          // childId: '000000030000312',
           documentType: type,
           regNumber: valuesCustom.dss_reg_number,
           regDate: dayjs(
@@ -82,7 +87,7 @@ const InsideDocument = () => {
           description: valuesCustom.dss_description,
           authorEmpl: r_object_id,
           authorName: dss_user_name,
-          stageName: valuesCustom.dss_status,
+          stageName: valuesCustom.dss_status.dss_name,
           comment,
           linkType,
         }
