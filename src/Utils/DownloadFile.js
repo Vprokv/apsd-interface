@@ -1,5 +1,4 @@
-const downloadFile = (data, fileName) => {
-  const blob = new Blob([data], { type: 'application/octet-stream' })
+const downloadFile = (blob, fileName) => {
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.style.display = 'none'
