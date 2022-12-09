@@ -146,13 +146,13 @@ const Links = () => {
 
     const res = await Promise.all(
       selectState.map(
-        ({ id }) =>
+        ({ contentId }) =>
           new Promise((res) => {
             api
               .post(URL_DOWNLOAD_FILE, {
                 type: 'ddt_document_content',
                 column: 'dsc_content',
-                id,
+                id: contentId,
               })
               .then((response) => {
                 res(response.data)
