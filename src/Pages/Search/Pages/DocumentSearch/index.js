@@ -147,8 +147,6 @@ const DocumentSearch = ({
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
 
-  console.log(attributes, 'attributes')
-
   const fields = useMemo(
     () => [
       {

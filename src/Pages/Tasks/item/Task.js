@@ -64,8 +64,6 @@ const Task = () => {
     },
   } = tabItemState
 
-  console.log(approverId, 'approverId')
-
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
   useAutoReload(loadData, tabItemState)

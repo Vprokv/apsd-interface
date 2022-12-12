@@ -102,7 +102,8 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   )
 
   const onSearch = useCallback(async () => {
-    const queryItems = Object.entries(filter).reduce(
+    const { type, ...filters } = filter
+    const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
         acc.push({
           attr: key,
@@ -115,6 +116,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
     )
 
     const { data } = await api.post(URL_SEARCH_LIST, {
+      types: [type],
       inVersions: false,
       queryItems,
     })
@@ -130,7 +132,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   }, [filter])
 
   return (
-    <div className="flex w-full p-6">
+    <div className="flex flex-col w-full p-6 overflow-hidden">
       {renderTable ? (
         children(() => setRenderTable(false))
       ) : (
