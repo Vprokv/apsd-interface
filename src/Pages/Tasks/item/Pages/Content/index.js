@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
@@ -13,12 +6,10 @@ import {
   SecondaryGreyButton,
 } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
-import { useLocation, useParams } from 'react-router-dom'
 import {
   URL_CONTENT_LIST,
   URL_DELETE_VERSION,
   URL_DOWNLOAD_FILE,
-  URL_UPDATE_VERSION,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
@@ -27,12 +18,11 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import deleteIcon from '@/Icons/deleteIcon'
-import editIcon from '@/Icons/editIcon'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Form from '@Components/Components/Forms'
 import DownloadWindow from './Components/DownloadWindow'
 import EmptyInputWrapper from '@Components/Components/Forms/EmptyInputWrapper'
-import XlsIcon from '@/Icons/XlsIcon'
+import ViewIcon from '@/Icons/ViewIcon'
 import WarningIcon from '@/Icons/warningIcon'
 import Switch from '@/Components/Inputs/Switch'
 import EditVersionWindow from './Components/EditVersionWindow'
@@ -41,10 +31,10 @@ import { EditVersion } from './constants'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import log from 'tailwindcss/lib/util/log'
 import DownloadIcon from '@/Icons/DownloadIcon'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
+import PreviewContentWindow from '@/Components/PreviewContentWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -114,6 +104,7 @@ const Content = () => {
   const [dataVersion, setDataVersion] = useState({})
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
+  const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -282,8 +273,12 @@ const Content = () => {
           <ButtonForIcon className="ml-2">
             <Icon icon={WarningIcon} />
           </ButtonForIcon>
-          <ButtonForIcon className="ml-2">
-            <Icon icon={XlsIcon} />
+          <ButtonForIcon
+            className="ml-2"
+            disabled={!selectState[0]}
+            onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
+          >
+            <Icon icon={ViewIcon} size={20} />
           </ButtonForIcon>
           <ButtonForIcon className="ml-2" onClick={deleteVersion}>
             <Icon icon={deleteIcon} />
@@ -332,6 +327,12 @@ const Content = () => {
         formData={dataVersion}
         open={openEditWindow}
         onClose={closeEditWindow}
+      />
+      <PreviewContentWindow
+        open={renderPreviewWindow}
+        onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
+        id={selectState[0]?.contentId}
+        type="ddt_apsd_content_version"
       />
     </div>
   )

@@ -33,6 +33,8 @@ import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { TokenContext } from '@/contants'
+import ViewIcon from '@/Icons/ViewIcon'
+import PreviewContentWindow from '@/Components/PreviewContentWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -114,7 +116,8 @@ const Links = () => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
-
+  const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+console.log(selectState)
   const { token } = useContext(TokenContext)
 
   const tabItemState = useTabItem({
@@ -164,7 +167,6 @@ const Links = () => {
                   { responseType: 'blob' },
                 )
                 .then((response) => {
-                  console.log(response.headers['Content-Disposition'])
                   res(response.data)
                 })
                 .catch(() => res(new Error('Документ не найден')))
@@ -266,6 +268,13 @@ const Links = () => {
             >
               <Icon icon={DownloadIcon} />
             </ButtonForIcon>
+            <ButtonForIcon
+              className="mr-2 color-text-secondary"
+              disabled={!selectState[0]?.contentId}
+              onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
+            >
+              <Icon icon={ViewIcon} size={20} />
+            </ButtonForIcon>
             <EditLinksWindow value={selectState} />
             <ButtonForIcon
               onClick={onDelete}
@@ -296,6 +305,12 @@ const Links = () => {
           sortQuery={sortQuery}
           onSort={onSort}
           valueKey="id"
+        />
+        <PreviewContentWindow
+          open={renderPreviewWindow}
+          onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
+          id={selectState[0]?.contentId}
+          type="ddt_document_content"
         />
       </div>
     </UpdateContext.Provider>
