@@ -16,6 +16,7 @@ import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
 import {
+  CanAddContext,
   LoadContext,
   TypeContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
@@ -28,6 +29,7 @@ import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Co
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext } from '../../constants'
+import AddUserIcon from "@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon";
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
@@ -106,7 +108,7 @@ const ApprovalSheet = (props) => {
           </div>
         </div>
         <ScrollBar>
-          {data.map(({ stages, type, name }, key) => (
+          {data.map(({ stages, type, name, canAdd }, key) => (
             <WithToggleNavigationItem key={type} id={type}>
               {({ isDisplayed, toggleDisplayedFlag }) => (
                 <div className="flex flex-col" key={type}>
@@ -139,15 +141,17 @@ const ApprovalSheet = (props) => {
                     />
                   </LevelStage>
                   {isDisplayed && (
-                    <Tree
-                      key={key}
-                      defaultExpandAll={true}
-                      valueKey="id"
-                      options={stages}
-                      rowComponent={RowSelector}
-                      onUpdateOptions={() => null}
-                      childrenKey="approvers"
-                    />
+                    <CanAddContext.Provider value={canAdd}>
+                      <Tree
+                        key={key}
+                        defaultExpandAll={true}
+                        valueKey="id"
+                        options={stages}
+                        rowComponent={RowSelector}
+                        onUpdateOptions={() => null}
+                        childrenKey="approvers"
+                      />
+                    </CanAddContext.Provider>
                   )}
                 </div>
               )}

@@ -2,15 +2,22 @@ import React, { useCallback, useContext, useState } from 'react'
 import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 import Icon from '@Components/Components/Icon'
 import { FormWindow } from '@/Components/ModalWindow'
-import Button, { LoadableBaseButton } from '@/Components/Button'
-import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
+import {
+  CanAddContext,
+  LoadContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { ApiContext } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
 import { URL_APPROVAL_CREATE } from '@/ApiList'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 
 const AddUserWindow = ({ stageId, documentId }) => {
   const [open, setOpenState] = useState(false)
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState([])
+  const canAdd = useContext(CanAddContext)
+
+  console.log(canAdd, 'canAdd')
 
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
@@ -25,11 +32,9 @@ const AddUserWindow = ({ stageId, documentId }) => {
     await api.post(URL_APPROVAL_CREATE, {
       stageId,
       documentId,
-      approvers: [
-        {
-          dsidApproverEmpl: user,
-        },
-      ],
+      approvers: user.map((val) => {
+        return { dsidApproverEmpl: val }
+      }),
     })
     await loadData()
     changeModalState(false)()
@@ -40,15 +45,19 @@ const AddUserWindow = ({ stageId, documentId }) => {
   }, [changeModalState])
   return (
     <div>
-      <Button className="color-blue-1" onClick={changeModalState(true)}>
+      <CustomButtonForIcon
+        className="color-blue-1"
+        onClick={changeModalState(true)}
+        disabled={!canAdd}
+      >
         <Icon icon={AddUserIcon} />
-      </Button>
+      </CustomButtonForIcon>
       <FormWindow
         title="Добавить пользователя"
         open={open}
         onClose={changeModalState(false)}
       >
-        <UserSelect value={user} onInput={setUser} />
+        <UserSelect value={user} onInput={setUser} multiple={true} />
         <div className="flex items-center justify-end mt-8">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"

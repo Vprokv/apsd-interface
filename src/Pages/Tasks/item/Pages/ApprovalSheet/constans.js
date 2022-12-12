@@ -7,3 +7,7 @@ export const LoadContext = React.createContext({
 export const TypeContext = React.createContext({
   type: '',
 })
+
+export const CanAddContext = React.createContext({
+  canAdd: false,
+})
