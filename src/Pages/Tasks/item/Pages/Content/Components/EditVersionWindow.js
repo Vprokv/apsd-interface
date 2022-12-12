@@ -33,8 +33,6 @@ const EditVersionWindow = ({ onClose, formData }) => {
     onClose()
   }, [api, onClose, values])
 
-  const userObject = useRecoilValue(userAtom)
-
   const fieldMap = useMemo(() => {
     return [
       {
@@ -78,11 +76,11 @@ const EditVersionWindow = ({ onClose, formData }) => {
         dateFormat: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
       },
     ]
-  }, [api, userObject])
+  }, [api])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
-      <ScrollBar>
+      <ScrollBar className="flex flex-col">
         <Form
           className="mb-10"
           inputWrapper={DefaultWrapper}
@@ -91,7 +89,7 @@ const EditVersionWindow = ({ onClose, formData }) => {
           fields={fieldMap}
           rules={rules}
         />
-        <div className="flex items-center justify-end mt-auto mt-5">
+        <div className="flex items-center justify-end mt-auto">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center font-weight-normal"
             onClick={onClose}

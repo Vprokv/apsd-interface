@@ -1,13 +1,24 @@
-import orgStructureFilters from './OrgStructureFilters'
-import withReferenceComponent from './ReferenceFilter'
-
+import withReferenceComponent from './FilterTypes/DependsOn'
+import SelfFilter from './FilterTypes/SelfFilter'
+import ReferenceFilterWrapper from './ReferenceFilterWrapper'
 import { TYPE_ORGSTRUCTURE } from '../../constants'
 
-const typesMap = {
-  [TYPE_ORGSTRUCTURE]: orgStructureFilters,
+const filtersType = {
+  self: SelfFilter,
+  depends_on: withReferenceComponent,
 }
 
-const selectComponent = ({ type, backConfig: { filters }, nextProps }) => {
+const wrappersMap = {
+  [TYPE_ORGSTRUCTURE]: () => {},
+}
+
+const selectComponent = (conf) => {
+  const {
+    type,
+    backConfig: { filters },
+    nextProps,
+  } = conf
+
   if (!filters) {
     if (nextProps.loadFunction) {
       // remove curry from loadFunction
@@ -15,9 +26,20 @@ const selectComponent = ({ type, backConfig: { filters }, nextProps }) => {
     }
     return
   }
-  const { [type]: wrapper = withReferenceComponent } = typesMap
-  nextProps.filters = filters
-  nextProps.component = wrapper(nextProps.component)
+
+  filters
+    .reduce((acc, filter) => {
+      if (!acc.has(filter.type)) {
+        acc.set(filter.type, [])
+      }
+      acc.get(filter.type).push(filter)
+      return acc
+    }, new Map())
+    .forEach((filters, type) => filtersType[type](conf, filters))
+
+  const { [type]: wrapper = ReferenceFilterWrapper } = wrappersMap
+
+  wrapper(conf)
 }
 
 export default selectComponent

@@ -4,17 +4,18 @@ import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
-  URL_DOWNLOAD_FILE,
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
+  URL_PREVIEW_DOCUMENT,
+  URL_DOWNLOAD_FILE,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, SecondaryGreyButton } from '@/Components/Button'
+import { ButtonForIcon, SecondaryGreyButton, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -31,6 +32,9 @@ import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import { TokenContext } from '@/contants'
+import ViewIcon from '@/Icons/ViewIcon'
+import PreviewContentWindow from '@/Components/PreviewContentWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -112,6 +116,9 @@ const Links = () => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
+  const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+console.log(selectState)
+  const { token } = useContext(TokenContext)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
@@ -160,7 +167,6 @@ const Links = () => {
                   { responseType: 'blob' },
                 )
                 .then((response) => {
-                  console.log(response.headers['Content-Disposition'])
                   res(response.data)
                 })
                 .catch(() => res(new Error('Документ не найден')))
@@ -226,6 +232,12 @@ const Links = () => {
     await api.post(URL_LINK_DELETE, { linkIds: selectState })
   }, [api, selectState])
 
+  const previewDocument = useCallback(async () => {
+    const { data } = await api.get(
+      `${URL_PREVIEW_DOCUMENT}:${selectState[0].contentId}:${token}`,
+    )
+  }, [api, selectState])
+
   return (
     <UpdateContext.Provider value={setChange}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -256,6 +268,13 @@ const Links = () => {
             >
               <Icon icon={DownloadIcon} />
             </ButtonForIcon>
+            <ButtonForIcon
+              className="mr-2 color-text-secondary"
+              disabled={!selectState[0]?.contentId}
+              onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
+            >
+              <Icon icon={ViewIcon} size={20} />
+            </ButtonForIcon>
             <EditLinksWindow value={selectState} />
             <ButtonForIcon
               onClick={onDelete}
@@ -265,6 +284,11 @@ const Links = () => {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </div>
+        </div>
+        <div className="flex items-center py-4 form-element-sizes-32">
+          <SecondaryBlueButton onClick={previewDocument}>
+            Предпросмотр
+          </SecondaryBlueButton>
         </div>
         <ListTable
           rowComponent={useMemo(
@@ -281,6 +305,12 @@ const Links = () => {
           sortQuery={sortQuery}
           onSort={onSort}
           valueKey="id"
+        />
+        <PreviewContentWindow
+          open={renderPreviewWindow}
+          onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
+          id={selectState[0]?.contentId}
+          type="ddt_document_content"
         />
       </div>
     </UpdateContext.Provider>

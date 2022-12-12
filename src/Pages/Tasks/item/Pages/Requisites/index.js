@@ -73,7 +73,6 @@ const Requisites = () => {
               dss_validation_rule,
               dss_visible_rule,
               dss_readonly_rule,
-              filters,
             },
           },
         ) => {
@@ -146,21 +145,18 @@ const Requisites = () => {
             label: dss_attr_label,
             placeholder: dss_placeholder,
             disabled: dsb_readonly,
-            ...transmission({ api, backConfig: attr, nextProps: {}, type }),
+            ...transmission({
+              api,
+              backConfig: attr,
+              nextProps: {},
+              type,
+              interceptors: acc.interceptors,
+            }),
             style: {
               gridColumn: `${col + 1}/${col + width + 1}`,
               gridRow: `grid-row: ${row + 1}/${row + height + 1}`,
             },
           })
-
-          if (filters) {
-            filters.map(({ field }) => {
-              if (!acc.interceptors.has(field)) {
-                acc.interceptors.set(field, [])
-              }
-              acc.interceptors.get(field).push(dss_attr_name)
-            })
-          }
 
           return acc
         },

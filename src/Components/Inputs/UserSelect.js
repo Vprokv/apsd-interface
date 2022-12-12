@@ -62,7 +62,7 @@ const UserSelect = (props) => {
 
   return (
     <div className="flex items-center w-full">
-      <Select {...props} loadFunction={loadRefSelectFunc} />
+      <Select {...props} loadFunction={loadRefSelectFunc} className="mr-0" />
       <>
         <SearchButton className="ml-1" onClick={openEmployeeWindow}>
           <Icon icon={searchIcon} />
