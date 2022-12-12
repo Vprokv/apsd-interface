@@ -20,6 +20,7 @@ import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PrintIcon from './Icons/PrintIcon.svg'
 import CreatingAdditionalAgreementWindow from './Components/CreatingAdditionalAgreementWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 
 const Task = () => {
   const { id } = useParams()
@@ -63,6 +64,8 @@ const Task = () => {
     },
   } = tabItemState
 
+  console.log(approverId, 'approverId')
+
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
   useAutoReload(loadData, tabItemState)
@@ -87,21 +90,22 @@ const Task = () => {
         },
         icon: DefaultIcon,
       }),
-      additional_agreement: {
-        icon: PrintIcon,
-        caption: 'Создание доп. согласования',
-        handler: () => setShowWindow(true),
-      },
     }),
     [api, closeCurrenTab, id],
   )
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
 
-  const wrappedDocumentActions = useDocumentActions(
-    documentActions,
-    defaultDocumentHandlers,
-  )
+  const wrappedDocumentActions = useDocumentActions(documentActions, {
+    ...defaultDocumentHandlers,
+    ...{
+      additional_agreement: {
+        icon: UploadDoc,
+        caption: 'Создание доп. согласования',
+        handler: () => setShowWindow(true),
+      },
+    },
+  })
 
   const actions = useMemo(
     () => [...wrappedTaskActions, ...wrappedDocumentActions],
