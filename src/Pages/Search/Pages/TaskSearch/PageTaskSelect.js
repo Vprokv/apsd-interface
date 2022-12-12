@@ -32,54 +32,59 @@ const tableConfig = [
     }) => <BaseCell value={userName} />,
   },
   {
-    id: 'Дата выдачи',
+    id: 'issueDate',
     label: 'Дата выдачи',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: BaseCell,
+    // component: ({
+    //   ParentValue: {
+    //     values: {},
+    //   } = ,
+    // }) => <BaseCell />,
   },
   {
     id: 'Срок исполнения',
     label: 'Срок исполнения',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: BaseCell,
+    // component: ({
+    //   ParentValue: {
+    //     values: {},
+    //   },
+    // }) => <BaseCell />,
   },
   {
     id: 'Дата завершения',
     label: 'Дата завершения',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: BaseCell,
+    // component: ({
+    //   ParentValue: {
+    //     values: {},
+    //   },
+    // }) => <BaseCell />,
   },
   {
     id: 'documentDescription',
     label: 'Краткое содержание',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: BaseCell,
+    // component: ({
+    //   ParentValue: {
+    //     values: {},
+    //   },
+    // }) => <BaseCell />,
   },
   {
     id: 'documentStatus',
     label: 'Статус',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: BaseCell,
+    // component: ({
+    //   ParentValue: {
+    //     values: {},
+    //   },
+    // }) => <BaseCell />,
   },
   {
     id: 'insider',
@@ -111,9 +116,9 @@ const PageTaskSelect = () => {
 
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
-    ({ id, type }) =>
+    ({ taskId, documentType }) =>
       () =>
-        openNewTab(navigate(`/document/${id}/${type}`)),
+        openNewTab(navigate(`/task/${taskId}/${documentType}`)),
     [navigate, openNewTab],
   )
 
@@ -144,20 +149,23 @@ const PageTaskSelect = () => {
       setFilter={updateTabState('filter')}
     >
       {(onClick) => (
-        <ScrollBar className="w-full">
+        <>
           <SecondaryBlueButton
             onClick={onClick}
             className="ml-auto form-element-sizes-32"
           >
             Изменить условие
           </SecondaryBlueButton>
-          <ListTable
-            rowComponent={rowComponent}
-            headerCellComponent={HeaderCell}
-            columns={tableConfig}
-            value={searchState.results}
-          />
-        </ScrollBar>
+          <ScrollBar className="px-4">
+            <ListTable
+              rowComponent={rowComponent}
+              headerCellComponent={HeaderCell}
+              columns={tableConfig}
+              value={searchState.results}
+            />
+          </ScrollBar>
+        </>
+
       )}
     </TaskSearch>
   )

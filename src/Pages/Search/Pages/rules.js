@@ -8,7 +8,7 @@ import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
-import DateWithButton from "@/Pages/Search/Pages/Components/DateWithButton";
+import DateWithButton from '@/Pages/Search/Pages/Components/DateWithButton'
 
 const fields = {
   Classification: Classification,
@@ -25,19 +25,25 @@ const fields = {
 }
 
 export const getField = (type) => fields[type] ?? fields.DocStatus
-export const getLoadFunction = (api) => (type) => {
-  if (!type) {
-    return {}
-  }
+export const getLoadFunction =
+  (api) =>
+  ({
+    dss_component_reference,
+    dss_reference_attr_label,
+    dss_reference_attr,
+  }) => {
+    if (!dss_component_reference) {
+      return {}
+    }
 
-  return {
-    loadFunction: async () => {
-      const { data } = await api.post(URL_ENTITY_LIST, {
-        type,
-      })
-      return data
-    },
-    valueKey: 'r_object_id',
-    labelKey: 'dss_name',
+    return {
+      loadFunction: async () => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          dss_component_reference,
+        })
+        return data
+      },
+      valueKey: dss_reference_attr || 'r_object_id',
+      labelKey: dss_reference_attr_label || 'dss_name',
+    }
   }
-}
