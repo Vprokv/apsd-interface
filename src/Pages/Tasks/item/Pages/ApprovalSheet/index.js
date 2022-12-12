@@ -29,7 +29,6 @@ import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Co
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext } from '../../constants'
-import AddUserIcon from "@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon";
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()

@@ -17,8 +17,6 @@ const AddUserWindow = ({ stageId, documentId }) => {
   const [user, setUser] = useState([])
   const canAdd = useContext(CanAddContext)
 
-  console.log(canAdd, 'canAdd')
-
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
 
