@@ -16,6 +16,7 @@ import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
 import FileInput from '@/Components/Inputs/FileInput'
 import { useParams } from 'react-router-dom'
+import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
 
 const rules = {}
 const initFormValue = {
@@ -121,7 +122,7 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
       <ScrollBar>
         <Form
           className="mb-10"
-          inputWrapper={DefaultWrapper}
+          inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}

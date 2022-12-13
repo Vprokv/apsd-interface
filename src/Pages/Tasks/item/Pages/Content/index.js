@@ -334,6 +334,7 @@ const Content = () => {
         formData={dataVersion}
         open={openEditWindow}
         onClose={closeEditWindow}
+        setChange={setChange}
       />
       <PreviewContentWindow
         open={renderPreviewWindow}
