@@ -23,12 +23,7 @@ import {
   SecondaryGreyButton,
 } from '@/Components/Button'
 
-const TaskSearch = ({
-  setSearchState,
-  filter,
-  setFilter,
-  children,
-}) => {
+const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
@@ -41,7 +36,6 @@ const TaskSearch = ({
     setAttributes(data)
   }, [api, filter.type])
 
-
   useEffect(loadData, [loadData])
 
   const fields = useMemo(
@@ -52,12 +46,18 @@ const TaskSearch = ({
           dss_attr_name,
           dss_component_type,
           dss_component_reference,
+          dss_reference_attr_label,
+          dss_reference_attr,
           dss_default_search_operator,
           multiple,
           range,
           ...attributes
         }) => {
-          const loadData = getLoadFunction(api)(dss_component_reference)
+          const loadData = getLoadFunction(api)({
+            dss_component_reference,
+            dss_reference_attr_label,
+            dss_reference_attr,
+          })
 
           const mappedOperators = keyOperators.reduce((acc, operator) => {
             if (attributes[operator]) {
@@ -102,7 +102,8 @@ const TaskSearch = ({
   )
 
   const onSearch = useCallback(async () => {
-    const queryItems = Object.entries(filter).reduce(
+    const { type, ...filters } = filter
+    const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
         acc.push({
           attr: key,
@@ -115,6 +116,7 @@ const TaskSearch = ({
     )
 
     const { data } = await api.post(URL_SEARCH_LIST, {
+      types: [type],
       inVersions: false,
       queryItems,
     })
@@ -130,7 +132,7 @@ const TaskSearch = ({
   }, [filter])
 
   return (
-    <div className="flex w-full p-6">
+    <div className="flex flex-col w-full p-6 overflow-hidden">
       {renderTable ? (
         children(() => setRenderTable(false))
       ) : (

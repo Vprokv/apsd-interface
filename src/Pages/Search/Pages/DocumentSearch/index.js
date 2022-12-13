@@ -147,8 +147,6 @@ const DocumentSearch = ({
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
 
-  console.log(attributes, 'attributes')
-
   const fields = useMemo(
     () => [
       {
@@ -167,12 +165,18 @@ const DocumentSearch = ({
           dss_attr_name,
           dss_component_type,
           dss_component_reference,
+          dss_reference_attr_label,
+          dss_reference_attr,
           dss_default_search_operator,
           multiple,
           range,
           ...attributes
         }) => {
-          const loadData = getLoadFunction(api)(dss_component_reference)
+          const loadData = getLoadFunction(api)({
+            dss_component_reference,
+            dss_reference_attr_label,
+            dss_reference_attr,
+          })
 
           const mappedOperators = keyOperators.reduce((acc, operator) => {
             if (attributes[operator]) {

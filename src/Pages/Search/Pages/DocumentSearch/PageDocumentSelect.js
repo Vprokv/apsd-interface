@@ -67,7 +67,7 @@ const PageDocumentSelect = ({ props }) => {
           >
             Изменить условие
           </SecondaryBlueButton>
-          <ScrollBar className="px-4 ">
+          <ScrollBar className=" ">
             <ListTable
               rowComponent={rowComponent}
               headerCellComponent={HeaderCell}

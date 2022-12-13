@@ -39,12 +39,18 @@ const SearchFields = () => {
             dss_attr_label,
             dss_attr_name,
             dss_component_type,
+            dss_reference_attr_label,
+            dss_reference_attr,
             dss_component_reference,
             // multiple,
             range,
           },
         ) => {
-          const loadData = getLoadFunction(api)(dss_component_reference)
+          const loadData = getLoadFunction(api)({
+            dss_component_reference,
+            dss_reference_attr_label,
+            dss_reference_attr,
+          })
 
           acc.push({
             ...loadData,
