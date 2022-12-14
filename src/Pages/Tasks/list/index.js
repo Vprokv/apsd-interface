@@ -46,6 +46,7 @@ import Filter from './Components/Filter'
 import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import log from 'tailwindcss/lib/util/log'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -97,12 +98,17 @@ const columns = [
     id: 'maintainer',
     label: 'Назначенный исполнитель',
     component: ({
-      ParentValue: { performerFio, performerPosition, performerName },
+      ParentValue: {
+        performerEmployee: { firstName = '', position = '' } = {},
+        performerFio,
+        performerAvatar,
+      } = {},
     }) =>
       UserCard({
-        name: performerName,
+        name: firstName,
         fio: performerFio,
-        position: performerPosition,
+        position: position,
+        avatar: performerAvatar,
       }),
     sizes: useCardSizes,
   },
@@ -110,12 +116,17 @@ const columns = [
     id: 'author',
     label: 'Автор',
     component: ({
-      ParentValue: { creatorFio, creatorPosition, creatorName },
+      ParentValue: {
+        creatorEmployee: { firstName, avatartId },
+        creatorFio,
+        creatorPosition,
+      },
     }) =>
       UserCard({
-        name: creatorName,
+        name: firstName,
         fio: creatorFio,
         position: creatorPosition,
+        avatar: avatartId,
       }),
     sizes: useCardSizes,
   },
@@ -141,6 +152,8 @@ function TaskList() {
     setState: setTabState,
     defaultLimit: 10,
   })
+
+  console.log(data, 'data')
 
   const [a, b] = useState({})
   const [selectState, setSelectState] = useState([])

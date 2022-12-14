@@ -23,12 +23,17 @@ const RowComponent = (props) => {
     performerComment = 'comment',
     dsdtDecision,
     dsdtDueDate,
+    dsdtAvatar,
   } = props.node
 
   return (
     <Row>
       <div className="flex h-full items-center ml-2">
-        <UserCard fio={dssApproverFio} position={dssApproverPosition} />
+        <UserCard
+          fio={dssApproverFio}
+          position={dssApproverPosition}
+          avatar={dsdtAvatar}
+        />
         <DateCell
           hot={dsdtDecision < dsdtDueDate}
           plan={dsdtDecision}
