@@ -35,6 +35,8 @@ import DownloadIcon from '@/Icons/DownloadIcon'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import EditIcon from '@/Icons/editIcon'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -49,9 +51,9 @@ const plugins = {
 
 const filterFormConfig = [
   {
-    id: 'fullVersion',
-    widthButton: false,
-    component: Switch,
+    id: 'isFullVersion',
+    component: CheckBox,
+    className: 'font-size-14',
     label: 'Отобразить все версии',
   },
 ]
@@ -61,31 +63,38 @@ const columns = [
     id: 'contentName',
     label: 'Описание',
     sizes: 190,
-    component: ({ ParentValue }) => <EditRow value={ParentValue} />,
+    component: BaseCell,
+    // component: ({ ParentValue }) => <EditRow value={ParentValue} />,
   },
   {
     id: 'versionDate',
     label: 'Дата загрузки',
+    component: BaseCell,
   },
   {
     id: 'regNumber',
     label: 'Шифр/Рег. номер',
+    component: BaseCell,
   },
   {
     id: 'contentType',
     label: 'Тип файла',
+    component: BaseCell,
   },
   {
     id: 'author',
     label: 'Автор',
+    component: BaseCell,
   },
   {
     id: 'version',
     label: 'Версия',
+    component: BaseCell,
   },
   {
     id: 'comment',
     label: 'Комментарий',
+    component: BaseCell,
   },
   // {
   //   id: 'Даты разраб.(план/факт)',
@@ -98,13 +107,14 @@ const Content = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [filterValue, setFilterValue] = useState(false)
+  const [filterValue, setFilterValue] = useState({ isFullVersion: false })
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const EditVersionContext = useContext(EditVersion)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -140,7 +150,7 @@ const Content = () => {
       URL_CONTENT_LIST,
       {
         documentId: id,
-        isCurrentVersion: filterValue.fullVersion,
+        isCurrentVersion: !filterValue.isFullVersion,
       },
       {
         params: {
@@ -155,15 +165,7 @@ const Content = () => {
     )
 
     return data
-  }, [
-    sortQuery,
-    api,
-    loadDataHelper,
-    paginationState,
-    filterValue.fullVersion,
-    id,
-    change,
-  ])
+  }, [sortQuery, api, loadDataHelper, paginationState, filterValue, id, change])
 
   useAutoReload(loadData, tabItemState)
 
@@ -187,14 +189,14 @@ const Content = () => {
       ])
       setChange()
     }
-  }, [api, loadData, selectState])
+  }, [api, selectState, setChange])
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
-  const editVersion = useCallback(async (value) => {
-    setDataVersion(value)
+  const editVersion = useCallback(async () => {
+    setDataVersion(selectState[0])
     setOpenEditWindow(true)
-  }, [])
+  }, [selectState])
 
   const onTableUpdate = useCallback(
     (data) => setTabState({ data }),
@@ -270,6 +272,13 @@ const Content = () => {
           >
             <Icon icon={DownloadIcon} />
           </ButtonForIcon>
+          <ButtonForIcon
+            disabled={disabled}
+            onClick={editVersion}
+            className="ml-2"
+          >
+            <Icon icon={EditIcon} />
+          </ButtonForIcon>
           <ButtonForIcon className="ml-2">
             <Icon icon={WarningIcon} />
           </ButtonForIcon>
@@ -295,28 +304,26 @@ const Content = () => {
           Закрыть
         </SecondaryGreyButton>
       </FormWindow>
-      <EditVersion.Provider value={editVersion}>
-        <ListTable
-          value={data}
-          columns={columns}
-          plugins={plugins}
-          headerCellComponent={HeaderCell}
-          onInput={onTableUpdate}
-          selectState={selectState}
-          onSelect={setSelectState}
-          sortQuery={sortQuery}
-          onSort={onSort}
-        />
-        <Pagination
-          className="mt-2"
-          limit={paginationState.limit}
-          page={paginationState.page}
-          setLimit={setLimit}
-          setPage={setPage}
-        >
-          {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
-        </Pagination>
-      </EditVersion.Provider>
+      <ListTable
+        value={data}
+        columns={columns}
+        plugins={plugins}
+        headerCellComponent={HeaderCell}
+        onInput={onTableUpdate}
+        selectState={selectState}
+        onSelect={setSelectState}
+        sortQuery={sortQuery}
+        onSort={onSort}
+      />
+      <Pagination
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+      </Pagination>
       <DownloadWindow
         setChange={setChange}
         contentId={idContent}
@@ -327,6 +334,7 @@ const Content = () => {
         formData={dataVersion}
         open={openEditWindow}
         onClose={closeEditWindow}
+        setChange={setChange}
       />
       <PreviewContentWindow
         open={renderPreviewWindow}

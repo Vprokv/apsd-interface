@@ -5,12 +5,10 @@ import settingsIcon from '@/Icons/settingsIcon'
 import notificationIcon from '@/Icons/notificationIcon'
 import angleIcon from '@/Icons/angleIcon'
 import {
-  Avatar,
   ContextMenuElement,
   IconsGroup,
   UserContextMenuContainer,
 } from './styles'
-import tempImg from './temp_avatar.png'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import Search from '@/Pages/Main/Components/Header/Components/Search'
@@ -19,14 +17,15 @@ import { useCallback, useContext, useState } from 'react'
 import LogoutIcon from '@/Pages/Main/Icons/LogoutIcon'
 import { TokenContext } from '@/contants'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
+import UserAvatar from '@/Pages/Main/Components/Header/Components/UserAvatar'
 
 const Header = () => {
-  const { dss_first_name, dss_last_name, dsid_avatar } =
-    useRecoilValue(userAtom)
+  const { dss_first_name, dss_last_name } = useRecoilValue(userAtom)
   const { dropToken } = useContext(TokenContext)
   const [contextMenuState, setContextMenuState] = useState(false)
   const openContextMenu = useCallback(() => setContextMenuState(true), [])
   const closeContextMenu = useCallback(() => setContextMenuState(false), [])
+
   return (
     <div className="bg-blue-1 flex items-center py-2.5 pl-6 pr-5 text-white">
       <img src={MainLogo} className="mr-20" />
@@ -44,16 +43,16 @@ const Header = () => {
       </IconsGroup>
       <div className="pl-10 flex items-center">
         <div className="text-right mr-4 font-medium">
-          <div>{dss_first_name}</div>
           <div>{dss_last_name}</div>
+          <div>{dss_first_name}</div>
         </div>
         <button
           onClick={contextMenuState ? closeContextMenu : openContextMenu}
           type="button"
           className="flex items-center"
         >
-          <div className="rounded-full border-solid border-white border-2 mr-2 w-12 h-12 flex items-center justify-center">
-            <img className="w-10 h-10 rounded-full" src={tempImg} />
+          <div className="rounded-full bg-white mr-2 w-12 h-12 flex items-center justify-center">
+            <UserAvatar />
           </div>
           <Icon icon={angleIcon} size={10} />
           {contextMenuState && (

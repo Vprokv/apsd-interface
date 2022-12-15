@@ -109,6 +109,10 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
       ...item
     } = props
 
+    if (!remarkMemberFullName) {
+      return []
+    }
+
     return [
       {
         itsRemark: true,

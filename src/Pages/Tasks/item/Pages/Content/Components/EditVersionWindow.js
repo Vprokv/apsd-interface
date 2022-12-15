@@ -12,26 +12,29 @@ import { URL_ENTITY_LIST, URL_UPDATE_VERSION } from '@/ApiList'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
+import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
 
 const rules = {}
 
-const EditVersionWindow = ({ onClose, formData }) => {
+const EditVersionWindow = ({ onClose, formData, setChange }) => {
   const [values, setValues] = useState(formData)
+
   const api = useContext(ApiContext)
 
   const onSave = useCallback(async () => {
-    const { contentType, comment, regNumber, versionDate, contentId } = values
+    const { contentTypeId, comment, regNumber, versionDate, contentId } = values
     await api.post(URL_UPDATE_VERSION, {
       file: {
         contentId,
-        contentType,
+        contentType: contentTypeId,
         comment,
         regNumber,
         versionDate,
       },
     })
+    setChange()
     onClose()
-  }, [api, onClose, values])
+  }, [api, onClose, setChange, values])
 
   const fieldMap = useMemo(() => {
     return [
@@ -44,11 +47,17 @@ const EditVersionWindow = ({ onClose, formData }) => {
       },
       {
         label: 'Тип файла',
-        id: 'contentType',
+        id: 'contentTypeId',
         component: LoadableSelect,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         placeholder: 'Тип файла',
+        options: [
+          {
+            r_object_id: values.contentTypeId,
+            dss_name: values.contentType,
+          },
+        ],
         loadFunction: async () => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_type_content',
@@ -76,14 +85,14 @@ const EditVersionWindow = ({ onClose, formData }) => {
         dateFormat: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
       },
     ]
-  }, [api])
+  }, [api, values])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <ScrollBar className="flex flex-col">
         <Form
           className="mb-10"
-          inputWrapper={DefaultWrapper}
+          inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}

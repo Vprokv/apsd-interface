@@ -61,7 +61,6 @@ const Document = () => {
     },
   } = tabItemState
 
-  console.log(documentTabs, 'documentTabs')
 
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
   const refValues = useRef()

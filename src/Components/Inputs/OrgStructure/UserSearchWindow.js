@@ -44,6 +44,7 @@ const columns = [
     id: 'position',
     label: 'ФИО, Должность',
     component: ({ ParentValue = {} } = {}) => {
+      console.log(ParentValue, 'ParentValue')
       return UserCard(ParentValue)
     },
     sizes: 250,
@@ -256,6 +257,8 @@ const OrgStructureWindow = (props) => {
     },
     [setSelectState, returnOption, valueKey, multiple],
   )
+
+  console.log(options, 'options')
 
   return (
     <div className="flex flex-col overflow-hidden h-full">

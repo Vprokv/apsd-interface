@@ -10,11 +10,9 @@ import DateCell from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DateCell
 import DocumentState from '../DocumentState'
 
 const Row = styled.div`
-  height: 62px;
+  height: 65px;
   border-bottom: 1px solid var(--separator);
   font-size: 14px;
-  flex-direction: column;
-  align-content: center;
 `
 
 const RowComponent = (props) => {
@@ -25,12 +23,17 @@ const RowComponent = (props) => {
     performerComment = 'comment',
     dsdtDecision,
     dsdtDueDate,
+    dsdtAvatar,
   } = props.node
 
   return (
     <Row>
       <div className="flex h-full items-center ml-2">
-        <UserCard fio={dssApproverFio} position={dssApproverPosition} />
+        <UserCard
+          fio={dssApproverFio}
+          position={dssApproverPosition}
+          avatar={dsdtAvatar}
+        />
         <DateCell
           hot={dsdtDecision < dsdtDueDate}
           plan={dsdtDecision}

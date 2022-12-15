@@ -24,34 +24,6 @@ import deleteIcon from '@/Icons/deleteIcon'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
-const mockData = [
-  {
-    remarkId: 'string', //- id замечания
-    number: '30', //- номер
-    stageName: 'Согласование куратора ИА - 4 этап', //- наименование этапа
-    stageStatus: 'Разослано', //- статус этапа
-    remarkMemberFullName: 'Корнейчук Р.П.', //- Кто оставил замечание
-    remarkMemberPosition: 'Руководитель проекта', //- должность
-    status: 'Принято', //- статус замечания или ответа
-    remarkText: 'Градостроительный кодекс РФ от 18.12.2021', //- текст замечания
-    remarkCreationDate: 'date', //- дата создания замечания
-    remarkType: 'Внутреннее', //- тип замечания (наименование)
-    setRemark: true, //- свод замечаний
-    // answerMemberFullName: 'Пилипчук Р.П.', //- кто ответил на замечание
-    // answerMemberPosition: 'Начальник службы', //- должность
-    answerText: 'string', //- текст ответа
-    answerCreationDate: 'string', //- дата ответа
-    ndtLinks: [
-      //- ссылки на НДТ
-      {
-        id: '00xxxxxx0000lvta', //- id из справочника
-        name: 'name', //- наименование из справочника
-        comment: 'string', // - коммент к ссылке
-      },
-    ],
-  },
-]
-
 const Remarks = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -141,28 +113,32 @@ const Remarks = (props) => {
           </div>
         </div>
         <div className="flex flex-col">
-          {data.map((val, key) => (
-            <RowComponent
-              key={key}
-              selectState={selectState}
-              setSelectState={setSelectState}
-              {...val}
-            >
-              <div className="flex items-center">
-                <div className="mr-12 font-medium">{val?.stageName}</div>
-                <div className="mr-12 w-24">{val?.stageStatus}</div>
-                <div className="flex items-center ml-auto">
-                  <EditRemark {...val} />
-                  <LoadableBaseButton
-                    onClick={onDelete}
-                    className="color-blue-1"
-                  >
-                    <Icon icon={deleteIcon} />
-                  </LoadableBaseButton>
-                </div>
-              </div>
-            </RowComponent>
-          ))}
+          {data.map((val, key) => {
+            if (val) {
+              return (
+                <RowComponent
+                  key={key}
+                  selectState={selectState}
+                  setSelectState={setSelectState}
+                  {...val}
+                >
+                  <div className="flex items-center">
+                    <div className="mr-12 font-medium">{val?.stageName}</div>
+                    <div className="mr-12 w-24">{val?.stageStatus}</div>
+                    <div className="flex items-center ml-auto">
+                      <EditRemark {...val} />
+                      <LoadableBaseButton
+                        onClick={onDelete}
+                        className="color-blue-1"
+                      >
+                        <Icon icon={deleteIcon} />
+                      </LoadableBaseButton>
+                    </div>
+                  </div>
+                </RowComponent>
+              )
+            }
+          })}
         </div>
       </div>
     </UpdateContext.Provider>

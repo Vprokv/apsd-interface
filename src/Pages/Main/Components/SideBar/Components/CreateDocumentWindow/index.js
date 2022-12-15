@@ -4,7 +4,7 @@ import { ApiContext } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import { URL_DOCUMENT_CREATION_OPTIONS } from '@/ApiList'
-import { DocumentIcon, DocumentTypesContainer } from './style'
+import {DocumentIcon, DocumentTypesContainer, SmallSizeModalWindow} from './style'
 import RadioButton from '@/Components/Inputs/RadioButton'
 import Button from '@/Components/Button'
 import WithToggleNavigationItem from '../withToggleNavigationItem'
@@ -141,31 +141,31 @@ const CreateDocumentWindow = ({ onClose }) => {
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <div className="flex overflow-hidden mb-6 h-full">
-        <DocumentTypesContainer className="flex flex-col h-full flex-0">
-          <ScrollBar className="pr-6">
-            {documents.map(renderDocumentItem(FirstLevelHeaderComponent))}
-          </ScrollBar>
-        </DocumentTypesContainer>
-        <div className="pl-6 w-full h-full">
-          <h2 className="font-medium text-2xl color-blue-1 mb-4">
-            {selectedDocument.name}
-          </h2>
-          {/* <div className="separator rounded-md mb-6">*/}
-          {/*  <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">*/}
-          {/*    Контент*/}
-          {/*  </h3>*/}
-          {/*  <div className="p-4">*/}
-          {/*    <RadioButton label="использовать шаблон контента" />*/}
-          {/*    <RadioButton label="не использовать шаблон контента" />*/}
-          {/*  </div>*/}
-          {/* </div>*/}
-          {/* <div className="separator rounded-md mb-6">*/}
-          {/*  <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">*/}
-          {/*    Атрибуты*/}
-          {/*  </h3>*/}
-          {/*  <div className="p-4">{renderAttributes}</div>*/}
-          {/* </div>*/}
-        </div>
+        {/*<DocumentTypesContainer className="flex flex-col h-full flex-0">*/}
+        <ScrollBar className="pr-6 w-full px-2">
+          {documents.map(renderDocumentItem(FirstLevelHeaderComponent))}
+        </ScrollBar>
+        {/*</DocumentTypesContainer>*/}
+        {/*<div className="pl-6 w-full h-full">*/}
+        {/*  <h2 className="font-medium text-2xl color-blue-1 mb-4">*/}
+        {/*    {selectedDocument.name}*/}
+        {/*  </h2>*/}
+        {/* <div className="separator rounded-md mb-6">*/}
+        {/*  <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">*/}
+        {/*    Контент*/}
+        {/*  </h3>*/}
+        {/*  <div className="p-4">*/}
+        {/*    <RadioButton label="использовать шаблон контента" />*/}
+        {/*    <RadioButton label="не использовать шаблон контента" />*/}
+        {/*  </div>*/}
+        {/* </div>*/}
+        {/* <div className="separator rounded-md mb-6">*/}
+        {/*  <h3 className="bg-light-gray px-4 py-3 font-medium font-size-14 ">*/}
+        {/*    Атрибуты*/}
+        {/*  </h3>*/}
+        {/*  <div className="p-4">{renderAttributes}</div>*/}
+        {/* </div>*/}
+        {/*</div>*/}
       </div>
       <div className="flex w-full items-center justify-end">
         <Button
@@ -190,9 +190,9 @@ CreateDocumentWindow.propTypes = {
 }
 
 const CrateDocumentWrapper = (props) => (
-  <StandardSizeModalWindow {...props} title="Создание нового документа">
+  <SmallSizeModalWindow {...props} title="Создание нового документа">
     <CreateDocumentWindow {...props} />
-  </StandardSizeModalWindow>
+  </SmallSizeModalWindow>
 )
 
 export default CrateDocumentWrapper
