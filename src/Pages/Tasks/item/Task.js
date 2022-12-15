@@ -9,6 +9,7 @@ import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultDocumentHandlers,
   defaultPages,
+  defaultTaskIcon,
   DocumentIdContext,
   DocumentTypeContext,
 } from './constants'
@@ -86,11 +87,14 @@ const Task = () => {
             closeCurrenTab()
           } catch (_) {}
         },
-        icon: DefaultIcon,
+        icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
     [api, closeCurrenTab, id],
   )
+
+  console.log(documentActions, 'documentActions')
+  console.log(taskActions, 'taskActions')
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
 
