@@ -43,7 +43,7 @@ const Task = () => {
     if (!data.read) {
       // не ждем запроса, он выполняеться фоном.
       api.post(URL_TASK_MARK_READ, {
-        taskIds: [id],
+        tasksIds: [id],
       })
     }
     return data
