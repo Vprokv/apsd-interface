@@ -93,9 +93,6 @@ const Task = () => {
     [api, closeCurrenTab, id],
   )
 
-  console.log(documentActions, 'documentActions')
-  console.log(taskActions, 'taskActions')
-
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
 
   const wrappedDocumentActions = useDocumentActions(documentActions, {
