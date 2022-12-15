@@ -6,7 +6,7 @@ import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { ApiContext } from '@/contants'
-import { URL_ENTITY_LIST } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_TASK_LIST_FILTERS } from '@/ApiList'
 import { DOCUMENT_TYPE, TASK_TYPE } from '../../constants'
 
 const emptyWrapper = ({ children }) => children
@@ -17,64 +17,60 @@ function Filter({ value, onInput }) {
   const fields = useMemo(
     () => [
       {
-        id: '1',
+        id: 'unread',
         component: Switch,
         label: 'Непросмотренные',
       },
       {
-        id: '2',
+        id: 'taskTypes',
         component: LoadableSelect,
         placeholder: 'Тип задания',
         valueKey: 'dss_name',
         labelKey: 'dss_name',
         loadFunction: async () => {
-          const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
+          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
+            filterType: ['taskTypes'],
+          })
           return data
         },
       },
       {
-        id: '3',
+        id: 'docTypes',
         component: LoadableSelect,
         placeholder: 'Вид тома',
         valueKey: 'dss_type_name',
         labelKey: 'dss_type_label',
         loadFunction: async () => {
-          const { data } = await api.post(`${URL_ENTITY_LIST}/${DOCUMENT_TYPE}`)
+          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
+            filterType: ['docTypes'],
+          })
           return data
         },
       },
       {
-        id: '4',
-        component: Select,
+        id: 'stageId',
+        component: LoadableSelect,
         placeholder: 'Этап',
-        options: [
-          {
-            ID: 'ASD',
-            SYS_NAME: 'TT',
-          },
-          {
-            ID: 'ASD1',
-            SYS_NAME: 'TT2',
-          },
-        ],
+        loadFunction: async () => {
+          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
+            filterType: ['stageId'],
+          })
+          return data
+        },
       },
       {
-        id: '5',
-        component: Select,
+        id: 'documentStatus',
+        component: LoadableSelect,
         placeholder: 'Статус',
-        options: [
-          {
-            ID: 'ASD',
-            SYS_NAME: 'TT',
-          },
-          {
-            ID: 'ASD1',
-            SYS_NAME: 'TT2',
-          },
-        ],
+        loadFunction: async () => {
+          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
+            filterType: ['documentStatus'],
+          })
+          return data
+        },
       },
       {
-        id: '6',
+        id: 'description',
         component: SearchInput,
         placeholder: 'Поиск',
         children: (

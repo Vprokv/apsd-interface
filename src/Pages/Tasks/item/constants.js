@@ -11,6 +11,8 @@ import React from 'react'
 import { ITEM_DOCUMENT } from '@/contants'
 import PrintIcon from './Icons/PrintIcon.svg'
 import UploadDoc from './Icons/UploadDoc.svg'
+import FinishApproveIcon from './Icons/FinishApproveIcon.svg'
+import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
@@ -79,4 +81,9 @@ export const defaultDocumentHandlers = {
     icon: UploadDoc,
     handler: () => alert('Функционал не реализован'),
   },
+}
+
+export const defaultTaskIcon = {
+  finish_approve: FinishApproveIcon,
+  reject_approve: RejectApproveIcon,
 }

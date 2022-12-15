@@ -155,7 +155,7 @@ function TaskList() {
 
   console.log(data, 'data')
 
-  const [a, b] = useState({})
+  const [filter, setFilter] = useState({})
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
@@ -175,15 +175,13 @@ function TaskList() {
             ? search
                 .replace('?', '')
                 .split('&')
-                .reduce(
-                  (acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc.filter[key] = JSON.parse(value)
-                    return acc
-                  },
-                  { filter: {} },
-                )
+                .reduce((acc, p) => {
+                  const [key, value] = p.split('=')
+                  acc[key] = JSON.parse(value)
+                  return acc
+                }, {})
             : {}),
+          ...filter,
         },
         {
           params: {
@@ -196,7 +194,7 @@ function TaskList() {
       )
       return data
     })
-  }, [sortQuery, api, loadDataHelper, paginationState, search, a])
+  }, [sortQuery, api, loadDataHelper, paginationState, search, filter])
 
   const refLoadDataFunction = useRef(loadData)
 
@@ -213,7 +211,7 @@ function TaskList() {
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center">
-        <Filter value={a} onInput={b} />
+        <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
           <ButtonForIcon className="mr-2">
             <Icon icon={filterIcon} />

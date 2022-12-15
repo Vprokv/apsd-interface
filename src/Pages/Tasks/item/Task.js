@@ -9,6 +9,7 @@ import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultDocumentHandlers,
   defaultPages,
+  defaultTaskIcon,
   DocumentIdContext,
   DocumentTypeContext,
 } from './constants'
@@ -43,7 +44,7 @@ const Task = () => {
     if (!data.read) {
       // не ждем запроса, он выполняеться фоном.
       api.post(URL_TASK_MARK_READ, {
-        taskIds: [id],
+        tasksIds: [id],
       })
     }
     return data
@@ -86,7 +87,7 @@ const Task = () => {
             closeCurrenTab()
           } catch (_) {}
         },
-        icon: DefaultIcon,
+        icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
     [api, closeCurrenTab, id],
