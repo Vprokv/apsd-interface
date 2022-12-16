@@ -16,9 +16,11 @@ import {
 } from '@/Pages/Tasks/list/constants'
 import { ApiContext } from '@/contants'
 import { useStatistic } from '@/Pages/Tasks/helper'
+import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 
-const MyTasks = ({ onOpenNewTab }) => {
+const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
   const api = useContext(ApiContext)
+  const { tabs } = useContext(CurrentTabContext)
   const { statistic, setStatistic } = useStatistic()
 
   useEffect(() => {
@@ -33,8 +35,11 @@ const MyTasks = ({ onOpenNewTab }) => {
   }, [api, setStatistic])
 
   const handleOpenNewTab = useCallback(
-    (path) => () => onOpenNewTab(path),
-    [onOpenNewTab],
+    (path) => () => {
+      const tab = tabs.findIndex(({ pathname }) => pathname === path)
+      return tab >= 0 ? onChangeActiveTab(tab) : onOpenNewTab(path)
+    },
+    [onChangeActiveTab, onOpenNewTab, tabs],
   )
   return (
     <WithToggleNavigationItem id="Мои задания">
