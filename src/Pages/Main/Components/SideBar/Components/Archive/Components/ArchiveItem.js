@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import {
@@ -8,8 +8,9 @@ import {
 } from '@/ApiList'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
-import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import { OthersLevelsArchiveButton, SecondArchiveButton } from './ArchiveButton'
+import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/Archive/Components/WithToggleNavigationItem'
+import log from 'tailwindcss/lib/util/log'
 
 const apisMap = {
   0: async ({ api }) => {
@@ -53,7 +54,7 @@ const ArchiveItem = ({
     })()
   }, [api, level, id, sectionId])
 
-  return items.map(({ id: levelId, name }) => (
+  return items.map(({ id: levelId, name, expand }) => (
     <WithToggleNavigationItem id={levelId} key={levelId}>
       {({ isDisplayed, toggleDisplayedFlag }) => (
         <div className=" font-size-12 mt-2 ">
@@ -64,25 +65,34 @@ const ArchiveItem = ({
               name={name}
               sectionId={levelId}
               parentName={parentName}
-              onOpenNewTab={onOpenNewTab}
+              onOpenNewTab={(args) => {
+                if (isDisplayed) {
+                  toggleDisplayedFlag()
+                } else {
+                  onOpenNewTab(args)
+                  toggleDisplayedFlag()
+                }
+              }}
             />
-            <button
-              className="pl-2"
-              type="button"
-              onClick={toggleDisplayedFlag}
-            >
-              <Icon
-                icon={angleIcon}
-                size={10}
-                className={`color-text-secondary ${
-                  isDisplayed ? '' : 'rotate-180'
-                }`}
-              />
-            </button>
+            {expand && (
+              <button
+                className="pl-2 "
+                type="button"
+                onClick={toggleDisplayedFlag}
+              >
+                <Icon
+                  icon={angleIcon}
+                  size={10}
+                  className={`color-text-secondary ${
+                    isDisplayed ? '' : 'rotate-180'
+                  }`}
+                />
+              </button>
+            )}
           </div>
 
           {isDisplayed && (
-            <div className="flex flex-col pl-4">
+            <div className="flex flex-col pl-4 ">
               <ChildrenComponent
                 level={level + 1}
                 id={id}
