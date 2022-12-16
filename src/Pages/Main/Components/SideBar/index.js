@@ -13,7 +13,7 @@ import Archive from './Components/Archive'
 import Basket from './Components/Basket'
 import CreateDocumentWindow from './Components/CreateDocumentWindow'
 
-const SideBar = ({ onOpenNewTab }) => {
+const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
   const [createDocumentWindow, setCreateDocumentWindowState] = useState(false)
   const openCreateDocumentWindow = useCallback(
     () => setCreateDocumentWindowState(true),
@@ -32,7 +32,7 @@ const SideBar = ({ onOpenNewTab }) => {
         <Icon className="mr-2 ml-auto" icon={plusIcon} size={14} />
         <span className="mr-auto">Создать</span>
       </Button>
-      <MyTasks onOpenNewTab={onOpenNewTab} />
+      <MyTasks onOpenNewTab={onOpenNewTab} onChangeActiveTab={onChangeActiveTab} />
       <div className="px-2 flex items-center w-full mb-6">
         <NavigationHeaderIcon className="mr-2" icon={ViewedIcon} size={22} />
         <div className="font-size-14 mr-auto font-medium">Просмотренные</div>

@@ -45,8 +45,6 @@ import SortCellComponent from '../../../Components/ListTableComponents/SortCellC
 import Filter from './Components/Filter'
 import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import log from 'tailwindcss/lib/util/log'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -152,8 +150,6 @@ function TaskList() {
     setState: setTabState,
     defaultLimit: 10,
   })
-
-  console.log(data, 'data')
 
   const [filter, setFilter] = useState({})
   const [selectState, setSelectState] = useState([])
