@@ -18,17 +18,26 @@ import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin
 import {
   CanAddContext,
   LoadContext,
-  TypeContext,  useEffect,
+  TypeContext,
+  useEffect,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
-import {
-  LevelStage,
-  ParentStage,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
+import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext } from '../../constants'
+import { CircleMinus } from '@Components/Components/Tree/Icons/CircleMinus'
+import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
+
+const DotIcon = ({ className, onClick }) => (
+  <Icon
+    icon={DefaultChildIcon}
+    onClick={onClick}
+    size={4}
+    className={className}
+  />
+)
 
 const ApprovalSheet = (props) => {
   const { id, type } = useParams()
@@ -142,6 +151,8 @@ const ApprovalSheet = (props) => {
                   {isDisplayed && (
                     <CanAddContext.Provider value={canAdd}>
                       <Tree
+                        childrenLessIcon={DotIcon}
+                        DefaultChildrenIcon={DotIcon}
                         key={key}
                         defaultExpandAll={true}
                         valueKey="id"
