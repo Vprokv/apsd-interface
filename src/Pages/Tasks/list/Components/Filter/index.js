@@ -8,6 +8,7 @@ import searchIcon from '@/Icons/searchIcon'
 import { ApiContext } from '@/contants'
 import { URL_ENTITY_LIST, URL_TASK_LIST_FILTERS } from '@/ApiList'
 import { DOCUMENT_TYPE, TASK_TYPE } from '../../constants'
+import CheckBox from "@/Components/Inputs/CheckBox";
 
 const emptyWrapper = ({ children }) => children
 
@@ -18,7 +19,7 @@ function Filter({ value, onInput }) {
     () => [
       {
         id: 'unread',
-        component: Switch,
+        component: CheckBox,
         label: 'Непросмотренные',
       },
       {
