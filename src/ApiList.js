@@ -109,4 +109,4 @@ export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'
 
 // Preview
 
-export const URL_ENTITY_PDF_FILE = 'oreview/pdf/'
+export const URL_ENTITY_PDF_FILE = 'preview/pdf/'

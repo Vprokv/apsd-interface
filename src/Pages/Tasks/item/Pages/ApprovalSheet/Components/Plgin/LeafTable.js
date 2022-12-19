@@ -22,10 +22,10 @@ const RowComponent = (props) => {
     dssApproverFio,
     dssApproverPosition,
     dssStatus,
-    performerComment = 'comment',
     dsdtDecision,
     dsdtDueDate,
     dsdtAvatar,
+    report,
   } = props.node
 
   return (
@@ -43,7 +43,7 @@ const RowComponent = (props) => {
           className="m-48"
         />
         <DocumentState value={dssStatus} className="mr-40" />
-        <div>{performerComment}</div>
+        <div>{report && report.dssReportText}</div>
       </div>
     </Row>
   )
