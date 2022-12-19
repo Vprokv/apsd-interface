@@ -16,6 +16,8 @@ const Row = styled.div`
 `
 
 const RowComponent = (props) => {
+  console.log(props.node, 'props.node')
+
   const {
     dssApproverFio,
     dssApproverPosition,
@@ -36,8 +38,8 @@ const RowComponent = (props) => {
         />
         <DateCell
           hot={dsdtDecision < dsdtDueDate}
-          plan={dsdtDecision}
-          fact={dsdtDueDate}
+          plan={dsdtDueDate}
+          fact={dsdtDecision}
           className="m-48"
         />
         <DocumentState value={dssStatus} className="mr-40" />

@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 const ArchiveButton = ({ name, onClick }) => {
   return (
-    <button type="button" className="" onClick={onClick}>
+    <button type="button" className="flex text-left" onClick={onClick}>
       <span className="mr-auto">{name}</span>
     </button>
   )

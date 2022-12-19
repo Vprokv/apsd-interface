@@ -5,5 +5,4 @@ export const StatusDot = styled.div`
   height: 8px;
   min-width: 8px;
   border-radius: 50%;
-  background: #f0565a;
 `

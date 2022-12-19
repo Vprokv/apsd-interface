@@ -27,7 +27,7 @@ const Archive = ({ onOpenNewTab }) => {
           </button>
           {isDisplayed && (
             <ScrollBar className="max-h-80">
-              <div className="px-2">
+              <div className="px-2 ">
                 <ArchiveItem
                   onOpenNewTab={onOpenNewTab}
                   buttonComponent={FirstLevelArchiveButton}
