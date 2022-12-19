@@ -20,7 +20,7 @@ import { useParams } from 'react-router-dom'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
-const CreateRemark = (props) => {
+const CreateRemark = ({ disabled }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
@@ -91,7 +91,10 @@ const CreateRemark = (props) => {
 
   return (
     <div>
-      <SecondaryBlueButton onClick={changeModalState(true)}>
+      <SecondaryBlueButton
+        disabled={!disabled}
+        onClick={changeModalState(true)}
+      >
         Добавить замечание
       </SecondaryBlueButton>
       <StandardSizeModalWindow
