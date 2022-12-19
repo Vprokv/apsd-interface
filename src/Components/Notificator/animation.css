@@ -1,0 +1,27 @@
+.line-animation {
+    animation-name: lineAnimation;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-delay: 2s;
+}
+
+.line-animation.pause-animation, .notificator-animation.pause-animation {
+    animation-play-state: paused;
+}
+
+@keyframes lineAnimation {
+    0%   {width: 0;}
+    100% {width: 100%;}
+}
+
+.notificator-animation {
+    animation-name: notificatorAnimation;
+    animation-duration: 7s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes notificatorAnimation {
+    0%   {transform: translateX(222%)}
+    50%   {transform: translateX(118%)}
+    100% {transform: translateX(222%)}
+}
