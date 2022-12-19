@@ -138,7 +138,7 @@ const Remarks = (props) => {
           </div>
         </div>
         <div className="flex flex-col">
-          <ShowAnswerButtonContext.Provider value={!permit?.answer}>
+          <ShowAnswerButtonContext.Provider value={permit?.answer}>
             {data.map((val, key) => {
               // if (val) {
               return (

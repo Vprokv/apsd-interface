@@ -12,6 +12,7 @@ import {
   EXPIRED_1_3,
   EXPIRED_4_7,
   EXPIRED_8,
+  EXPIRED_TODAY,
   TabNames,
 } from '@/Pages/Tasks/list/constants'
 import { ApiContext } from '@/contants'
@@ -78,6 +79,14 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
                 <span className="color-red font-medium">
                   {statistic[EXPIRED]}
                 </span>
+              </button>
+              <button
+                type="button"
+                className="flex w-full py-1.5"
+                onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED_TODAY}`)}
+              >
+                <span className="mr-auto">{TabNames[EXPIRED_TODAY]}</span>
+                <span className="font-medium">{statistic[EXPIRED_TODAY]}</span>
               </button>
               <button
                 type="button"
