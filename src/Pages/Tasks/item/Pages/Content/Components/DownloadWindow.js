@@ -15,8 +15,10 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
 import FileInput from '@/Components/Inputs/FileInput'
+// import { FileInput as NewFileInput } from '@/Components/Inputs/'
 import { useParams } from 'react-router-dom'
 import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
+import NewFileInput from "@/Components/Inputs/NewFileInput";
 
 const rules = {}
 const initFormValue = {
@@ -110,9 +112,13 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
         ],
         placeholder: 'Введите данные',
       },
+      // {
+      //   id: 'files',
+      //   component: FileInput,
+      // },
       {
         id: 'files',
-        component: FileInput,
+        component: NewFileInput,
       },
     ]
   }, [api, userObject])
