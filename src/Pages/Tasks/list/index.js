@@ -131,7 +131,10 @@ const columns = [
 ]
 
 function TaskList() {
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'creationDate',
+    direction: 'DESC',
+  })
   const api = useContext(ApiContext)
   const { search } = useLocation()
   const {

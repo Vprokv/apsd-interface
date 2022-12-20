@@ -19,8 +19,6 @@ const initialStatistic = {
 export const useStatistic = () => {
   const [stat, setStatistic] = useState({})
 
-  console.log(stat, 'stat')
-
   const prepValues = useMemo(() => {
     const {
       all,
