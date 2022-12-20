@@ -258,8 +258,6 @@ const OrgStructureWindow = (props) => {
     [setSelectState, returnOption, valueKey, multiple],
   )
 
-  console.log(options, 'options')
-
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <div className="flex overflow-hidden  h-full">
