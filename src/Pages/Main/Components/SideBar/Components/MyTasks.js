@@ -86,7 +86,14 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
                 onClick={handleOpenNewTab(`${TASK_LIST_PATH}${EXPIRED_TODAY}`)}
               >
                 <span className="mr-auto">{TabNames[EXPIRED_TODAY]}</span>
-                <span className="font-medium">{statistic[EXPIRED_TODAY]}</span>
+                <span>
+                  <span className="font-medium">
+                    {statistic[EXPIRED_TODAY].unread}
+                  </span>
+                  <span className="color-text-secondary">
+                    /{statistic[EXPIRED_TODAY].all}
+                  </span>
+                </span>
               </button>
               <button
                 type="button"
