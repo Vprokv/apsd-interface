@@ -1,6 +1,6 @@
 export const EXPIRED = '?dueFrom=null&dueTo=-1'
 export const EXPIRED_1_3 = '?dueFrom=1&dueTo=3'
-export const EXPIRED_TODAY = '?dueFrom=1&dueTo=1'
+export const EXPIRED_TODAY = '?dueFrom=0&dueTo=0'
 export const EXPIRED_4_7 = '?dueFrom=4&dueTo=7'
 export const EXPIRED_8 = '?dueFrom=8&dueTo=null'
 
