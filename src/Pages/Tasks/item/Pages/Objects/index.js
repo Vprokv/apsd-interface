@@ -31,12 +31,12 @@ import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'id',
+    valueKey: 'titleId',
   },
 }
 
@@ -85,7 +85,7 @@ const columns = [
 
 const filterFormConfig = [
   {
-    id: '1',
+    id: 'type',
     component: Select,
     placeholder: 'Тип объекта',
     options: [
@@ -100,7 +100,7 @@ const filterFormConfig = [
     ],
   },
   {
-    id: '2',
+    id: 'code',
     component: Select,
     placeholder: 'Код',
     options: [
@@ -124,7 +124,7 @@ const Objects = (props) => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
-  const [filterValue, setFilterValue] = useState({})
+  const [filter, setFilterValue] = useState({})
   const { search } = useLocation()
 
   const openCreateObjectsWindow = useCallback(
@@ -159,40 +159,16 @@ const Objects = (props) => {
   const loadData = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
-      const { data } = await api.post(
-        URL_TECHNICAL_OBJECTS_LIST,
-        {
-          documentId: id,
-          ...(search
-            ? search
-                .replace('?', '')
-                .split('&')
-                .reduce(
-                  (acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc.filter[key] = JSON.parse(value)
-                    return acc
-                  },
-                  { filter: {} },
-                )
-            : {}),
+      const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
+        documentId: id,
+        sort: {
+          property: sortQuery.key,
+          direction: sortQuery.direction,
         },
-        {
-          params: {
-            limit,
-            offset,
-            // todo для фильтрации которая еще не сделана
-            // "filter": {
-            //   "code" : "string" - фильтр Код
-            //   "type": "string" - фильтр Тип
-            // },
-            sort: {
-              property: sortQuery.key,
-              direction: sortQuery.direction,
-            },
-          },
-        },
-      )
+        limit,
+        offset,
+        filter,
+      })
       return data
     })
   }, [sortQuery, api, loadDataHelper, paginationState, search, id])
@@ -215,7 +191,7 @@ const Objects = (props) => {
         <FilterForm
           fields={filterFormConfig}
           inputWrapper={emptyWrapper}
-          value={filterValue}
+          value={filter}
           onInput={setFilterValue}
         />
         <div className="flex items-center color-text-secondary ml-auto">

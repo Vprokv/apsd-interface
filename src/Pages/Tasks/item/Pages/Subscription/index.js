@@ -23,6 +23,7 @@ import {
   URL_SUBSCRIPTION_DELETE,
   URL_SUBSCRIPTION_EVENTS,
   URL_SUBSCRIPTION_LIST,
+  URL_TECHNICAL_OBJECTS_LIST,
 } from '@/ApiList'
 import { FilterForm } from '../../styles'
 import Icon from '@/components_ocean/Components/Icon'
@@ -37,9 +38,11 @@ import EmptyInputWrapper from '@/components_ocean/Components/Forms/EmptyInputWra
 import dayjs from 'dayjs'
 import { EventsContext } from './Components/CreateSubscriptionWindow/constans'
 import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
+import Pagination from '@/Components/Pagination'
+import usePagination from '@Components/Logic/usePagination'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -133,12 +136,20 @@ const Subscription = () => {
   )
 
   const {
+    tabState,
     setTabState,
     tabState: { data, events = new Map() },
     shouldReloadDataFlag,
     loadDataHelper,
   } = useTabItem({
     stateId: TASK_ITEM_SUBSCRIPTION,
+  })
+
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: URL_SUBSCRIPTION_EVENTS,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
   })
 
   useEffect(() => {
@@ -154,15 +165,31 @@ const Subscription = () => {
   }, [id, setTabState, api])
 
   const loadDataFunction = useMemo(() => {
+    const { limit, offset } = paginationState
     return loadDataHelper(async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
         documentId: id,
+        sort: {
+          property: sortQuery.key,
+          direction: sortQuery.direction,
+        },
         type,
         filter,
+        limit,
+        offset,
       })
       return data
     })
-  }, [id, type, api, loadDataHelper, filter])
+  }, [
+    paginationState,
+    loadDataHelper,
+    api,
+    id,
+    sortQuery.key,
+    sortQuery.direction,
+    type,
+    filter,
+  ])
 
   const refLoadDataFunction = useRef(loadDataFunction)
 
@@ -222,6 +249,15 @@ const Subscription = () => {
           valueKey="id"
         />
       </EventsContext.Provider>
+      <Pagination
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+      </Pagination>
       <CreateSubscriptionWindow
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}
