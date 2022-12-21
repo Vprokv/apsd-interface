@@ -63,8 +63,7 @@ const columns = [
     id: 'contentName',
     label: 'Описание',
     sizes: 190,
-    component: BaseCell,
-    // component: ({ ParentValue }) => <EditRow value={ParentValue} />,
+    component: (props) => <BaseCell {...props} className="break-all h-full" />,
   },
   {
     id: 'versionDate',

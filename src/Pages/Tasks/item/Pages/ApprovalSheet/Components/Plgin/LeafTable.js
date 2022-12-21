@@ -8,6 +8,8 @@ import UserCard from '../UserCard'
 import styled from 'styled-components'
 import DateCell from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DateCell'
 import DocumentState from '../DocumentState'
+import HideAndShowText from '@/Components/HideAndShowText'
+import { Button } from '@Components/Components/Button'
 
 const Row = styled.div`
   height: 65px;
@@ -42,8 +44,15 @@ const RowComponent = (props) => {
           fact={dsdtDecision}
           className="m-48"
         />
-        <DocumentState value={dssStatus} className="mr-40" />
-        <div>{report && report.dssReportText}</div>
+        <DocumentState value={dssStatus} className="w-64" />
+        <HideAndShowText
+          className="font-size-14 break-all flex items-center m-width max-w-xs"
+          value={report?.dssReportText}
+          numberOfCharactersDisplayed={100}
+          buttonComponent={() => (
+            <Button className="color-text-secondary">...</Button>
+          )}
+        />
       </div>
     </Row>
   )
