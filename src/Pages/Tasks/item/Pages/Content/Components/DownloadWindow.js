@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import { ContainerContext } from '@Components/constants'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const rules = {}
 const initFormValue = {
@@ -27,7 +28,7 @@ const initFormValue = {
 }
 
 const DownloadWindow = ({ onClose, contentId, setChange }) => {
-  const { id } = useParams()
+  const id = useContext(DocumentIdContext)
   const [values, setValues] = useState(initFormValue)
   const api = useContext(ApiContext)
   const context = useContext(ContainerContext)
