@@ -12,6 +12,7 @@ import Storage from './Components/Storage'
 import Archive from './Components/Archive'
 import Basket from './Components/Basket'
 import CreateDocumentWindow from './Components/CreateDocumentWindow'
+import ScrollBar from '@Components/Components/ScrollBar'
 
 const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
   const [createDocumentWindow, setCreateDocumentWindowState] = useState(false)
@@ -26,32 +27,37 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
   return (
     <SideBarContainer className="py-4 bg-light-gray flex-container">
       <Button
-        className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 rounded-lg"
+        className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 "
         onClick={openCreateDocumentWindow}
       >
         <Icon className="mr-2 ml-auto" icon={plusIcon} size={14} />
         <span className="mr-auto">Создать</span>
       </Button>
-      <MyTasks onOpenNewTab={onOpenNewTab} onChangeActiveTab={onChangeActiveTab} />
-      <div className="px-2 flex items-center w-full mb-6">
-        <NavigationHeaderIcon className="mr-2" icon={ViewedIcon} size={22} />
-        <div className="font-size-14 mr-auto font-medium">Просмотренные</div>
-      </div>
-      <div className="px-2 flex items-center w-full mb-6">
-        <NavigationHeaderIcon
-          className="mr-2"
-          icon={CreatedByMeIcon}
-          size={22}
+      <ScrollBar className="flex-container">
+        <MyTasks
+          onOpenNewTab={onOpenNewTab}
+          onChangeActiveTab={onChangeActiveTab}
         />
-        <div className="font-size-14 mr-auto font-medium">Созданные мной</div>
-      </div>
-      <Storage />
-      <Archive onOpenNewTab={onOpenNewTab} />
-      <Basket onOpenNewTab={onOpenNewTab} />
-      <CreateDocumentWindow
-        open={createDocumentWindow}
-        onClose={closeCreateDocumentWindow}
-      />
+        <div className="px-2 flex items-center w-full mb-6">
+          <NavigationHeaderIcon className="mr-2" icon={ViewedIcon} size={22} />
+          <div className="font-size-14 mr-auto font-medium">Просмотренные</div>
+        </div>
+        <div className="px-2 flex items-center w-full mb-6">
+          <NavigationHeaderIcon
+            className="mr-2"
+            icon={CreatedByMeIcon}
+            size={22}
+          />
+          <div className="font-size-14 mr-auto font-medium">Созданные мной</div>
+        </div>
+        <Storage />
+        <Archive onOpenNewTab={onOpenNewTab} />
+        <Basket onOpenNewTab={onOpenNewTab} />
+        <CreateDocumentWindow
+          open={createDocumentWindow}
+          onClose={closeCreateDocumentWindow}
+        />
+      </ScrollBar>
     </SideBarContainer>
   )
 }
