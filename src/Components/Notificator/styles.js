@@ -5,18 +5,18 @@ export const Line = styled.span`
   position: absolute;
   bottom: 0;
   left: 0;
+  width: ${({ barWidth }) => `${barWidth}%`};
 `
 
 export const NotificationItem = styled.div`
-  //position: relative;
-  position: fixed;
+  position: relative;
+  overflow: hidden;
   width: 390px;
   height: 70px;
   padding: 24px 22px 28px 16px;
   margin-bottom: 1.25rem;
   border-radius: 8px;
   font-size: 14px;
-  top: 88px;
   //right: 16px;
   &.info {
     background: rgba(212, 247, 255);
@@ -44,4 +44,9 @@ export const NotificationActions = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 8px;
+`
+export const NotificationContainer = styled.div`
+  position: fixed;
+  top: 88px;
+  right: 16px;
 `
