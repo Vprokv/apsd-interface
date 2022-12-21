@@ -4,7 +4,8 @@ import Icon from '@Components/Components/Icon'
 export const Container = styled.button`
   max-width: 150px;
   user-select: none;
-  padding: 5px 6px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   font-weight: 500;
   font-size: 12px;
   line-height: 14px;

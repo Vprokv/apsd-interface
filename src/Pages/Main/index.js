@@ -6,7 +6,7 @@ import TabHeader from './Components/Tab'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import CloseAllTabButton from '@/Pages/Main/Components/CloseAllTabsButton'
-import ScrollBar from '@Components/Components/ScrollBar'
+import TabsContainer from '@/Pages/Main/Components/Tab/TabsContainer'
 
 const Main = () => {
   const { r_object_id } = useRecoilValue(userAtom)
@@ -21,10 +21,13 @@ const Main = () => {
         <div className="flex-container ">
           <Header />
           <div className="flex h-full overflow-hidden">
-            <SideBar onOpenNewTab={onOpenNewTab} onChangeActiveTab={onChangeActiveTab} />
+            <SideBar
+              onOpenNewTab={onOpenNewTab}
+              onChangeActiveTab={onChangeActiveTab}
+            />
             <div className="flex-container w-full overflow-hidden">
               <div className="flex p-4 justify-between">
-                <div className="flex">
+                <TabsContainer className="flex">
                   {tabs.map(({ name, id }, index) => (
                     <TabHeader
                       key={id}
@@ -35,7 +38,7 @@ const Main = () => {
                       closeable={tabs.length > 1}
                     />
                   ))}
-                </div>
+                </TabsContainer>
                 <CloseAllTabButton tabs={tabs} />
               </div>
               <Outlet />
