@@ -42,10 +42,11 @@ const BaseFileInputComponent = ({
     () => setRejectedFiles([]),
     [setRejectedFiles],
   )
+
   return (
     <div className="flex-container w-64">
       <div className="grid">
-        {value.length > 0 &&
+        {!!value.length > 0 &&
           value.map((v, index) => (
             <Option
               key={index}
@@ -58,7 +59,7 @@ const BaseFileInputComponent = ({
           <SecondaryOverBlueButton onClick={openFileInput}>
             Загрузить контент
           </SecondaryOverBlueButton>
-          {value.length > 0 && (
+          {!!value.length > 0 && (
             <SecondaryGreyButton onClick={onDeleteAll}>
               Удалить
             </SecondaryGreyButton>
