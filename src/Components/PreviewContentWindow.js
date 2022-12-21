@@ -9,7 +9,8 @@ const PreviewContentWindow = ({ id, type, ...props }) => {
   const iframe = useRef()
   const { token } = useContext(TokenContext)
   const url = useMemo(
-    () => `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`,
+    // () => `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`,
+    () => `${API_URL}${URL_ENTITY_PDF_FILE}${type}:0000000300003jkc:${token}`,
     [id, token, type],
   )
   return (
