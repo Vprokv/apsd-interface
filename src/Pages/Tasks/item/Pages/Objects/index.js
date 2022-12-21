@@ -31,7 +31,7 @@ import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
