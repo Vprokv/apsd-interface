@@ -36,7 +36,11 @@ import volumeIcon from './icons/volumeIcon'
 import Pagination from '../../../Components/Pagination'
 import RowComponent from './Components/RowComponent'
 import CheckBox from '../../../Components/Inputs/CheckBox'
-import { URL_TASK_LIST } from '@/ApiList'
+import {
+  URL_DOCUMENT_CREATION_OPTIONS,
+  URL_TASK_LIST,
+  URL_TASK_STATISTIC,
+} from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
@@ -131,7 +135,10 @@ const columns = [
 ]
 
 function TaskList() {
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'creationDate',
+    direction: 'DESC',
+  })
   const api = useContext(ApiContext)
   const { search } = useLocation()
   const {
@@ -152,6 +159,7 @@ function TaskList() {
   })
 
   const [filter, setFilter] = useState({})
+  const [total, setTotal] = useState(10)
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
@@ -191,6 +199,16 @@ function TaskList() {
       return data
     })
   }, [sortQuery, api, loadDataHelper, paginationState, search, filter])
+
+  useEffect(() => {
+    ;(async () => {
+      const {
+        data: [{ all }],
+      } = await api.post(URL_TASK_STATISTIC)
+
+      setTotal(all)
+    })()
+  }, [api])
 
   const refLoadDataFunction = useRef(loadData)
 
@@ -244,8 +262,9 @@ function TaskList() {
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
+        total={total}
       >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
     </div>
   )

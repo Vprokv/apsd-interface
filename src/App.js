@@ -25,6 +25,7 @@ import {
   TASK_LIST_ARCHIVE_PATH,
 } from './routePaths'
 import Search from '@/Pages/Search'
+import NotificationBox from '@/Components/Notificator/NotificationBox'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -94,66 +95,78 @@ function App() {
   }, [apiInstance, dropToken])
 
   return (
-    <ApiContext.Provider value={apiInstance}>
-      <TokenContext.Provider
-        value={useMemo(() => ({ token, dropToken }), [dropToken, token])}
-      >
-        <Suspense fallback={<div>Загрузка...</div>}>
-          <Routes>
-            {userState === null ? (
-              <>
-                <Route
-                  path={routePath.LOGIN_PAGE_PATH}
-                  element={<Login loginRequest={loginRequest} />}
-                />
-                <Route
-                  path={routePath.RESET_PASSWORD_PAGE_PATH}
-                  element={
-                    <ResetPassword loginRequest={changePasswordRequest} />
-                  }
-                />
-                {!userObjectLoading && (
+    <>
+      <ApiContext.Provider value={apiInstance}>
+        <TokenContext.Provider
+          value={useMemo(() => ({ token, dropToken }), [dropToken, token])}
+        >
+          <Suspense fallback={<div>Загрузка...</div>}>
+            <Routes>
+              {userState === null ? (
+                <>
+                  <Route
+                    path={routePath.LOGIN_PAGE_PATH}
+                    element={<Login loginRequest={loginRequest} />}
+                  />
+                  <Route
+                    path={routePath.RESET_PASSWORD_PAGE_PATH}
+                    element={
+                      <ResetPassword loginRequest={changePasswordRequest} />
+                    }
+                  />
+                  {!userObjectLoading && (
+                    <Route
+                      path="*"
+                      element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+                    />
+                  )}
+                </>
+              ) : (
+                <Route element={<Main />}>
+                  <Route
+                    path={routePath.DOCUMENT_ITEM_PATH}
+                    element={<DocumentItem />}
+                  />
+                  <Route
+                    path={routePath.TASK_ITEM_PATH}
+                    element={<TaskItem />}
+                  />
+                  <Route
+                    path={routePath.TASK_LIST_ARCHIVE_PATH}
+                    element={<ArchiveList />}
+                  />
+                  <Route
+                    path={routePath.TASK_NEW_ITEM_PATH}
+                    element={<TaskNewItem />}
+                  />
+                  <Route
+                    path={routePath.TASK_LIST_PATH}
+                    element={<TaskList />}
+                  />
+                  <Route
+                    path={routePath.VOLUME_ITEM_PATH}
+                    element={<VolumeItem />}
+                  />
+                  <Route
+                    path={routePath.DELETED_ITEM_PATH}
+                    element={<BasketList />}
+                  />
                   <Route
                     path="*"
-                    element={<Navigate to={routePath.LOGIN_PAGE_PATH} />}
+                    element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
                   />
-                )}
-              </>
-            ) : (
-              <Route element={<Main />}>
-                <Route
-                  path={routePath.DOCUMENT_ITEM_PATH}
-                  element={<DocumentItem />}
-                />
-                <Route path={routePath.TASK_ITEM_PATH} element={<TaskItem />} />
-                <Route
-                  path={routePath.TASK_LIST_ARCHIVE_PATH}
-                  element={<ArchiveList />}
-                />
-                <Route
-                  path={routePath.TASK_NEW_ITEM_PATH}
-                  element={<TaskNewItem />}
-                />
-                <Route path={routePath.TASK_LIST_PATH} element={<TaskList />} />
-                <Route
-                  path={routePath.VOLUME_ITEM_PATH}
-                  element={<VolumeItem />}
-                />
-                <Route
-                  path={routePath.DELETED_ITEM_PATH}
-                  element={<BasketList />}
-                />
-                <Route
-                  path="*"
-                  element={<Navigate to={routePath.TASK_LIST_PATH} replace />}
-                />
-                <Route path={routePath.SEARCH_PAGE_PATH} element={<Search />} />
-              </Route>
-            )}
-          </Routes>
-        </Suspense>
-      </TokenContext.Provider>
-    </ApiContext.Provider>
+                  <Route
+                    path={routePath.SEARCH_PAGE_PATH}
+                    element={<Search />}
+                  />
+                </Route>
+              )}
+            </Routes>
+          </Suspense>
+        </TokenContext.Provider>
+      </ApiContext.Provider>
+      <NotificationBox />
+    </>
   )
 }
 

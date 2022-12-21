@@ -1,10 +1,18 @@
-import { EXPIRED, EXPIRED_1_3, EXPIRED_4_7, EXPIRED_8 } from './list/constants'
+import {
+  EXPIRED,
+  EXPIRED_1_3,
+  EXPIRED_4_7,
+  EXPIRED_8,
+  EXPIRED_TODAY,
+} from './list/constants'
 import { useMemo, useState } from 'react'
+import log from "tailwindcss/lib/util/log";
 
 const initialStatistic = {
   '': '0/0',
   [EXPIRED]: '0/0',
   [EXPIRED_1_3]: { unread: 0, all: 0 },
+  [EXPIRED_TODAY]: { unread: 0, all: 0 },
   [EXPIRED_4_7]: { unread: 0, all: 0 },
   [EXPIRED_8]: { unread: 0, all: 0 },
 }
@@ -24,11 +32,14 @@ export const useStatistic = () => {
       deadline37,
       termMoreThanWeak,
       termMoreThanWeakUnread,
+      deadlineToday,
+      deadlineTodayUnread,
     } = stat
 
     return {
       '': `${allUnread}/${all}`,
       [EXPIRED]: `${deadlineUnread}/${deadline}`,
+      [EXPIRED_TODAY]: { unread: deadline13Unread, all: deadline13 },
       [EXPIRED_1_3]: { unread: deadline13Unread, all: deadline13 },
       [EXPIRED_4_7]: { unread: deadline37Unread, all: deadline37 },
       [EXPIRED_8]: { unread: termMoreThanWeakUnread, all: termMoreThanWeak },

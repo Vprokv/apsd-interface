@@ -22,6 +22,7 @@ import PrintIcon from './Icons/PrintIcon.svg'
 import CreatingAdditionalAgreementWindow from './Components/CreatingAdditionalAgreementWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
+import Report from '@/Pages/Tasks/item/Components/Report'
 
 const Task = () => {
   const { id } = useParams()
@@ -56,6 +57,7 @@ const Task = () => {
   const {
     tabState: {
       data: {
+        previousTaskReport,
         documentActions,
         taskActions,
         documentTabs,
@@ -116,6 +118,7 @@ const Task = () => {
       <DocumentIdContext.Provider value={idDocument}>
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
+            <Report previousTaskReport={previousTaskReport} />
             <DocumentActions documentActions={actions} />
             <CreatingAdditionalAgreementWindow
               approverId={approverId}

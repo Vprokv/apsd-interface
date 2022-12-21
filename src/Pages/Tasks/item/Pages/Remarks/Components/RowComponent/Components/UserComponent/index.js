@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 const UserCard = ({ fio = '', position, avatar } = {}) => {
@@ -36,8 +36,10 @@ UserCard.defaultProps = {}
 import colorFromString from '@Components/Utils/colorFromString'
 import { UserCircle } from '@/Components/ListTableComponents/UserCard/styles'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
+import { ShowAnswerButtonContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const UserComponent = ({ ParentValue }) => {
+  const show = useContext(ShowAnswerButtonContext)
   const {
     itsRemark,
     remarkMemberFullName,
@@ -48,7 +50,7 @@ const UserComponent = ({ ParentValue }) => {
 
   return itsRemark ? (
     <UserCard fio={remarkMemberFullName} position={remarkMemberPosition} />
-  ) : answerMemberFullName ? (
+  ) : answerMemberFullName || !show ? (
     <UserCard fio={answerMemberFullName} position={answerMemberPosition} />
   ) : (
     <CreateAnswer {...ParentValue} />

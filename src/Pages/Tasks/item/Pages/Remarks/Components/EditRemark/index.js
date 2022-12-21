@@ -34,6 +34,7 @@ const EditRemark = ({
   remarkType,
   setRemark,
   remarkId,
+  disabled,
 }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
@@ -106,7 +107,11 @@ const EditRemark = ({
 
   return (
     <div>
-      <Button onClick={changeModalState(true)} className="color-blue-1">
+      <Button
+        disabled={disabled}
+        onClick={changeModalState(true)}
+        className="color-blue-1"
+      >
         <Icon icon={editIcon} />
       </Button>
       <StandardSizeModalWindow

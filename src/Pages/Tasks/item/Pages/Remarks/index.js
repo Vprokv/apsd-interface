@@ -1,13 +1,21 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_APPROVAL_SHEET,
+  URL_DOCUMENT_CREATION_OPTIONS,
   URL_ENTITY_LIST,
   URL_REMARK_DELETE,
   URL_REMARK_LIST,
+  URL_REMARK_PERMIT,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -22,10 +30,15 @@ import ExportIcon from '@/Icons/ExportIcon'
 import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
 import deleteIcon from '@/Icons/deleteIcon'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import {
+  ShowAnswerButtonContext,
+  UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const Remarks = (props) => {
-  const { id, type } = useParams()
+  const { type } = useParams()
+  const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState()
@@ -36,8 +49,10 @@ const Remarks = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [], change },
+    tabState: { data = [], permit, change },
   } = tabItemState
+
+  console.log(permit, 'permit')
 
   const setChange = useCallback(
     () =>
@@ -57,6 +72,16 @@ const Remarks = (props) => {
   }, [api, id, type, filter, change])
 
   useAutoReload(loadData, tabItemState)
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_REMARK_PERMIT, {
+        documentId: id,
+      })
+
+      setTabState({ permit: data })
+    })()
+  }, [api, filter, id, setTabState])
 
   const fields = useMemo(
     () => [
@@ -106,15 +131,16 @@ const Remarks = (props) => {
             inputWrapper={EmptyInputWrapper}
           />
           <div className="flex items-center ml-auto">
-            <CreateRemark />
+            <CreateRemark disabled={permit?.remarkCreate} />
             <ButtonForIcon className="ml-2 color-text-secondary">
               <Icon icon={ExportIcon} />
             </ButtonForIcon>
           </div>
         </div>
         <div className="flex flex-col">
-          {data.map((val, key) => {
-            if (val) {
+          <ShowAnswerButtonContext.Provider value={permit?.answer}>
+            {data.map((val, key) => {
+              // if (val) {
               return (
                 <RowComponent
                   key={key}
@@ -123,11 +149,12 @@ const Remarks = (props) => {
                   {...val}
                 >
                   <div className="flex items-center">
-                    <div className="mr-12 font-medium">{val?.stageName}</div>
-                    <div className="mr-12 w-24">{val?.stageStatus}</div>
+                    <div className="mr-12 font-medium">{!val?.stageName}</div>
+                    <div className="mr-12 w-24">{!val?.stageStatus}</div>
                     <div className="flex items-center ml-auto">
-                      <EditRemark {...val} />
+                      <EditRemark disabled={permit?.edit} {...val} />
                       <LoadableBaseButton
+                        disabled={permit?.delete}
                         onClick={onDelete}
                         className="color-blue-1"
                       >
@@ -137,8 +164,9 @@ const Remarks = (props) => {
                   </div>
                 </RowComponent>
               )
-            }
-          })}
+              // }
+            })}
+          </ShowAnswerButtonContext.Provider>
         </div>
       </div>
     </UpdateContext.Provider>
