@@ -36,7 +36,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'id',
+    valueKey: 'titleId',
   },
 }
 
