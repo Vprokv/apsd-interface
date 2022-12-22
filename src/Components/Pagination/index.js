@@ -12,6 +12,7 @@ const Pagination = ({
   limit,
   page,
   setPage,
+  total,
 }) => {
   const onSetLimit = useCallback(
     (limit) => () => {
@@ -22,13 +23,16 @@ const Pagination = ({
 
   const goToPage = useCallback(
     (nextPage) => () => {
+      if (page * limit >= total) {
+        return
+      }
       let result = page + nextPage
       result = result > 1 ? result : 1
       if (result !== page) {
         setPage(result > 1 ? result : 1)
       }
     },
-    [page, setPage],
+    [limit, page, setPage, total],
   )
 
   return (
@@ -103,6 +107,7 @@ Pagination.defaultProps = {
   className: '',
   page: 1,
   limit: 10,
+  total: 10,
 }
 
 export default Pagination

@@ -17,8 +17,10 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import FileInput from '@/Components/Inputs/FileInput'
 // import { FileInput as NewFileInput } from '@/Components/Inputs/'
 import { useParams } from 'react-router-dom'
-import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
-import NewFileInput from "@/Components/Inputs/NewFileInput";
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import NewFileInput from '@/Components/Inputs/NewFileInput'
+import { ContainerContext } from '@Components/constants'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const rules = {}
 const initFormValue = {
@@ -26,9 +28,10 @@ const initFormValue = {
 }
 
 const DownloadWindow = ({ onClose, contentId, setChange }) => {
-  const { id } = useParams()
+  const id = useContext(DocumentIdContext)
   const [values, setValues] = useState(initFormValue)
   const api = useContext(ApiContext)
+  const context = useContext(ContainerContext)
 
   const onSave = useCallback(async () => {
     const { contentType, comment, regNumber, versionDate, files } = values
@@ -118,6 +121,8 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
       // },
       {
         id: 'files',
+        multiple: true,
+        containerRef: context,
         component: NewFileInput,
       },
     ]

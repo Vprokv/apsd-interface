@@ -10,6 +10,7 @@ const PreviewContentWindow = ({ id, type, ...props }) => {
   const { token } = useContext(TokenContext)
   const url = useMemo(
     () => `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`,
+    // () => `${API_URL}${URL_ENTITY_PDF_FILE}${type}:0000000300003jkc:${token}`,
     [id, token, type],
   )
   return (
@@ -18,6 +19,9 @@ const PreviewContentWindow = ({ id, type, ...props }) => {
     </StandardSizeModalWindow>
   )
 }
+
+//http://10.20.56.47/preview/pdf/ddt_apsd_content_version:0000000300003jkc:a3378504-7d2f-49c9-9178-f14c291a1134
+
 
 PreviewContentWindow.propTypes = {
   id: PropTypes.string.isRequired,

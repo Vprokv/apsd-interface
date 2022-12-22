@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemedDayView, ThemedView } from './styles'
 
-const weekHeaders = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+const weekHeaders = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
 const View = (props) => {
   return (

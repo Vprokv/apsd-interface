@@ -10,7 +10,7 @@ const Tab = ({ name, onClose, active, onClick, closeable }) => {
   return (
     <Container
       active={active}
-      className="rounded-md flex items-center py-1 px-1.5 font-size-12 justify-center mr-1 whitespace-nowrap"
+      className="rounded-md flex items-center px-1.5 font-size-12 justify-center mr-1 whitespace-nowrap"
       onClick={onClick}
       title={name}
     >
