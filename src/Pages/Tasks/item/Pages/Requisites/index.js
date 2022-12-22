@@ -27,7 +27,16 @@ const Requisites = () => {
     tabState: { data },
   } = tabItemState
   const {
-    tabState: { data: documentData, data: { values, valuesCustom } = {} },
+    tabState: {
+      data: documentData,
+      data: { values, valuesCustom } = {},
+      touched,
+      changed,
+      submitFailed,
+      formHasSubmitted,
+      validationErrors,
+      backendValidationErrors,
+    },
     setTabState: setDocumentState,
   } = useTabItem({
     stateId: documentType,
@@ -203,6 +212,13 @@ const Requisites = () => {
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
         <RequisitesForm
+          touched={touched}
+          changed={changed}
+          submitFailed={submitFailed}
+          formHasSubmitted={formHasSubmitted}
+          onUpdateValidateState={setDocumentState}
+          validationErrors={validationErrors}
+          backendValidationErrors={backendValidationErrors}
           inputWrapper={DefaultWrapper}
           value={values}
           onInput={onFormInput}

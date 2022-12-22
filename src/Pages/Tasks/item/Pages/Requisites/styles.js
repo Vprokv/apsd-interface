@@ -1,7 +1,8 @@
 import styled from 'styled-components'
-import { WithWithValidationForm } from '@Components/Components/Forms'
+import Form from '@Components/Components/Forms'
+import Validation from '@Components/Logic/Validator/V'
 
-export const RequisitesForm = styled(WithWithValidationForm)`
+export const RequisitesForm = styled(Validation(Form))`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
