@@ -13,10 +13,18 @@ import useDocumentActions from './Hooks/useDocumentActions'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
+  useOpenNotification,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  NOTIFICATION_TYPE_ERROR,
+  defaultMessageMap,
+} from '@/Components/Notificator'
 
 export const NewTaskItem = ({ classificationId, type }) => {
   const api = useContext(ApiContext)
   const navigate = useNavigate()
+  const getNotification = useOpenNotification()
 
   const {
     tabState: { data: { values: { dss_work_number = 'Документ' } = {} } = {} },
@@ -49,22 +57,43 @@ export const NewTaskItem = ({ classificationId, type }) => {
 
   useAutoReload(loadData, tabItemState)
 
+  const customMessagesMap = useMemo(() => {
+    return {
+      ...defaultMessageMap,
+      412: {
+        type: NOTIFICATION_TYPE_ERROR,
+        message: 'Заполните обязательные поля',
+      },
+      200: {
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Документ создан',
+      },
+    }
+  }, [])
+
   const documentHandlers = useMemo(
     () => ({
       save: {
         handler: async () => {
-          const {
-            data: { id },
-          } = await api.post(URL_DOCUMENT_CREATE, {
-            values: refValues.current,
-            type,
-          })
-          navigate(`/document/${id}/${type}`)
+          try {
+            const {
+              status,
+              data: { id },
+            } = await api.post(URL_DOCUMENT_CREATE, {
+              values: refValues.current,
+              type,
+            })
+            getNotification(customMessagesMap[status])
+            navigate(`/document/${id}/${type}`)
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
         },
         icon: SaveIcon,
       },
     }),
-    [api, navigate, type],
+    [api, customMessagesMap, getNotification, navigate, type],
   )
 
   const wrappedDocumentActions = useDocumentActions(
