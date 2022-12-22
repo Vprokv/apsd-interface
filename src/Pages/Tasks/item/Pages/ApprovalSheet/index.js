@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_APPROVAL_SHEET } from '@/ApiList'
+import { URL_APPROVAL_SHEET, URL_TEMPLATE_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
@@ -26,9 +26,11 @@ import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
-import { DocumentIdContext } from '../../constants'
+import { DocumentIdContext, DocumentTypeContext } from '../../constants'
 import { CircleMinus } from '@Components/Components/Tree/Icons/CircleMinus'
 import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
+import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
+import CreateTemplateWindow from './Components/CreateTemplateWindow'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -67,7 +69,6 @@ const ApprovalSheet = (props) => {
       id: documentId,
       type,
     })
-
     return data
   }, [api, documentId, type, change])
 
@@ -114,6 +115,10 @@ const ApprovalSheet = (props) => {
               <Icon icon={OtherIcon} />
             </ButtonForIcon>
           </div>
+        </div>
+        <div className="flex">
+          <CreateTemplateWindow jsonData={data} />
+          <ApplyTemplateWindow />
         </div>
         <ScrollBar>
           {data.map(({ stages, type, name, canAdd }, key) => (

@@ -19,7 +19,6 @@ export default function ({ token, ...apiParams }) {
   if (token) {
     api.interceptors.request.use(
       (config) => {
-        // console.log(config.data)
         config.data = config.data ? { ...config.data, token } : { token }
         return config
       },

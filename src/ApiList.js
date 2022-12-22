@@ -111,3 +111,9 @@ export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'
 // Preview
 
 export const URL_ENTITY_PDF_FILE = 'preview/pdf/'
+
+// template
+export const URL_TEMPLATE_LIST = '/sedo/template/list'
+export const URL_TEMPLATE = '/sedo/template/get'
+export const URL_CREATE_STAGE = '/sedo/approve/template'
+export const URL_CREATE_TEMPLATE = '/sedo/template/create'
