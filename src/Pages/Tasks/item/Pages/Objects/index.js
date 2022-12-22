@@ -29,6 +29,7 @@ import { ButtonForIcon } from '@/Components/Button'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -36,7 +37,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'titleId',
+    valueKey: 'key',
   },
 }
 
@@ -119,13 +120,12 @@ const filterFormConfig = [
 const emptyWrapper = ({ children }) => children
 
 const Objects = (props) => {
-  const { id, type } = useParams()
   const api = useContext(ApiContext)
+  const id = useContext(DocumentIdContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
   const [filter, setFilterValue] = useState({})
-  const { search } = useLocation()
 
   const openCreateObjectsWindow = useCallback(
     () => setCreateObjectsWindow(true),
@@ -141,12 +141,12 @@ const Objects = (props) => {
   })
 
   const {
-    tabState: { data: { technicalObjects = [] } = {} },
+    tabState: { data },
     tabState,
     loadDataHelper,
     shouldReloadDataFlag,
     setTabState,
-    tabState: { data },
+    // tabState: { data },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -159,19 +159,30 @@ const Objects = (props) => {
   const loadData = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
-      const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
+      const {
+        data: { technicalObjects },
+      } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
         documentId: id,
-        sort: {
-          property: sortQuery.key,
-          direction: sortQuery.direction,
-        },
+        sort:
+          Object.keys(sortQuery).length > 0
+            ? {
+                property: sortQuery.key,
+                direction: sortQuery.direction,
+              }
+            : null,
         limit,
         offset,
         filter,
       })
-      return data
+
+      return technicalObjects.map((item, index) => {
+        return {
+          ...item,
+          key: index + 1,
+        }
+      })
     })
-  }, [sortQuery, api, loadDataHelper, paginationState, search, id])
+  }, [paginationState, loadDataHelper, api, id, sortQuery, filter])
 
   const refLoadDataFunction = useRef(loadData)
 
@@ -220,7 +231,7 @@ const Objects = (props) => {
             <RowComponent onDoubleClick={() => null} {...props} />,
           [],
         )}
-        value={technicalObjects}
+        value={data}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
