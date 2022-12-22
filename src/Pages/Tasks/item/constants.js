@@ -19,58 +19,58 @@ export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
 export const DocumentIdContext = React.createContext(null)
 
-export const defaultPages = [
-  {
+export const defaultPages = {
+  requisites: {
     path: 'requisites',
     key: 'requisites',
     Component: Requisites,
   },
-  {
+  subscription: {
     path: 'subscriptions',
     key: 'subscription',
     Component: Subscription,
   },
-  {
+  technical_objects: {
     path: 'objects',
     key: 'technical_objects',
     Component: Objects,
   },
-  {
+  title_structure: {
     path: 'structure',
     key: 'title_structure',
     Component: Contain,
   },
-  {
+  audit: {
     path: 'history',
     key: 'audit',
     Component: History,
   },
-  {
+  content: {
     path: 'content',
     key: 'content',
     Component: Content,
   },
-  {
+  links: {
     path: 'links/*',
     key: 'links',
     Component: Links,
   },
-  {
+  handouts: {
     path: 'handouts',
     key: 'handouts',
     Component: Handouts,
   },
-  {
+  'approval-sheet': {
     path: 'approval-sheet/',
     key: 'approval-sheet',
     Component: ApprovalSheet,
   },
-  {
+  remarks: {
     path: 'remarks',
     key: 'remarks',
     Component: Remarks,
   },
-]
+}
 
 export const defaultDocumentHandlers = {
   print_card: {

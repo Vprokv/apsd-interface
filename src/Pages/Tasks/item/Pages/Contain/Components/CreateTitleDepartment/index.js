@@ -58,7 +58,7 @@ const CreateTitleDepartment = ({
     setEntities(data)
     changeModalState(true)
   }, [api, changeModalState])
-  
+
   const handleAddDepartment = useCallback(() => {
     onAddDepartment()
     return openModalWindow()

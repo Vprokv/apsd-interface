@@ -18,8 +18,6 @@ const Row = styled.div`
 `
 
 const RowComponent = (props) => {
-  console.log(props.node, 'props.node')
-
   const {
     dssApproverFio,
     dssApproverPosition,

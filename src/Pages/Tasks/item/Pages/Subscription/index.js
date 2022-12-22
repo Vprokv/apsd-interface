@@ -169,10 +169,13 @@ const Subscription = () => {
     return loadDataHelper(async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
         documentId: id,
-        sort: {
-          property: sortQuery.key,
-          direction: sortQuery.direction,
-        },
+        sort:
+          Object.keys(sortQuery).length > 0
+            ? {
+                property: sortQuery.key,
+                direction: sortQuery.direction,
+              }
+            : null,
         type,
         filter,
         limit,
