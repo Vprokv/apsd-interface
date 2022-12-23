@@ -145,26 +145,15 @@ const Content = () => {
   const loadData = useCallback(async () => {
     const { limit, offset } = paginationState
 
-    const { data } = await api.post(
-      URL_CONTENT_LIST,
-      {
-        documentId: id,
-        isCurrentVersion: !filterValue.isFullVersion,
-      },
-      {
-        params: {
-          limit,
-          offset,
-          sort: {
-            property: sortQuery.key,
-            direction: sortQuery.direction,
-          },
-        },
-      },
-    )
+    const { data } = await api.post(URL_CONTENT_LIST, {
+      documentId: id,
+      currentVersion: !filterValue.isFullVersion,
+      limit,
+      offset,
+    })
 
     return data
-  }, [sortQuery, api, loadDataHelper, paginationState, filterValue, id, change])
+  }, [api, loadDataHelper, paginationState, filterValue, id, change])
 
   useAutoReload(loadData, tabItemState)
 
