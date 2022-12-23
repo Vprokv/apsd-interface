@@ -14,12 +14,24 @@ import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
-  useOpenNotification,
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_INFO,
   NOTIFICATION_TYPE_SUCCESS,
-  NOTIFICATION_TYPE_ERROR,
-  defaultMessageMap,
+  useOpenNotification,
 } from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  412: {
+    type: NOTIFICATION_TYPE_ERROR,
+    message: 'Заполните обязательные поля',
+  },
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Документ создан',
+  },
+}
 
 export const NewTaskItem = ({ classificationId, type }) => {
   const api = useContext(ApiContext)
@@ -34,6 +46,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
   const {
     initialState,
     tabState: { data: { documentActions, documentTabs, values } = {} },
+    setTabState: setDocumentState,
   } = tabItemState
 
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
@@ -57,20 +70,6 @@ export const NewTaskItem = ({ classificationId, type }) => {
 
   useAutoReload(loadData, tabItemState)
 
-  const customMessagesMap = useMemo(() => {
-    return {
-      ...defaultMessageMap,
-      412: {
-        type: NOTIFICATION_TYPE_ERROR,
-        message: 'Заполните обязательные поля',
-      },
-      200: {
-        type: NOTIFICATION_TYPE_SUCCESS,
-        message: 'Документ создан',
-      },
-    }
-  }, [])
-
   const documentHandlers = useMemo(
     () => ({
       save: {
@@ -86,14 +85,27 @@ export const NewTaskItem = ({ classificationId, type }) => {
             getNotification(customMessagesMap[status])
             navigate(`/document/${id}/${type}`)
           } catch (e) {
-            const { response: { status } = {} } = e
+            const { response: { status, data } = {} } = e
             getNotification(customMessagesMap[status])
+            if (status === 412) {
+              const { 1: responseError } = data.split(' - ')
+              setDocumentState({
+                submitFailed: true,
+                formHasSubmitted: true,
+                backendValidationErrors: responseError
+                  .split(',')
+                  .reduce((acc, key) => {
+                    acc[key.trim()] = 'Поле заполненно неверно'
+                    return acc
+                  }, {}),
+              })
+            }
           }
         },
         icon: SaveIcon,
       },
     }),
-    [api, customMessagesMap, getNotification, navigate, type],
+    [api, getNotification, navigate, setDocumentState, type],
   )
 
   const wrappedDocumentActions = useDocumentActions(
