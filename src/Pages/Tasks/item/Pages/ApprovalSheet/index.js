@@ -108,17 +108,15 @@ const ApprovalSheet = (props) => {
             inputWrapper={EmptyInputWrapper}
           />
           <div className="flex items-center ml-auto">
-            <ButtonForIcon className="mr-2 color-text-secondary">
+            <CreateTemplateWindow jsonData={data} />
+            <ApplyTemplateWindow />
+            <ButtonForIcon className="mx-2 color-text-secondary">
               <Icon icon={PostponeIcon} />
             </ButtonForIcon>
             <ButtonForIcon className="color-text-secondary">
               <Icon icon={OtherIcon} />
             </ButtonForIcon>
           </div>
-        </div>
-        <div className="flex">
-          <CreateTemplateWindow jsonData={data} />
-          <ApplyTemplateWindow />
         </div>
         <ScrollBar>
           {data.map(({ stages, type, name, canAdd }, key) => (

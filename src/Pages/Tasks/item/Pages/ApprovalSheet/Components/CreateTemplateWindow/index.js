@@ -1,13 +1,14 @@
-import React, { useCallback, useContext, useState } from 'react'
-import { ApiContext, DocumentTypeContext } from '@/contants'
+import React, {useCallback, useContext, useState} from 'react'
+import {ApiContext, DocumentTypeContext} from '@/contants'
 import Button from '@/Components/Button'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { URL_CREATE_TEMPLATE } from '@/ApiList'
+import {StandardSizeModalWindow} from '@/Components/ModalWindow'
+import {URL_CREATE_TEMPLATE} from '@/ApiList'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import PropTypes from 'prop-types'
+import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
 
 const fieldMap = [
   {
@@ -25,13 +26,14 @@ const fieldMap = [
   {
     label: 'Доступен всей организации',
     id: 'allAccess',
+    className: 'flex items-start font-size-14',
     component: CheckBox,
   },
 ]
 
 const rules = {}
 
-const CreateTemplateWindow = ({ jsonData }) => {
+const CreateTemplateWindow = ({jsonData}) => {
   const [open, setOpenState] = useState(false)
   const [values, setValues] = useState({})
   const documentType = useContext(DocumentTypeContext)
@@ -68,7 +70,7 @@ const CreateTemplateWindow = ({ jsonData }) => {
       >
         <Form
           className="mb-10"
-          inputWrapper={DefaultWrapper}
+          inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}

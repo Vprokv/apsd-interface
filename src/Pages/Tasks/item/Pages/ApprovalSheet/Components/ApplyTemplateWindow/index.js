@@ -14,13 +14,13 @@ import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
-  selectPlugin: {
-    driver: FlatSelect,
-    component: CheckBox,
-    style: { margin: 'auto 0' },
-    valueKey: 'id',
-    returnObjects: true,
-  },
+  // selectPlugin: {
+  //   driver: FlatSelect,
+  //   component: CheckBox,
+  //   style: { margin: 'auto 0' },
+  //   valueKey: 'dsid_template',
+  //   returnObjects: true,
+  // },
 }
 
 const ApplyTemplateWindow = () => {

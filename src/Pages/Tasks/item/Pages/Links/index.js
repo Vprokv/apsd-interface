@@ -285,11 +285,11 @@ console.log(selectState)
             </ButtonForIcon>
           </div>
         </div>
-        <div className="flex items-center py-4 form-element-sizes-32">
-          <SecondaryBlueButton onClick={previewDocument}>
-            Предпросмотр
-          </SecondaryBlueButton>
-        </div>
+        {/*<div className="flex items-center py-4 form-element-sizes-32">*/}
+        {/*  <SecondaryBlueButton onClick={previewDocument}>*/}
+        {/*    Предпросмотр*/}
+        {/*  </SecondaryBlueButton>*/}
+        {/*</div>*/}
         <ListTable
           rowComponent={useMemo(
             () => (props) =>
