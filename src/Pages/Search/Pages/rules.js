@@ -39,7 +39,7 @@ export const getLoadFunction =
     return {
       loadFunction: async () => {
         const { data } = await api.post(URL_ENTITY_LIST, {
-          dss_component_reference,
+          type: dss_component_reference,
         })
         return data
       },
