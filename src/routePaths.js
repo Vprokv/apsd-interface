@@ -1,5 +1,6 @@
 export const LOGIN_PAGE_PATH = '/login'
 export const RESET_PASSWORD_PAGE_PATH = '/reset_password'
+export const CREATE_PASSWORD_PAGE_PATH = '/create_password'
 export const TASK_LIST_PATH = '/task'
 export const MAIN_PATH = '/'
 export const DOCUMENT_ITEM_PATH = '/document/:id/:type/*'
