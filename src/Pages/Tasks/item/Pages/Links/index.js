@@ -217,9 +217,10 @@ console.log(selectState)
         placeholder: 'Тип связи',
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
-        loadFunction: async () => {
+        loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_link_type',
+            query
           })
           return data
         },

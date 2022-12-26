@@ -152,9 +152,10 @@ const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
   })
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData(query) {
       const { data } = await api.post(URL_ENTITY_LIST, {
         type: 'ddt_dict_technical_object',
+        query
       })
       setTabState({ data })
     }

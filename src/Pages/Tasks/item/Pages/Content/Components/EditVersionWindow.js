@@ -12,7 +12,7 @@ import { URL_ENTITY_LIST, URL_UPDATE_VERSION } from '@/ApiList'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
-import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 
 const rules = {}
 
@@ -58,9 +58,10 @@ const EditVersionWindow = ({ onClose, formData, setChange }) => {
             dss_name: values.contentType,
           },
         ],
-        loadFunction: async () => {
+        loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_type_content',
+            query,
           })
           return data
         },

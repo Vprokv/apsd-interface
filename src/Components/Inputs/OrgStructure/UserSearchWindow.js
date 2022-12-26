@@ -44,7 +44,6 @@ const columns = [
     id: 'position',
     label: 'ФИО, Должность',
     component: ({ ParentValue = {} } = {}) => {
-      console.log(ParentValue, 'ParentValue')
       return UserCard(ParentValue)
     },
     sizes: 250,
@@ -156,28 +155,16 @@ const OrgStructureWindow = (props) => {
         ),
       },
       {
-        id: 'departmentId',
-        component: LoadableSelect,
-        disabled: !filter.branchId,
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        placeholder: 'Отдел',
-        loadFunction: async () => {
-          const { data } = await api.post(URL_ORGSTURCTURE_DEPARTMENTS, {
-            branchIds: [filter.branchId],
-          })
-          return data
-        },
-      },
-      {
         id: 'organization',
         component: LoadableSelect,
         valueKey: 'r_object_id',
         options: [organizationOptions],
         labelKey: 'dss_name',
         placeholder: 'Организация',
-        loadFunction: async () => {
-          const { data } = await api.post(URL_ORGSTURCTURE_ORGANIZATIONS)
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ORGSTURCTURE_ORGANIZATIONS, {
+            query,
+          })
           return data
         },
       },
@@ -189,15 +176,31 @@ const OrgStructureWindow = (props) => {
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         options: branches,
-        loadFunction: async () => {
+        loadFunction: async (query) => {
           const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
             id: filter.organization,
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'departmentId',
+        component: LoadableSelect,
+        disabled: !filter.branchId,
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        placeholder: 'Отдел',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ORGSTURCTURE_DEPARTMENTS, {
+            branchIds: [filter.branchId],
+            query,
           })
           return data
         },
       },
     ],
-    [api, filter, options],
+    [api, branches, filter.branchId, filter.organization, organizationOptions],
   )
 
   useEffect(() => loadFunction(), [loadFunction])
@@ -423,8 +426,8 @@ const OrgStructureWindowWrapper = ({
 
   const closeFunc = useCallback(() => {
     onClose()
-    setFilter(defaultFilter)
-  }, [setFilter, onClose])
+    setFilter({ ...defaultFilter, ...baseFilter })
+  }, [onClose, defaultFilter, baseFilter])
 
   return (
     <OrgStructureWindowComponent

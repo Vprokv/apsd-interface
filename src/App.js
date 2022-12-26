@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './Pages/Login'
 import ResetPassword from './Pages/ResetPassword'
 import TaskList from './Pages/Tasks/list'
@@ -20,12 +20,15 @@ import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
 import {
+  CREATE_PASSWORD_PAGE_PATH,
   SEARCH_PAGE_PATH,
   TASK_ITEM_PATH,
   TASK_LIST_ARCHIVE_PATH,
+  TASK_LIST_PATH,
 } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
+import CreatePassword from '@/Pages/CreatePassword'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -36,15 +39,35 @@ const authorizationRequest = async (data) => {
 }
 
 function App() {
+  const navigate = useNavigate()
   const [axiosInstanceParams, updateAxiosInstanceParams] = useState({})
   const apiInstance = useMemo(
     () => createAxiosInstance(axiosInstanceParams),
     [axiosInstanceParams],
   )
+
   const userObjectRequest = useCallback(async () => {
-    const { data } = await apiInstance.post(URL_USER_OBJECT)
-    return data
-  }, [apiInstance])
+    try {
+      const { data } = await apiInstance.post(URL_USER_OBJECT)
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+
+      console.log(status, 'status')
+
+      if (status === '418') {
+        // if (status === '404') {
+        console.log(1)
+        navigate(CREATE_PASSWORD_PAGE_PATH)
+      }
+    }
+  }, [apiInstance, navigate])
+
+  // const userObjectRequest = useCallback(async () => {
+  //
+  //   const { data } = await apiInstance.post(URL_USER_OBJECT)
+  //   return data
+  // }, [apiInstance])
 
   const { userState, loginRequest, userObjectLoading, dropToken, token } =
     useTokenStorage({
@@ -56,6 +79,8 @@ function App() {
       ),
     })
 
+  console.log(userState, 'userState')
+
   const changePasswordRequest = useCallback(
     async ({ login, password, new_password }) => {
       const token = await loginRequest({ login, password })
@@ -65,6 +90,17 @@ function App() {
       })
     },
     [apiInstance, loginRequest],
+  )
+
+  const CreatePasswordRequest = useCallback(
+    async ({ new_password }) => {
+      await apiInstance.post(URL_USER_CHANGE_PASSWORD, {
+        password: new_password,
+        token,
+      })
+      navigate(TASK_LIST_PATH)
+    },
+    [apiInstance, navigate, token],
   )
 
   useEffect(() => {
@@ -102,7 +138,7 @@ function App() {
         >
           <Suspense fallback={<div>Загрузка...</div>}>
             <Routes>
-              {userState === null ? (
+              {!userState ? (
                 <>
                   <Route
                     path={routePath.LOGIN_PAGE_PATH}
@@ -114,6 +150,12 @@ function App() {
                       <ResetPassword loginRequest={changePasswordRequest} />
                     }
                   />
+                  <Route
+                    path={routePath.CREATE_PASSWORD_PAGE_PATH}
+                    element={
+                      <CreatePassword loginRequest={CreatePasswordRequest} />
+                    }
+                  />
                   {!userObjectLoading && (
                     <Route
                       path="*"
@@ -123,6 +165,12 @@ function App() {
                 </>
               ) : (
                 <Route element={<Main />}>
+                  {/*<Route*/}
+                  {/*  path={routePath.CREATE_PASSWORD_PAGE_PATH}*/}
+                  {/*  element={*/}
+                  {/*    <CreatePassword loginRequest={CreatePasswordRequest} />*/}
+                  {/*  }*/}
+                  {/*/>*/}
                   <Route
                     path={routePath.DOCUMENT_ITEM_PATH}
                     element={<DocumentItem />}

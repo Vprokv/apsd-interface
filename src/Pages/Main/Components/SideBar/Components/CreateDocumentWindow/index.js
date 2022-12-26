@@ -4,7 +4,11 @@ import { ApiContext } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import { URL_DOCUMENT_CREATION_OPTIONS } from '@/ApiList'
-import {DocumentIcon, DocumentTypesContainer, SmallSizeModalWindow} from './style'
+import {
+  DocumentIcon,
+  DocumentTypesContainer,
+  SmallSizeModalWindow,
+} from './style'
 import RadioButton from '@/Components/Inputs/RadioButton'
 import Button from '@/Components/Button'
 import WithToggleNavigationItem from '../withToggleNavigationItem'
@@ -105,9 +109,16 @@ const CreateDocumentWindow = ({ onClose }) => {
                   <button
                     type="button"
                     className="flex items-start w-full"
-                    onClick={toggleDisplayedFlag}
+                    onClick={() => {
+                      typeName && handleSelectDocument(data)()
+                      toggleDisplayedFlag()
+                    }}
                   >
-                    <span className="mr-auto">{name}</span>
+                    <span
+                      className={selected ? 'color-blue-1 mr-auto' : 'mr-auto'}
+                    >
+                      {name}
+                    </span>
                     <Icon
                       icon={angleIcon}
                       size={10}

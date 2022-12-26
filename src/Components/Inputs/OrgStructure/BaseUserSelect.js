@@ -48,7 +48,7 @@ UserSelect.defaultProps = {
     const {
       data: { content },
     } = await api.post(URL_EMPLOYEE_LIST, {
-      filter,
+      filter: { ...filter, query: search },
     })
     return content.map(AddUserOptionsFullName)
   },
