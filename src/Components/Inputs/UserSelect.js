@@ -21,7 +21,7 @@ export const baseLoadFunction = async ({ api, filter, search }) => {
   const {
     data: { content },
   } = await api.post(URL_EMPLOYEE_LIST, {
-    filter,
+    filter: { ...filter, query: search },
   })
   return content
 }

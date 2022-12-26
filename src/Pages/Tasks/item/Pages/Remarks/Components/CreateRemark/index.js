@@ -42,9 +42,10 @@ const CreateRemark = ({ disabled }) => {
       label: 'Тип замечания',
       valueKey: 'r_object_id',
       labelKey: 'dss_name',
-      loadFunction: async () => {
+      loadFunction: async (query) => {
         const { data } = await api.post(URL_ENTITY_LIST, {
           type: 'ddt_dict_type_remark',
+          query
         })
         return data
       },

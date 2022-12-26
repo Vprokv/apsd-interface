@@ -77,9 +77,10 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         placeholder: 'Тип файла',
-        loadFunction: async () => {
+        loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_type_content',
+            query,
           })
           return data
         },

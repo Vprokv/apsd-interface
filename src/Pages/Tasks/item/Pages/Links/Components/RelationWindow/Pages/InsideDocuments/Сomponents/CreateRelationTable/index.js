@@ -58,9 +58,10 @@ const CreateRelationTable = ({ value, setLink }) => {
             className="form-element-sizes-32"
             labelKey="dss_name"
             placeholder="Выберите тип связи"
-            loadFunction={async () => {
+            loadFunction={async (query) => {
               const { data } = await api.post(URL_ENTITY_LIST, {
                 type: 'ddt_dict_link_type',
+                query
               })
               return data
             }}

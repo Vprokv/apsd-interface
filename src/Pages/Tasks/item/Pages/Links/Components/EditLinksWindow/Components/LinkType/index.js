@@ -9,9 +9,10 @@ const LinkType = ({ ParentValue: { contentId, linkType } }) => {
   const api = useContext(ApiContext)
   const { link, onLink } = useContext(EditLinkContext)
 
-  const loadFunction = async () => {
+  const loadFunction = async (query) => {
     const { data } = await api.post(URL_ENTITY_LIST, {
       type: 'ddt_dict_link_type',
+      query,
     })
     return data
   }
