@@ -11,7 +11,7 @@ export const URL_TASK_ITEM = '/sedo/task/get'
 export const URL_TASK_COMPLETE = '/sedo/task/complete'
 export const URL_TASK_MARK_READ = '/sedo/task/mark_read'
 export const URL_TASK_LIST_V2 = '/sedo/task/list/v2'
-export const URL_TASK_LIST_FILTERS = '/sedo/task/filter/existing'
+export const URL_TASK_LIST_FILTERS = '/apsd/task/v2/filter'
 export const URL_TASK_STATISTIC = '/sedo/task/statistic'
 export const URL_TASK_PROMOTE = '/sedo/task/promote'
 // ITEM

@@ -8,7 +8,7 @@ import searchIcon from '@/Icons/searchIcon'
 import { ApiContext } from '@/contants'
 import { URL_ENTITY_LIST, URL_TASK_LIST_FILTERS } from '@/ApiList'
 import { DOCUMENT_TYPE, TASK_TYPE } from '../../constants'
-import CheckBox from "@/Components/Inputs/CheckBox";
+import CheckBox from '@/Components/Inputs/CheckBox'
 
 const emptyWrapper = ({ children }) => children
 
@@ -25,53 +25,80 @@ function Filter({ value, onInput }) {
       {
         id: 'taskTypes',
         component: LoadableSelect,
+        multiple: true,
         placeholder: 'Тип задания',
         valueKey: 'dss_name',
         labelKey: 'dss_name',
         loadFunction: async () => {
-          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
-            filterType: ['taskTypes'],
+          const {
+            data: { taskTypes },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter: { ...value, readTask: value.unread },
           })
-          return data
+
+          return taskTypes.map((val) => {
+            return { dss_name: val }
+          })
         },
       },
+      // {
+      //   id: 'docTypes',
+      //   component: LoadableSelect,
+      //   placeholder: 'Вид тома',
+      //   valueKey: 'dss_name',
+      //   labelKey: 'dss_name',
+      //   loadFunction: async () => {
+      //     const {
+      //       data: { taskTypes },
+      //     } = await api.post(URL_TASK_LIST_FILTERS, {
+      //       filter: value,
+      //     })
+      //
+      //     return taskTypes.map((val) => {
+      //       return { dss_name: val }
+      //     })
+      //   },
+      // },
       {
-        id: 'docTypes',
-        component: LoadableSelect,
-        placeholder: 'Вид тома',
-        valueKey: 'dss_type_name',
-        labelKey: 'dss_type_label',
-        loadFunction: async () => {
-          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
-            filterType: ['docTypes'],
-          })
-          return data
-        },
-      },
-      {
-        id: 'stageId',
+        id: 'stageNames',
         component: LoadableSelect,
         placeholder: 'Этап',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
         loadFunction: async () => {
-          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
-            filterType: ['stageId'],
+          const {
+            data: { stageNames },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter: { ...value, readTask: value.unread },
           })
-          return data
+
+          return stageNames.map((val) => {
+            return { dss_name: val }
+          })
         },
       },
       {
         id: 'documentStatus',
         component: LoadableSelect,
         placeholder: 'Статус',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
         loadFunction: async () => {
-          const { data } = await api.post(URL_TASK_LIST_FILTERS, {
-            filterType: ['documentStatus'],
+          const {
+            data: { documentStatus },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter: { ...value, readTask: value.unread },
           })
-          return data
+
+          return documentStatus.map((val) => {
+            return { dss_name: val }
+          })
         },
       },
       {
-        id: 'description',
+        id: 'searchQuery',
         component: SearchInput,
         placeholder: 'Поиск',
         children: (
@@ -83,7 +110,7 @@ function Filter({ value, onInput }) {
         ),
       },
     ],
-    [api],
+    [api, value],
   )
 
   return (
