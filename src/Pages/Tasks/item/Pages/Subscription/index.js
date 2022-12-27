@@ -40,6 +40,7 @@ import { EventsContext } from './Components/CreateSubscriptionWindow/constans'
 import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
+import log from 'tailwindcss/lib/util/log'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -138,7 +139,7 @@ const Subscription = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data, events = new Map() },
+    tabState: { data: { content = [], total = 0 } = {}, events = new Map() },
     shouldReloadDataFlag,
     loadDataHelper,
   } = useTabItem({
@@ -241,7 +242,7 @@ const Subscription = () => {
       </div>
       <EventsContext.Provider value={events}>
         <ListTable
-          value={data}
+          value={content}
           columns={columns}
           plugins={plugins}
           headerCellComponent={HeaderCell}
@@ -253,13 +254,14 @@ const Subscription = () => {
         />
       </EventsContext.Provider>
       <Pagination
+        total={total}
         className="mt-2"
         limit={paginationState.limit}
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
       >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
       <CreateSubscriptionWindow
         open={addSubscriptionWindow}

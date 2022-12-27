@@ -75,7 +75,7 @@ const Handouts = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data = [], change },
+    tabState: { data: { content = [], total = 0 } = {}, change },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -184,10 +184,11 @@ const Handouts = (props) => {
         onSelect={setSelectState}
         sortQuery={sortQuery}
         onSort={onSort}
-        value={data}
+        value={content}
         onInput={onTableUpdate}
       />
       <Pagination
+        tottal={total}
         className="mt-2"
         limit={paginationState.limit}
         page={paginationState.page}

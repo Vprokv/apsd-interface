@@ -107,7 +107,7 @@ Pagination.defaultProps = {
   className: '',
   page: 1,
   limit: 10,
-  total: 10,
+  total: 0,
 }
 
 export default Pagination

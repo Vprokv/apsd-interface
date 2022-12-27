@@ -121,7 +121,7 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data = [], change },
+    tabState: { data: { content = [], total = 0 } = {}, change },
     tabState,
     loadDataHelper,
     shouldReloadDataFlag,
@@ -192,10 +192,10 @@ const Content = () => {
   )
 
   const idContent = useMemo(() => {
-    if (data?.length) {
-      return data.find((item) => item.version === 'Основная')?.contentId
+    if (content?.length) {
+      return content.find((item) => item.version === 'Основная')?.contentId
     }
-  }, [data])
+  }, [content])
 
   const downLoadContent = useCallback(async () => {
     let errorString = ''
@@ -293,7 +293,7 @@ const Content = () => {
         </SecondaryGreyButton>
       </FormWindow>
       <ListTable
-        value={data}
+        value={content}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
@@ -305,12 +305,13 @@ const Content = () => {
       />
       <Pagination
         className="mt-2"
+        total={total}
         limit={paginationState.limit}
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
       >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
       <DownloadWindow
         setChange={setChange}

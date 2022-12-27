@@ -9,13 +9,18 @@ import {
   URL_LINK_LIST,
   URL_PREVIEW_DOCUMENT,
   URL_DOWNLOAD_FILE,
+  URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, SecondaryGreyButton, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  SecondaryGreyButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -35,6 +40,8 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { TokenContext } from '@/contants'
 import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import Pagination from '@/Components/Pagination'
+import usePagination from '@Components/Logic/usePagination'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -117,7 +124,7 @@ const Links = () => {
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
-console.log(selectState)
+  console.log(selectState)
   const { token } = useContext(TokenContext)
 
   const tabItemState = useTabItem({
@@ -126,8 +133,15 @@ console.log(selectState)
   const {
     tabState,
     setTabState,
-    tabState: { data = [], change },
+    tabState: { data: { content = [], total = 0 } = {}, change },
   } = tabItemState
+
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: URL_SUBSCRIPTION_EVENTS,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
+  })
 
   const setChange = useCallback(
     () =>
@@ -138,9 +152,12 @@ console.log(selectState)
   )
 
   const loadData = useCallback(async () => {
+    const { limit, offset } = paginationState
     const { data } = await api.post(URL_LINK_LIST, {
       parentId: id,
       filter,
+      limit,
+      offset,
     })
 
     return data
@@ -220,7 +237,7 @@ console.log(selectState)
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_link_type',
-            query
+            query,
           })
           return data
         },
@@ -297,7 +314,7 @@ console.log(selectState)
               <RowComponent onDoubleClick={() => null} {...props} />,
             [],
           )}
-          value={data}
+          value={content}
           columns={columns}
           plugins={plugins}
           headerCellComponent={HeaderCell}
@@ -307,6 +324,16 @@ console.log(selectState)
           onSort={onSort}
           valueKey="id"
         />
+        <Pagination
+          total={total}
+          className="mt-2"
+          limit={paginationState.limit}
+          page={paginationState.page}
+          setLimit={setLimit}
+          setPage={setPage}
+        >
+          {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
+        </Pagination>
         <PreviewContentWindow
           open={renderPreviewWindow}
           onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
