@@ -4,6 +4,7 @@ import { WithWithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import Button from '@/Components/Button'
 import {
+  VALIDATION_RULE_REGEX,
   VALIDATION_RULE_REQUIRED,
   VALIDATION_RULE_SAME,
 } from '@Components/Logic/Validator/constants'
@@ -40,15 +41,16 @@ export const fieldMap = [
   },
 ]
 
+//regex, errors and map message, keys in backend fields
+
 const rules = {
-  login: [{ name: VALIDATION_RULE_REQUIRED }],
-  password: [{ name: VALIDATION_RULE_REQUIRED }],
   new_password: [
     { name: VALIDATION_RULE_REQUIRED },
     {
       name: VALIDATION_RULE_SAME,
       args: { fieldKey: 'confirmation_password', fieldKeyLabel: 'пароль' },
     },
+    { name: VALIDATION_RULE_REGEX, args: { regex: new RegExp([].join('')) } },
   ],
   confirmation_password: [
     { name: VALIDATION_RULE_REQUIRED },
@@ -64,6 +66,13 @@ const CreatePassword = ({ loginRequest }) => {
   const { token } = useContext(TokenContext)
   const [state, setState] = useState({})
   const [customRules, setRules] = useState({})
+
+  const validators = {
+    [VALIDATION_RULE_REGEX]: {
+      resolver: ({ value, args: { regex } }) => regex.test(value),
+      message: 'Значение поля не соотвествует формату',
+    },
+  }
 
   const symb = useMemo(
     () =>
@@ -127,12 +136,12 @@ const CreatePassword = ({ loginRequest }) => {
           <Link className="w-full" to={LOGIN_PAGE_PATH}>
             <Button className="bg-light-gray w-full">Отмена</Button>
           </Link>
-          <div className="mt-10 font-size-14 color-red ">
-            Пароль: <br />
-            Не должен повторять предыдущий пароль
-            <div>{symb}</div>
-            <div>{str}</div>
-          </div>
+          {/*<div className="mt-10 font-size-14 color-red ">*/}
+          {/*  Пароль: <br />*/}
+          {/*  Не должен повторять предыдущий пароль*/}
+          {/*  <div>{symb}</div>*/}
+          {/*  <div>{str}</div>*/}
+          {/*</div>*/}
         </div>
       </WithWithValidationForm>
     </LoginTemplate>
