@@ -186,17 +186,20 @@ function TaskList() {
       const { data } = await api.post(
         URL_TASK_LIST_V2,
         {
-          ...(search
-            ? search
-                .replace('?', '')
-                .split('&')
-                .reduce((acc, p) => {
-                  const [key, value] = p.split('=')
-                  acc[key] = JSON.parse(value)
-                  return acc
-                }, {})
-            : {}),
-          filter: { ...filter, readTask: !filter.readTask },
+          filter: {
+            ...(search
+              ? search
+                  .replace('?', '')
+                  .split('&')
+                  .reduce((acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc[key] = JSON.parse(value)
+                    return acc
+                  }, {})
+              : {}),
+            ...filter,
+            readTask: !filter.readTask,
+          },
         },
         {
           params: {
