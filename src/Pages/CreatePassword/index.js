@@ -16,13 +16,12 @@ import { LOGIN_PAGE_PATH } from '@/routePaths'
 import { URL_ENTITY_LIST, URL_USER_PASSWORD_RULES } from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import { ApiContext, TokenContext } from '@/contants'
-
-const passText = {
-  includeDigit: 'арабские цифры (0...9)',
-  includeUpperCase: 'строчные',
-  includeLowerCase: 'прописные',
-  includeSpecial: 'спец.символы',
-}
+import {
+  backendKeysMap,
+  getRules,
+  messagesMap,
+  VALIDATION_RULE_CUSTOM_REGEX,
+} from '@/Pages/CreatePassword/constans'
 
 export const fieldMap = [
   {
@@ -41,74 +40,67 @@ export const fieldMap = [
   },
 ]
 
-//regex, errors and map message, keys in backend fields
-
-const rules = {
-  new_password: [
-    { name: VALIDATION_RULE_REQUIRED },
-    {
-      name: VALIDATION_RULE_SAME,
-      args: { fieldKey: 'confirmation_password', fieldKeyLabel: 'пароль' },
-    },
-    { name: VALIDATION_RULE_REGEX, args: { regex: new RegExp([].join('')) } },
-  ],
-  confirmation_password: [
-    { name: VALIDATION_RULE_REQUIRED },
-    {
-      name: VALIDATION_RULE_SAME,
-      args: { fieldKey: 'new_password', fieldKeyLabel: 'пароль' },
-    },
-  ],
-}
-
 const CreatePassword = ({ loginRequest }) => {
   const api = useContext(ApiContext)
   const { token } = useContext(TokenContext)
   const [state, setState] = useState({})
   const [customRules, setRules] = useState({})
 
-  const validators = {
-    [VALIDATION_RULE_REGEX]: {
-      resolver: ({ value, args: { regex } }) => regex.test(value),
-      message: 'Значение поля не соотвествует формату',
-    },
-  }
+  const { rules, validators } = useMemo(() => {
+    const { reg, anotherRules } = backendKeysMap.reduce(
+      (acc, val) => getRules(val)(acc)(customRules),
+      { reg: {}, anotherRules: [] },
+    )
 
-  const symb = useMemo(
-    () =>
-      customRules.includeDigit &&
-      `Должен содержать не менее ${customRules.minLength} и не более ${customRules.maxLength} символов`,
-    [customRules.includeDigit, customRules.maxLength, customRules.minLength],
-  )
+    const resp = {
+      rules: {
+        new_password: [
+          ...anotherRules,
+          { name: VALIDATION_RULE_REQUIRED },
+          {
+            name: VALIDATION_RULE_SAME,
+            args: {
+              fieldKey: 'confirmation_password',
+              fieldKeyLabel: 'пароль',
+            },
+          },
+        ],
+        confirmation_password: [
+          { name: VALIDATION_RULE_REQUIRED },
+          {
+            name: VALIDATION_RULE_SAME,
+            args: { fieldKey: 'new_password', fieldKeyLabel: 'пароль' },
+          },
+        ],
+      },
+      validators: {},
+    }
 
-  const str = useMemo(() => {
-    const {
-      includeUpperCase,
-      includeLowerCase,
-      includeDigit,
-      includeSpecial,
-      specialChars,
-    } = customRules
+    if (Object.keys(reg).length > 1) {
+      resp.rules['new_password'].push({
+        name: VALIDATION_RULE_CUSTOM_REGEX,
+        args: { regex: new RegExp(Object.values(reg).join('')) },
+      })
 
-    const words = `${
-      includeUpperCase && includeLowerCase
-        ? 'строчные и прописные'
-        : includeUpperCase
-        ? 'прописные'
-        : 'строчные'
-    } латинские буквы ${
-      includeUpperCase && includeLowerCase
-        ? '(A..z)'
-        : includeUpperCase
-        ? '(A..Z)'
-        : '(a..z)'
-    }  `
+      resp.validators = {
+        [VALIDATION_RULE_CUSTOM_REGEX]: {
+          resolver: ({ value, args: { regex } }) => {
+            return regex.test(value)
+          },
+          message: ({ value }) => {
+            let mess = ''
+            Object.keys(reg).forEach((val) => {
+              if (!new RegExp(reg[val]).test(value)) {
+                mess = messagesMap[val](customRules)
+              }
+            })
+            return mess
+          },
+        },
+      }
+    }
 
-    const int = includeDigit && 'арабские цифры (0...9)'
-    const special =
-      includeSpecial && specialChars && `спец. символы ${specialChars}`
-
-    return `Должен содержать ${words}, ${int}, ${special} `
+    return resp
   }, [customRules])
 
   useEffect(() => {
@@ -128,6 +120,7 @@ const CreatePassword = ({ loginRequest }) => {
         inputWrapper={DefaultWrapper}
         rules={rules}
         onSubmit={loginRequest}
+        validators={validators}
       >
         <div className="flex flex-col pt-9">
           <Button className="bg-blue-1 text-white mb-2" type="submit">
@@ -136,12 +129,6 @@ const CreatePassword = ({ loginRequest }) => {
           <Link className="w-full" to={LOGIN_PAGE_PATH}>
             <Button className="bg-light-gray w-full">Отмена</Button>
           </Link>
-          {/*<div className="mt-10 font-size-14 color-red ">*/}
-          {/*  Пароль: <br />*/}
-          {/*  Не должен повторять предыдущий пароль*/}
-          {/*  <div>{symb}</div>*/}
-          {/*  <div>{str}</div>*/}
-          {/*</div>*/}
         </div>
       </WithWithValidationForm>
     </LoginTemplate>
