@@ -39,6 +39,7 @@ import CheckBox from '../../../Components/Inputs/CheckBox'
 import {
   URL_DOCUMENT_CREATION_OPTIONS,
   URL_TASK_LIST,
+  URL_TASK_LIST_V2,
   URL_TASK_STATISTIC,
 } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
@@ -85,7 +86,7 @@ const columns = [
     sizes: baseCellSize,
   },
   {
-    id: 'stage',
+    id: 'stageName',
     label: 'Этап',
     component: BaseCell,
     sizes: baseCellSize,
@@ -93,6 +94,7 @@ const columns = [
   {
     id: 'documentStatus',
     label: 'Статус тома',
+    className: 'flex items-center',
     component: VolumeStatus,
     sizes: volumeStatusSize,
   },
@@ -101,16 +103,21 @@ const columns = [
     label: 'Назначенный исполнитель',
     component: ({
       ParentValue: {
-        performerEmployee: { firstName = '', position = '' } = {},
-        performerFio,
-        performerAvatar,
+        performerEmployee: {
+          firstName = '',
+          position = '',
+          avatartId,
+          lastName,
+          middleName,
+        } = {},
       } = {},
     }) =>
       UserCard({
         name: firstName,
-        fio: performerFio,
+        lastName: lastName,
+        middleName: middleName,
         position: position,
-        avatar: performerAvatar,
+        avatar: avatartId,
       }),
     sizes: useCardSizes,
   },
@@ -119,15 +126,20 @@ const columns = [
     label: 'Автор',
     component: ({
       ParentValue: {
-        creatorEmployee: { firstName, avatartId },
-        creatorFio,
-        creatorPosition,
+        creatorEmployee: {
+          firstName = '',
+          position = '',
+          avatartId,
+          lastName,
+          middleName,
+        },
       },
     }) =>
       UserCard({
         name: firstName,
-        fio: creatorFio,
-        position: creatorPosition,
+        lastName: lastName,
+        middleName: middleName,
+        position: position,
         avatar: avatartId,
       }),
     sizes: useCardSizes,
@@ -146,7 +158,7 @@ function TaskList() {
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
-    tabState: { data },
+    tabState: { data: { content = [], total = 0 } = {} },
     tabItemState,
   } = useTabItem({ stateId: TASK_LIST })
 
@@ -159,7 +171,6 @@ function TaskList() {
   })
 
   const [filter, setFilter] = useState({})
-  const [total, setTotal] = useState(10)
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
@@ -173,7 +184,7 @@ function TaskList() {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
       const { data } = await api.post(
-        URL_TASK_LIST,
+        URL_TASK_LIST_V2,
         {
           ...(search
             ? search
@@ -185,7 +196,7 @@ function TaskList() {
                   return acc
                 }, {})
             : {}),
-          ...filter,
+          filter: { ...filter, readTask: !filter.readTask },
         },
         {
           params: {
@@ -199,16 +210,6 @@ function TaskList() {
       return data
     })
   }, [sortQuery, api, loadDataHelper, paginationState, search, filter])
-
-  useEffect(() => {
-    ;(async () => {
-      const {
-        data: [{ all }],
-      } = await api.post(URL_TASK_STATISTIC)
-
-      setTotal(all)
-    })()
-  }, [api])
 
   const refLoadDataFunction = useRef(loadData)
 
@@ -247,7 +248,7 @@ function TaskList() {
             <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
           [handleDoubleClick],
         )}
-        value={data}
+        value={content}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}

@@ -18,7 +18,7 @@ function Filter({ value, onInput }) {
   const fields = useMemo(
     () => [
       {
-        id: 'unread',
+        id: 'readTask',
         component: CheckBox,
         label: 'Непросмотренные',
       },
@@ -33,7 +33,7 @@ function Filter({ value, onInput }) {
           const {
             data: { taskTypes },
           } = await api.post(URL_TASK_LIST_FILTERS, {
-            filter: { ...value, readTask: value.unread },
+            filter: { ...value, readTask: !value.readTask },
           })
 
           return taskTypes.map((val) => {

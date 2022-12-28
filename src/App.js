@@ -41,6 +41,7 @@ const authorizationRequest = async (data) => {
 function App() {
   const navigate = useNavigate()
   const [axiosInstanceParams, updateAxiosInstanceParams] = useState({})
+  const [login, setLogin] = useState('')
   const apiInstance = useMemo(
     () => createAxiosInstance(axiosInstanceParams),
     [axiosInstanceParams],
@@ -51,23 +52,16 @@ function App() {
       const { data } = await apiInstance.post(URL_USER_OBJECT)
       return data
     } catch (e) {
-      const { response: { status } = {} } = e
+      const { response: { status, data: { dss_user_name } = {} } = {} } = e
 
-      console.log(status, 'status')
-
-      if (status === '418') {
-        // if (status === '404') {
-        console.log(1)
+      if (status === 418) {
+        setLogin(dss_user_name)
         navigate(CREATE_PASSWORD_PAGE_PATH)
+        return null
       }
+      throw e
     }
   }, [apiInstance, navigate])
-
-  // const userObjectRequest = useCallback(async () => {
-  //
-  //   const { data } = await apiInstance.post(URL_USER_OBJECT)
-  //   return data
-  // }, [apiInstance])
 
   const { userState, loginRequest, userObjectLoading, dropToken, token } =
     useTokenStorage({
@@ -78,8 +72,6 @@ function App() {
         [],
       ),
     })
-
-  console.log(userState, 'userState')
 
   const changePasswordRequest = useCallback(
     async ({ login, password, new_password }) => {
@@ -92,15 +84,16 @@ function App() {
     [apiInstance, loginRequest],
   )
 
-  const CreatePasswordRequest = useCallback(
+  const createPasswordRequest = useCallback(
     async ({ new_password }) => {
       await apiInstance.post(URL_USER_CHANGE_PASSWORD, {
         password: new_password,
         token,
       })
-      navigate(TASK_LIST_PATH)
+      await loginRequest({ login, password: new_password })
+      setLogin('')
     },
-    [apiInstance, navigate, token],
+    [apiInstance, login, loginRequest, token],
   )
 
   useEffect(() => {
@@ -138,7 +131,7 @@ function App() {
         >
           <Suspense fallback={<div>Загрузка...</div>}>
             <Routes>
-              {!userState ? (
+              {userState === null ? (
                 <>
                   <Route
                     path={routePath.LOGIN_PAGE_PATH}
@@ -153,7 +146,7 @@ function App() {
                   <Route
                     path={routePath.CREATE_PASSWORD_PAGE_PATH}
                     element={
-                      <CreatePassword loginRequest={CreatePasswordRequest} />
+                      <CreatePassword loginRequest={createPasswordRequest} />
                     }
                   />
                   {!userObjectLoading && (
@@ -165,12 +158,6 @@ function App() {
                 </>
               ) : (
                 <Route element={<Main />}>
-                  {/*<Route*/}
-                  {/*  path={routePath.CREATE_PASSWORD_PAGE_PATH}*/}
-                  {/*  element={*/}
-                  {/*    <CreatePassword loginRequest={CreatePasswordRequest} />*/}
-                  {/*  }*/}
-                  {/*/>*/}
                   <Route
                     path={routePath.DOCUMENT_ITEM_PATH}
                     element={<DocumentItem />}
