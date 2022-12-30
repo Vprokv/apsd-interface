@@ -17,6 +17,8 @@ import Button from '@/Components/Button'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { ApiContext } from '@/contants'
 import { URL_ORGSTURCTURE_SEND } from '@/ApiList'
+import log from 'tailwindcss/lib/util/log'
+import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
 
 const LeafContainer = styled.div`
   padding-left: ${({ subRow }) => subRow * 15}px;
@@ -41,8 +43,6 @@ const Leaf = ({
   const { loadData, addDepartment, addVolume } = useContext(
     LoadContainChildrenContext,
   )
-
-  console.log(id, 'id')
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -135,26 +135,7 @@ const Leaf = ({
         size={12}
         className="mr-1 color-blue-1 cursor-pointer"
       />
-      <Icon icon={PdfBadgeIcon} size={24} className="mr-1 color-red" />
-      {/*{ParentValue.expand ? (*/}
-      {/*  <>*/}
-
-      {/*    <Icon*/}
-      {/*      icon={sortIcons}*/}
-      {/*      size={12}*/}
-      {/*      className="mr-1 color-blue-1 cursor-pointer"*/}
-      {/*    />*/}
-      {/*  </>*/}
-      {/*) : (*/}
-      {/*  <>*/}
-      {/*    */}
-      {/*    <Icon*/}
-      {/*      icon={sortIcons}*/}
-      {/*      size={12}*/}
-      {/*      className="mr-1 color-blue-1 cursor-pointer"*/}
-      {/*    />*/}
-      {/*  </>*/}
-      {/*)}*/}
+      <CustomIconComponent {...ParentValue} />
       <>
         {children}
         <Button loading={loading} disabled={loading}>
