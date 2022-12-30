@@ -20,7 +20,9 @@ const UserSelect = ({ loadFunction, filter, ...props }) => {
     organization: [
       {
         r_object_id: organization = '',
-        branches: [{ r_object_id: branchId = '' }] = [{}],
+        branches: [{ r_object_id: branchId = '' }] = [
+          { r_object_id: '', branches: [{ r_object_id: '' }] },
+        ],
       },
     ] = [{}],
   } = useRecoilValue(userAtom)
