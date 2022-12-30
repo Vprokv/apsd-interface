@@ -120,34 +120,41 @@ const Leaf = ({
 
   return (
     <LeafContainer subRow={subRow} className={`${className} flex items-center`}>
-      {ParentValue.expand ? (
-        <>
-          {ParentValue.send && (
-            <Icon
-              icon={angleIcon}
-              size={10}
-              className={`mr-1 color-text-secondary cursor-pointer ${
-                !expanded ? '' : 'rotate-180'
-              }`}
-              onClick={onOpenNestedTable}
-            />
-          )}
-          <Icon
-            icon={sortIcons}
-            size={12}
-            className="mr-1 color-blue-1 cursor-pointer"
-          />
-        </>
-      ) : (
-        <>
-          <Icon icon={PdfBadgeIcon} size={24} className="mr-1 color-red" />
-          <Icon
-            icon={sortIcons}
-            size={12}
-            className="mr-1 color-blue-1 cursor-pointer"
-          />
-        </>
+      {ParentValue.send && (
+        <Icon
+          icon={angleIcon}
+          size={10}
+          className={`mr-1 color-text-secondary cursor-pointer ${
+            !expanded ? '' : 'rotate-180'
+          }`}
+          onClick={onOpenNestedTable}
+        />
       )}
+      <Icon
+        icon={sortIcons}
+        size={12}
+        className="mr-1 color-blue-1 cursor-pointer"
+      />
+      <Icon icon={PdfBadgeIcon} size={24} className="mr-1 color-red" />
+      {/*{ParentValue.expand ? (*/}
+      {/*  <>*/}
+
+      {/*    <Icon*/}
+      {/*      icon={sortIcons}*/}
+      {/*      size={12}*/}
+      {/*      className="mr-1 color-blue-1 cursor-pointer"*/}
+      {/*    />*/}
+      {/*  </>*/}
+      {/*) : (*/}
+      {/*  <>*/}
+      {/*    */}
+      {/*    <Icon*/}
+      {/*      icon={sortIcons}*/}
+      {/*      size={12}*/}
+      {/*      className="mr-1 color-blue-1 cursor-pointer"*/}
+      {/*    />*/}
+      {/*  </>*/}
+      {/*)}*/}
       <>
         {children}
         <Button loading={loading} disabled={loading}>
