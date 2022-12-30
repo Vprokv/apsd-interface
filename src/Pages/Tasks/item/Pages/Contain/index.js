@@ -28,6 +28,8 @@ import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/con
 import CreateVolume from './Components/CreateVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 import DateCell from './Components/DateCell'
+import ViewIcon from '@/Icons/ViewIcon'
+import PreviewContentWindow from '@/Components/PreviewContentWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -108,6 +110,7 @@ const Contain = () => {
   const [selectState, setSelectState] = useState([])
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
+  const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
@@ -236,6 +239,11 @@ const Contain = () => {
     [setTabState],
   )
 
+  const disabled = useMemo(
+    () => !selectState[0]?.did_tom && !selectState[0]?.content,
+    [selectState],
+  )
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -258,6 +266,16 @@ const Contain = () => {
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
+              <ButtonForIcon
+                className="mr-2"
+                disabled={disabled}
+                onClick={useCallback(
+                  () => setRenderPreviewWindowState(true),
+                  [],
+                )}
+              >
+                <Icon icon={ViewIcon} size={20} />
+              </ButtonForIcon>
               <DeleteContain
                 selectState={selectState}
                 onDeleteData={deleteData}
@@ -281,6 +299,12 @@ const Contain = () => {
           onSort={onSort}
           value={data}
           onInput={onTableUpdate}
+        />
+        <PreviewContentWindow
+          open={renderPreviewWindow}
+          onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
+          id={selectState[0]?.content?.contentId}
+          type="ddt_document_content"
         />
       </div>
     </LoadContainChildrenContext.Provider>
