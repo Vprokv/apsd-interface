@@ -15,6 +15,8 @@ import ContextMenu from '@/components_ocean/Components/ContextMenu'
 import { StyledContextMenu, StyledItem } from './style'
 import Button from '@/Components/Button'
 import { TabStateManipulation } from '@Components/Logic/Tab'
+import { ApiContext } from '@/contants'
+import { URL_ORGSTURCTURE_SEND } from '@/ApiList'
 
 const LeafContainer = styled.div`
   padding-left: ${({ subRow }) => subRow * 15}px;
@@ -25,7 +27,7 @@ const Leaf = ({
   children,
   className,
   onInput,
-  ParentValue: { tomId, type },
+  ParentValue: { tomId, type, id },
 }) => {
   const {
     valueKey,
@@ -34,16 +36,28 @@ const Leaf = ({
     state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
     onChange,
   } = useContext(TreeStateContext)
+  const api = useContext(ApiContext)
   const { openNewTab } = useContext(TabStateManipulation)
   const { loadData, addDepartment, addVolume } = useContext(
     LoadContainChildrenContext,
   )
+
+  console.log(id, 'id')
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [target, setTarget] = useState({})
 
   const subRow = useContext(TreeStateLevelContext)
+
+  const onSend = useCallback(async () => {
+    try {
+      await api.post(URL_ORGSTURCTURE_SEND, { partId: ParentValue.id })
+      setLoading(true)
+    } catch (e) {
+      setLoading(false)
+    }
+  }, [ParentValue.id, api])
 
   const onOpenNestedTable = useCallback(async () => {
     const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
@@ -99,20 +113,25 @@ const Leaf = ({
     }
   }, [ParentValue, addVolume, closeContextMenu, nestedDataKey, onInput])
 
-  const edit = useCallback(() => openNewTab(`/document/${tomId}/${type}`), [])
+  const edit = useCallback(
+    () => openNewTab(`/document/${tomId}/${type}`),
+    [openNewTab, tomId, type],
+  )
 
   return (
     <LeafContainer subRow={subRow} className={`${className} flex items-center`}>
       {ParentValue.expand ? (
         <>
-          <Icon
-            icon={angleIcon}
-            size={10}
-            className={`mr-1 color-text-secondary cursor-pointer ${
-              !expanded ? '' : 'rotate-180'
-            }`}
-            onClick={onOpenNestedTable}
-          />
+          {ParentValue.send && (
+            <Icon
+              icon={angleIcon}
+              size={10}
+              className={`mr-1 color-text-secondary cursor-pointer ${
+                !expanded ? '' : 'rotate-180'
+              }`}
+              onClick={onOpenNestedTable}
+            />
+          )}
           <Icon
             icon={sortIcons}
             size={12}
@@ -142,7 +161,9 @@ const Leaf = ({
         {open && (
           <ContextMenu width={240} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
-              <StyledItem className="mb-3">Передать состав титула</StyledItem>
+              <StyledItem className="mb-3" onClick={onSend}>
+                Передать состав титула
+              </StyledItem>
               <StyledItem className="mb-3 opacity-50">
                 Утвердить состав титула
               </StyledItem>
