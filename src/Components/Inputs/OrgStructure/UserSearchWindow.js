@@ -383,9 +383,20 @@ const OrgStructureWindowWrapper = ({
   const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
 
+  // const memoBaseFilter = useMemo(
+  //   () =>
+  //     Object.keys(baseFilter).reduce((acc, val) => {
+  //       if (baseFilter[val]) {
+  //         acc[val] = baseFilter[val]
+  //       }
+  //       return acc
+  //     }, {}),
+  //   [baseFilter],
+  // )
+
   useEffect(() => {
     setFilter({ ...defaultFilter, ...baseFilter })
-  }, [baseFilter, defaultFilter])
+  }, [defaultFilter, baseFilter])
 
   const pagination = usePagination({
     stateId: WINDOW_ADD_EMPLOYEE,

@@ -20,9 +20,6 @@ const PreviewContentWindow = ({ id, type, ...props }) => {
   )
 }
 
-//http://10.20.56.47/preview/pdf/ddt_apsd_content_version:0000000300003jkc:a3378504-7d2f-49c9-9178-f14c291a1134
-
-
 PreviewContentWindow.propTypes = {
   id: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
