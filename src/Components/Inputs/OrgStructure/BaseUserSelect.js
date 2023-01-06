@@ -14,22 +14,24 @@ export const AddUserOptionsFullName = (v = {}) => ({
     : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`,
 })
 
+
 const UserSelect = ({ loadFunction, filter, ...props }) => {
   const api = useContext(ApiContext)
   const {
     organization: [
       {
         r_object_id: organization = '',
-        branches: [{ r_object_id: branchId = '' }] = [
-          { r_object_id: '', branches: [{ r_object_id: '' }] },
-        ],
+        branches,
+        // branches: [{ r_object_id: branchId = '' }] = [
+        //   { r_object_id: '', branches: [{ r_object_id: '' }] },
+        // ],
       },
     ] = [{}],
   } = useRecoilValue(userAtom)
 
   const customSelectFilter = useMemo(() => {
-    return { organization, branchId, ...filter }
-  }, [organization, branchId, filter])
+    return { organization, branchId: branches[0]?.r_object_id, ...filter }
+  }, [organization, branches, filter])
 
   const loadRefSelectFunc = useCallback(
     async (search) => {
