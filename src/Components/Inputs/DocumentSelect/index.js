@@ -68,7 +68,7 @@ const DocumentSelect = ({
 
   const renderValue = useMemo(() => {
     if (selectedState) {
-      const pattern = displayName.match(/[A-z_]+/gi)
+      const pattern = displayName?.match(/[A-z_]+/gi) || []
       const getLabel = (value) => {
         const obj = cache.get(value)
         return pattern.map((key) => obj.values[key]).join(' ')
