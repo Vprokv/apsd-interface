@@ -12,7 +12,7 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
 `
 
 export const ThreeDotButton = styled.button`
-  margin-left: 13%;
+  margin-left: 23%;
   opacity: 1;
   //
   //&:hover {

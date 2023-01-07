@@ -142,7 +142,7 @@ const Leaf = ({
       />
       <CustomIconComponent {...ParentValue} />
       <>
-        <div className=" w-64 mr-4 font-size-14">{children}</div>
+        <div className="font-size-14">{children}</div>
         <ContHover>
           <ThreeDotButton loading={loading} disabled={loading}>
             <Icon
@@ -164,17 +164,18 @@ const Leaf = ({
                 Утвердить состав титула
               </StyledItem>
               <StyledItem className="mb-3">Экспорт данных</StyledItem>
-              {(tomId || type) && (
-                <StyledItem className="mb-3" onClick={edit}>
-                  Редактировать
-                </StyledItem>
-              )}
               {!dsid_tom && (
                 <>
-                  <StyledItem className="mb-3 font-size-14" onClick={addSubsection}>
+                  <StyledItem
+                    className="mb-3 font-size-14"
+                    onClick={addSubsection}
+                  >
                     Добавить подраздел
                   </StyledItem>
                   <StyledItem onClick={addTome}>Добавить том</StyledItem>
+                  <StyledItem className="mb-3" onClick={edit}>
+                    Редактировать
+                  </StyledItem>
                 </>
               )}
             </StyledContextMenu>

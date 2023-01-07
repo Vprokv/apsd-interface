@@ -52,7 +52,7 @@ const columns = [
     id: 'name',
     label: 'Наименование',
     className: 'flex font-size-14',
-    sizes: 300,
+    sizes: 500,
   },
   {
     id: 'linkName',
