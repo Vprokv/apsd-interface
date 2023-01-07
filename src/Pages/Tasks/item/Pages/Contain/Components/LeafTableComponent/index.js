@@ -12,7 +12,12 @@ import PdfBadgeIcon from '@/Icons/PdfBadgeIcon'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import { LoadContainChildrenContext } from '../../constants'
 import ContextMenu from '@/components_ocean/Components/ContextMenu'
-import {StyledContextMenu, StyledItem, ThreeDotButton} from './style'
+import {
+  ContHover,
+  StyledContextMenu,
+  StyledItem,
+  ThreeDotButton,
+} from './style'
 import Button from '@/Components/Button'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { ApiContext } from '@/contants'
@@ -102,8 +107,6 @@ const Leaf = ({
     valueKey,
   ])
 
-  console.log(ParentValue, 'ParentValue')
-
   const addTome = useCallback(async () => {
     try {
       closeContextMenu()
@@ -139,15 +142,18 @@ const Leaf = ({
       />
       <CustomIconComponent {...ParentValue} />
       <>
-        {children}
-        <ThreeDotButton loading={loading} disabled={loading}>
-          <Icon
-            icon={ThreeDotIcon}
-            size={14}
-            className="ml-1 color-blue-1 cursor-pointer"
-            onClick={openContextMenu}
-          />
+        <div className=" w-64 mr-4">{children}</div>
+        <ContHover>
+          <ThreeDotButton loading={loading} disabled={loading}>
+            <Icon
+              icon={ThreeDotIcon}
+              size={14}
+              className="ml-1 color-blue-1 cursor-pointer"
+              onClick={openContextMenu}
+            />
         </ThreeDotButton>
+        </ContHover>
+
         {open && (
           <ContextMenu width={240} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
