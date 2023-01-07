@@ -9,3 +9,18 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
     color: var(--blue-4);
   }
 `
+
+export const ThreeDotButton = styled.button`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: -33%;
+  //top: 65%; /* Отступ сверху */
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`
