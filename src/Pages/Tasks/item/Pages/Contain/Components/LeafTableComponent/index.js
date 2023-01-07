@@ -142,16 +142,16 @@ const Leaf = ({
       />
       <CustomIconComponent {...ParentValue} />
       <>
-        <div className=" w-64 mr-4">{children}</div>
+        <div className=" w-64 mr-4 font-size-14">{children}</div>
         <ContHover>
           <ThreeDotButton loading={loading} disabled={loading}>
             <Icon
               icon={ThreeDotIcon}
               size={14}
-              className="ml-1 color-blue-1 cursor-pointer"
+              className="ml-1 color-blue-1 cursor-pointer "
               onClick={openContextMenu}
             />
-        </ThreeDotButton>
+          </ThreeDotButton>
         </ContHover>
 
         {open && (
@@ -171,7 +171,7 @@ const Leaf = ({
               )}
               {!dsid_tom && (
                 <>
-                  <StyledItem className="mb-3" onClick={addSubsection}>
+                  <StyledItem className="mb-3 font-size-14" onClick={addSubsection}>
                     Добавить подраздел
                   </StyledItem>
                   <StyledItem onClick={addTome}>Добавить том</StyledItem>
