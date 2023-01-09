@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
 export const StyledContextMenu = styled.div`
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
-  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `
 
 export const StyledItem = styled.button.attrs({ type: 'button' })`
@@ -12,7 +14,7 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
 `
 
 export const ThreeDotButton = styled.button`
-  margin-left: 23%;
+  margin-left: 25%;
   opacity: 1;
   //
   //&:hover {
