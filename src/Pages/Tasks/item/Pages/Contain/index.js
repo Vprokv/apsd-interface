@@ -51,39 +51,39 @@ const columns = [
   {
     id: 'name',
     label: 'Наименование',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
     sizes: 500,
   },
   {
     id: 'linkName',
     label: 'Связь',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
   },
   {
     id: 'author',
     label: 'Автор',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
   },
   {
     id: 'regNumber',
     label: 'Шифр',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
   },
   {
     id: 'status',
     label: 'Состояние раздела/тома',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
     sizes: 190,
   },
   {
     id: 'result',
     label: 'Результат',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
   },
   {
     id: 'stage',
     label: 'Стадия',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
   },
   {
     id: 'Даты разраб.(план/факт)',
@@ -100,13 +100,13 @@ const columns = [
   {
     id: 'Просрочка разработки',
     label: 'Просрочка разработки',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
     sizes: 180,
   },
   {
     id: 'Просрочка согласования',
     label: 'Просрочка согласования',
-    className: 'flex font-size-14',
+    className: 'flex font-size-12',
     sizes: 180,
   },
 ]
@@ -227,6 +227,7 @@ const Contain = () => {
         id: '1',
         component: LoadableSelect,
         placeholder: 'Нарушение срока',
+        className: 'font-size-12',
         valueKey: 'dss_name',
         labelKey: 'dss_name',
         loadFunction: async () => {
@@ -258,7 +259,7 @@ const Contain = () => {
       <div className="flex-container p-4 w-full overflow-hidden">
         <div className="flex items-center form-element-sizes-32 w-full mb-4">
           <FilterForm
-            className="mr-2"
+            className="mr-2 "
             value={filterValue}
             onInput={setFilterValue}
             fields={fields}
@@ -266,12 +267,12 @@ const Contain = () => {
           />
           <div className="flex items-center ml-auto">
             <CreateTitleDepartment
-              className="mr-2"
+              className="mr-2 font-size-12"
               addDepartmentState={addDepartmentState}
               onAddDepartment={addDepartment}
             />
-            <CreateVolume className="mr-2" addVolumeState={addVolumeState} />
-            <SecondaryBlueButton className="mr-2" disabled>
+            <CreateVolume className="mr-2 " addVolumeState={addVolumeState} />
+            <SecondaryBlueButton className="mr-2 " disabled>
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">

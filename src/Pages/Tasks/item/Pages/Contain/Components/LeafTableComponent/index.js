@@ -5,7 +5,6 @@ import {
   TreeStateContext,
   TreeStateLevelContext,
 } from '@/components_ocean/Components/Tables/Plugins/constants'
-import styled from 'styled-components'
 import angleIcon from '@/Icons/angleIcon'
 import sortIcons from '@/Icons/sortIcons'
 import PdfBadgeIcon from '@/Icons/PdfBadgeIcon'
@@ -14,6 +13,7 @@ import { LoadContainChildrenContext } from '../../constants'
 import ContextMenu from '@/components_ocean/Components/ContextMenu'
 import {
   ContHover,
+  LeafContainer,
   StyledContextMenu,
   StyledItem,
   ThreeDotButton,
@@ -24,10 +24,6 @@ import { ApiContext } from '@/contants'
 import { URL_ORGSTURCTURE_SEND } from '@/ApiList'
 import log from 'tailwindcss/lib/util/log'
 import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
-
-const LeafContainer = styled.div`
-  padding-left: ${({ subRow }) => subRow * 15}px;
-`
 
 const Leaf = ({
   ParentValue,
@@ -142,7 +138,7 @@ const Leaf = ({
       />
       <CustomIconComponent {...ParentValue} />
       <>
-        <div className="font-size-14">{children}</div>
+        <div className="font-size-12">{children}</div>
         <ContHover>
           <ThreeDotButton loading={loading} disabled={loading}>
             <Icon
@@ -155,25 +151,29 @@ const Leaf = ({
         </ContHover>
 
         {open && (
-          <ContextMenu width={240} target={target} onClose={closeContextMenu}>
-            <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
-              <StyledItem className="mb-3" onClick={onSend}>
+          <ContextMenu width={200} target={target} onClose={closeContextMenu}>
+            <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
+              <StyledItem className="mb-3 font-size-12" onClick={onSend}>
                 Передать состав титула
               </StyledItem>
-              <StyledItem className="mb-3 opacity-50">
+              <StyledItem className="mb-3 font-size-12 opacity-50">
                 Утвердить состав титула
               </StyledItem>
-              <StyledItem className="mb-3">Экспорт данных</StyledItem>
+              <StyledItem className="mb-3 font-size-12">
+                Экспорт данных
+              </StyledItem>
               {!dsid_tom && (
                 <>
                   <StyledItem
-                    className="mb-3 font-size-14"
+                    className="mb-3 font-size-12"
                     onClick={addSubsection}
                   >
                     Добавить подраздел
                   </StyledItem>
-                  <StyledItem onClick={addTome}>Добавить том</StyledItem>
-                  <StyledItem className="mb-3" onClick={edit}>
+                  <StyledItem className="mb-3 font-size-12" onClick={addTome}>
+                    Добавить том
+                  </StyledItem>
+                  <StyledItem className="mb-3 font-size-12" onClick={edit}>
                     Редактировать
                   </StyledItem>
                 </>

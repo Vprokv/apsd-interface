@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
 export const StyledContextMenu = styled.div`
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
-  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `
 
 export const StyledItem = styled.button.attrs({ type: 'button' })`
@@ -12,23 +14,26 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
 `
 
 export const ThreeDotButton = styled.button`
-  margin-left: 23%;
-  opacity: 1;
-  //
-  //&:hover {
-  //  opacity: 1;
-  //}
+  //left: 12%;
 `
 
 export const ContHover = styled.div`
-  position: absolute;
-  z-index: 0;
+  //position: absolute;
+  //z-index: 4;
   display: flex;
-  width: 100%;
   height: 100%;
   opacity: 0;
   //border: 2px solid red;
   &:hover {
     opacity: 1;
+  }
+`
+
+export const LeafContainer = styled.div`
+  padding-left: ${({ subRow }) => subRow * 15}px;
+  &:hover {
+    ${ContHover} {
+      opacity: 1;
+    }
   }
 `

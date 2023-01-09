@@ -110,11 +110,11 @@ export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'
 // DOWNLOAD
 export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'
 
-// Preview
+// PREVIEW
 
 export const URL_ENTITY_PDF_FILE = '/preview/pdf/'
 
-// template
+// TEMPLATE
 export const URL_TEMPLATE_LIST = '/sedo/template/list'
 export const URL_TEMPLATE = '/sedo/template/get'
 export const URL_CREATE_STAGE = '/sedo/approve/template'
