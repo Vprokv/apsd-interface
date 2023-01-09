@@ -13,7 +13,7 @@ const Storage = () => {
             className="flex items-center w-full "
             onClick={toggleDisplayedFlag}
           >
-            <NavigationHeaderIcon icon={StorageIcon} size={24} />
+            <NavigationHeaderIcon icon={StorageIcon} size={22} />
             <span className="font-size-14 mr-auto font-medium">Хранилище</span>
             <Icon
               icon={angleIcon}

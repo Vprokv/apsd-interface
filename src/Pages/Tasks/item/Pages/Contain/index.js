@@ -271,8 +271,8 @@ const Contain = () => {
               addDepartmentState={addDepartmentState}
               onAddDepartment={addDepartment}
             />
-            <CreateVolume className="mr-2 " addVolumeState={addVolumeState} />
-            <SecondaryBlueButton className="mr-2 " disabled>
+            <CreateVolume className="mr-2 font-size-12" addVolumeState={addVolumeState} />
+            <SecondaryBlueButton className="mr-2 font-size-12" disabled>
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">

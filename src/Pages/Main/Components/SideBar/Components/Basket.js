@@ -27,7 +27,7 @@ const Basket = ({ onOpenNewTab }) => {
             className="flex items-center w-full "
             onClick={toggleDisplayedFlag}
           >
-            <NavigationHeaderIcon icon={SidebarBasketIcon} size={24} />
+            <NavigationHeaderIcon icon={SidebarBasketIcon} size={22} />
             <span className="font-size-14 mr-auto font-medium">Корзина</span>
             <Icon
               icon={angleIcon}

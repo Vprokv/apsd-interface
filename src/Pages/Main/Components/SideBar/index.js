@@ -30,7 +30,7 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
         className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 "
         onClick={openCreateDocumentWindow}
       >
-        <Icon className="mr-2 ml-auto" icon={plusIcon} size={14} />
+        <Icon className="mr-2 ml-auto" icon={plusIcon} size={10} />
         <span className="mr-auto">Создать</span>
       </Button>
       <ScrollBar className="flex-container">
@@ -39,14 +39,14 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
           onChangeActiveTab={onChangeActiveTab}
         />
         <div className="px-2 flex items-center w-full mb-6">
-          <NavigationHeaderIcon className="mr-2" icon={ViewedIcon} size={22} />
+          <NavigationHeaderIcon className="mr-2" icon={ViewedIcon} size={20} />
           <div className="font-size-14 mr-auto font-medium">Просмотренные</div>
         </div>
         <div className="px-2 flex items-center w-full mb-6">
           <NavigationHeaderIcon
             className="mr-2"
             icon={CreatedByMeIcon}
-            size={22}
+            size={20}
           />
           <div className="font-size-14 mr-auto font-medium">Созданные мной</div>
         </div>

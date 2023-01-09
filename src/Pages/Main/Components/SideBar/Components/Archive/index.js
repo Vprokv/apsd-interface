@@ -17,7 +17,7 @@ const Archive = ({ onOpenNewTab }) => {
             className="mx-2 flex items-center"
             onClick={toggleDisplayedFlag}
           >
-            <NavigationHeaderIcon icon={ArchiveIcon} size={24} />
+            <NavigationHeaderIcon icon={ArchiveIcon} size={22} />
             <span className="font-size-14 mr-auto font-medium">Архив</span>
             <Icon
               icon={angleIcon}
