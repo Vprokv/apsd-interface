@@ -5,9 +5,10 @@ import DeleteIcon from '@/Icons/deleteIcon'
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
+import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 export const MiniModalWindow = styled(ModalWindow)`
-  width: 28.22%;
+  max-width: 18.22%;
   height: 26.56%;
   margin: auto;
 `
@@ -45,23 +46,13 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
         title="Внимение"
       >
         <>
-          <div className="mt-8">
-            Вы уверены, что хотите удалить раздел/уровень разделов
-          </div>
-          <div className="flex items-center justify-end mt-8">
-            <Button
-              className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-              onClick={changeModalState(false)}
-            >
-              Отменить
-            </Button>
-            <LoadableBaseButton
-              className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-              onClick={handleConfirm}
-            >
-              Да
-            </LoadableBaseButton>
-          </div>
+          <div className="">Вы уверены, что хотите выполнить удаление ?</div>
+          <UnderButtons
+            rightFunc={handleConfirm}
+            rightLabel={'Да'}
+            leftFunc={changeModalState(false)}
+            leftLabel={'Отменить'}
+          />
         </>
       </MiniModalWindow>
     </>

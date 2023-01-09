@@ -12,7 +12,12 @@ import PdfBadgeIcon from '@/Icons/PdfBadgeIcon'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import { LoadContainChildrenContext } from '../../constants'
 import ContextMenu from '@/components_ocean/Components/ContextMenu'
-import { StyledContextMenu, StyledItem } from './style'
+import {
+  ContHover,
+  StyledContextMenu,
+  StyledItem,
+  ThreeDotButton,
+} from './style'
 import Button from '@/Components/Button'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { ApiContext } from '@/contants'
@@ -29,7 +34,7 @@ const Leaf = ({
   children,
   className,
   onInput,
-  ParentValue: { tomId, type, id },
+  ParentValue: { tomId, type, dsid_tom },
 }) => {
   const {
     valueKey,
@@ -137,15 +142,18 @@ const Leaf = ({
       />
       <CustomIconComponent {...ParentValue} />
       <>
-        {children}
-        <Button loading={loading} disabled={loading}>
-          <Icon
-            icon={ThreeDotIcon}
-            size={14}
-            className="ml-1 color-blue-1 cursor-pointer"
-            onClick={openContextMenu}
-          />
-        </Button>
+        <div className="font-size-14">{children}</div>
+        <ContHover>
+          <ThreeDotButton loading={loading} disabled={loading}>
+            <Icon
+              icon={ThreeDotIcon}
+              size={14}
+              className="ml-1 color-blue-1 cursor-pointer "
+              onClick={openContextMenu}
+            />
+          </ThreeDotButton>
+        </ContHover>
+
         {open && (
           <ContextMenu width={240} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full pr-4 pl-4 pt-4 pb-4">
@@ -156,15 +164,20 @@ const Leaf = ({
                 Утвердить состав титула
               </StyledItem>
               <StyledItem className="mb-3">Экспорт данных</StyledItem>
-              {(tomId || type) && (
-                <StyledItem className="mb-3" onClick={edit}>
-                  Редактировать
-                </StyledItem>
+              {!dsid_tom && (
+                <>
+                  <StyledItem
+                    className="mb-3 font-size-14"
+                    onClick={addSubsection}
+                  >
+                    Добавить подраздел
+                  </StyledItem>
+                  <StyledItem onClick={addTome}>Добавить том</StyledItem>
+                  <StyledItem className="mb-3" onClick={edit}>
+                    Редактировать
+                  </StyledItem>
+                </>
               )}
-              <StyledItem className="mb-3" onClick={addSubsection}>
-                Добавить подраздел
-              </StyledItem>
-              <StyledItem onClick={addTome}>Добавить том</StyledItem>
             </StyledContextMenu>
           </ContextMenu>
         )}
@@ -182,11 +195,13 @@ Leaf.propTypes = {
   ]),
   className: PropTypes.string,
   onInput: PropTypes.func.isRequired,
+  dsid_tom: PropTypes.bool,
 }
 
 Leaf.defaultProps = {
   className: '',
   ParentValue: {},
+  dsid_tom: false,
 }
 
 export default Leaf

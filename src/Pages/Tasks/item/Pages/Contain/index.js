@@ -51,32 +51,39 @@ const columns = [
   {
     id: 'name',
     label: 'Наименование',
-    sizes: 300,
+    className: 'flex font-size-14',
+    sizes: 500,
   },
   {
     id: 'linkName',
     label: 'Связь',
+    className: 'flex font-size-14',
   },
   {
     id: 'author',
     label: 'Автор',
+    className: 'flex font-size-14',
   },
   {
     id: 'regNumber',
     label: 'Шифр',
+    className: 'flex font-size-14',
   },
   {
     id: 'status',
     label: 'Состояние раздела/тома',
+    className: 'flex font-size-14',
     sizes: 190,
   },
   {
-    id: 'Результат',
+    id: 'result',
     label: 'Результат',
+    className: 'flex font-size-14',
   },
   {
-    id: 'Стадия',
+    id: 'stage',
     label: 'Стадия',
+    className: 'flex font-size-14',
   },
   {
     id: 'Даты разраб.(план/факт)',
@@ -93,11 +100,13 @@ const columns = [
   {
     id: 'Просрочка разработки',
     label: 'Просрочка разработки',
+    className: 'flex font-size-14',
     sizes: 180,
   },
   {
     id: 'Просрочка согласования',
     label: 'Просрочка согласования',
+    className: 'flex font-size-14',
     sizes: 180,
   },
 ]
