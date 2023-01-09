@@ -8,8 +8,9 @@ import ModalWindow from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 export const MiniModalWindow = styled(ModalWindow)`
-  max-width: 18.22%;
-  height: 26.56%;
+  font-size: 14px;
+  max-width: 38.22%;
+  //height: 26.56%;
   margin: auto;
 `
 
@@ -41,17 +42,22 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
         <Icon icon={DeleteIcon} />
       </ButtonForIcon>
       <MiniModalWindow
+        сlassName="font-size-14"
         open={open}
         onClose={changeModalState(false)}
-        title="Внимение"
+        title="Предупреждение"
       >
         <>
-          <div className="">Вы уверены, что хотите выполнить удаление ?</div>
+          <div className="flex flex-col overflow-hidden h-full">
+            Вы уверены, что хотите удалить выбранную запись ?
+          </div>
           <UnderButtons
             rightFunc={handleConfirm}
             rightLabel={'Да'}
             leftFunc={changeModalState(false)}
             leftLabel={'Отменить'}
+            rightStyle={''}
+            leftStyle={'mr-4'}
           />
         </>
       </MiniModalWindow>
