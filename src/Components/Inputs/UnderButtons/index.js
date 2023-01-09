@@ -7,13 +7,20 @@ import Button, {
   SecondaryOverBlueButton,
 } from '@/Components/Button'
 
-const UnderButtons = ({ leftFunc, leftLabel, rightFunc, rightLabel }) => {
+const UnderButtons = ({
+  leftFunc,
+  leftLabel,
+  rightFunc,
+  rightLabel,
+  leftStyle,
+  rightStyle,
+}) => {
   return (
     <div className="flex items-center justify-end mt-8">
-      <SecondaryGreyButton className="w-60 mr-4" onClick={leftFunc}>
+      <SecondaryGreyButton className={leftStyle} onClick={leftFunc}>
         {leftLabel}
       </SecondaryGreyButton>
-      <SecondaryOverBlueButton className="w-60" onClick={rightFunc}>
+      <SecondaryOverBlueButton className={rightStyle} onClick={rightFunc}>
         {rightLabel}
       </SecondaryOverBlueButton>
     </div>
@@ -22,6 +29,8 @@ const UnderButtons = ({ leftFunc, leftLabel, rightFunc, rightLabel }) => {
 
 UnderButtons.defaultProps = {
   leftFunc: () => null,
+  leftStyle: 'w-60 mr-4',
+  rightStyle: 'w-60',
   leftLabel: 'Закрыть',
   rightFunc: () => null,
   rightLabel: 'Сохранить',
