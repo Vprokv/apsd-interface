@@ -14,19 +14,13 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
 `
 
 export const ThreeDotButton = styled.button`
-  margin-left: 25%;
-  opacity: 1;
-  //
-  //&:hover {
-  //  opacity: 1;
-  //}
+  left: 12%;
 `
 
 export const ContHover = styled.div`
-  position: absolute;
-  z-index: 0;
+  //position: absolute;
+  z-index: 4;
   display: flex;
-  width: 100%;
   height: 100%;
   opacity: 0;
   //border: 2px solid red;
