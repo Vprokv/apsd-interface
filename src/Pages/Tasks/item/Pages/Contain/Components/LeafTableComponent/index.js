@@ -30,7 +30,7 @@ const Leaf = ({
   children,
   className,
   onInput,
-  ParentValue: { tomId, type, dsid_tom , expand},
+  ParentValue: { tomId, type, dsid_tom, expand, send },
 }) => {
   const {
     valueKey,
@@ -131,11 +131,13 @@ const Leaf = ({
           onClick={onOpenNestedTable}
         />
       )}
-      <Icon
-        icon={sortIcons}
-        size={12}
-        className="mr-1 color-blue-1 cursor-pointer"
-      />
+      {send && (
+        <Icon
+          icon={sortIcons}
+          size={12}
+          className="mr-1 color-blue-1 cursor-pointer"
+        />
+      )}
       <CustomIconComponent {...ParentValue} />
       <>
         <div className="font-size-12">{children}</div>
