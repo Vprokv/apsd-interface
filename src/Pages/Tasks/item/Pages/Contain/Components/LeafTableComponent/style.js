@@ -14,7 +14,7 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
 `
 
 export const ThreeDotButton = styled.button`
-  left: 12%;
+  //left: 12%;
 `
 
 export const ContHover = styled.div`
@@ -26,5 +26,14 @@ export const ContHover = styled.div`
   //border: 2px solid red;
   &:hover {
     opacity: 1;
+  }
+`
+
+export const LeafContainer = styled.div`
+  padding-left: ${({ subRow }) => subRow * 15}px;
+  &:hover {
+    ${ContHover} {
+      opacity: 1;
+    }
   }
 `

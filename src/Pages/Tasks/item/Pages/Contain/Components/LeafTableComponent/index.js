@@ -5,7 +5,6 @@ import {
   TreeStateContext,
   TreeStateLevelContext,
 } from '@/components_ocean/Components/Tables/Plugins/constants'
-import styled from 'styled-components'
 import angleIcon from '@/Icons/angleIcon'
 import sortIcons from '@/Icons/sortIcons'
 import PdfBadgeIcon from '@/Icons/PdfBadgeIcon'
@@ -14,6 +13,7 @@ import { LoadContainChildrenContext } from '../../constants'
 import ContextMenu from '@/components_ocean/Components/ContextMenu'
 import {
   ContHover,
+  LeafContainer,
   StyledContextMenu,
   StyledItem,
   ThreeDotButton,
@@ -24,10 +24,6 @@ import { ApiContext } from '@/contants'
 import { URL_ORGSTURCTURE_SEND } from '@/ApiList'
 import log from 'tailwindcss/lib/util/log'
 import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
-
-const LeafContainer = styled.div`
-  padding-left: ${({ subRow }) => subRow * 15}px;
-`
 
 const Leaf = ({
   ParentValue,
