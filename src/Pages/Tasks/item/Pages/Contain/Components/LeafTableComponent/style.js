@@ -19,7 +19,7 @@ export const ThreeDotButton = styled.button`
 
 export const ContHover = styled.div`
   //position: absolute;
-  z-index: 4;
+  //z-index: 4;
   display: flex;
   height: 100%;
   opacity: 0;
