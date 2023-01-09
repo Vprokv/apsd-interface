@@ -170,7 +170,7 @@ function TaskList() {
     defaultLimit: 10,
   })
 
-  const [filter, setFilter] = useState({})
+  const [filter, setFilter] = useState({ readTask: true })
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
