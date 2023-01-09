@@ -30,7 +30,7 @@ const Leaf = ({
   children,
   className,
   onInput,
-  ParentValue: { tomId, type, dsid_tom },
+  ParentValue: { tomId, type, dsid_tom , expand},
 }) => {
   const {
     valueKey,
@@ -121,7 +121,7 @@ const Leaf = ({
 
   return (
     <LeafContainer subRow={subRow} className={`${className} flex items-center`}>
-      {ParentValue.send && (
+      {expand && (
         <Icon
           icon={angleIcon}
           size={10}
