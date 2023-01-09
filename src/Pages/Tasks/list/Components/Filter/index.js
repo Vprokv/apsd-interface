@@ -70,7 +70,7 @@ function Filter({ value, onInput }) {
           const {
             data: { stageNames },
           } = await api.post(URL_TASK_LIST_FILTERS, {
-            filter: { ...value, readTask: value.unread },
+            filter: { ...value },
           })
 
           return stageNames.map((val) => {
@@ -89,7 +89,7 @@ function Filter({ value, onInput }) {
           const {
             data: { documentStatus },
           } = await api.post(URL_TASK_LIST_FILTERS, {
-            filter: { ...value, readTask: value.unread },
+            filter: { ...value },
           })
 
           return documentStatus.map((val) => {
