@@ -15,15 +15,15 @@ export const LoginContainer = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-  --form--elements_height: 56px;
+  --form--elements_height: 46px;
 `
 
 export const LoginFormContainer = styled.div`
-  max-width: 660px;
+  max-width: 540px;
   width: 100%;
   height: 100%;
   flex: 0 0 auto;
-  padding: 150px 100px 50px;
+  padding: 150px 80px 50px;
 `
 
 export const Background = styled.div`

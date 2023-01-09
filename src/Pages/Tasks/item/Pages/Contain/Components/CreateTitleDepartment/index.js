@@ -92,7 +92,7 @@ const CreateTitleDepartment = ({
                 <NestedButton
                   level={level}
                   type="button"
-                  className={`flex items-center w-full h-10 border-b-2 ${
+                  className={`flex items-center w-full h-10 border-b ${
                     selected === id ? 'bg-light-gray' : ''
                   }`}
                   onClick={() => setSelected(id)}
@@ -119,7 +119,7 @@ const CreateTitleDepartment = ({
           <NestedButton
             level={level}
             type="button"
-            className={`flex items-center w-full h-10 border-b-2 ${
+            className={`flex items-center w-full h-10 border-b ${
               selected === id ? 'bg-light-gray' : ''
             }`}
             onClick={() => setSelected(id)}

@@ -6,12 +6,12 @@ html {
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 body {
     height: 100%;
-    line-height: 16px;
+    line-height: 14px;
     letter-spacing: 0.2px;
     color: var(--base);
     font-family: 'Rubik';
@@ -25,7 +25,7 @@ body {
 
 :root {
     --input-placeholder-color: var(--text-secondary);
-    --form--elements_height: 40px;
+    --form--elements_height: 34px;
     --form-elements-border-radius: 8px;
     --form-elements-border-color: #E6EBF4;
     --form-input-background-color: #F7F8FC;
@@ -53,4 +53,8 @@ body {
     --white: #ffffff;
 
 
+}
+
+.font-size-12 {
+    font-size: 12px !important;
 }

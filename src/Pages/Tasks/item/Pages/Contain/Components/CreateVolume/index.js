@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
-import Button  from '@/Components/Button'
+import Button from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { URL_DOCUMENT_APSD_CREATION_OPTIONS } from '@/ApiList'
@@ -144,7 +144,7 @@ const CreateVolume = ({ addVolumeState }) => {
       <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
       <div className="flex items-center justify-end">
         <Button
-          className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
+          className="font-size-12 bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
           onClick={handleCancel}
         >
           Отменить

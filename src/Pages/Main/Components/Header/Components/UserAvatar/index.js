@@ -9,7 +9,7 @@ const UserAvatar = () => {
   return dsid_avatar ? (
     <img className="w-10 h-10 rounded-full" src={dsid_avatar} />
   ) : (
-    <div className="color-blue-1 font-medium font-size-18">
+    <div className="color-blue-1 font-medium font-size-16">
       {dss_first_name[0]} {dss_last_name[0]}
     </div>
   )

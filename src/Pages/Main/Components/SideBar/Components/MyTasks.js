@@ -50,7 +50,7 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
             className="flex items-center w-full"
             onClick={toggleDisplayedFlag}
           >
-            <NavigationHeaderIcon icon={NavigationDocumentIcon} size={24} />
+            <NavigationHeaderIcon icon={NavigationDocumentIcon} size={22} />
             <span className="font-size-14 mr-auto font-medium">
               Мои задания
             </span>
