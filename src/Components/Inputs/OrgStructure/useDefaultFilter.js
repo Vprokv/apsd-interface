@@ -1,6 +1,7 @@
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useMemo } from 'react'
+import log from 'tailwindcss/lib/util/log'
 
 const res = {
   r_object_id: '00xxxxxx000004u9',
@@ -47,32 +48,69 @@ const res = {
   isConsistentHelper: false,
 }
 
-const useDefaultFilter = ({ source, docId }) => {
+const ORGANIZATION_FIELD = 'organization'
+const BRANCH_FIELD = 'branchId'
+// const DEPARTMENT_FIELD = 'organization'
+
+const filterFieldsMap = [ORGANIZATION_FIELD, BRANCH_FIELD]
+
+const filterPrepMap = {
+  [ORGANIZATION_FIELD]: ({ value, defaultParam, key, acc }) => {
+    acc[key] = value ?? defaultParam
+    return acc
+  },
+  [BRANCH_FIELD]: ({ value, acc, defaultParams, key, defaultParam }) => {
+    if (acc.organization !== defaultParams.organization) {
+      if (value) {
+        acc[key] = value
+      }
+      return acc
+    } else {
+      acc[key] = defaultParam
+    }
+
+    return acc
+  },
+}
+
+const useCustomFilterFunc = {
+  [ORGANIZATION_FIELD]: false,
+  [BRANCH_FIELD]: true,
+}
+
+const useDefaultFilter = ({ baseFilter = {} }) => {
   const {
     organization: [{ r_object_id: organization = '', branches }] = [{}],
   } = useRecoilValue(userAtom)
 
-  return useMemo(() => {
-    const obj = {}
-
-    if (organization) {
-      obj['organization'] = organization
+  const defaultParams = useMemo(() => {
+    return {
+      organization,
+      branchId: branches[0]?.r_object_id,
     }
+  }, [branches, organization])
 
-    if (branches[0]?.r_object_id) {
-      obj['branchId'] = branches[0]?.r_object_id
-    }
+  return useMemo(
+    () =>
+      filterFieldsMap.reduce((acc, key) => {
+        const { [key]: value } = baseFilter
 
-    if (docId) {
-      obj['docId'] = docId
-    }
-
-    if (source) {
-      obj['source'] = source
-    }
-
-    return obj
-  }, [organization, branches, docId, source])
+        return value || useCustomFilterFunc[key]
+          ? filterPrepMap[key]({
+              baseFilter,
+              value,
+              acc,
+              defaultParams,
+              key,
+              defaultParam: defaultParams[key],
+            })
+          : (() => {
+              acc[key] = defaultParams[key]
+              return acc
+            })()
+      }, {}),
+    [baseFilter, defaultParams],
+  )
 }
 
 export default useDefaultFilter

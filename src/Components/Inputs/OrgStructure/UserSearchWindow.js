@@ -371,32 +371,17 @@ OrgStructureWindow.defaultProps = {
 const OrgStructureWindowWrapper = ({
   onClose,
   open,
-  type,
-  docId,
+  // type, //TODO параметры упоминались в старых задачах,но не были описаны в новых, пока отключен
+  // docId,
   filter: baseFilter,
   ...props
 }) => {
   const api = useContext(ApiContext)
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const [modalWindowOptions, setModalWindowOptions] = useState([])
-  const defaultFilter = useDefaultFilter({ type, docId })
+  const defaultFilter = useDefaultFilter({ baseFilter })
   const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
-
-  // const memoBaseFilter = useMemo(
-  //   () =>
-  //     Object.keys(baseFilter).reduce((acc, val) => {
-  //       if (baseFilter[val]) {
-  //         acc[val] = baseFilter[val]
-  //       }
-  //       return acc
-  //     }, {}),
-  //   [baseFilter],
-  // )
-
-  useEffect(() => {
-    setFilter({ ...defaultFilter, ...baseFilter })
-  }, [defaultFilter, baseFilter])
 
   const pagination = usePagination({
     stateId: WINDOW_ADD_EMPLOYEE,
