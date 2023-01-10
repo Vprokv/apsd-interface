@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
@@ -21,7 +21,7 @@ import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
 import { EmptyInputWrapper } from '@Components/Components/Forms/index'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
@@ -30,6 +30,8 @@ import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteCon
 import DateCell from './Components/DateCell'
 import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -113,6 +115,8 @@ const columns = [
 
 const Contain = () => {
   const api = useContext(ApiContext)
+  const { openNewTab } = useContext(TabStateManipulation)
+  const navigate = useNavigate()
   const { id } = useParams()
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
@@ -254,6 +258,13 @@ const Contain = () => {
     [selectState],
   )
 
+  const handleDoubleClick = useCallback(
+    ({ id, type, dsid_tom }) =>
+      () =>
+        dsid_tom && openNewTab(navigate(`/document/${id}/${type}`)),
+    [navigate, openNewTab],
+  )
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -271,7 +282,10 @@ const Contain = () => {
               addDepartmentState={addDepartmentState}
               onAddDepartment={addDepartment}
             />
-            <CreateVolume className="mr-2 font-size-12" addVolumeState={addVolumeState} />
+            <CreateVolume
+              className="mr-2 font-size-12"
+              addVolumeState={addVolumeState}
+            />
             <SecondaryBlueButton className="mr-2 font-size-12" disabled>
               Связь
             </SecondaryBlueButton>
@@ -300,6 +314,11 @@ const Contain = () => {
           </div>
         </div>
         <ListTable
+          rowComponent={useMemo(
+            () => (props) =>
+              <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
+            [handleDoubleClick],
+          )}
           plugins={plugins}
           headerCellComponent={HeaderCell}
           columns={columns}
