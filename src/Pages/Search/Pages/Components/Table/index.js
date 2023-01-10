@@ -87,8 +87,6 @@ const Table = () => {
   const { openNewTab } = useContext(TabStateManipulation)
   const { multiple, setSelected, selected } = useContext(MultipleContext)
 
-  console.log(searchValues, 'searchValues')
-
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
