@@ -140,7 +140,9 @@ const Leaf = ({
       )}
       <CustomIconComponent {...ParentValue} />
       <>
-        <div className="font-size-12">{children}</div>
+        <Button onClick={() => expand && onOpenNestedTable()}>
+          <div className="font-size-12 font-normal">{children}</div>
+        </Button>
         <ContHover>
           <ThreeDotButton loading={loading} disabled={loading}>
             <Icon

@@ -93,6 +93,7 @@ const OrgStructureWindow = (props) => {
     returnOption,
     id,
     sendValue,
+    filterOptions,
   } = props
 
   const { setLimit, setPage, paginationState } = pagination
@@ -158,7 +159,7 @@ const OrgStructureWindow = (props) => {
         id: 'organization',
         component: LoadableSelect,
         valueKey: 'r_object_id',
-        options: [organizationOptions],
+        options: filterOptions['organization'],
         labelKey: 'dss_name',
         placeholder: 'Организация',
         loadFunction: async (query) => {

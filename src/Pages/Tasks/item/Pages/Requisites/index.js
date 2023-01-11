@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import ScrollBar from '@Components/Components/ScrollBar'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { RequisitesForm } from './styles'
@@ -13,7 +13,7 @@ import {
   visibleRules,
 } from './rules'
 import NoFieldType from '@/Components/NoFieldType'
-import { CustomValuesContext } from './constants'
+import { CacheContext, CustomValuesContext } from './constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const Requisites = () => {
@@ -24,7 +24,7 @@ const Requisites = () => {
     stateId: TASK_ITEM_REQUISITES,
   })
   const {
-    tabState: { data },
+    tabState: { data, cache },
   } = tabItemState
   const {
     tabState: {
@@ -41,6 +41,12 @@ const Requisites = () => {
   } = useTabItem({
     stateId: documentType,
   })
+
+  // useEffect(() => {
+  //   if (!cache) {
+  //     setDocumentState({ cache: new Map() })
+  //   }
+  // }, [cache, setDocumentState])
 
   const onFormInput = useCallback(
     (formData) =>
@@ -211,6 +217,7 @@ const Requisites = () => {
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
+        {/*<CacheContext.Provider value={cache}>*/}
         <RequisitesForm
           touched={touched}
           changed={changed}
@@ -226,6 +233,7 @@ const Requisites = () => {
           rules={rules}
           interceptors={interceptors}
         />
+        {/*</CacheContext.Provider>*/}
       </CustomValuesContext.Provider>
     </ScrollBar>
   )

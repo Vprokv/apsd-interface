@@ -276,7 +276,7 @@ const DocumentSearch = ({
             <LoadableSecondaryOverBlueButton
               className="mb-5 w-64"
               onClick={onSearch}
-              disabled={isSearchDisabled}
+              // disabled={isSearchDisabled}
             >
               Искать
             </LoadableSecondaryOverBlueButton>

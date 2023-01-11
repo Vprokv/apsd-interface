@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
+import { GridContainer } from '@/Components/ListTableComponents/EmitValueRowComponent/styles'
 
 const RowComponent = ({ className, children, style, onDoubleClick, value }) => {
   return (
-    <ContHover
+    <GridContainer
       onDoubleClick={onDoubleClick(value)}
       className={className}
       style={style}
     >
       {children}
-    </ContHover>
+    </GridContainer>
   )
 }
 
