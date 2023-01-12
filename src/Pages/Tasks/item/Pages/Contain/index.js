@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
+  URL_DOCUMENT_CREATE,
   URL_ENTITY_LIST,
   URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_DELETE,
@@ -32,6 +33,19 @@ import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
 import { TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Успешное удаление',
+  },
+}
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -124,6 +138,7 @@ const Contain = () => {
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
@@ -145,28 +160,34 @@ const Contain = () => {
   )
 
   const deleteData = useCallback(async () => {
-    await Promise.all(
-      selectState.map(({ id }) =>
-        api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
-      ),
-    )
-    const removeDeletedDocs = (acc, { id, children, ...rest }) => {
-      if (selectState.every((r) => r.id !== id)) {
-        acc.push({
-          id,
-          ...rest,
-          children: children
-            ? children.reduce(removeDeletedDocs, [])
-            : undefined,
-        })
-      }
+    try {
+      const response = await Promise.all(
+        selectState.map(({ id }) =>
+          api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
+        ),
+      )
+      const removeDeletedDocs = (acc, { id, children, ...rest }) => {
+        if (selectState.every((r) => r.id !== id)) {
+          acc.push({
+            id,
+            ...rest,
+            children: children
+              ? children.reduce(removeDeletedDocs, [])
+              : undefined,
+          })
+        }
 
-      return acc
+        return acc
+      }
+      setTabState({
+        data: data.reduce(removeDeletedDocs, []),
+      })
+      setSelectState([])
+      getNotification(customMessagesMap[response[0].status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
     }
-    setTabState({
-      data: data.reduce(removeDeletedDocs, []),
-    })
-    setSelectState([])
   }, [api, data, selectState, setTabState])
 
   const addDepartment = useCallback(async () => {
@@ -259,10 +280,10 @@ const Contain = () => {
   )
 
   const handleDoubleClick = useCallback(
-    ({ id, type, dsid_tom }) =>
+    ({ tomId, type }) =>
       () =>
-        dsid_tom && openNewTab(navigate(`/document/${id}/${type}`)),
-    [navigate, openNewTab],
+        tomId && openNewTab(`/document/${tomId}/${type}`),
+    [openNewTab],
   )
 
   return (

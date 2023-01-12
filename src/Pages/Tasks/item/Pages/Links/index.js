@@ -4,11 +4,11 @@ import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
+  URL_DOWNLOAD_FILE,
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
   URL_PREVIEW_DOCUMENT,
-  URL_DOWNLOAD_FILE,
   URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -18,8 +18,8 @@ import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import {
   ButtonForIcon,
-  SecondaryGreyButton,
   SecondaryBlueButton,
+  SecondaryGreyButton,
 } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
@@ -42,6 +42,19 @@ import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Удалена связь',
+  },
+}
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -124,7 +137,7 @@ const Links = () => {
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
-  console.log(selectState)
+  const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
   const tabItemState = useTabItem({
@@ -247,7 +260,13 @@ const Links = () => {
   )
 
   const onDelete = useCallback(async () => {
-    await api.post(URL_LINK_DELETE, { linkIds: selectState })
+    try {
+      const response = await api.post(URL_LINK_DELETE, { linkIds: selectState })
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, selectState])
 
   const previewDocument = useCallback(async () => {
@@ -303,11 +322,11 @@ const Links = () => {
             </ButtonForIcon>
           </div>
         </div>
-        {/*<div className="flex items-center py-4 form-element-sizes-32">*/}
+        {/* <div className="flex items-center py-4 form-element-sizes-32">*/}
         {/*  <SecondaryBlueButton onClick={previewDocument}>*/}
         {/*    Предпросмотр*/}
         {/*  </SecondaryBlueButton>*/}
-        {/*</div>*/}
+        {/* </div>*/}
         <ListTable
           rowComponent={useMemo(
             () => (props) =>

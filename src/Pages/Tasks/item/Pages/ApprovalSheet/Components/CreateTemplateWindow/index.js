@@ -9,6 +9,19 @@ import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import PropTypes from 'prop-types'
 import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлен шаблон',
+  },
+}
 
 const fieldMap = [
   {
@@ -38,6 +51,7 @@ const CreateTemplateWindow = ({jsonData}) => {
   const [values, setValues] = useState({})
   const documentType = useContext(DocumentTypeContext)
   const api = useContext(ApiContext)
+  const getNotification = useOpenNotification()
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
@@ -45,15 +59,21 @@ const CreateTemplateWindow = ({jsonData}) => {
     [],
   )
   const createTemplate = useCallback(async () => {
-    await api.post(URL_CREATE_TEMPLATE, {
-      type: 'ddt_approve_template',
-      template: {
-        json: jsonData,
-        documentType,
-        ...values,
-      },
-    })
-    changeModalState(true)()
+    try {
+      const response = await api.post(URL_CREATE_TEMPLATE, {
+        type: 'ddt_approve_template',
+        template: {
+          json: jsonData,
+          documentType,
+          ...values,
+        },
+      })
+      changeModalState(true)()
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api])
   return (
     <>

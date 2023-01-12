@@ -35,6 +35,25 @@ import { SidebarContainer } from './styles'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Документ изменен',
+  },
+  201: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Запрос отправлен',
+  },
+}
 
 const Document = () => {
   const { id, type } = useParams()
@@ -47,6 +66,7 @@ const Document = () => {
     })
     return data
   }, [api, id, type])
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: ITEM_DOCUMENT,
@@ -69,17 +89,24 @@ const Document = () => {
   }, [values])
 
   useAutoReload(loadData, tabItemState)
-
+  // todo добавить getNotification для всех
   const documentHandlers = useMemo(
     () => ({
       ...defaultDocumentHandlers,
       save: {
-        handler: () =>
-          api.post(URL_DOCUMENT_UPDATE, {
-            values: refValues.current,
-            type,
-            id,
-          }),
+        handler: async () => {
+          try {
+            const response = await api.post(URL_DOCUMENT_UPDATE, {
+              values: refValues.current,
+              type,
+              id,
+            })
+            getNotification(customMessagesMap[response.status])
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
+        },
         icon: SaveIcon,
       },
       send_to_eehd: {
@@ -108,12 +135,21 @@ const Document = () => {
         icon: DefaultIcon,
       },
       defaultHandler: ({ name }) => ({
-        handler: () =>
-          api.post(URL_TASK_PROMOTE, {
-            id,
-            type,
-            signal: name,
-          }),
+        handler: async () => {
+          try {
+            const response = await api.post(URL_TASK_PROMOTE, {
+              id,
+              type,
+              signal: name,
+            })
+            getNotification(
+              customMessagesMap[response?.status === 200 ? 201 : ''],
+            )
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
+        },
         icon: DefaultIcon,
       }),
     }),

@@ -6,6 +6,19 @@ import {
   PRESENT_DATE_FORMAT,
 } from '@/contants'
 import { URL_SUBSCRIPTION_CREATE } from '@/ApiList'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлена подписка',
+  },
+}
 
 export const useCreateSubscription = ({
   filter,
@@ -15,6 +28,7 @@ export const useCreateSubscription = ({
   documentId,
   events,
 }) => {
+  const getNotification = useOpenNotification()
   const subscribers = useMemo(() => {
     return ids.reduce((acc, val) => {
       const obj = { id: val, channels: [] }
@@ -55,8 +69,15 @@ export const useCreateSubscription = ({
       }
     }, [date, documentId, subscribers]),
     handleSaveClick: useCallback(
-      (api) => async (createData) =>
-        await api.post(URL_SUBSCRIPTION_CREATE, createData),
+      (api) => async (createData) => {
+        try {
+          const response = await api.post(URL_SUBSCRIPTION_CREATE, createData)
+          getNotification(customMessagesMap[response.status])
+        } catch (e) {
+          const { response: { status } = {} } = e
+          getNotification(customMessagesMap[status])
+        }
+      },
       [],
     ),
   }

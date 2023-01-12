@@ -18,6 +18,19 @@ import {
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Links/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлена связь',
+  },
+}
 
 const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
@@ -26,6 +39,7 @@ const Files = (props) => {
   const update = useContext(UpdateContext)
   const parentId = useContext(DocumentIdContext)
   const [files, setFiles] = useState([])
+  const getNotification = useOpenNotification()
   const onFileInput = useCallback(
     (file) => {
       setFiles([{ file }, ...files])
@@ -34,23 +48,29 @@ const Files = (props) => {
   )
 
   const save = useCallback(async () => {
-    await api.post(URL_LINK_CREATE, {
-      linkObjects: files.map(
-        ({
-          file: [{ dsc_content, dss_content_name }],
-          ...documentPayload
-        }) => ({
-          ...documentPayload,
-          parentId,
-          documentType: dss_content_name,
-          contentId: dsc_content,
-          authorEmpl: userObject.r_object_id,
-          authorName: userObject.dss_user_name,
-        }),
-      ),
-    })
-    update()
-    close()
+    try {
+      const response = await api.post(URL_LINK_CREATE, {
+        linkObjects: files.map(
+          ({
+            file: [{ dsc_content, dss_content_name }],
+            ...documentPayload
+          }) => ({
+            ...documentPayload,
+            parentId,
+            documentType: dss_content_name,
+            contentId: dsc_content,
+            authorEmpl: userObject.r_object_id,
+            authorName: userObject.dss_user_name,
+          }),
+        ),
+      })
+      update()
+      close()
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, files, parentId, userObject, close, update])
   const columns = useMemo(
     () => [
