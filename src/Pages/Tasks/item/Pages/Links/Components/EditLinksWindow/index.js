@@ -18,6 +18,19 @@ import LinkType from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/
 import Comment from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/Comment'
 import { ApiContext } from '@/contants'
 import { URL_LINK_UPDATE, URL_SUBSCRIPTION_DELETE } from '@/ApiList'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Обновлена связь',
+  },
+}
 
 const columns = [
   {
@@ -61,6 +74,7 @@ const EditLinksWindow = ({ value }) => {
   const [comment, setComment] = useState(() => new Map())
   const [link, setLink] = useState(() => new Map())
   const [date, setDate] = useState(() => new Map())
+  const getNotification = useOpenNotification()
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -79,27 +93,38 @@ const EditLinksWindow = ({ value }) => {
   })
 
   const onSave = useCallback(async () => {
-    await Promise.all([
-      value.map(
-        ({
-          comment: defaultComment,
-          linkType,
-          linkDate,
-          contentId,
-          ...item
-        }) => {
-          return api.post(URL_LINK_UPDATE, {
-            ...item,
-            linkType: (link.has(contentId) && link.get(contentId)) || linkType,
-            linkDate: (date.has(contentId) && date.get(contentId)) || linkDate,
-            comment:
-              (comment.has(contentId) && comment.get(contentId)) ||
-              defaultComment,
-          })
-        },
-      ),
-    ])
-    changeModalState(false)
+    try {
+      const response = await Promise.all([
+        value.map(
+          ({
+            comment: defaultComment,
+            linkType,
+            linkDate,
+            contentId,
+            ...item
+          }) => {
+            return api.post(URL_LINK_UPDATE, {
+              ...item,
+              linkType:
+                (link.has(contentId) && link.get(contentId)) || linkType,
+              linkDate:
+                (date.has(contentId) && date.get(contentId)) || linkDate,
+              comment:
+                (comment.has(contentId) && comment.get(contentId)) ||
+                defaultComment,
+            })
+          },
+        ),
+      ])
+      response.flat().map((item) => {
+        item.then(({ status }) => getNotification(customMessagesMap[status]))
+      })
+      changeModalState(false)
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, changeModalState, comment, date, link, value])
 
   return (

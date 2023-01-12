@@ -27,12 +27,26 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_ENTITY_LIST, URL_HANDOUTS_CREATE } from '@/ApiList'
 import dayjs from 'dayjs'
 import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлена операция',
+  },
+}
 
 const CreateHandoutsWindow = ({ setChange }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
+  const getNotification = useOpenNotification()
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -148,9 +162,15 @@ const CreateHandoutsWindow = ({ setChange }) => {
   }, [filterValue, id])
 
   const onSave = useCallback(async () => {
-    await api.post(URL_HANDOUTS_CREATE, createDate)
-    setChange()
-    changeModalState(false)()
+    try {
+      const response = await api.post(URL_HANDOUTS_CREATE, createDate)
+      setChange()
+      changeModalState(false)()
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [changeModalState, createDate, api, setChange])
 
   const onClose = useCallback(() => {

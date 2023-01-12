@@ -11,11 +11,25 @@ import { ApiContext } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
 import { URL_APPROVAL_CREATE } from '@/ApiList'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлен пользователь',
+  },
+}
 
 const AddUserWindow = ({ stageId, documentId }) => {
   const [open, setOpenState] = useState(false)
   const [user, setUser] = useState([])
   const canAdd = useContext(CanAddContext)
+  const getNotification = useOpenNotification()
 
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
@@ -27,15 +41,21 @@ const AddUserWindow = ({ stageId, documentId }) => {
     [],
   )
   const onSave = useCallback(async () => {
-    await api.post(URL_APPROVAL_CREATE, {
-      stageId,
-      documentId,
-      approvers: user.map((val) => {
-        return { dsidApproverEmpl: val }
-      }),
-    })
-    await loadData()
-    changeModalState(false)()
+    try {
+      const response = await api.post(URL_APPROVAL_CREATE, {
+        stageId,
+        documentId,
+        approvers: user.map((val) => {
+          return { dsidApproverEmpl: val }
+        }),
+      })
+      await loadData()
+      getNotification(customMessagesMap[response.status])
+      changeModalState(false)()
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [changeModalState, api, loadData, user])
 
   const onClose = useCallback(() => {

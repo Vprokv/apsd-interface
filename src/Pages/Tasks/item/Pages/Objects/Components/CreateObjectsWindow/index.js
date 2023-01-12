@@ -28,6 +28,21 @@ import ObjectCard from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObject
 import closeIcon from '@/Icons/closeIcon'
 import { value } from 'lodash/seq'
 import { LoadableBaseButton } from '@/Components/Button'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлен объект',
+  },
+}
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -143,6 +158,7 @@ const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
   const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
   const [sortQuery, onSort] = useState({})
+  const getNotification = useOpenNotification()
 
   const {
     tabState: { data = [] },
@@ -155,7 +171,7 @@ const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
     async function fetchData(query) {
       const { data } = await api.post(URL_ENTITY_LIST, {
         type: 'ddt_dict_technical_object',
-        query
+        query,
       })
       setTabState({ data })
     }
@@ -166,12 +182,18 @@ const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
   const emptyWrapper = ({ children }) => children
 
   const onSave = useCallback(async () => {
-    await api.post(URL_TECHNICAL_OBJECTS_CREATE, {
-      titleId: id,
-      techObjectIds: selectState,
-    })
-    await loadDataFunction()
-    onClose()
+    try {
+      const response = await api.post(URL_TECHNICAL_OBJECTS_CREATE, {
+        titleId: id,
+        techObjectIds: selectState,
+      })
+      getNotification(customMessagesMap[response.status])
+      await loadDataFunction()
+      onClose()
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, id, selectState, onClose, loadDataFunction])
 
   const onRemoveSelectedValue = useCallback(
