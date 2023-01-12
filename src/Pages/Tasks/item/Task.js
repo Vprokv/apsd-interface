@@ -30,6 +30,7 @@ import {
   DocumentTypeContext,
 } from './constants'
 import DefaultIcon from './Icons/DefaultIcon.svg'
+import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'
@@ -148,7 +149,7 @@ const Task = () => {
           })
           setMessage(data)
         },
-        icon: DefaultIcon,
+        icon: SendASUD,
       },
       apsd_canceled: {
         handler: async () => {

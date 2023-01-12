@@ -27,6 +27,7 @@ import {
   DocumentTypeContext,
 } from './constants'
 import DefaultIcon from './Icons/DefaultIcon.svg'
+import SendASUD from './Icons/SendASUD.svg'
 import SaveIcon from './Icons/SaveIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
@@ -95,7 +96,7 @@ const Document = () => {
           })
           setMessage(data)
         },
-        icon: DefaultIcon,
+        icon: SendASUD,
       },
       apsd_canceled: {
         handler: async () => {
