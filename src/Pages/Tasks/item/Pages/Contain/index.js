@@ -280,10 +280,10 @@ const Contain = () => {
   )
 
   const handleDoubleClick = useCallback(
-    ({ id, type, dsid_tom }) =>
+    ({ tomId, type }) =>
       () =>
-        dsid_tom && openNewTab(navigate(`/document/${id}/${type}`)),
-    [navigate, openNewTab],
+        tomId && openNewTab(`/document/${tomId}/${type}`),
+    [openNewTab],
   )
 
   return (
