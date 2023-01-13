@@ -43,16 +43,31 @@ import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  412: {
+    type: NOTIFICATION_TYPE_ERROR,
+    message: 'На этом этапе требуется отправка письма',
+  },
+}
 
 const Task = () => {
   const { id, type } = useParams()
-  const documentId = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
-  const [idDocument, setIdDocument] = useState('')
+  const [documentId, setIdDocument] = useState('')
   const [showWindow, setShowWindow] = useState(false)
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
   const [message, setMessage] = useState('')
+  const getNotification = useOpenNotification()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -115,12 +130,15 @@ const Task = () => {
               signal: name,
             })
             closeCurrenTab()
-          } catch (_) {}
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
-    [api, closeCurrenTab, id],
+    [api, closeCurrenTab, getNotification, id],
   )
 
   const documentHandlers = useMemo(
@@ -196,7 +214,7 @@ const Task = () => {
 
   return (
     <DocumentTypeContext.Provider value={ITEM_TASK}>
-      <DocumentIdContext.Provider value={idDocument}>
+      <DocumentIdContext.Provider value={documentId}>
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
             <Report previousTaskReport={previousTaskReport} />
