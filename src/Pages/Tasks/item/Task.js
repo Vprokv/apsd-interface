@@ -61,9 +61,8 @@ const customMessagesMap = {
 
 const Task = () => {
   const { id, type } = useParams()
-  const documentId = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
-  const [idDocument, setIdDocument] = useState('')
+  const [documentId, setIdDocument] = useState('')
   const [showWindow, setShowWindow] = useState(false)
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
@@ -139,7 +138,7 @@ const Task = () => {
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
-    [api, closeCurrenTab, id],
+    [api, closeCurrenTab, getNotification, id],
   )
 
   const documentHandlers = useMemo(
@@ -215,7 +214,7 @@ const Task = () => {
 
   return (
     <DocumentTypeContext.Provider value={ITEM_TASK}>
-      <DocumentIdContext.Provider value={idDocument}>
+      <DocumentIdContext.Provider value={documentId}>
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
             <Report previousTaskReport={previousTaskReport} />
