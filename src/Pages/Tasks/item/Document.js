@@ -80,6 +80,7 @@ const Document = () => {
         values: { dss_work_number = 'Документ' } = {},
       } = {},
     },
+    setTabState,
   } = tabItemState
 
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
@@ -145,6 +146,7 @@ const Document = () => {
             getNotification(
               customMessagesMap[response?.status === 200 ? 201 : ''],
             )
+            setTabState({ update: true })
           } catch (e) {
             const { response: { status } = {} } = e
             getNotification(customMessagesMap[status])
