@@ -16,6 +16,7 @@ import angleIcon from '@/Icons/angleIcon'
 import NavigationDocumentIcon from '../../icons/NavigationDocumentIcon'
 import { useNavigate } from 'react-router-dom'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 
 const FirstLevelHeaderComponent = ({ children, selected }) => (
   <div className="flex items-start font-size-14 w-full">
@@ -34,6 +35,7 @@ const CreateDocumentWindow = ({ onClose }) => {
   const [documents, setDocuments] = useState([])
   const [selectedDocument, setSelectedDocument] = useState({})
   const [newDocumentData, setNewDocumentData] = useState({})
+  const { openNewTab } = useContext(TabStateManipulation)
 
   useEffect(() => {
     ;(async () => {
@@ -63,10 +65,14 @@ const CreateDocumentWindow = ({ onClose }) => {
   }, [api, selectedDocument])
 
   const toNewItem = useCallback(() => {
-    selectedDocument &&
-      navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`)
+    if (!selectedDocument.id) {
+      return
+    }
+    openNewTab(
+      navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`),
+    )
     onClose()
-  }, [navigate, onClose, selectedDocument])
+  }, [navigate, onClose, openNewTab, selectedDocument])
 
   const handleSelectDocument = useCallback(
     (obj) => () => setSelectedDocument(obj),
