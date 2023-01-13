@@ -43,6 +43,21 @@ import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  412: {
+    type: NOTIFICATION_TYPE_ERROR,
+    message: 'На этом этапе требуется отправка письма',
+  },
+}
 
 const Task = () => {
   const { id, type } = useParams()
@@ -53,6 +68,7 @@ const Task = () => {
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
   const [message, setMessage] = useState('')
+  const getNotification = useOpenNotification()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -115,7 +131,10 @@ const Task = () => {
               signal: name,
             })
             closeCurrenTab()
-          } catch (_) {}
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
