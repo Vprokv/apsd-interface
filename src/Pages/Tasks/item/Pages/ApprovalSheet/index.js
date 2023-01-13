@@ -1,7 +1,13 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
-import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_APPROVAL_SHEET, URL_TEMPLATE_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -18,8 +24,6 @@ import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin
 import {
   CanAddContext,
   LoadContext,
-  TypeContext,
-  useEffect,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
@@ -46,6 +50,16 @@ const ApprovalSheet = (props) => {
   const api = useContext(ApiContext)
   const [filterValue, setFilterValue] = useState({})
   const documentId = useContext(DocumentIdContext)
+  const documentType = useContext(DocumentTypeContext)
+
+  const {
+    tabState: { update },
+    setTabState: setDocumentTypeState,
+  } = useTabItem({
+    stateId: documentType,
+  })
+
+  console.log(update, 'update')
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -64,6 +78,12 @@ const ApprovalSheet = (props) => {
     [setTabState],
   )
 
+  useEffect(() => {
+    if (!update) {
+      setDocumentTypeState({ update: false })
+    }
+  }, [setDocumentTypeState, update])
+
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
       id: documentId,
@@ -71,6 +91,15 @@ const ApprovalSheet = (props) => {
     })
     return data
   }, [api, documentId, type, change])
+
+  useEffect(() => {
+    ;(async () => {
+      if (update) {
+        setTabState({ data: await loadData() })
+      }
+      setDocumentTypeState({ update: false })
+    })()
+  }, [loadData, setTabState, update])
 
   useAutoReload(loadData, tabItemState)
 
