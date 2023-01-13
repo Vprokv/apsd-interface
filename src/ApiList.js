@@ -103,7 +103,7 @@ export const URL_TYPE_CONFIG = '/apsd/type/config'
 export const URL_SEARCH_LIST = '/apsd/search?limit=101&offset=0'
 
 // INTEGRATION
-export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/send/letter'
+export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/tom/letter/send'
 export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
 
 export const URL_PREVIEW_VERSION = 'preview/pdf/ddt_apsd_content_version'
