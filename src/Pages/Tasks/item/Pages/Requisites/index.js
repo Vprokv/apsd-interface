@@ -19,7 +19,6 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 export const Requisites = ({ type, documentState }) => {
   const api = useContext(ApiContext)
 
-  console.log(documentState, 'documentState')
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
   })
