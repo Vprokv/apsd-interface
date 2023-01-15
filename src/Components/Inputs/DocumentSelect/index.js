@@ -25,6 +25,7 @@ import Button, { SecondaryBlueButton } from '@/Components/Button'
 import closeIcon from '@/Icons/closeIcon'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import Input from '../../Fields/Input'
+import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
 
 const changeInput = () => {}
 
@@ -159,6 +160,7 @@ const DocumentSelect = ({
       <SearchButton onClick={openModalWindow} className="ml-1">
         <Icon icon={searchIcon} />
       </SearchButton>
+      <ShowDocumentComponent className="ml-1" selectedState={selectedState} />
       <CreateLinkComponent
         open={open}
         onClose={changeModalState(false)}

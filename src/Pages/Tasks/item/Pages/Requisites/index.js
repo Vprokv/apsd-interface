@@ -13,13 +13,13 @@ import {
   visibleRules,
 } from './rules'
 import NoFieldType from '@/Components/NoFieldType'
-import { CacheContext, CustomValuesContext } from './constants'
+import { CustomValuesContext } from './constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
-const Requisites = () => {
-  const { type } = useParams()
-  const documentType = useContext(DocumentTypeContext)
+export const Requisites = ({ type, documentState }) => {
   const api = useContext(ApiContext)
+
+  console.log(documentState, 'documentState')
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
   })
@@ -38,9 +38,7 @@ const Requisites = () => {
       backendValidationErrors,
     },
     setTabState: setDocumentState,
-  } = useTabItem({
-    stateId: documentType,
-  })
+  } = documentState
 
   // useEffect(() => {
   //   if (!cache) {
@@ -239,4 +237,15 @@ const Requisites = () => {
   )
 }
 
-export default Requisites
+const RequisitesWrapper = () => {
+  const { type } = useParams()
+  const documentType = useContext(DocumentTypeContext)
+
+  const documentState = useTabItem({
+    stateId: documentType,
+  })
+
+  return <Requisites type={type} documentState={documentState} />
+}
+
+export default RequisitesWrapper

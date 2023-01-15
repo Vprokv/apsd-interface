@@ -159,7 +159,7 @@ const OrgStructureWindow = (props) => {
         id: 'organization',
         component: LoadableSelect,
         valueKey: 'r_object_id',
-        options: filterOptions['organization'],
+        options: filterOptions?.organization,
         labelKey: 'dss_name',
         placeholder: 'Организация',
         loadFunction: async (query) => {

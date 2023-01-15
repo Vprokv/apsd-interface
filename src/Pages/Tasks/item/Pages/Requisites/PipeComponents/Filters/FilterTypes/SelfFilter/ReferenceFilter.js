@@ -15,7 +15,7 @@ const ORGANIZATION_FILTER = 'organization'
 
 const cache = new Map()
 
-const WithFiltersUserSelect = (Component, filters, functions, type) => {
+const WithFiltersUserSelect = (Component, filters, functions = {}, type) => {
   const WithFiltersUserSelect = (props, ref) => {
     const api = useContext(ApiContext)
     // const cache = useContext(CacheContext)
