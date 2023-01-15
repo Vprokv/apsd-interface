@@ -59,8 +59,6 @@ const ApprovalSheet = (props) => {
     stateId: documentType,
   })
 
-  console.log(update, 'update')
-
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })

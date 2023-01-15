@@ -55,6 +55,8 @@ const customMessagesMap = {
   },
 }
 
+const titleName = 'ddt_startup_complex_type_doc'
+
 const Document = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -83,7 +85,15 @@ const Document = () => {
     setTabState,
   } = tabItemState
 
-  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
+  const documentId = useMemo(() => {
+    if (values) {
+      return type === titleName ? values.dss_code : values.dss_reg_number
+    }
+
+    return 'Документ'
+  }, [type, values])
+
+  useSetTabName(useCallback(() => documentId, [documentId]))
   const refValues = useRef()
   useEffect(() => {
     refValues.current = values
