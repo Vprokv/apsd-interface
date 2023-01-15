@@ -1,7 +1,8 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
+  URL_DOCUMENT_CREATE,
   URL_ENTITY_LIST,
   URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_DELETE,
@@ -21,7 +22,7 @@ import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
 import { EmptyInputWrapper } from '@Components/Components/Forms/index'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
@@ -30,6 +31,21 @@ import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteCon
 import DateCell from './Components/DateCell'
 import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
+import { TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Успешное удаление',
+  },
+}
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -113,6 +129,8 @@ const columns = [
 
 const Contain = () => {
   const api = useContext(ApiContext)
+  const { openNewTab } = useContext(TabStateManipulation)
+  const navigate = useNavigate()
   const { id } = useParams()
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
@@ -120,6 +138,7 @@ const Contain = () => {
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
@@ -141,28 +160,34 @@ const Contain = () => {
   )
 
   const deleteData = useCallback(async () => {
-    await Promise.all(
-      selectState.map(({ id }) =>
-        api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
-      ),
-    )
-    const removeDeletedDocs = (acc, { id, children, ...rest }) => {
-      if (selectState.every((r) => r.id !== id)) {
-        acc.push({
-          id,
-          ...rest,
-          children: children
-            ? children.reduce(removeDeletedDocs, [])
-            : undefined,
-        })
-      }
+    try {
+      const response = await Promise.all(
+        selectState.map(({ id }) =>
+          api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
+        ),
+      )
+      const removeDeletedDocs = (acc, { id, children, ...rest }) => {
+        if (selectState.every((r) => r.id !== id)) {
+          acc.push({
+            id,
+            ...rest,
+            children: children
+              ? children.reduce(removeDeletedDocs, [])
+              : undefined,
+          })
+        }
 
-      return acc
+        return acc
+      }
+      setTabState({
+        data: data.reduce(removeDeletedDocs, []),
+      })
+      setSelectState([])
+      getNotification(customMessagesMap[response[0].status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
     }
-    setTabState({
-      data: data.reduce(removeDeletedDocs, []),
-    })
-    setSelectState([])
   }, [api, data, selectState, setTabState])
 
   const addDepartment = useCallback(async () => {
@@ -254,6 +279,13 @@ const Contain = () => {
     [selectState],
   )
 
+  const handleDoubleClick = useCallback(
+    ({ tomId, type }) =>
+      () =>
+        tomId && openNewTab(`/document/${tomId}/${type}`),
+    [openNewTab],
+  )
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -271,7 +303,10 @@ const Contain = () => {
               addDepartmentState={addDepartmentState}
               onAddDepartment={addDepartment}
             />
-            <CreateVolume className="mr-2 font-size-12" addVolumeState={addVolumeState} />
+            <CreateVolume
+              className="mr-2 font-size-12"
+              addVolumeState={addVolumeState}
+            />
             <SecondaryBlueButton className="mr-2 font-size-12" disabled>
               Связь
             </SecondaryBlueButton>
@@ -300,6 +335,11 @@ const Contain = () => {
           </div>
         </div>
         <ListTable
+          rowComponent={useMemo(
+            () => (props) =>
+              <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
+            [handleDoubleClick],
+          )}
           plugins={plugins}
           headerCellComponent={HeaderCell}
           columns={columns}

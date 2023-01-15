@@ -41,6 +41,13 @@ import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubsc
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import log from 'tailwindcss/lib/util/log'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -120,6 +127,14 @@ const filterFormConfig = [
   },
 ]
 
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Документ изменен',
+  },
+}
+
 const Subscription = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
@@ -127,6 +142,7 @@ const Subscription = () => {
   const [sortQuery, onSort] = useState({})
   const [filter, setFilter] = useState({})
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
+  const getNotification = useOpenNotification()
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
     [],
@@ -207,13 +223,21 @@ const Subscription = () => {
     refLoadDataFunction.current = loadDataFunction
   }, [loadDataFunction, shouldReloadDataFlag])
 
+  // todo добавить getNotification
+  // бывает что при удалении одного элемента, с бэка приходит не один ответ
   const onDelete = useCallback(async () => {
-    await Promise.all([
-      selectState.map((subscriptionId) => {
-        return api.post(URL_SUBSCRIPTION_DELETE, { subscriptionId })
-      }),
-    ])
-    loadDataFunction()
+    try {
+      const res = await Promise.all([
+        selectState.map((subscriptionId) => {
+          return api.post(URL_SUBSCRIPTION_DELETE, { subscriptionId })
+        }),
+      ])
+      // res.then(({ status }) => getNotification(customMessagesMap[status]))
+      loadDataFunction()
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, selectState, loadDataFunction])
 
   return (

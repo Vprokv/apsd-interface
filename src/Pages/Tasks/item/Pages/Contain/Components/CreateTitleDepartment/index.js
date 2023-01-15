@@ -17,6 +17,19 @@ import angleIcon from '@/Icons/angleIcon'
 import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
 import { useParams } from 'react-router-dom'
 import { NestedButton } from '../../styles'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Успешное добавлено',
+  },
+}
 
 const CreateTitleDepartment = ({
   className,
@@ -29,6 +42,7 @@ const CreateTitleDepartment = ({
   const [openTitle, setOpenTitleState] = useState(false)
   const [entities, setEntities] = useState([])
   const [selected, setSelected] = useState(null)
+  const getNotification = useOpenNotification()
   const changeModalState = useCallback((nextState) => {
     setOpenState(nextState)
   }, [])
@@ -71,13 +85,19 @@ const CreateTitleDepartment = ({
   }, [addDepartmentState, openModalWindow])
 
   const handleClick = useCallback(async () => {
-    const { data } = await api.post(URL_TITLE_CONTAIN_CREATE, {
-      titleId: id,
-      partId: selected,
-      parentId: addDepartmentState.id,
-    })
-    setSelected(null)
-    handleClose(data)
+    try {
+      const response = await api.post(URL_TITLE_CONTAIN_CREATE, {
+        titleId: id,
+        partId: selected,
+        parentId: addDepartmentState.id,
+      })
+      setSelected(null)
+      getNotification(customMessagesMap[response.status])
+      handleClose()
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, id, selected, addDepartmentState.id, handleClose])
 
   const renderEntities = useCallback(

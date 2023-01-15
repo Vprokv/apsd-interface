@@ -37,6 +37,11 @@ import { FormWindow } from '@/Components/ModalWindow'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import EditIcon from '@/Icons/editIcon'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -102,6 +107,14 @@ const columns = [
   // }
 ]
 
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Успешное удаление',
+  },
+}
+
 const Content = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
@@ -114,6 +127,7 @@ const Content = () => {
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const EditVersionContext = useContext(EditVersion)
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -166,16 +180,23 @@ const Content = () => {
     [],
   )
 
+  // todo проверить уведомления
   const deleteVersion = useCallback(async () => {
     if (selectState && selectState.length > 0) {
-      await Promise.all([
-        selectState.map(({ id }) => {
-          return api.post(URL_DELETE_VERSION, {
-            id,
-          })
-        }),
-      ])
-      setChange()
+      try {
+        const response = await Promise.all([
+          selectState.map(({ id }) => {
+            return api.post(URL_DELETE_VERSION, {
+              id,
+            })
+          }),
+        ])
+        setChange()
+        getNotification(customMessagesMap[response[0].status])
+      } catch (e) {
+        const { response: { status } = {} } = e
+        getNotification(customMessagesMap[status])
+      }
     }
   }, [api, selectState, setChange])
 

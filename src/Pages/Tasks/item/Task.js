@@ -1,6 +1,22 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import Document from './Components/Layout'
-import { URL_TASK_COMPLETE, URL_TASK_ITEM, URL_TASK_MARK_READ } from '@/ApiList'
+import {
+  URL_BUSINESS_DOCUMENT_RECALL,
+  URL_CONTENT_SEND_EEHD,
+  URL_DOCUMENT_UPDATE,
+  URL_INTEGRATION_SEND_LETTER,
+  URL_TASK_COMPLETE,
+  URL_TASK_ITEM,
+  URL_TASK_MARK_READ,
+  URL_TASK_PROMOTE,
+} from '@/ApiList'
 import { useParams } from 'react-router-dom'
 import { ApiContext, ITEM_TASK } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -14,6 +30,7 @@ import {
   DocumentTypeContext,
 } from './constants'
 import DefaultIcon from './Icons/DefaultIcon.svg'
+import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'
@@ -23,14 +40,34 @@ import CreatingAdditionalAgreementWindow from './Components/CreatingAdditionalAg
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 import Report from '@/Pages/Tasks/item/Components/Report'
+import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
+import { FormWindow } from '@/Components/ModalWindow'
+import { SecondaryGreyButton } from '@/Components/Button'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  412: {
+    type: NOTIFICATION_TYPE_ERROR,
+    message: 'На этом этапе требуется отправка письма',
+  },
+}
 
 const Task = () => {
-  const { id } = useParams()
+  const { id, type } = useParams()
   const api = useContext(ApiContext)
-  const [idDocument, setIdDocument] = useState('')
+  const [documentId, setIdDocument] = useState('')
   const [showWindow, setShowWindow] = useState(false)
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
+  const [message, setMessage] = useState('')
+  const getNotification = useOpenNotification()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -61,6 +98,7 @@ const Task = () => {
         documentActions,
         taskActions,
         documentTabs,
+        values,
         values: { dss_work_number = 'Документ' } = {},
         approverId,
       } = {},
@@ -75,6 +113,11 @@ const Task = () => {
     setShowWindow(false)
   }, [])
 
+  const refValues = useRef()
+  useEffect(() => {
+    refValues.current = values
+  }, [values])
+
   const TaskHandlers = useMemo(
     () => ({
       defaultHandler: ({ caption, name }) => ({
@@ -87,18 +130,72 @@ const Task = () => {
               signal: name,
             })
             closeCurrenTab()
-          } catch (_) {}
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
-    [api, closeCurrenTab, id],
+    [api, closeCurrenTab, getNotification, id],
+  )
+
+  const documentHandlers = useMemo(
+    () => ({
+      ...defaultDocumentHandlers,
+      save: {
+        handler: () =>
+          api.post(URL_DOCUMENT_UPDATE, {
+            values: refValues.current,
+            type,
+            id,
+          }),
+        icon: SaveIcon,
+      },
+      send_to_eehd: {
+        handler: () =>
+          api.post(URL_CONTENT_SEND_EEHD, {
+            documentId,
+          }),
+        icon: DefaultIcon,
+      },
+      send_letter: {
+        handler: async () => {
+          const { data } = await api.post(URL_INTEGRATION_SEND_LETTER, {
+            documentId,
+          })
+          setMessage(data)
+        },
+        icon: SendASUD,
+      },
+      apsd_canceled: {
+        handler: async () => {
+          const { data } = await api.post(URL_BUSINESS_DOCUMENT_RECALL, {
+            documentId,
+          })
+          setMessage(data)
+        },
+        icon: DefaultIcon,
+      },
+      defaultHandler: ({ name }) => ({
+        handler: () =>
+          api.post(URL_TASK_PROMOTE, {
+            id,
+            type,
+            signal: name,
+          }),
+        icon: DefaultIcon,
+      }),
+    }),
+    [api, documentId, id, type],
   )
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
 
   const wrappedDocumentActions = useDocumentActions(documentActions, {
     ...defaultDocumentHandlers,
+    ...documentHandlers,
     ...{
       additional_agreement: {
         icon: UploadDoc,
@@ -113,9 +210,11 @@ const Task = () => {
     [wrappedDocumentActions, wrappedTaskActions],
   )
 
+  const closeModalWindow = useCallback(() => setMessage(''), [])
+
   return (
     <DocumentTypeContext.Provider value={ITEM_TASK}>
-      <DocumentIdContext.Provider value={idDocument}>
+      <DocumentIdContext.Provider value={documentId}>
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
             <Report previousTaskReport={previousTaskReport} />
@@ -128,6 +227,16 @@ const Task = () => {
             />
           </SidebarContainer>
         </Document>
+        <FormWindow open={message} onClose={closeModalWindow}>
+          <div className="text-center mt-4 mb-12">{message}</div>
+          <SecondaryGreyButton
+            type="button"
+            className="w-40 m-auto"
+            onClick={closeModalWindow}
+          >
+            Закрыть
+          </SecondaryGreyButton>
+        </FormWindow>
       </DocumentIdContext.Provider>
     </DocumentTypeContext.Provider>
   )

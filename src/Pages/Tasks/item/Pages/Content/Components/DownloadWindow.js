@@ -21,10 +21,23 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import { ContainerContext } from '@Components/constants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 
 const rules = {}
 const initFormValue = {
   versionDate: dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
+}
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлен файл/версия',
+  },
 }
 
 const DownloadWindow = ({ onClose, contentId, setChange }) => {
@@ -32,24 +45,31 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
   const [values, setValues] = useState(initFormValue)
   const api = useContext(ApiContext)
   const context = useContext(ContainerContext)
+  const getNotification = useOpenNotification()
 
   const onSave = useCallback(async () => {
     const { contentType, comment, regNumber, versionDate, files } = values
     const [{ dsc_content, dss_content_name }] = files
-    await api.post(URL_CREATE_VERSION, {
-      documentId: id,
-      file: {
-        fileKey: dsc_content,
-        contentName: dss_content_name,
-        contentId,
-        contentType,
-        comment,
-        regNumber,
-        versionDate,
-      },
-    })
-    setChange()
-    onClose()
+    try {
+      const response = await api.post(URL_CREATE_VERSION, {
+        documentId: id,
+        file: {
+          fileKey: dsc_content,
+          contentName: dss_content_name,
+          contentId,
+          contentType,
+          comment,
+          regNumber,
+          versionDate,
+        },
+      })
+      setChange()
+      onClose()
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(status)
+    }
   }, [api, onClose, values])
   const userObject = useRecoilValue(userAtom)
 
@@ -161,9 +181,13 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
 
 DownloadWindow.propTypes = {
   onClose: PropTypes.func,
+  setChange: PropTypes.func,
+  contentId: PropTypes.string,
 }
 DownloadWindow.defaultProps = {
   onClose: () => null,
+  setChange: () => null,
+  contentId: '',
 }
 
 const DownloadWindowWrapper = (props) => (

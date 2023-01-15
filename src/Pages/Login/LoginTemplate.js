@@ -14,8 +14,8 @@ function LoginTemplate({ children, backgroundUrlPath }) {
         />
         {children}
         <div className="mt-auto font-size-12 font-medium">
-          <div className="mb-4">Тел.: +7(495) 646-73-17</div>
-          <div>E-mail: support@rossetmir.ru</div>
+          {/*<div className="mb-4">Тел.: +7(495) 646-73-17</div>*/}
+          {/*<div>E-mail: support@rossetmir.ru</div>*/}
         </div>
       </LoginFormContainer>
       <Background backgroundUrlPath={backgroundUrlPath} />

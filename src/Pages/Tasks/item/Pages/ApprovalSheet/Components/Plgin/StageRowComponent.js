@@ -15,6 +15,19 @@ import { URL_APPROVAL_SHEET, URL_APPROVAL_SHEET_DELETE } from '@/ApiList'
 import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import AddUserWindow from '../AddUserWindow/AddUserWindow'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Удален этап',
+  },
+}
 
 const Row = styled.div`
   height: 48px;
@@ -31,11 +44,18 @@ const StageRowComponent = ({ node }, props) => {
   const { term, id, name, documentId } = node
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
+  const getNotification = useOpenNotification()
   const onDelete = useCallback(async () => {
-    await api.post(URL_APPROVAL_SHEET_DELETE, {
-      id,
-    })
-    await loadData()
+    try {
+      const response = await api.post(URL_APPROVAL_SHEET_DELETE, {
+        id,
+      })
+      await loadData()
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [api, id, loadData])
   return (
     <Row>

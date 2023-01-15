@@ -25,7 +25,7 @@ const RowInputWrapper = React.forwardRef(
         ref={ref}
         hasError={hasError}
       >
-        <label className="flex-0 w-56 mr-6 " htmlFor={id}>
+        <label className="flex-0 w-48 mr-6 " htmlFor={id}>
           {label} {isRequired && <span>*</span>}
         </label>
         <div className="flex flex-col flex-auto relative w-full">

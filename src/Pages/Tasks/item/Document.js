@@ -27,6 +27,7 @@ import {
   DocumentTypeContext,
 } from './constants'
 import DefaultIcon from './Icons/DefaultIcon.svg'
+import SendASUD from './Icons/SendASUD.svg'
 import SaveIcon from './Icons/SaveIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
@@ -34,6 +35,25 @@ import { SidebarContainer } from './styles'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Документ изменен',
+  },
+  201: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Запрос отправлен',
+  },
+}
 
 const Document = () => {
   const { id, type } = useParams()
@@ -46,6 +66,7 @@ const Document = () => {
     })
     return data
   }, [api, id, type])
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: ITEM_DOCUMENT,
@@ -59,6 +80,7 @@ const Document = () => {
         values: { dss_work_number = 'Документ' } = {},
       } = {},
     },
+    setTabState,
   } = tabItemState
 
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
@@ -68,17 +90,24 @@ const Document = () => {
   }, [values])
 
   useAutoReload(loadData, tabItemState)
-
+  // todo добавить getNotification для всех
   const documentHandlers = useMemo(
     () => ({
       ...defaultDocumentHandlers,
       save: {
-        handler: () =>
-          api.post(URL_DOCUMENT_UPDATE, {
-            values: refValues.current,
-            type,
-            id,
-          }),
+        handler: async () => {
+          try {
+            const response = await api.post(URL_DOCUMENT_UPDATE, {
+              values: refValues.current,
+              type,
+              id,
+            })
+            getNotification(customMessagesMap[response.status])
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
+        },
         icon: SaveIcon,
       },
       send_to_eehd: {
@@ -95,7 +124,7 @@ const Document = () => {
           })
           setMessage(data)
         },
-        icon: DefaultIcon,
+        icon: SendASUD,
       },
       apsd_canceled: {
         handler: async () => {
@@ -107,12 +136,22 @@ const Document = () => {
         icon: DefaultIcon,
       },
       defaultHandler: ({ name }) => ({
-        handler: () =>
-          api.post(URL_TASK_PROMOTE, {
-            id,
-            type,
-            signal: name,
-          }),
+        handler: async () => {
+          try {
+            const response = await api.post(URL_TASK_PROMOTE, {
+              id,
+              type,
+              signal: name,
+            })
+            getNotification(
+              customMessagesMap[response?.status === 200 ? 201 : ''],
+            )
+            setTabState({ update: true })
+          } catch (e) {
+            const { response: { status } = {} } = e
+            getNotification(customMessagesMap[status])
+          }
+        },
         icon: DefaultIcon,
       }),
     }),

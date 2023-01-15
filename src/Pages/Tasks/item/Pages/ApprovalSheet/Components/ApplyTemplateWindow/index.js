@@ -11,6 +11,19 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import BaseCell from '../../../../../../../Components/ListTableComponents/BaseCell'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлен шаблон',
+  },
+}
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -30,6 +43,7 @@ const ApplyTemplateWindow = () => {
   const documentId = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const documentType = useContext(DocumentTypeContext)
+  const getNotification = useOpenNotification()
 
   const columns = [
     {
@@ -80,12 +94,18 @@ const ApplyTemplateWindow = () => {
 
   const applyTemplate = useCallback(
     async (id) => {
-      const { data } = await api.post(URL_TEMPLATE, {
-        type: 'ddt_approve_template',
-        id: id,
-      })
-      if (data && data.length > 0) {
-        createStage(data)
+      try {
+        const { data } = await api.post(URL_TEMPLATE, {
+          type: 'ddt_approve_template',
+          id: id,
+        })
+        if (data && data.length > 0) {
+          createStage(data)
+          getNotification(customMessagesMap[200])
+        }
+      } catch (e) {
+        const { response: { status } = {} } = e
+        getNotification(customMessagesMap[status])
       }
     },
     [api],

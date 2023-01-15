@@ -5,9 +5,10 @@ import Button from '@/Components/Button'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
-import { ApiContext } from '@/contants'
+import { ApiContext, DocumentTypeContext } from '@/contants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { URL_APPROVAL_SHEET_CREATE_AND_START } from '../../../../../ApiList'
+import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '../../../../../ApiList'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const rules = {}
 
@@ -17,6 +18,8 @@ const CreatingAdditionalAgreementWindow = ({
   closeCurrenTab,
 }) => {
   const api = useContext(ApiContext)
+  const documentType = useContext(DocumentTypeContext)
+  const documentId = useContext(DocumentIdContext)
   const [values, setValues] = useState({})
 
   const fieldMap = useMemo(() => {
@@ -39,9 +42,11 @@ const CreatingAdditionalAgreementWindow = ({
 
   const onSave = useCallback(async () => {
     try {
-      await api.post(URL_APPROVAL_SHEET_CREATE_AND_START, {
+      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT, {
         ...values,
         parentPerformerId: approverId,
+        documentType,
+        documentId,
       })
       closeCurrenTab()
     } catch (_) {}

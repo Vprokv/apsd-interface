@@ -30,7 +30,7 @@ const Leaf = ({
   children,
   className,
   onInput,
-  ParentValue: { tomId, type, dsid_tom, expand, send },
+  ParentValue: { tomId, type, expand, send },
 }) => {
   const {
     valueKey,
@@ -54,11 +54,15 @@ const Leaf = ({
   const onSend = useCallback(async () => {
     try {
       await api.post(URL_ORGSTURCTURE_SEND, { partId: ParentValue.id })
+      const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+      if (!children || children.length === 0) {
+        onInput(await loadData(id), nestedDataKey)
+      }
       setLoading(true)
     } catch (e) {
       setLoading(false)
     }
-  }, [ParentValue.id, api])
+  }, [ParentValue, api, loadData, nestedDataKey, onInput, valueKey])
 
   const onOpenNestedTable = useCallback(async () => {
     const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
@@ -140,7 +144,9 @@ const Leaf = ({
       )}
       <CustomIconComponent {...ParentValue} />
       <>
-        <div className="font-size-12">{children}</div>
+        <Button onClick={() => expand && onOpenNestedTable()}>
+          <div className="font-size-12 font-normal">{children}</div>
+        </Button>
         <ContHover>
           <ThreeDotButton loading={loading} disabled={loading}>
             <Icon
@@ -151,7 +157,6 @@ const Leaf = ({
             />
           </ThreeDotButton>
         </ContHover>
-
         {open && (
           <ContextMenu width={200} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
@@ -164,7 +169,7 @@ const Leaf = ({
               <StyledItem className="mb-3 font-size-12">
                 Экспорт данных
               </StyledItem>
-              {!dsid_tom && (
+              {!tomId && (
                 <>
                   <StyledItem
                     className="mb-3 font-size-12"

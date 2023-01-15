@@ -20,6 +20,19 @@ import {
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import {
+  defaultMessageMap,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+
+const customMessagesMap = {
+  ...defaultMessageMap,
+  200: {
+    type: NOTIFICATION_TYPE_SUCCESS,
+    message: 'Добавлен этап',
+  },
+}
 
 const fields = [
   {
@@ -65,6 +78,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   const loadData = useContext(LoadContext)
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
+  const getNotification = useOpenNotification()
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -87,9 +101,15 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   }, [filterValue, id, stageType])
 
   const onSave = useCallback(async () => {
-    await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
-    loadData()
-    changeModalState(false)()
+    try {
+      const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
+      loadData()
+      changeModalState(false)()
+      getNotification(customMessagesMap[response.status])
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(customMessagesMap[status])
+    }
   }, [changeModalState, stage, api, loadData])
 
   const onClose = useCallback(() => {
