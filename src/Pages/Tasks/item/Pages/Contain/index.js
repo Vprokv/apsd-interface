@@ -353,7 +353,7 @@ const Contain = () => {
         <PreviewContentWindow
           open={renderPreviewWindow}
           onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-          id={selectState[0]?.content?.contentId}
+          id={selectState[0]?.content?.id}
           type="ddt_document_content"
         />
       </div>

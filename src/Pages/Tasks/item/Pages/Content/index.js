@@ -349,7 +349,7 @@ const Content = () => {
       <PreviewContentWindow
         open={renderPreviewWindow}
         onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-        id={selectState[0]?.contentId}
+        id={selectState[0]?.id}
         type="ddt_apsd_content_version"
       />
     </div>
