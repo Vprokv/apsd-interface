@@ -19,10 +19,11 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useParams } from 'react-router-dom'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const CreateRemark = ({ disabled }) => {
   const api = useContext(ApiContext)
-  const { id } = useParams()
+  const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
   const [filter, setFilterValue] = useState({})
@@ -45,7 +46,7 @@ const CreateRemark = ({ disabled }) => {
       loadFunction: async (query) => {
         const { data } = await api.post(URL_ENTITY_LIST, {
           type: 'ddt_dict_type_remark',
-          query
+          query,
         })
         return data
       },

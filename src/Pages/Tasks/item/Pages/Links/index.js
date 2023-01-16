@@ -275,6 +275,8 @@ const Links = () => {
     )
   }, [api, selectState])
 
+  console.log(selectState, 'selectState')
+
   return (
     <UpdateContext.Provider value={setChange}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -307,7 +309,7 @@ const Links = () => {
             </ButtonForIcon>
             <ButtonForIcon
               className="mr-2 color-text-secondary"
-              disabled={!selectState[0]?.contentId}
+              disabled={!selectState[0]?.id}
               onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
             >
               <Icon icon={ViewIcon} size={20} />
@@ -356,7 +358,7 @@ const Links = () => {
         <PreviewContentWindow
           open={renderPreviewWindow}
           onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-          id={selectState[0]?.contentId}
+          id={selectState[0]?.id}
           type="ddt_document_content"
         />
       </div>
