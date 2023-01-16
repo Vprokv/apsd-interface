@@ -8,6 +8,8 @@ import TitleCard from '@/Components/Inputs/DocumentSelect/Component/ShowDocument
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, WINDOW_SHOW_TITLE } from '@/contants'
 import { URL_DOCUMENT_ITEM } from '@/ApiList'
+import {useNavigate} from "react-router-dom";
+import {TabStateManipulation} from "@Components/Logic/Tab";
 
 const Message = styled.div`
   margin-top: 4px;
@@ -62,6 +64,8 @@ export const ShowDocumentButton = styled.button.attrs({ type: 'button' })`
 const ShowDocumentComponent = ({ className, selectedState }) => {
   const [open, setOpen] = useState(false)
   const api = useContext(ApiContext)
+  const navigate = useNavigate()
+  const { openNewTab } = useContext(TabStateManipulation)
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -75,6 +79,14 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
   })
 
   const { setTabState } = tabItemState
+
+  const handleClick = useCallback(
+    () =>
+      openNewTab(
+        navigate(`/document/${selectedState}/ddt_startup_complex_type_doc`),
+      ),
+    [navigate, openNewTab, selectedState],
+  )
 
   const getDocumentData = useCallback(async () => {
     const { data } = await api.post(URL_DOCUMENT_ITEM, {
@@ -92,16 +104,16 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
   return (
     <LeafContainer>
       <div className={`${className}`}>
-        <ShowDocumentButton disabled={!selectedState} onClick={onOpen}>
+        <ShowDocumentButton disabled={!selectedState} onClick={handleClick}>
           <Icon icon={DocumentShowIcon} />
         </ShowDocumentButton>
         <ContHover>
           <Message>Перейти в документ</Message>
         </ContHover>
       </div>
-      <ShowDocumentWindow open={open} onClose={changeModalState(false)}>
-        <TitleCard documentId={selectedState} documentState={tabItemState} />
-      </ShowDocumentWindow>
+      {/*<ShowDocumentWindow open={open} onClose={changeModalState(false)}>*/}
+      {/*  <TitleCard documentId={selectedState} documentState={tabItemState} />*/}
+      {/*</ShowDocumentWindow>*/}
     </LeafContainer>
   )
 }
