@@ -20,7 +20,7 @@ function Filter({ value, onInput }) {
       {
         id: 'readTask',
         component: CheckBox,
-        label: 'Непросмотренные',
+        text: 'Непросмотренные',
       },
       {
         id: 'taskTypes',
