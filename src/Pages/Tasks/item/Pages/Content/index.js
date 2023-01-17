@@ -59,7 +59,7 @@ const filterFormConfig = [
     id: 'isFullVersion',
     component: CheckBox,
     className: 'font-size-14',
-    label: 'Отобразить все версии',
+    text: 'Отобразить все версии',
   },
 ]
 
@@ -314,7 +314,7 @@ const Content = () => {
         </SecondaryGreyButton>
       </FormWindow>
       <ListTable
-        value={content}
+        value={content || []}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}

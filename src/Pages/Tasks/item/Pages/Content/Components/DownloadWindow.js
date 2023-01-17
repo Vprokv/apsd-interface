@@ -28,9 +28,6 @@ import {
 } from '@/Components/Notificator'
 
 const rules = {}
-const initFormValue = {
-  versionDate: dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
-}
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -42,7 +39,9 @@ const customMessagesMap = {
 
 const DownloadWindow = ({ onClose, contentId, setChange }) => {
   const id = useContext(DocumentIdContext)
-  const [values, setValues] = useState(initFormValue)
+  const [values, setValues] = useState({
+    versionDate: dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
+  })
   const api = useContext(ApiContext)
   const context = useContext(ContainerContext)
   const getNotification = useOpenNotification()
