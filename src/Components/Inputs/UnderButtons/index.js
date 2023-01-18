@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button, {
   LoadableBaseButton,
+  LoadableSecondaryOverBlueButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
   SecondaryOverBlueButton,
@@ -20,9 +21,12 @@ const UnderButtons = ({
       <SecondaryGreyButton className={leftStyle} onClick={leftFunc}>
         {leftLabel}
       </SecondaryGreyButton>
-      <SecondaryOverBlueButton className={rightStyle} onClick={rightFunc}>
+      <LoadableSecondaryOverBlueButton
+        className={rightStyle}
+        onClick={rightFunc}
+      >
         {rightLabel}
-      </SecondaryOverBlueButton>
+      </LoadableSecondaryOverBlueButton>
     </div>
   )
 }

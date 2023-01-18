@@ -26,6 +26,7 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 const rules = {}
 
@@ -159,21 +160,13 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
           fields={fieldMap}
           rules={rules}
         />
-        <div className="flex items-center justify-end mt-auto mt-5">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center font-weight-normal"
-            onClick={onClose}
-          >
-            Закрыть
-          </Button>
-          <Button
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-            onClick={onSave}
-          >
-            Сохранить
-          </Button>
-        </div>
       </ScrollBar>
+      <UnderButtons
+        leftFunc={onClose}
+        rightFunc={onSave}
+        rightLabel={'Сохранить'}
+        leftLabel={'Закрыть'}
+      />
     </div>
   )
 }
