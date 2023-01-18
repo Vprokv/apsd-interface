@@ -68,19 +68,13 @@ const columns = [
     sizes: DocumentStateSizes,
   },
   {
-    id: 'important',
-    label: 'Важно',
-    component: AlertComponent,
-    sizes: alertSizes,
-  },
-  {
     id: 'volume',
     label: 'Том',
     component: VolumeState,
     sizes: volumeStateSize,
   },
   {
-    id: 'documentTypeName',
+    id: 'documentDescription',
     label: 'Наименование тома',
     component: BaseCell,
     sizes: baseCellSize,
