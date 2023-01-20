@@ -214,7 +214,7 @@ const OrgStructureWindow = (props) => {
           const findIndexFunc = returnOption
             ? ({ [valueKey]: objValueKey }) => objValueKey === id
             : (objValueKey) => objValueKey === id
-          nextValue.splice(nextValue.findIndex(findIndexFunc, 1))
+          nextValue.splice(nextValue.findIndex(findIndexFunc), 1)
           return nextValue
         }
         return undefined
@@ -226,22 +226,24 @@ const OrgStructureWindow = (props) => {
     () =>
       valueKeys.map((value) => {
         const obj = cache.get(value)
-        return (
-          <div className="bg-form-input-color p-3 flex mb-2 min-" key={value}>
-            <UserCard {...obj} widthDepartment={true} />
-            <Button
-              onClick={onRemoveSelectedValue(value)}
-              type="button"
-              className="ml-auto padding-null mb-auto height-small"
-            >
-              <Icon
-                icon={closeIcon}
-                size={10}
-                className="color-text-secondary"
-              />
-            </Button>
-          </div>
-        )
+        if (obj) {
+          return (
+            <div className="bg-form-input-color p-3 flex mb-2 min-" key={value}>
+              <UserCard {...obj} widthDepartment={true} />
+              <Button
+                onClick={onRemoveSelectedValue(value)}
+                type="button"
+                className="ml-auto padding-null mb-auto height-small"
+              >
+                <Icon
+                  icon={closeIcon}
+                  size={10}
+                  className="color-text-secondary"
+                />
+              </Button>
+            </div>
+          )
+        }
       }),
     [valueKeys, cache, onRemoveSelectedValue],
   )
@@ -252,14 +254,51 @@ const OrgStructureWindow = (props) => {
     onClose()
   }, [onInput, selectState, id, sendValue, valueKeys, cache, onClose])
 
+  const withOptions = useCallback(
+    (obj) =>
+      setSelectState((selectState) => {
+        const nextValue = selectState ? [...selectState] : []
+        const valIncl = nextValue.find(
+          ({ [valueKey]: key }) => key === obj[valueKey],
+        )
+        if (valIncl) {
+          nextValue.splice(
+            nextValue.findIndex(({ [valueKey]: key }) => key === obj[valueKey]),
+            1,
+          )
+        } else {
+          nextValue.push(obj)
+        }
+      }),
+    [valueKey],
+  )
+
+  const withoutOptions = useCallback(
+    (id) =>
+      setSelectState((selectState) => {
+        const nextValue = selectState ? [...selectState] : []
+        const valIncl = nextValue.includes(id)
+
+        if (multiple) {
+          if (valIncl) {
+            nextValue.splice(
+              nextValue.findIndex((objValueKey) => objValueKey === id, 1),
+            )
+          } else {
+            nextValue.push(id)
+          }
+          return nextValue
+        } else {
+          return id
+        }
+      }),
+    [multiple],
+  )
+
   const handleSelectClick = useCallback(
-    (obj) => () => {
-      if (multiple) {
-        return
-      }
-      return setSelectState(returnOption ? obj : obj[valueKey])
-    },
-    [setSelectState, returnOption, valueKey, multiple],
+    (obj) => () =>
+      returnOption ? withOptions(obj) : withoutOptions(obj[valueKey]),
+    [returnOption, valueKey, withOptions, withoutOptions],
   )
 
   return (
