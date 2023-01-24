@@ -7,11 +7,11 @@ import Button, {
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
-import { FilterForm, TitlesContainer } from './styles'
+import { CustomSizeModalWindow, FilterForm, TitlesContainer } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import { URL_APPROVAL_SHEET_CREATE } from '@/ApiList'
+import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
 import plusIcon from '@/Icons/plusIcon'
 import Icon from '@Components/Components/Icon'
 import {
@@ -25,6 +25,12 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import {
+  VALIDATION_RULE_INTEGER,
+  VALIDATION_RULE_REQUIRED,
+} from '@Components/Logic/Validator/constants'
+import LoadableSelect from '@/Components/Inputs/Select'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -34,43 +40,10 @@ const customMessagesMap = {
   },
 }
 
-const fields = [
-  {
-    id: '1',
-    component: EmptyInput,
-    value: 'Наименование этапа *',
-    disabled: true,
-  },
-  {
-    id: 'name',
-    component: SearchInput,
-    placeholder: 'Наименование этапа',
-  },
-  {
-    id: '2',
-    component: EmptyInput,
-    value: 'Участник этапа',
-    disabled: true,
-  },
-  {
-    id: 'approvers',
-    component: UserSelect,
-    multiple: true,
-    returnOption: false,
-    placeholder: 'Выберите участников',
-  },
-  {
-    id: '3',
-    component: EmptyInput,
-    value: 'Срок в рабочих днях *',
-    disabled: true,
-  },
-  {
-    id: 'term',
-    component: SearchInput,
-    placeholder: 'Срок в рабочих днях',
-  },
-]
+const rules = {
+  name: [{ name: VALIDATION_RULE_REQUIRED }],
+  term: [{ name: VALIDATION_RULE_INTEGER }, { name: VALIDATION_RULE_REQUIRED }],
+}
 
 const CreateApprovalSheetWindow = ({ stageType }) => {
   const api = useContext(ApiContext)
@@ -86,6 +59,42 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
     },
     [],
   )
+
+  const fields = useMemo(() => {
+    const baseFields = [
+      {
+        id: 'name',
+        label: 'Наименование',
+        component: LoadableSelect,
+        placeholder: 'Наименование этапа',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_typical_stage',
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'approvers',
+        component: UserSelect,
+        multiple: true,
+        returnOption: false,
+        placeholder: 'Выберите участников',
+        label: 'Выберите участников',
+      },
+      {
+        id: 'term',
+        component: SearchInput,
+        placeholder: 'Срок в рабочих днях',
+        label: 'Укажите в рабочих днях',
+      },
+    ]
+
+    return baseFields
+  })
 
   const stage = useMemo(() => {
     const { approvers, ...other } = filterValue
@@ -122,7 +131,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
       <Button onClick={changeModalState(true)} className="color-blue-1">
         <Icon icon={plusIcon} />
       </Button>
-      <StandardSizeModalWindow
+      <CustomSizeModalWindow
         title="Добавить этап"
         open={open}
         onClose={changeModalState(false)}
@@ -134,8 +143,16 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
               fields={fields}
               value={filterValue}
               onInput={setFilterValue}
-              inputWrapper={EmptyInputWrapper}
+              inputWrapper={InputWrapper}
+              rules={rules}
             />
+          </div>
+
+          <div className="mt-2">
+            Контрольный срок согласования для томов ПД, РД:
+            <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
+            Согласование куратора филиала - 1 раб. дн. <br />* Согласование
+            куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
           </div>
         </div>
         <div className="flex items-center justify-end mt-8">
@@ -152,7 +169,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
             Сохранить
           </LoadableBaseButton>
         </div>
-      </StandardSizeModalWindow>
+      </CustomSizeModalWindow>
     </div>
   )
 }

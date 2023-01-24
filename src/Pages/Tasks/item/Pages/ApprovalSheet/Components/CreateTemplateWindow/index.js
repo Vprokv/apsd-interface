@@ -74,7 +74,7 @@ const CreateTemplateWindow = ({jsonData}) => {
       const { response: { status } = {} } = e
       getNotification(customMessagesMap[status])
     }
-  }, [api])
+  }, [api, changeModalState, documentType, getNotification, jsonData, values])
   return (
     <>
       <Button
