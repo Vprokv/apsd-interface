@@ -11,7 +11,7 @@ const UserCard = ({ fio, position, avatar } = {}) => {
   const name = useMemo(() => fio.split(' ')[1], [fio])
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center">
       {avatar ? (
         <img className="w-10 h-10 rounded-full" src={avatar} />
       ) : (

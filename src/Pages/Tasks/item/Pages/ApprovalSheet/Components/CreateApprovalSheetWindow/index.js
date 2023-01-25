@@ -129,7 +129,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   return (
     <div className="flex items-center ml-auto ">
       <Button onClick={changeModalState(true)} className="color-blue-1">
-        <Icon icon={plusIcon} />
+        Добавить этап
       </Button>
       <CustomSizeModalWindow
         title="Добавить этап"
