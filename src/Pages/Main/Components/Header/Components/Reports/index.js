@@ -33,8 +33,9 @@ const Reports = () => {
   const onClick = useCallback(
     (id) => {
       openNewTab(navigate(`/report/${id}`))
+      changeModalState(false)()
     },
-    [navigate, openNewTab],
+    [changeModalState, navigate, openNewTab],
   )
 
   const renderedEntities = useMemo(
