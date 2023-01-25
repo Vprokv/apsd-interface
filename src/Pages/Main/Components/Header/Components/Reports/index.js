@@ -57,7 +57,7 @@ const Reports = () => {
   return (
     <LeafContainer>
       <ContHover>
-        <Message>Отчеты</Message>
+        <Message>Отчёты</Message>
       </ContHover>
       <ButtonForIcon className="bg-blue-1" onClick={onOpen}>
         <svg
