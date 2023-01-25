@@ -29,6 +29,7 @@ import {
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'
+import Reporting from '@/Pages/Rporting'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -193,6 +194,10 @@ function App() {
                   <Route
                     path={routePath.SEARCH_PAGE_PATH}
                     element={<Search />}
+                  />
+                  <Route
+                    path={routePath.REPORTING_PATH}
+                    element={<Reporting />}
                   />
                 </Route>
               )}
