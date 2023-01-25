@@ -18,6 +18,7 @@ import LogoutIcon from '@/Pages/Main/Icons/LogoutIcon'
 import { TokenContext } from '@/contants'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
 import UserAvatar from '@/Pages/Main/Components/Header/Components/UserAvatar'
+import Reports from '@/Pages/Main/Components/Header/Components/Reports'
 
 const Header = () => {
   const { dss_first_name, dss_last_name } = useRecoilValue(userAtom)
@@ -40,6 +41,7 @@ const Header = () => {
         <ButtonForIcon>
           <Icon icon={notificationIcon} size="24" />
         </ButtonForIcon>
+        <Reports />
       </IconsGroup>
       <div className="pl-10 flex items-center">
         <div className="text-right mr-4 font-medium">
