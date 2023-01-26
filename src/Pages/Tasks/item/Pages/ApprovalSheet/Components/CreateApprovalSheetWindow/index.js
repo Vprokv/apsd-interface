@@ -45,6 +45,8 @@ const rules = {
   term: [{ name: VALIDATION_RULE_INTEGER }, { name: VALIDATION_RULE_REQUIRED }],
 }
 
+const NAME = 'Указать наименование этапа вручную'
+
 const CreateApprovalSheetWindow = ({ stageType }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
@@ -60,41 +62,56 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
     [],
   )
 
-  const fields = useMemo(() => {
-    const baseFields = [
-      {
-        id: 'name',
-        label: 'Наименование',
-        component: LoadableSelect,
-        placeholder: 'Наименование этапа',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_typical_stage',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'approvers',
-        component: UserSelect,
-        multiple: true,
-        returnOption: false,
-        placeholder: 'Выберите участников',
-        label: 'Выберите участников',
-      },
-      {
-        id: 'term',
-        component: SearchInput,
-        placeholder: 'Срок в рабочих днях',
-        label: 'Укажите в рабочих днях',
-      },
-    ]
+  const visible = useMemo(() => filterValue.name === NAME, [filterValue.name])
 
-    return baseFields
-  })
+  console.log(filterValue, 'filterValue')
+  console.log(visible, 'visible')
+
+  const fields = useMemo(
+    () =>
+      [
+        {
+          id: 'name',
+          label: 'Наименование',
+          component: LoadableSelect,
+          placeholder: 'Наименование этапа',
+          valueKey: 'dss_name',
+          labelKey: 'dss_name',
+          returnOption: true,
+          loadFunction: async (query) => {
+            const { data } = await api.post(URL_ENTITY_LIST, {
+              type: 'ddt_dict_typical_stage',
+              query,
+            })
+            return data
+          },
+        },
+        {
+          id: 'show',
+          component: SearchInput,
+          visible: visible,
+          multiple: true,
+          returnOption: false,
+          placeholder: 'Наименование этапа',
+          label: 'Наименование этапа',
+        },
+        {
+          id: 'approvers',
+          component: UserSelect,
+          multiple: true,
+          returnOption: false,
+          placeholder: 'Выберите участников',
+          label: 'Участники',
+        },
+        {
+          id: 'term',
+          component: SearchInput,
+          placeholder: 'Срок в рабочих днях',
+          label: 'Укажите в рабочих днях',
+        },
+      ].filter(({ visible }) => visible !== false),
+    [api, visible],
+  )
 
   const stage = useMemo(() => {
     const { approvers, ...other } = filterValue
@@ -147,7 +164,6 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
               rules={rules}
             />
           </div>
-
           <div className="mt-2">
             Контрольный срок согласования для томов ПД, РД:
             <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
