@@ -7,7 +7,11 @@ import { ThemedCalendar } from './styles'
 import ContextMenu from '@Components/Components/ContextMenu'
 
 const DropDownComponent = ({ isOpen, children, ...props }) =>
-  isOpen && <ContextMenu {...props}>{children}</ContextMenu>
+  isOpen && (
+    <ContextMenu {...props} width="300">
+      {children}
+    </ContextMenu>
+  )
 
 const DatePicker = ({
   onInput,
