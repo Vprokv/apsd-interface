@@ -1,24 +1,19 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
-import Button, {
-  LoadableBaseButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
+import Button, { LoadableBaseButton } from '@/Components/Button'
 import { ApiContext } from '@/contants'
-import { useParams } from 'react-router-dom'
-import { CustomSizeModalWindow, FilterForm, TitlesContainer } from './styles'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
+import { CustomSizeModalWindow, FilterForm } from './styles'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
-import plusIcon from '@/Icons/plusIcon'
-import Icon from '@Components/Components/Icon'
-import {
-  LoadContext,
-  TypeContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
-import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
+import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   defaultMessageMap,
@@ -31,6 +26,9 @@ import {
 } from '@Components/Logic/Validator/constants'
 import LoadableSelect from '@/Components/Inputs/Select'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import Input from '@/Components/Fields/Input'
+import log from 'tailwindcss/lib/util/log'
+import NumericInput from '@Components/Components/Inputs/NumericInput'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -52,8 +50,50 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   const id = useContext(DocumentIdContext)
   const loadData = useContext(LoadContext)
   const [open, setOpenState] = useState(false)
+  const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
+  const ref = useRef(filterValue?.name)
+
+  const initialFilterState = useMemo(() => {
+    const state = (typicalStage || []).find(({ dsb_default }) => dsb_default)
+
+    if (state) {
+      return { name: state.dss_name, term: state.dsi_work_day }
+    }
+    return {}
+  }, [typicalStage])
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_ENTITY_LIST, {
+        type: 'ddt_dict_typical_stage',
+      })
+      setTypicalStage(data)
+    })()
+  }, [api])
+
+  useEffect(() => {
+    setFilterValue((value) => {
+      if (Object.keys(value) < 1) {
+        return initialFilterState
+      }
+      return value
+    })
+  }, [initialFilterState])
+
+  useEffect(() => {
+    if (ref.current !== filterValue?.name) {
+      setFilterValue((value) => {
+        const res = (typicalStage || []).find(
+          ({ dss_name }) => dss_name === value.name,
+        )
+
+        return { ...value, term: res?.dsi_work_day }
+      })
+    }
+    ref.current = filterValue.name
+  }, [filterValue, typicalStage])
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -62,10 +102,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
     [],
   )
 
-  const visible = useMemo(() => filterValue.name === NAME, [filterValue.name])
-
-  console.log(filterValue, 'filterValue')
-  console.log(visible, 'visible')
+  const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
   const fields = useMemo(
     () =>
@@ -77,7 +114,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           placeholder: 'Наименование этапа',
           valueKey: 'dss_name',
           labelKey: 'dss_name',
-          returnOption: true,
+          options: typicalStage,
           loadFunction: async (query) => {
             const { data } = await api.post(URL_ENTITY_LIST, {
               type: 'ddt_dict_typical_stage',
@@ -105,18 +142,19 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
         },
         {
           id: 'term',
-          component: SearchInput,
+          component: NumericInput,
           placeholder: 'Срок в рабочих днях',
           label: 'Укажите в рабочих днях',
         },
       ].filter(({ visible }) => visible !== false),
-    [api, visible],
+    [api, typicalStage, visible],
   )
 
   const stage = useMemo(() => {
-    const { approvers, ...other } = filterValue
+    const { approvers = [], name, show, ...other } = filterValue
     return {
       ...other,
+      name: visible ? show : name,
       documentId: id,
       stageType,
       autoApprove: false,
@@ -124,7 +162,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
         return { dsidApproverEmpl: val }
       }),
     }
-  }, [filterValue, id, stageType])
+  }, [filterValue, id, stageType, visible])
 
   const onSave = useCallback(async () => {
     try {

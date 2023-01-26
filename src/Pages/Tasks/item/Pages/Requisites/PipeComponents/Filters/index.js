@@ -19,6 +19,10 @@ const selectComponent = (conf) => {
     nextProps,
   } = conf
 
+  const { [type]: wrapper = ReferenceFilterWrapper } = wrappersMap
+
+  wrapper(conf)
+
   if (!filters) {
     if (nextProps.loadFunction) {
       // remove curry from loadFunction
@@ -36,10 +40,6 @@ const selectComponent = (conf) => {
       return acc
     }, new Map())
     .forEach((filters, type) => filtersType[type](conf, filters))
-
-  const { [type]: wrapper = ReferenceFilterWrapper } = wrappersMap
-
-  wrapper(conf)
 }
 
 export default selectComponent
