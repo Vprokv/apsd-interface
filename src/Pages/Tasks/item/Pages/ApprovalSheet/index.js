@@ -1,9 +1,9 @@
 import React, {
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
 } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
@@ -123,6 +123,10 @@ const ApprovalSheet = (props) => {
     [],
   )
 
+  const handleInput = useCallback((v) => {
+    console.log(v)
+  }, [])
+
   return (
     <LoadContext.Provider value={setChange}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -181,6 +185,7 @@ const ApprovalSheet = (props) => {
                   {isDisplayed && (
                     <CanAddContext.Provider value={canAdd}>
                       <Tree
+                        checkAble={true}
                         childrenLessIcon={DotIcon}
                         DefaultChildrenIcon={DotIcon}
                         key={key}
@@ -190,6 +195,7 @@ const ApprovalSheet = (props) => {
                         rowComponent={RowSelector}
                         onUpdateOptions={() => null}
                         childrenKey="approvers"
+                        onInput={handleInput}
                       />
                     </CanAddContext.Provider>
                   )}
