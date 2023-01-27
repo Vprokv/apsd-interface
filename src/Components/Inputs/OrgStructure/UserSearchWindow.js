@@ -176,7 +176,7 @@ const OrgStructureWindow = (props) => {
         disabled: !filter.organization,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
-        options: branches,
+        options: [...(filterOptions?.branchId || []), branches],
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
             id: filter.organization,
@@ -420,8 +420,20 @@ const OrgStructureWindowWrapper = ({
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const [modalWindowOptions, setModalWindowOptions] = useState([])
   const defaultFilter = useDefaultFilter({ baseFilter })
-  const [filter, setFilter] = useState(defaultFilter)
+  const [filter, setFilter] = useState({})
   const [sortQuery, onSort] = useState({})
+
+  useEffect(
+    () =>
+      setFilter((filter) => {
+        if (!Object.keys(filter) < 1) {
+          return defaultFilter
+        }
+
+        return filter
+      }),
+    [defaultFilter],
+  )
 
   const pagination = usePagination({
     stateId: WINDOW_ADD_EMPLOYEE,
