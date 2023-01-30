@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { Container } from '@Components/Components/Inputs/Input/styles'
+import { Container } from '@Components/Components/Inputs/styles'
 import ModalWindow from '../../ModalWindow'
 
 export const FileInputContainer = styled(Container.withComponent('button'))`

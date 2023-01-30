@@ -1,13 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
-import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SEARCH_ATTRIBUTES,
   URL_SEARCH_LIST,
@@ -28,8 +21,7 @@ import {
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import AutoLoadableSelect from '../../../../Components/Inputs/AutoLoadableSelect'
-import { operatorsComponent } from '@/Pages/Search/Pages/constans'
+import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 
 export const tableConfig = [
   {
@@ -126,10 +118,10 @@ export const tableConfig = [
       },
     }) => (
       <BaseCell
-        value={
-          (useMemo(() => `${lastName} ${firstName}.  ${middleName}. `),
-          [lastName, middleName, firstName])
-        }
+        value={useMemo(
+          () => `${lastName} ${firstName}.  ${middleName}. `,
+          [lastName, middleName, firstName],
+        )}
       />
     ),
   },

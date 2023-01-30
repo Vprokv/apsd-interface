@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Select from './Select'
+import Select, { LoadableAlwaysRenderValuesSelect } from './Select'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import styled from 'styled-components'
@@ -62,7 +62,7 @@ const UserSelect = (props) => {
 
   return (
     <div className="flex items-center w-full">
-      <Select {...props} loadFunction={loadRefSelectFunc} className="mr-0" />
+      <LoadableAlwaysRenderValuesSelect {...props} loadFunction={loadRefSelectFunc} className="mr-0" />
       <>
         <SearchButton className="ml-1" onClick={openEmployeeWindow}>
           <Icon icon={searchIcon} />

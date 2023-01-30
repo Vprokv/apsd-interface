@@ -21,8 +21,6 @@ const selectComponent = (conf) => {
 
   const { [type]: wrapper = ReferenceFilterWrapper } = wrappersMap
 
-  wrapper(conf)
-
   if (!filters) {
     if (nextProps.loadFunction) {
       // remove curry from loadFunction
@@ -30,6 +28,8 @@ const selectComponent = (conf) => {
     }
     return
   }
+
+  wrapper(conf)
 
   filters
     .reduce((acc, filter) => {
