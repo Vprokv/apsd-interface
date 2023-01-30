@@ -23,11 +23,11 @@ const DateCell = ({ hot, className, plan, fact }) => {
   )
 
   return (
-    <div className={`${className} w-40`}>
+    <div className={`${className}`}>
       {plan && (
         <div className="flex mb-2 font-size-12">
           <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
-          {datePlan}
+          {dateFact}
         </div>
       )}
       {fact && (
@@ -36,7 +36,7 @@ const DateCell = ({ hot, className, plan, fact }) => {
             icon={clockIcon}
             className={`${hot ? 'color-red' : ''} mr-2 color-text-secondary`}
           />
-          {dateFact}
+          {datePlan}
         </div>
       )}
     </div>

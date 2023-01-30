@@ -1,15 +1,19 @@
 import styled from 'styled-components'
-import Form from '@Components/Components/Forms'
+import Form, { WithWithValidationForm } from '@Components/Components/Forms'
+import ModalWindowWrapper from '@/Components/ModalWindow'
 
-export const FilterForm = styled(Form)`
+export const FilterForm = styled(WithWithValidationForm)`
   width: 100%;
   display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 1fr 4fr;
   margin-left: auto;
 `
 export const TitlesContainer = styled.div`
   width: 18%;
   //grid-gap: 1.6rem;
   display: grid;
+`
+export const CustomSizeModalWindow = styled(ModalWindowWrapper)`
+  width: 40.6%;
+  height: 50.65%;
+  margin: auto;
 `

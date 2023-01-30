@@ -275,8 +275,6 @@ const Links = () => {
     )
   }, [api, selectState])
 
-  console.log(selectState, 'selectState')
-
   return (
     <UpdateContext.Provider value={setChange}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 import Icon from '@Components/Components/Icon'
-import { FormWindow } from '@/Components/ModalWindow'
+import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import {
   CanAddContext,
@@ -16,6 +16,8 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import Form from '@Components/Components/Forms'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -24,6 +26,17 @@ const customMessagesMap = {
     message: 'Добавлен пользователь',
   },
 }
+
+const fieldMap = [
+  {
+    label: 'Участник этапа',
+    component: UserSelect,
+    placeholder: 'Выберите участников',
+    multiple: true,
+  },
+]
+
+const rules = {}
 
 const AddUserWindow = ({ stageId, documentId }) => {
   const [open, setOpenState] = useState(false)
@@ -60,22 +73,30 @@ const AddUserWindow = ({ stageId, documentId }) => {
 
   const onClose = useCallback(() => {
     changeModalState(false)()
+    setUser([])
   }, [changeModalState])
   return (
-    <div>
+    <>
       <CustomButtonForIcon
         className="color-blue-1"
         onClick={changeModalState(true)}
-        disabled={!canAdd}
+        // disabled={!canAdd}
       >
         <Icon icon={AddUserIcon} />
       </CustomButtonForIcon>
-      <FormWindow
-        title="Добавить пользователя"
+      <StandardSizeModalWindow
+        title="Добавить согласующего"
         open={open}
         onClose={changeModalState(false)}
       >
-        <UserSelect value={user} onInput={setUser} multiple={true} />
+        <Form
+          className="mb-10"
+          inputWrapper={InputWrapper}
+          value={user}
+          onInput={setUser}
+          fields={fieldMap}
+          rules={rules}
+        />
         <div className="flex items-center justify-end mt-8">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
@@ -90,8 +111,8 @@ const AddUserWindow = ({ stageId, documentId }) => {
             Сохранить
           </LoadableBaseButton>
         </div>
-      </FormWindow>
-    </div>
+      </StandardSizeModalWindow>
+    </>
   )
 }
 
