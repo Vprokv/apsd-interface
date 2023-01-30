@@ -174,10 +174,10 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
       const { response: { status } = {} } = e
       getNotification(customMessagesMap[status])
     }
-  }, [changeModalState, stage, api, loadData])
+  }, [api, stage, loadData, changeModalState, getNotification])
 
   const onClose = useCallback(() => {
-    setFilterValue({})
+    setFilterValue(initialFilterState)
     changeModalState(false)()
   }, [changeModalState])
 
