@@ -25,7 +25,8 @@ const Row = styled.div`
 `
 
 const StageRowComponent = ({ node }, props) => {
-  const { term, id, name, documentId, finishDate } = node
+  const { term, id, name, documentId, finishDate, editable, deletable } = node
+  console.log(node, 'node')
   const permit = useContext(PermitDisableContext)
   return (
     <Row>
@@ -34,12 +35,16 @@ const StageRowComponent = ({ node }, props) => {
         <div className="mr-12 w-24">{`Срок (дней): ${term}`}</div>
         <div>{`Дата завершения: ${finishDate === null ? '' : finishDate}`}</div>
         <div className="flex items-center ml-auto">
-          <AddUserWindow stageId={id} documentId={documentId} />
-          <CustomButtonForIcon disabled={permit} className="color-blue-1">
-            <Icon icon={DeleteUserIcon} />
-          </CustomButtonForIcon>
-          <EditStageWindow {...node} />
-          <PopUp node={node} />
+          {editable && (
+            <>
+              <AddUserWindow stageId={id} documentId={documentId} />
+              <CustomButtonForIcon disabled={permit} className="color-blue-1">
+                <Icon icon={DeleteUserIcon} />
+              </CustomButtonForIcon>
+              <EditStageWindow {...node} />
+            </>
+          )}
+          {deletable && <PopUp node={node} />}
         </div>
       </div>
     </Row>

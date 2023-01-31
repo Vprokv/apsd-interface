@@ -200,27 +200,29 @@ const ApprovalSheet = (props) => {
                       >
                         {name}
                       </div>
-                      <CreateApprovalSheetWindow
-                        loadData={setChange}
-                        stageType={type}
-                      />
+                      {canAdd && (
+                        <CreateApprovalSheetWindow
+                          loadData={setChange}
+                          stageType={type}
+                        />
+                      )}
                     </LevelStage>
                     {isDisplayed && (
-                      <CanAddContext.Provider value={canAdd}>
-                        <Tree
-                          checkAble={true}
-                          childrenLessIcon={DotIcon}
-                          DefaultChildrenIcon={DotIcon}
-                          key={key}
-                          defaultExpandAll={true}
-                          valueKey="id"
-                          options={stages}
-                          rowComponent={RowSelector}
-                          onUpdateOptions={() => null}
-                          childrenKey="approvers"
-                          onInput={handleInput}
-                        />
-                      </CanAddContext.Provider>
+                      // <CanAddContext.Provider value={canAdd}>
+                      <Tree
+                        checkAble={true}
+                        childrenLessIcon={DotIcon}
+                        DefaultChildrenIcon={DotIcon}
+                        key={key}
+                        defaultExpandAll={true}
+                        valueKey="id"
+                        options={stages}
+                        rowComponent={RowSelector}
+                        onUpdateOptions={() => null}
+                        childrenKey="approvers"
+                        onInput={handleInput}
+                      />
+                      // </CanAddContext.Provider>
                     )}
                   </div>
                 )}
