@@ -49,6 +49,7 @@ const ApprovalSheet = (props) => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [filterValue, setFilterValue] = useState({})
+  const [permit, setPermit] = useState(false)
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
 
