@@ -15,7 +15,10 @@ import editIcon from '@/Icons/editIcon'
 import InputComponent from '@Components/Components/Inputs/Input'
 import { ApiContext } from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
   defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
@@ -38,6 +41,7 @@ import {
   VALIDATION_RULE_INTEGER,
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -63,7 +67,6 @@ export const AddUserOptionsFullName = (v = {}) => ({
 })
 
 const EditStageWindow = (props) => {
-  console.log(props, 'props')
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const loadData = useContext(LoadContext)
@@ -72,6 +75,7 @@ const EditStageWindow = (props) => {
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
+  const permit = useContext(PermitDisableContext)
 
   const initialFilterState = useMemo(() => {
     if (props) {
@@ -128,8 +132,6 @@ const EditStageWindow = (props) => {
     () => props?.approvers.map(AddUserOptionsFullName),
     [props?.approvers],
   )
-
-  console.log(options, 'options')
 
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
@@ -213,9 +215,13 @@ const EditStageWindow = (props) => {
 
   return (
     <div className="flex items-center ml-auto ">
-      <Button className="color-blue-1" onClick={changeModalState(true)}>
+      <CustomButtonForIcon
+        disabled={permit}
+        className="color-blue-1"
+        onClick={changeModalState(true)}
+      >
         <Icon icon={editIcon} />
-      </Button>
+      </CustomButtonForIcon>
       <CustomSizeModalWindow
         title="Добавить этап"
         open={open}

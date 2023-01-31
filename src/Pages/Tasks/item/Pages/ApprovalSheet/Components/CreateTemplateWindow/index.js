@@ -1,19 +1,19 @@
-import React, {useCallback, useContext, useState} from 'react'
-import {ApiContext, DocumentTypeContext} from '@/contants'
-import Button from '@/Components/Button'
-import {StandardSizeModalWindow} from '@/Components/ModalWindow'
-import {URL_CREATE_TEMPLATE} from '@/ApiList'
+import React, { useCallback, useContext, useState } from 'react'
+import { ApiContext, DocumentTypeContext } from '@/contants'
+import Button, {SecondaryBlueButton} from '@/Components/Button'
+import { StandardSizeModalWindow } from '@/Components/ModalWindow'
+import { URL_CREATE_TEMPLATE } from '@/ApiList'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import PropTypes from 'prop-types'
-import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import {
   defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -46,11 +46,12 @@ const fieldMap = [
 
 const rules = {}
 
-const CreateTemplateWindow = ({jsonData}) => {
+const CreateTemplateWindow = ({ jsonData }) => {
   const [open, setOpenState] = useState(false)
   const [values, setValues] = useState({})
   const documentType = useContext(DocumentTypeContext)
   const api = useContext(ApiContext)
+  const permit = useContext(PermitDisableContext)
   const getNotification = useOpenNotification()
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -77,12 +78,13 @@ const CreateTemplateWindow = ({jsonData}) => {
   }, [api, changeModalState, documentType, getNotification, jsonData, values])
   return (
     <>
-      <Button
-        className="mr-2 bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+      <SecondaryBlueButton
+        disabled={permit}
+        className="mr-2 font-size-12"
         onClick={changeModalState(true)}
       >
         Создать шаблон
-      </Button>
+      </SecondaryBlueButton>
       <StandardSizeModalWindow
         title="Создать шаблон"
         open={open}

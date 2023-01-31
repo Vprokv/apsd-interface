@@ -1,6 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
+import { LoadableBaseButton } from '@/Components/Button'
 
-export const CustomButtonForIcon = styled.button`
+export const CustomButtonForIcon = styled(LoadableBaseButton)`
   display: flex;
   align-items: center;
   justify-content: center;

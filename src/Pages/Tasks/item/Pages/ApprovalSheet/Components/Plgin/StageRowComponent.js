@@ -10,6 +10,8 @@ import AddUserWindow from '../AddUserWindow/AddUserWindow'
 import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
 import EditStageWindow from '../EditStageWindow'
 import PopUp from '../PopUp'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 
 const Row = styled.div`
   height: 48px;
@@ -24,6 +26,7 @@ const Row = styled.div`
 
 const StageRowComponent = ({ node }, props) => {
   const { term, id, name, documentId, finishDate } = node
+  const permit = useContext(PermitDisableContext)
   return (
     <Row>
       <div className="flex h-full items-center">
@@ -32,9 +35,9 @@ const StageRowComponent = ({ node }, props) => {
         <div>{`Дата завершения: ${finishDate === null ? '' : finishDate}`}</div>
         <div className="flex items-center ml-auto">
           <AddUserWindow stageId={id} documentId={documentId} />
-          <Button className="color-blue-1">
+          <CustomButtonForIcon disabled={permit} className="color-blue-1">
             <Icon icon={DeleteUserIcon} />
-          </Button>
+          </CustomButtonForIcon>
           <EditStageWindow {...node} />
           <PopUp node={node} />
         </div>

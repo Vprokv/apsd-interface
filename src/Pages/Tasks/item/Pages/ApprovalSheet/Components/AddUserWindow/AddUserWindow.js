@@ -5,7 +5,7 @@ import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import {
   CanAddContext,
-  LoadContext,
+  LoadContext, PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { ApiContext } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
@@ -41,8 +41,8 @@ const rules = {}
 const AddUserWindow = ({ stageId, documentId }) => {
   const [open, setOpenState] = useState(false)
   const [user, setUser] = useState([])
-  const canAdd = useContext(CanAddContext)
   const getNotification = useOpenNotification()
+  const permit = useContext(PermitDisableContext)
 
   const api = useContext(ApiContext)
   const loadData = useContext(LoadContext)
@@ -80,7 +80,7 @@ const AddUserWindow = ({ stageId, documentId }) => {
       <CustomButtonForIcon
         className="color-blue-1"
         onClick={changeModalState(true)}
-        // disabled={!canAdd}
+        disabled={permit}
       >
         <Icon icon={AddUserIcon} />
       </CustomButtonForIcon>

@@ -9,7 +9,11 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_APPROVAL_SHEET, URL_TEMPLATE_LIST } from '@/ApiList'
+import {
+  URL_APPROVAL_SHEET,
+  URL_BUSINESS_PERMIT,
+  URL_TEMPLATE_LIST,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
@@ -24,6 +28,8 @@ import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin
 import {
   CanAddContext,
   LoadContext,
+  PermitContext,
+  PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
@@ -52,8 +58,6 @@ const ApprovalSheet = (props) => {
   const [permit, setPermit] = useState(false)
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
-
-  console.log(1)
 
   const {
     tabState: { update },
@@ -100,7 +104,17 @@ const ApprovalSheet = (props) => {
       }
       setDocumentTypeState({ update: false })
     })()
-  }, [loadData, setTabState, update])
+  }, [loadData, setDocumentTypeState, setTabState, update])
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_BUSINESS_PERMIT, {
+        documentType: type,
+        documentId,
+      })
+      setPermit(data)
+    })()
+  }, [api, documentId, documentType, type])
 
   useAutoReload(loadData, tabItemState)
 
@@ -129,86 +143,93 @@ const ApprovalSheet = (props) => {
   const handleInput = useCallback((v) => {
     console.log(v)
   }, [])
-
   return (
-    <LoadContext.Provider value={setChange}>
-      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-        <div className="flex items-center py-4 form-element-sizes-32">
-          <FilterForm
-            className="mr-2"
-            value={filterValue}
-            onInput={setFilterValue}
-            fields={fields}
-            inputWrapper={EmptyInputWrapper}
-          />
-          <div className="flex items-center ml-auto">
-            <CreateTemplateWindow jsonData={data} />
-            <ApplyTemplateWindow />
-            <ButtonForIcon className="mx-2 color-text-secondary">
-              <Icon icon={PostponeIcon} />
-            </ButtonForIcon>
-            <ButtonForIcon className="color-text-secondary">
-              <Icon icon={OtherIcon} />
-            </ButtonForIcon>
+    <PermitDisableContext.Provider value={!permit}>
+      <LoadContext.Provider value={setChange}>
+        <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+          <div className="flex items-center py-4 form-element-sizes-32">
+            <FilterForm
+              className="mr-2"
+              value={filterValue}
+              onInput={setFilterValue}
+              fields={fields}
+              inputWrapper={EmptyInputWrapper}
+            />
+            <div className="flex items-center ml-auto">
+              <CreateTemplateWindow jsonData={data} />
+              <ApplyTemplateWindow />
+              <ButtonForIcon
+                disabled={!permit}
+                className="mx-2 color-text-secondary"
+              >
+                <Icon icon={PostponeIcon} />
+              </ButtonForIcon>
+              <ButtonForIcon
+                disabled={!permit}
+                className="color-text-secondary"
+              >
+                <Icon icon={OtherIcon} />
+              </ButtonForIcon>
+            </div>
           </div>
-        </div>
-        <ScrollBar>
-          {data.map(({ stages, type, name, canAdd }, key) => (
-            <WithToggleNavigationItem key={type} id={type}>
-              {({ isDisplayed, toggleDisplayedFlag }) => (
-                <div className="flex flex-col" key={type}>
-                  <LevelStage>
-                    {!!stages?.length && (
-                      <button
-                        className="pl-2"
-                        type="button"
-                        onClick={toggleDisplayedFlag}
+          <ScrollBar>
+            {data.map(({ stages, type, name, canAdd }, key) => (
+              <WithToggleNavigationItem key={type} id={type}>
+                {({ isDisplayed, toggleDisplayedFlag }) => (
+                  <div className="flex flex-col" key={type}>
+                    <LevelStage>
+                      {!!stages?.length && (
+                        <button
+                          className="pl-2"
+                          type="button"
+                          onClick={toggleDisplayedFlag}
+                        >
+                          <Icon
+                            icon={angleIcon}
+                            size={10}
+                            className={`color-text-secondary ${
+                              isDisplayed ? '' : 'rotate-180'
+                            }`}
+                          />
+                        </button>
+                      )}
+                      <div
+                        className={`${
+                          !stages?.length ? 'ml-6' : 'ml-2'
+                        } my-4 flex bold`}
                       >
-                        <Icon
-                          icon={angleIcon}
-                          size={10}
-                          className={`color-text-secondary ${
-                            isDisplayed ? '' : 'rotate-180'
-                          }`}
-                        />
-                      </button>
-                    )}
-                    <div
-                      className={`${
-                        !stages?.length ? 'ml-6' : 'ml-2'
-                      } my-4 flex bold`}
-                    >
-                      {name}
-                    </div>
-                    <CreateApprovalSheetWindow
-                      loadData={setChange}
-                      stageType={type}
-                    />
-                  </LevelStage>
-                  {isDisplayed && (
-                    <CanAddContext.Provider value={canAdd}>
-                      <Tree
-                        checkAble={true}
-                        childrenLessIcon={DotIcon}
-                        DefaultChildrenIcon={DotIcon}
-                        key={key}
-                        defaultExpandAll={true}
-                        valueKey="id"
-                        options={stages}
-                        rowComponent={RowSelector}
-                        onUpdateOptions={() => null}
-                        childrenKey="approvers"
-                        onInput={handleInput}
+                        {name}
+                      </div>
+                      <CreateApprovalSheetWindow
+                        loadData={setChange}
+                        stageType={type}
                       />
-                    </CanAddContext.Provider>
-                  )}
-                </div>
-              )}
-            </WithToggleNavigationItem>
-          ))}
-        </ScrollBar>
-      </div>
-    </LoadContext.Provider>
+                    </LevelStage>
+                    {isDisplayed && (
+                      <CanAddContext.Provider value={canAdd}>
+                        <Tree
+                          checkAble={true}
+                          childrenLessIcon={DotIcon}
+                          DefaultChildrenIcon={DotIcon}
+                          key={key}
+                          defaultExpandAll={true}
+                          valueKey="id"
+                          options={stages}
+                          rowComponent={RowSelector}
+                          onUpdateOptions={() => null}
+                          childrenKey="approvers"
+                          onInput={handleInput}
+                        />
+                      </CanAddContext.Provider>
+                    )}
+                  </div>
+                )}
+              </WithToggleNavigationItem>
+            ))}
+          </ScrollBar>
+        </div>
+      </LoadContext.Provider>
+    </PermitDisableContext.Provider>
   )
 }
 

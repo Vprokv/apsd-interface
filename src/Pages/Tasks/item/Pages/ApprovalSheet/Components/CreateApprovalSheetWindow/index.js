@@ -13,7 +13,10 @@ import { CustomSizeModalWindow, FilterForm } from './styles'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
-import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   defaultMessageMap,
@@ -54,6 +57,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
+  const permit = useContext(PermitDisableContext)
 
   const initialFilterState = useMemo(() => {
     const state = (typicalStage || []).find(({ dsb_default }) => dsb_default)
@@ -179,11 +183,15 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   const onClose = useCallback(() => {
     setFilterValue(initialFilterState)
     changeModalState(false)()
-  }, [changeModalState])
+  }, [changeModalState, initialFilterState])
 
   return (
     <div className="flex items-center ml-auto ">
-      <Button onClick={changeModalState(true)} className="color-blue-1">
+      <Button
+        disabled={permit}
+        onClick={changeModalState(true)}
+        className={`${permit ? 'color-text-secondary' : 'color-blue-1'}`}
+      >
         Добавить этап
       </Button>
       <CustomSizeModalWindow
