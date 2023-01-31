@@ -35,7 +35,7 @@ const StageRowComponent = ({ node }, props) => {
           <Button className="color-blue-1">
             <Icon icon={DeleteUserIcon} />
           </Button>
-          <EditStageWindow />
+          <EditStageWindow {...node} />
           <PopUp node={node} />
         </div>
       </div>

@@ -52,6 +52,8 @@ const ApprovalSheet = (props) => {
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
 
+  console.log(1)
+
   const {
     tabState: { update },
     setTabState: setDocumentTypeState,
