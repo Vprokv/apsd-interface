@@ -21,7 +21,11 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
+import {
+  URL_APPROVAL_SHEET_CREATE,
+  URL_APPROVAL_SHEET_UPDATE,
+  URL_ENTITY_LIST,
+} from '@/ApiList'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -50,7 +54,15 @@ const rules = {
 
 const NAME = 'Указать наименование этапа вручную'
 
-const EditStageWindow = ({ id: docId, ...props }) => {
+export const AddUserOptionsFullName = (v = {}) => ({
+  ...v,
+  fullName: `${v.dssApproverFio}`,
+  fullDescription: v.fullDescription
+    ? v.fullDescription
+    : `${v.dssApproverFio}, ${v.dssApproverDep}`,
+})
+
+const EditStageWindow = (props) => {
   console.log(props, 'props')
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
@@ -63,10 +75,15 @@ const EditStageWindow = ({ id: docId, ...props }) => {
 
   const initialFilterState = useMemo(() => {
     if (props) {
-      const { approvers, name, term } = props
-      return { approvers, name, term }
+      const { term, approvers, name, globalId } = props
+
+      return {
+        term,
+        name,
+        approvers: approvers.map(({ dsidApproverEmpl }) => dsidApproverEmpl),
+        id: globalId,
+      }
     }
-    return {}
   }, [props])
 
   useEffect(() => {
@@ -80,15 +97,12 @@ const EditStageWindow = ({ id: docId, ...props }) => {
 
   useEffect(() => {
     setFilterValue((value) => {
-      if (Object.keys(value) < 3) {
-        console.log(initialFilterState, 'initialFilterState1')
+      if (Object.keys(value) < 1) {
         return initialFilterState
       }
       return value
     })
   }, [initialFilterState])
-
-  console.log(filterValue, 'filterValue')
 
   useEffect(() => {
     if (ref.current !== filterValue?.name) {
@@ -97,11 +111,11 @@ const EditStageWindow = ({ id: docId, ...props }) => {
           ({ dss_name }) => dss_name === value.name,
         )
 
-        return { ...value, term: res?.dsi_work_day }
+        return { ...value, term: res?.dsi_work_day || initialFilterState.term }
       })
     }
     ref.current = filterValue.name
-  }, [filterValue, typicalStage])
+  }, [filterValue, initialFilterState.term, typicalStage])
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -109,6 +123,13 @@ const EditStageWindow = ({ id: docId, ...props }) => {
     },
     [],
   )
+
+  const options = useMemo(
+    () => props?.approvers.map(AddUserOptionsFullName),
+    [props?.approvers],
+  )
+
+  console.log(options, 'options')
 
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
@@ -143,6 +164,8 @@ const EditStageWindow = ({ id: docId, ...props }) => {
         {
           id: 'approvers',
           component: UserSelect,
+          options: options,
+          valueKey: 'dsidApproverEmpl',
           multiple: true,
           returnOption: false,
           placeholder: 'Выберите участников',
@@ -155,7 +178,7 @@ const EditStageWindow = ({ id: docId, ...props }) => {
           label: 'Укажите в рабочих днях',
         },
       ].filter(({ visible }) => visible !== false),
-    [api, typicalStage, visible],
+    [api, options, typicalStage, visible],
   )
 
   const stage = useMemo(() => {
@@ -173,7 +196,7 @@ const EditStageWindow = ({ id: docId, ...props }) => {
 
   const onSave = useCallback(async () => {
     try {
-      const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
+      const response = await api.post(URL_APPROVAL_SHEET_UPDATE, { stage })
       loadData()
       changeModalState(false)()
       getNotification(customMessagesMap[response.status])
