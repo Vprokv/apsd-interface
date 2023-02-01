@@ -14,6 +14,6 @@ export const TitlesContainer = styled.div`
 `
 export const CustomSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40.6%;
-  height: 50.65%;
+  height: 57.65%;
   margin: auto;
 `

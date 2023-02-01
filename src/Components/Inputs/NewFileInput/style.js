@@ -1,13 +1,16 @@
 import styled, { css } from 'styled-components'
-import { Container } from '@Components/Components/Inputs/Input/styles'
+import { InputFillIndicator } from '@Components/Components/Inputs/Input/styles'
 import ModalWindow from '../../ModalWindow'
 
-export const FileInputContainer = styled(Container.withComponent('button'))`
+export const FileInputContainer = styled(
+  InputFillIndicator.withComponent('button'),
+)`
   width: 100%;
   height: 100%;
   display: flex;
   font-size: 14px;
   transition: color 500ms ease-in-out;
+
   &:hover,
   &:active {
     color: var(--accent-color);
@@ -70,11 +73,13 @@ export const OptionContainer = styled.div`
   padding: 2px 10px;
   position: relative;
   color: var(--text-primary);
+
   &:not(:hover) {
     ${PreloaderContainer} {
       opacity: 1;
     }
   }
+
   &::after {
     content: '';
     position: absolute;
@@ -87,6 +92,7 @@ export const OptionContainer = styled.div`
     border-bottom-left-radius: 2px;
     transition: background-color 500ms ease-in-out;
   }
+
   &::before {
     content: '';
     position: absolute;
@@ -99,19 +105,24 @@ export const OptionContainer = styled.div`
     border-bottom-left-radius: 2px;
     transition: background-color 500ms ease-in-out;
   }
+
   ${({ fail }) =>
     fail &&
     css`
       border-color: var(--error-color, #f44336);
+
       &::after {
         background-color: var(--error-color, #f44336);
       }
+
       &:not(:hover) {
         color: var(--error-color, #f44336);
+
         &::before {
           background-color: var(--error-color, #f44336);
         }
       }
+
       &:hover {
         ${ReUploadFileButton} {
           opacity: 1;

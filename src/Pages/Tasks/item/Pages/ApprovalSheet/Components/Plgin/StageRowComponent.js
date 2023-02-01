@@ -26,7 +26,6 @@ const Row = styled.div`
 
 const StageRowComponent = ({ node }, props) => {
   const { term, id, name, documentId, finishDate, editable, deletable } = node
-  console.log(node, 'node')
   const permit = useContext(PermitDisableContext)
   return (
     <Row>
