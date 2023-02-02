@@ -6,8 +6,6 @@ import dayjs from 'dayjs'
 import { rangeComponent } from '@/Pages/Search/Pages/constans'
 
 const DateWithButton = ({ onInput, type, ...props }) => {
-  console.log(props, 'props')
-
   return (
     <div className="flex items-center">
       <DatePicker

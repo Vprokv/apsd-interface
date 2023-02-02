@@ -11,3 +11,7 @@ export const TypeContext = React.createContext({
 export const CanAddContext = React.createContext({
   canAdd: false,
 })
+
+export const PermitDisableContext = React.createContext({
+  permit: false,
+})

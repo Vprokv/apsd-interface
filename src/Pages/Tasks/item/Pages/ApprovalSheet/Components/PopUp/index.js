@@ -1,17 +1,20 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { FormWindow } from '../../../../../../../Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import { LoadableBaseButton } from '@/Components/Button'
 import deleteIcon from '@/Icons/deleteIcon'
 import Icon from '@Components/Components/Icon'
 import { ApiContext } from '@/contants'
 import { URL_APPROVAL_SHEET_DELETE } from '@/ApiList'
-import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
   defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -27,6 +30,7 @@ const PopUp = ({ node }) => {
   const loadData = useContext(LoadContext)
   const getNotification = useOpenNotification()
   const [open, setOpenState] = useState(false)
+  const permit = useContext(PermitDisableContext)
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -47,16 +51,20 @@ const PopUp = ({ node }) => {
       getNotification(customMessagesMap[status])
     }
     changeModalState(false)()
-  }, [api, id, loadData])
+  }, [api, changeModalState, getNotification, id, loadData])
 
   const openModal = useCallback(() => {
     approvers && approvers.length > 0 ? onDelete() : changeModalState(true)()
-  }, [approvers])
+  }, [approvers, changeModalState, onDelete])
   return (
     <>
-      <LoadableBaseButton onClick={openModal} className="color-blue-1">
+      <CustomButtonForIcon
+        onClick={openModal}
+        disabled={permit}
+        className="color-blue-1"
+      >
         <Icon icon={deleteIcon} />
-      </LoadableBaseButton>
+      </CustomButtonForIcon>
       <FormWindow open={open} onClose={changeModalState(false)}>
         <div className="text-center mt-4 mb-12">
           Вы действительно хотите удалить этап?

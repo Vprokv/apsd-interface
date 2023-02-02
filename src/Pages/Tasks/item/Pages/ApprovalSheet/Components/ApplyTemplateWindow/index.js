@@ -10,7 +10,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import BaseCell from '../../../../../../../Components/ListTableComponents/BaseCell'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {LoadContext, PermitDisableContext} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
   defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
@@ -44,6 +44,7 @@ const ApplyTemplateWindow = () => {
   const api = useContext(ApiContext)
   const documentType = useContext(DocumentTypeContext)
   const getNotification = useOpenNotification()
+  const permit = useContext(PermitDisableContext)
 
   const columns = [
     {
@@ -56,10 +57,6 @@ const ApplyTemplateWindow = () => {
       label: 'Создан',
       component: BaseCell,
     },
-    // {
-    //   id: ,
-    //   label: 'Примечание',
-    // }
     {
       id: '',
       label: '',
@@ -125,12 +122,13 @@ const ApplyTemplateWindow = () => {
   )
   return (
     <>
-      <Button
-        className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+      <SecondaryBlueButton
+        disabled={permit}
+        className="font-size-12"
         onClick={getTemplates}
       >
         Применить шаблон
-      </Button>
+      </SecondaryBlueButton>
       <StandardSizeModalWindow
         title="Выбор шаблона"
         open={open}

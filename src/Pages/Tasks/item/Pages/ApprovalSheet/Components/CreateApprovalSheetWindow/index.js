@@ -13,7 +13,10 @@ import { CustomSizeModalWindow, FilterForm } from './styles'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
-import { LoadContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   defaultMessageMap,
@@ -29,6 +32,7 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import Input from '@/Components/Fields/Input'
 import log from 'tailwindcss/lib/util/log'
 import NumericInput from '@Components/Components/Inputs/NumericInput'
+import ScrollBar from 'react-perfect-scrollbar'
 
 const customMessagesMap = {
   ...defaultMessageMap,
@@ -54,6 +58,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
+  const permit = useContext(PermitDisableContext)
 
   const initialFilterState = useMemo(() => {
     const state = (typicalStage || []).find(({ dsb_default }) => dsb_default)
@@ -174,16 +179,20 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
       const { response: { status } = {} } = e
       getNotification(customMessagesMap[status])
     }
-  }, [changeModalState, stage, api, loadData])
+  }, [api, stage, loadData, changeModalState, getNotification])
 
   const onClose = useCallback(() => {
-    setFilterValue({})
+    setFilterValue(initialFilterState)
     changeModalState(false)()
-  }, [changeModalState])
+  }, [changeModalState, initialFilterState])
 
   return (
     <div className="flex items-center ml-auto ">
-      <Button onClick={changeModalState(true)} className="color-blue-1">
+      <Button
+        disabled={permit}
+        onClick={changeModalState(true)}
+        className={`${permit ? 'color-text-secondary' : 'color-blue-1'}`}
+      >
         Добавить этап
       </Button>
       <CustomSizeModalWindow
@@ -192,23 +201,26 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
         onClose={changeModalState(false)}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex py-4">
-            <FilterForm
-              className="form-element-sizes-40"
-              fields={fields}
-              value={filterValue}
-              onInput={setFilterValue}
-              inputWrapper={InputWrapper}
-              rules={rules}
-            />
-          </div>
-          <div className="mt-2">
-            Контрольный срок согласования для томов ПД, РД:
-            <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
-            Согласование куратора филиала - 1 раб. дн. <br />* Согласование
-            куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
-          </div>
+          <ScrollBar>
+            <div className="flex py-4">
+              <FilterForm
+                className="form-element-sizes-40"
+                fields={fields}
+                value={filterValue}
+                onInput={setFilterValue}
+                inputWrapper={InputWrapper}
+                rules={rules}
+              />
+            </div>
+            <div className="mt-2">
+              Контрольный срок согласования для томов ПД, РД:
+              <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
+              Согласование куратора филиала - 1 раб. дн. <br />* Согласование
+              куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
+            </div>
+          </ScrollBar>
         </div>
+
         <div className="flex items-center justify-end mt-8">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
