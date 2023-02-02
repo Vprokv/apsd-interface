@@ -83,7 +83,7 @@ const Leaf = ({
 
   const addSubsection = useCallback(async () => {
     try {
-      const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+      const { [nestedDataKey]: children = [], [valueKey]: id } = ParentValue
       closeContextMenu()
       setLoading(true)
       await addDepartment(id)
@@ -94,6 +94,7 @@ const Leaf = ({
         }),
         nestedDataKey,
       )
+      onInput(true, 'expand')
     } finally {
       setLoading(false)
     }

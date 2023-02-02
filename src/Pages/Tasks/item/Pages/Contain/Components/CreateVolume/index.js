@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { useParams } from 'react-router-dom'
 import Button from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
@@ -65,6 +65,7 @@ const CreateVolume = ({ addVolumeState }) => {
     const { row: { id: parentId, name: parentName } = {} } = addVolumeState
     const { id: docTypeId, typeName } = selected
     openNewTab(`/task/new/${docTypeId}/${typeName}`, {
+      parentTabName: [TASK_ITEM_STRUCTURE],
       values: {
         dsid_startup_complex: id,
         dsid_title_structure: parentId,

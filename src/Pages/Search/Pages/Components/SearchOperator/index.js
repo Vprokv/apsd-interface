@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useMemo } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo } from 'react'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
-import Select from '@Components/Components/Inputs/Select'
+import { Select } from '@/Components/Inputs/Select'
 
 const operators = {
   dsb_equals_search_operator: { ID: 'EQ', SYS_NAME: 'Равно' },

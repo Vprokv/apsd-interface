@@ -1,10 +1,8 @@
 import styled, { css } from 'styled-components'
-import { InputFillIndicator } from '@Components/Components/Inputs/Input/styles'
+import { Container } from '@Components/Components/Inputs/styles'
 import ModalWindow from '../../ModalWindow'
 
-export const FileInputContainer = styled(
-  InputFillIndicator.withComponent('button'),
-)`
+export const FileInputContainer = styled(Container.withComponent('button'))`
   width: 100%;
   height: 100%;
   display: flex;
