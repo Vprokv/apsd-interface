@@ -41,6 +41,7 @@ import { CircleMinus } from '@Components/Components/Tree/Icons/CircleMinus'
 import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
 import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
 import CreateTemplateWindow from './Components/CreateTemplateWindow'
+import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -208,9 +209,7 @@ const ApprovalSheet = (props) => {
                       )}
                     </LevelStage>
                     {isDisplayed && (
-                      // <CanAddContext.Provider value={canAdd}>
                       <Tree
-                        checkAble={true}
                         childrenLessIcon={DotIcon}
                         DefaultChildrenIcon={DotIcon}
                         key={key}
@@ -221,8 +220,8 @@ const ApprovalSheet = (props) => {
                         onUpdateOptions={() => null}
                         childrenKey="approvers"
                         onInput={handleInput}
+                        LeafComponent={LeafComponent}
                       />
-                      // </CanAddContext.Provider>
                     )}
                   </div>
                 )}
