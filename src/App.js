@@ -10,22 +10,11 @@ import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
 import createAxiosInstance from './api'
 import Main from './Pages/Main'
-import {
-  URL_LOGIN,
-  URL_SYSTEM_META,
-  URL_USER_CHANGE_PASSWORD,
-  URL_USER_OBJECT,
-} from './ApiList'
+import { URL_LOGIN, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT } from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import {
-  CREATE_PASSWORD_PAGE_PATH,
-  SEARCH_PAGE_PATH,
-  TASK_ITEM_PATH,
-  TASK_LIST_ARCHIVE_PATH,
-  TASK_LIST_PATH,
-} from './routePaths'
+import { CREATE_PASSWORD_PAGE_PATH } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'

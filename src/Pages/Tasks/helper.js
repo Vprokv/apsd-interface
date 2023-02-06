@@ -6,7 +6,6 @@ import {
   EXPIRED_TODAY,
 } from './list/constants'
 import { useMemo, useState } from 'react'
-import log from "tailwindcss/lib/util/log";
 
 const initialStatistic = {
   '': '0/0',
@@ -17,10 +16,12 @@ const initialStatistic = {
   [EXPIRED_8]: { unread: 0, all: 0 },
 }
 
-export const useStatistic = () => {
-  const [stat, setStatistic] = useState({})
+export const useStatistic = (stat) =>
+  useMemo(() => {
+    if (!stat) {
+      return initialStatistic
+    }
 
-  const prepValues = useMemo(() => {
     const {
       all,
       allUnread,
@@ -45,9 +46,3 @@ export const useStatistic = () => {
       [EXPIRED_8]: { unread: termMoreThanWeakUnread, all: termMoreThanWeak },
     }
   }, [stat])
-
-  return {
-    setStatistic,
-    statistic: Object.keys(stat).length ? prepValues : initialStatistic,
-  }
-}

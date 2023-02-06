@@ -16,9 +16,10 @@ import {
   URL_TASK_ITEM,
   URL_TASK_MARK_READ,
   URL_TASK_PROMOTE,
+  URL_TASK_STATISTIC,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import { ApiContext, ITEM_TASK } from '@/contants'
+import { ApiContext, ITEM_TASK, SIDEBAR_STATE } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
@@ -71,6 +72,10 @@ const Task = () => {
   const [message, setMessage] = useState('')
   const getNotification = useOpenNotification()
 
+  const { setTabState } = useTabItem({
+    stateId: SIDEBAR_STATE,
+  })
+
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
     [onCloseTab, currentTabIndex],
@@ -82,13 +87,17 @@ const Task = () => {
     })
     setIdDocument(data?.id)
     if (!data.read) {
-      // не ждем запроса, он выполняеться фоном.
-      api.post(URL_TASK_MARK_READ, {
+      // теперь авейтим, чтобы получить корректную статистику
+      await api.post(URL_TASK_MARK_READ, {
         tasksIds: [id],
       })
+      const {
+        data: [data],
+      } = await api.post(URL_TASK_STATISTIC)
+      setTabState({ stat: data })
     }
     return data
-  }, [api, id])
+  }, [api, id, setTabState])
 
   const tabItemState = useTabItem({
     stateId: ITEM_TASK,

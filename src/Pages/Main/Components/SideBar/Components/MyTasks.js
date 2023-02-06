@@ -15,25 +15,35 @@ import {
   EXPIRED_TODAY,
   TabNames,
 } from '@/Pages/Tasks/list/constants'
-import { ApiContext } from '@/contants'
+import { ApiContext, ITEM_TASK, SIDEBAR_STATE } from '@/contants'
 import { useStatistic } from '@/Pages/Tasks/helper'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
   const api = useContext(ApiContext)
   const { tabs } = useContext(CurrentTabContext)
-  const { statistic, setStatistic } = useStatistic()
+
+  const tabItemState = useTabItem({
+    stateId: SIDEBAR_STATE,
+  })
+  const {
+    tabState: { stat },
+    setTabState,
+  } = tabItemState
+
+  const statistic = useStatistic(stat)
 
   useEffect(() => {
     async function fetchData() {
       const {
         data: [data],
       } = await api.post(URL_TASK_STATISTIC)
-      setStatistic(data)
+      setTabState({ stat: data })
     }
 
     fetchData()
-  }, [api, setStatistic])
+  }, [api, setTabState])
 
   const handleOpenNewTab = useCallback(
     (path) => () => {
