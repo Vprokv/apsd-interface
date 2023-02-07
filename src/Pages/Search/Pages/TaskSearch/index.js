@@ -132,7 +132,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   }, [filter])
 
   return (
-    <div className="flex flex-col w-full p-6 overflow-hidden">
+    <div className="flex  w-full p-6 overflow-hidden">
       {renderTable ? (
         children(() => setRenderTable(false))
       ) : (
