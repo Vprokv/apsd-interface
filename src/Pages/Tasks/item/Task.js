@@ -268,8 +268,6 @@ const Task = () => {
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
 
-  console.log(documentTabs, 'documentTabs')
-
   return (
     <DocumentTypeContext.Provider value={ITEM_TASK}>
       <DocumentIdContext.Provider value={documentId}>

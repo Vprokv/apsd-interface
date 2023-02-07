@@ -94,25 +94,6 @@ const ApplyTemplateWindow = () => {
     setListTemplates(data)
   }, [changeModalState, api, listTemplates])
 
-  const applyTemplate = useCallback(
-    async (id) => {
-      try {
-        const { data } = await api.post(URL_TEMPLATE, {
-          type: 'ddt_approve_template',
-          id: id,
-        })
-        if (data && data.length > 0) {
-          createStage(data)
-          getNotification(customMessagesFuncMap[200]())
-        }
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(customMessagesFuncMap[status](data))
-      }
-    },
-    [api, createStage, getNotification],
-  )
-
   const createStage = useCallback(
     async (v) => {
       await api.post(URL_CREATE_STAGE, {
@@ -123,8 +104,28 @@ const ApplyTemplateWindow = () => {
       await loadData()
       changeModalState(false)()
     },
-    [api, loadData],
+    [api, changeModalState, documentId, loadData],
   )
+
+  const applyTemplate = useCallback(
+    async (id) => {
+      try {
+        const { data } = await api.post(URL_TEMPLATE, {
+          type: 'ddt_approve_template',
+          id: id,
+        })
+        if (data && data.length > 0) {
+          await createStage(data)
+          getNotification(customMessagesFuncMap[200]())
+        }
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
+    },
+    [api, createStage, getNotification],
+  )
+
   return (
     <>
       <SecondaryBlueButton
