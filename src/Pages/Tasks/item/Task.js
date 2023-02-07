@@ -44,20 +44,11 @@ import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
-import {
-  defaultMessageMap,
-  NOTIFICATION_TYPE_ERROR,
-  NOTIFICATION_TYPE_INFO,
-  NOTIFICATION_TYPE_SUCCESS,
-  useOpenNotification,
-} from '@/Components/Notificator'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  412: {
-    type: NOTIFICATION_TYPE_ERROR,
-    message: 'На этом этапе требуется отправка письма',
-  },
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
 }
 
 const titleName = 'ddt_startup_complex_type_doc'
@@ -88,13 +79,18 @@ const Task = () => {
     setIdDocument(data?.id)
     if (!data.read) {
       // теперь авейтим, чтобы получить корректную статистику
-      await api.post(URL_TASK_MARK_READ, {
-        tasksIds: [id],
-      })
-      const {
-        data: [data],
-      } = await api.post(URL_TASK_STATISTIC)
-      setTabState({ stat: data })
+      try {
+        await api.post(URL_TASK_MARK_READ, {
+          tasksIds: [id],
+        })
+        // eslint-disable-next-line no-empty
+      } catch (e) {
+      } finally {
+        const {
+          data: [data],
+        } = await api.post(URL_TASK_STATISTIC)
+        setTabState({ stat: data })
+      }
     }
     return data
   }, [api, id, setTabState])
@@ -144,14 +140,15 @@ const Task = () => {
         caption,
         handler: async () => {
           try {
-            await api.post(URL_TASK_COMPLETE, {
+            const { status } = await api.post(URL_TASK_COMPLETE, {
               taskId: id,
               signal: name,
             })
             closeCurrenTab()
+            getNotification(customMessagesFuncMap[status]())
           } catch (e) {
-            const { response: { status } = {} } = e
-            getNotification(customMessagesMap[status])
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
           }
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
@@ -164,50 +161,90 @@ const Task = () => {
     () => ({
       ...defaultDocumentHandlers,
       save: {
-        handler: () =>
-          api.post(URL_DOCUMENT_UPDATE, {
-            values: refValues.current,
-            type,
-            id,
-          }),
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_DOCUMENT_UPDATE, {
+              values: refValues.current,
+              type,
+              id,
+            })
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
         icon: SaveIcon,
       },
       send_to_eehd: {
-        handler: () =>
-          api.post(URL_CONTENT_SEND_EEHD, {
-            documentId,
-          }),
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_CONTENT_SEND_EEHD, {
+              documentId,
+            })
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
         icon: DefaultIcon,
       },
       send_letter: {
         handler: async () => {
-          const { data } = await api.post(URL_INTEGRATION_SEND_LETTER, {
-            documentId,
-          })
-          setMessage(data)
+          try {
+            const { data, status } = await api.post(
+              URL_INTEGRATION_SEND_LETTER,
+              {
+                documentId,
+              },
+            )
+            setMessage(data)
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
         },
         icon: SendASUD,
       },
       apsd_canceled: {
         handler: async () => {
-          const { data } = await api.post(URL_BUSINESS_DOCUMENT_RECALL, {
-            documentId,
-          })
-          setMessage(data)
+          try {
+            const { data, status } = await api.post(
+              URL_BUSINESS_DOCUMENT_RECALL,
+              {
+                documentId,
+              },
+            )
+            setMessage(data)
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
         },
         icon: DefaultIcon,
       },
       defaultHandler: ({ name }) => ({
-        handler: () =>
-          api.post(URL_TASK_PROMOTE, {
-            id,
-            type,
-            signal: name,
-          }),
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_TASK_PROMOTE, {
+              id,
+              type,
+              signal: name,
+            })
+            getNotification(customMessagesFuncMap[status]())
+            setTabState({ update: true })
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
         icon: DefaultIcon,
       }),
     }),
-    [api, documentId, id, type],
+    [api, documentId, getNotification, id, setTabState, type],
   )
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
@@ -230,6 +267,8 @@ const Task = () => {
   )
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
+
+  console.log(documentTabs, 'documentTabs')
 
   return (
     <DocumentTypeContext.Provider value={ITEM_TASK}>

@@ -19,7 +19,6 @@ import {
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -29,16 +28,17 @@ import {
 } from '@Components/Logic/Validator/constants'
 import LoadableSelect from '@/Components/Inputs/Select'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import Input from '@/Components/Fields/Input'
-import log from 'tailwindcss/lib/util/log'
 import NumericInput from '@Components/Components/Inputs/NumericInput'
 import ScrollBar from 'react-perfect-scrollbar'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен этап',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Этап добавлен успешно',
+    }
   },
 }
 
@@ -174,10 +174,10 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
       loadData()
       changeModalState(false)()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, stage, loadData, changeModalState, getNotification])
 

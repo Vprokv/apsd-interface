@@ -38,10 +38,10 @@ import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import EditIcon from '@/Icons/editIcon'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -100,18 +100,15 @@ const columns = [
     label: 'Комментарий',
     component: BaseCell,
   },
-  // {
-  //   id: 'Даты разраб.(план/факт)',
-  //   label: 'Размер',
-  //   // sizes: 200,
-  // }
 ]
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Успешное удаление',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Контент добавлен успешно',
+    }
   },
 }
 
@@ -179,8 +176,6 @@ const Content = () => {
     () => setAddSubscriptionWindowState(false),
     [],
   )
-
-  // todo проверить уведомления
   const deleteVersion = useCallback(async () => {
     if (selectState && selectState.length > 0) {
       try {
@@ -192,10 +187,10 @@ const Content = () => {
           }),
         ])
         setChange()
-        getNotification(customMessagesMap[response[0].status])
+        getNotification(customMessagesFuncMap[response[0].status]())
       } catch (e) {
-        const { response: { status } = {} } = e
-        getNotification(customMessagesMap[status])
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
       }
     }
   }, [api, selectState, setChange])

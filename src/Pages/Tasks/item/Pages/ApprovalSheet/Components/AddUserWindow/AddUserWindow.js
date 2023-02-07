@@ -5,25 +5,28 @@ import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import {
   CanAddContext,
-  LoadContext, PermitDisableContext,
+  LoadContext,
+  PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { ApiContext } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
 import { URL_APPROVAL_CREATE } from '@/ApiList'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Form from '@Components/Components/Forms'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен пользователь',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Пользователь добавлен успешно',
+    }
   },
 }
 
@@ -63,13 +66,21 @@ const AddUserWindow = ({ stageId, documentId }) => {
         }),
       })
       await loadData()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
       changeModalState(false)()
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [changeModalState, api, loadData, user])
+  }, [
+    api,
+    stageId,
+    documentId,
+    user,
+    loadData,
+    getNotification,
+    changeModalState,
+  ])
 
   const onClose = useCallback(() => {
     changeModalState(false)()

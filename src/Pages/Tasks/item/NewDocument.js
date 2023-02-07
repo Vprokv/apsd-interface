@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_NEW_DOCUMENT } from '@/contants'
+import { ApiContext, TASK_ITEM_NEW_DOCUMENT } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_DOCUMENT_CLASSIFICATION, URL_DOCUMENT_CREATE } from '@/ApiList'
 import { defaultPages, DocumentTypeContext } from './constants'
@@ -14,23 +14,26 @@ import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_ERROR,
-  NOTIFICATION_TYPE_INFO,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  412: {
-    type: NOTIFICATION_TYPE_ERROR,
-    message: 'Заполните обязательные поля',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Документ создан',
+    }
   },
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Документ создан',
+  412: () => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Заполните обязательные поля',
+    }
   },
 }
 
@@ -85,12 +88,12 @@ export const NewTaskItem = ({ classificationId, type }) => {
               values: refValues.current,
               type,
             })
-            getNotification(customMessagesMap[status])
+            getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
             navigate(`/document/${id}/${type}`)
           } catch (e) {
             const { response: { status, data } = {} } = e
-            getNotification(customMessagesMap[status])
+            getNotification(customMessagesFuncMap[status](data))
             if (status === 412) {
               const { 1: responseError } = data.split(' - ')
               setDocumentState({

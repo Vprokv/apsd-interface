@@ -40,14 +40,8 @@ import { EventsContext } from './Components/CreateSubscriptionWindow/constans'
 import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
-import log from 'tailwindcss/lib/util/log'
-import {
-  defaultMessageMap,
-  NOTIFICATION_TYPE_ERROR,
-  NOTIFICATION_TYPE_INFO,
-  NOTIFICATION_TYPE_SUCCESS,
-  useOpenNotification,
-} from '@/Components/Notificator'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -127,11 +121,13 @@ const filterFormConfig = [
   },
 ]
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Документ изменен',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Документ изменен успешно',
+    }
   },
 }
 
@@ -232,11 +228,11 @@ const Subscription = () => {
           return api.post(URL_SUBSCRIPTION_DELETE, { subscriptionId })
         }),
       ])
-      // res.then(({ status }) => getNotification(customMessagesMap[status]))
+      getNotification(customMessagesFuncMap[200]())
       loadDataFunction()
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, selectState, loadDataFunction])
 

@@ -10,18 +10,23 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import BaseCell from '../../../../../../../Components/ListTableComponents/BaseCell'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import {LoadContext, PermitDisableContext} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
-  defaultMessageMap,
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен шаблон',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Шаблон добавлен успешно',
+    }
   },
 }
 
@@ -98,14 +103,14 @@ const ApplyTemplateWindow = () => {
         })
         if (data && data.length > 0) {
           createStage(data)
-          getNotification(customMessagesMap[200])
+          getNotification(customMessagesFuncMap[200]())
         }
       } catch (e) {
-        const { response: { status } = {} } = e
-        getNotification(customMessagesMap[status])
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
       }
     },
-    [api],
+    [api, createStage, getNotification],
   )
 
   const createStage = useCallback(

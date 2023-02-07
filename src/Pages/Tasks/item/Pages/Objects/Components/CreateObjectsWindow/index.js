@@ -23,24 +23,22 @@ import { SelectedSubscriptionContainer } from '@/Pages/Tasks/item/Pages/Subscrip
 import ScrollBar from '@Components/Components/ScrollBar'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import searchIcon from '@/Icons/searchIcon'
-import log from 'tailwindcss/lib/util/log'
 import ObjectCard from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow/Components/ObjectCard'
 import closeIcon from '@/Icons/closeIcon'
-import { value } from 'lodash/seq'
 import { LoadableBaseButton } from '@/Components/Button'
 import {
-  defaultMessageMap,
-  NOTIFICATION_TYPE_ERROR,
-  NOTIFICATION_TYPE_INFO,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен объект',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Шаблон добавлен успешно',
+    }
   },
 }
 
@@ -187,12 +185,12 @@ const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
         titleId: id,
         techObjectIds: selectState,
       })
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
       await loadDataFunction()
       onClose()
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, id, selectState, onClose, loadDataFunction])
 

@@ -10,17 +10,19 @@ import {
   PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Удален этап',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Этап добавлен успешно',
+    }
   },
 }
 
@@ -45,10 +47,10 @@ const PopUp = ({ node }) => {
         id,
       })
       await loadData()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
     changeModalState(false)()
   }, [api, changeModalState, getNotification, id, loadData])

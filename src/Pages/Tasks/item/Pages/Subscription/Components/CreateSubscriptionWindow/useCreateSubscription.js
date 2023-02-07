@@ -2,21 +2,22 @@ import { useCallback, useMemo } from 'react'
 import dayjs from 'dayjs'
 import {
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DATE_FORMAT_YYYY_escape,
   PRESENT_DATE_FORMAT,
 } from '@/contants'
 import { URL_SUBSCRIPTION_CREATE } from '@/ApiList'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлена подписка',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Подписка добавлена',
+    }
   },
 }
 
@@ -67,18 +68,18 @@ export const useCreateSubscription = ({
         events,
         ...date,
       }
-    }, [date, documentId, subscribers]),
+    }, [date, documentId, events, subscribers]),
     handleSaveClick: useCallback(
       (api) => async (createData) => {
         try {
           const response = await api.post(URL_SUBSCRIPTION_CREATE, createData)
-          getNotification(customMessagesMap[response.status])
+          getNotification(customMessagesFuncMap[response.status]())
         } catch (e) {
-          const { response: { status } = {} } = e
-          getNotification(customMessagesMap[status])
+          const { response: { status, data } = {} } = e
+          getNotification(customMessagesFuncMap[status](data))
         }
       },
-      [],
+      [getNotification],
     ),
   }
 }

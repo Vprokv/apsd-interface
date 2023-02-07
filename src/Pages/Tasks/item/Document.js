@@ -36,22 +36,18 @@ import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
-  defaultMessageMap,
-  NOTIFICATION_TYPE_ERROR,
-  NOTIFICATION_TYPE_INFO,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Документ изменен',
-  },
-  201: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Запрос отправлен',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Документ изменен',
+    }
   },
 }
 
@@ -101,72 +97,89 @@ const Document = () => {
   }, [values])
 
   useAutoReload(loadData, tabItemState)
-  // todo добавить getNotification для всех
   const documentHandlers = useMemo(
     () => ({
       ...defaultDocumentHandlers,
       save: {
         handler: async () => {
           try {
-            const response = await api.post(URL_DOCUMENT_UPDATE, {
+            const { status } = await api.post(URL_DOCUMENT_UPDATE, {
               values: refValues.current,
               type,
               id,
             })
-            getNotification(customMessagesMap[response.status])
+            getNotification(customMessagesFuncMap[status]())
           } catch (e) {
-            const { response: { status } = {} } = e
-            getNotification(customMessagesMap[status])
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
           }
         },
         icon: SaveIcon,
       },
       send_to_eehd: {
-        handler: () =>
-          api.post(URL_CONTENT_SEND_EEHD, {
-            documentId: id,
-          }),
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_CONTENT_SEND_EEHD, {
+              documentId: id,
+            })
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
         icon: DefaultIcon,
       },
       send_letter: {
         handler: async () => {
-          const { data } = await api.post(URL_INTEGRATION_SEND_LETTER, {
-            documentId: id,
-          })
-          setMessage(data)
+          try {
+            const { data } = await api.post(URL_INTEGRATION_SEND_LETTER, {
+              documentId: id,
+            })
+            setMessage(data)
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
         },
         icon: SendASUD,
       },
       apsd_canceled: {
         handler: async () => {
-          const { data } = await api.post(URL_BUSINESS_DOCUMENT_RECALL, {
-            documentId: id,
-          })
-          setMessage(data)
+          try {
+            const { data, status } = await api.post(
+              URL_BUSINESS_DOCUMENT_RECALL,
+              { documentId: id },
+            )
+            setMessage(data)
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
         },
         icon: DefaultIcon,
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
-            const response = await api.post(URL_TASK_PROMOTE, {
+            const { status } = await api.post(URL_TASK_PROMOTE, {
               id,
               type,
               signal: name,
             })
-            getNotification(
-              customMessagesMap[response?.status === 200 ? 201 : ''],
-            )
+            getNotification(customMessagesFuncMap[status]())
             setTabState({ update: true })
           } catch (e) {
-            const { response: { status } = {} } = e
-            getNotification(customMessagesMap[status])
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
           }
         },
         icon: DefaultIcon,
       }),
     }),
-    [api, id, type],
+    [api, getNotification, id, setTabState, type],
   )
 
   const wrappedDocumentActions = useDocumentActions(

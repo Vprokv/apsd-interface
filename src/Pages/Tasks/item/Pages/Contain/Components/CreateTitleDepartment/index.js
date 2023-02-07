@@ -18,16 +18,18 @@ import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDep
 import { useParams } from 'react-router-dom'
 import { NestedButton } from '../../styles'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Успешное добавлено',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Документ добавлен успешно',
+    }
   },
 }
 
@@ -92,13 +94,13 @@ const CreateTitleDepartment = ({
         parentId: addDepartmentState.id,
       })
       setSelected(null)
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
       handleClose()
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, id, selected, addDepartmentState.id, handleClose])
+  }, [api, id, selected, addDepartmentState.id, getNotification, handleClose])
 
   const renderEntities = useCallback(
     (level = 1) =>

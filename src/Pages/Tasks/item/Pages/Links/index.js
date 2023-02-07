@@ -43,16 +43,18 @@ import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Удалена связь',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Связь удалена успешно',
+    }
   },
 }
 
@@ -262,10 +264,10 @@ const Links = () => {
   const onDelete = useCallback(async () => {
     try {
       const response = await api.post(URL_LINK_DELETE, { linkIds: selectState })
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, selectState])
 

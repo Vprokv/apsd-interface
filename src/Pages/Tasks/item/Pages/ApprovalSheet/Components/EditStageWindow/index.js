@@ -20,7 +20,6 @@ import {
   PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -42,12 +41,15 @@ import {
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Этап отредактирован',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Этап мзменен успешно',
+    }
   },
 }
 
@@ -201,10 +203,10 @@ const EditStageWindow = (props) => {
       const response = await api.post(URL_APPROVAL_SHEET_UPDATE, { stage })
       loadData()
       changeModalState(false)()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, stage, loadData, changeModalState, getNotification])
 
