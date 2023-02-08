@@ -59,13 +59,13 @@ const ApprovalSheet = (props) => {
   const [permit, setPermit] = useState(false)
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
-
-  const {
-    tabState: { update },
-    setTabState: setDocumentTypeState,
-  } = useTabItem({
-    stateId: documentType,
-  })
+  //
+  // const {
+  //   tabState: { update },
+  //   setTabState: setDocumentTypeState,
+  // } = useTabItem({
+  //   stateId: documentType,
+  // })
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -84,11 +84,11 @@ const ApprovalSheet = (props) => {
     [setTabState],
   )
 
-  useEffect(() => {
-    if (!update) {
-      setDocumentTypeState({ update: false })
-    }
-  }, [setDocumentTypeState, update])
+  // useEffect(() => {
+  //   if (!update) {
+  //     setDocumentTypeState({ update: false })
+  //   }
+  // }, [setDocumentTypeState, update])
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
@@ -98,14 +98,14 @@ const ApprovalSheet = (props) => {
     return data
   }, [api, documentId, type, change])
 
-  useEffect(() => {
-    ;(async () => {
-      if (update) {
-        setTabState({ data: await loadData() })
-      }
-      setDocumentTypeState({ update: false })
-    })()
-  }, [loadData, setDocumentTypeState, setTabState, update])
+  // useEffect(() => {
+  //   ;(async () => {
+  //     if (update) {
+  //       setTabState({ data: await loadData() })
+  //     }
+  //     setDocumentTypeState({ update: false })
+  //   })()
+  // }, [loadData, setDocumentTypeState, setTabState, update])
 
   useEffect(() => {
     ;(async () => {

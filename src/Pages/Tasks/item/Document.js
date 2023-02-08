@@ -171,6 +171,7 @@ const Document = () => {
             })
             getNotification(customMessagesFuncMap[status]())
             setTabState({ update: true })
+            setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
