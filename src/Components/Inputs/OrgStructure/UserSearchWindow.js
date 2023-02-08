@@ -141,6 +141,8 @@ const OrgStructureWindow = (props) => {
     }
   }, [filter.organization, filterRef])
 
+  console.log(branches, 'branches')
+
   const fields = useMemo(
     () => [
       {
@@ -176,7 +178,7 @@ const OrgStructureWindow = (props) => {
         disabled: !filter.organization,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
-        options: [...(filterOptions?.branchId || []), branches],
+        options: [...(filterOptions?.branchId || []), ...branches],
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
             id: filter.organization,
