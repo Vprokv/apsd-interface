@@ -144,6 +144,7 @@ const Task = () => {
               taskId: id,
               signal: name,
             })
+            setTabState({ data: await loadData() })
             closeCurrenTab()
             getNotification(customMessagesFuncMap[status]())
           } catch (e) {
@@ -235,7 +236,8 @@ const Task = () => {
               signal: name,
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ update: true })
+            // setTabState({ update: true })
+            setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))

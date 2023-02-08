@@ -180,7 +180,7 @@ const Document = () => {
         icon: DefaultIcon,
       }),
     }),
-    [api, getNotification, id, setTabState, type],
+    [api, getNotification, id, loadData, setTabState, type],
   )
 
   const wrappedDocumentActions = useDocumentActions(
