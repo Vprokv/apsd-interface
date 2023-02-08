@@ -6,6 +6,7 @@ export const FilterForm = styled(WithWithValidationForm)`
   width: 100%;
   display: grid;
   margin-left: auto;
+  --form-elements-indent: 15px;
 `
 export const TitlesContainer = styled.div`
   width: 18%;
@@ -13,8 +14,8 @@ export const TitlesContainer = styled.div`
   display: grid;
 `
 export const CustomSizeModalWindow = styled(ModalWindowWrapper)`
-  width: 40.6%;
-  height: 57.65%;
+  width: 60.6%;
+  height: 90.65%;
   margin: auto;
 `
 export const LeafContainer = styled.div`

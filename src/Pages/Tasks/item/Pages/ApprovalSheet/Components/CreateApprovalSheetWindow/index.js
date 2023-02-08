@@ -119,6 +119,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           placeholder: 'Наименование этапа',
           valueKey: 'dss_name',
           labelKey: 'dss_name',
+          className: 'font-size-12',
           options: typicalStage,
           loadFunction: async (query) => {
             const { data } = await api.post(URL_ENTITY_LIST, {
@@ -134,6 +135,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           visible: visible,
           multiple: true,
           returnOption: false,
+          className: 'font-size-12',
           placeholder: 'Наименование этапа',
           label: 'Наименование этапа',
         },
@@ -142,6 +144,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           component: UserSelect,
           multiple: true,
           returnOption: false,
+          className: 'font-size-12',
           placeholder: 'Выберите участников',
           label: 'Участники',
         },
@@ -212,7 +215,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
                 rules={rules}
               />
             </div>
-            <div className="mt-2">
+            <div className="mt-2 font-size-12">
               Контрольный срок согласования для томов ПД, РД:
               <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
               Согласование куратора филиала - 1 раб. дн. <br />* Согласование
@@ -221,7 +224,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           </ScrollBar>
         </div>
 
-        <div className="flex items-center justify-end mt-8">
+        <div className="flex items-center justify-end mt-4">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
             onClick={onClose}
