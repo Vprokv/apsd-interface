@@ -34,16 +34,18 @@ import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Успешное удаление',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Удаление выполнено успешно',
+    }
   },
 }
 
@@ -183,12 +185,12 @@ const Contain = () => {
         data: data.reduce(removeDeletedDocs, []),
       })
       setSelectState([])
-      getNotification(customMessagesMap[response[0].status])
+      getNotification(customMessagesFuncMap[response[0].status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, data, selectState, setTabState])
+  }, [api, data, getNotification, selectState, setTabState])
 
   const addDepartment = useCallback(async () => {
     setAddDepartmentState({

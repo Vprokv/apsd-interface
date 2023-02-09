@@ -12,14 +12,19 @@ import EditStageWindow from '../EditStageWindow'
 import PopUp from '../PopUp'
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import dayjs from 'dayjs'
+import {
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  PRESENT_DATE_FORMAT,
+} from '@/contants'
 
 const Row = styled.div`
   height: 48px;
-  background-color: var(--notifications);
+  //background-color: var(--notifications);
   font-size: 12px;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid var(--separator);
+  //border-bottom: 1px solid var(--separator);
   align-content: center;
   //border-top: 1px solid var(--separator);
 `
@@ -31,8 +36,14 @@ const StageRowComponent = ({ node }, props) => {
     <Row>
       <div className="flex h-full items-center">
         <div className="mr-12 font-medium w-32">{name}</div>
-        <div className="mr-12 w-24">{`Срок (дней): ${term}`}</div>
-        <div>{`Дата завершения: ${finishDate === null ? '' : finishDate}`}</div>
+        <div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>
+        <div>{`Дата завершения: ${
+          finishDate === null
+            ? ''
+            : dayjs(finishDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
+                PRESENT_DATE_FORMAT,
+              )
+        }`}</div>
         <div className="flex items-center ml-auto">
           {editable && (
             <>

@@ -19,7 +19,6 @@ import {
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -29,16 +28,17 @@ import {
 } from '@Components/Logic/Validator/constants'
 import LoadableSelect from '@/Components/Inputs/Select'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import Input from '@/Components/Fields/Input'
-import log from 'tailwindcss/lib/util/log'
 import NumericInput from '@Components/Components/Inputs/NumericInput'
 import ScrollBar from 'react-perfect-scrollbar'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен этап',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Этап добавлен успешно',
+    }
   },
 }
 
@@ -119,6 +119,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           placeholder: 'Наименование этапа',
           valueKey: 'dss_name',
           labelKey: 'dss_name',
+          className: 'font-size-12',
           options: typicalStage,
           loadFunction: async (query) => {
             const { data } = await api.post(URL_ENTITY_LIST, {
@@ -134,6 +135,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           visible: visible,
           multiple: true,
           returnOption: false,
+          className: 'font-size-12',
           placeholder: 'Наименование этапа',
           label: 'Наименование этапа',
         },
@@ -142,6 +144,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           component: UserSelect,
           multiple: true,
           returnOption: false,
+          className: 'font-size-12',
           placeholder: 'Выберите участников',
           label: 'Участники',
         },
@@ -174,10 +177,10 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
       loadData()
       changeModalState(false)()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, stage, loadData, changeModalState, getNotification])
 
@@ -212,7 +215,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
                 rules={rules}
               />
             </div>
-            <div className="mt-2">
+            <div className="mt-2 font-size-12">
               Контрольный срок согласования для томов ПД, РД:
               <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
               Согласование куратора филиала - 1 раб. дн. <br />* Согласование
@@ -221,7 +224,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           </ScrollBar>
         </div>
 
-        <div className="flex items-center justify-end mt-8">
+        <div className="flex items-center justify-end mt-4">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
             onClick={onClose}

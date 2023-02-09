@@ -28,16 +28,18 @@ import { URL_ENTITY_LIST, URL_HANDOUTS_CREATE } from '@/ApiList'
 import dayjs from 'dayjs'
 import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлена операция',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Операция добавленa успешно',
+    }
   },
 }
 
@@ -166,12 +168,12 @@ const CreateHandoutsWindow = ({ setChange }) => {
       const response = await api.post(URL_HANDOUTS_CREATE, createDate)
       setChange()
       changeModalState(false)()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [changeModalState, createDate, api, setChange])
+  }, [api, createDate, setChange, changeModalState, getNotification])
 
   const onClose = useCallback(() => {
     setFilterValue({})

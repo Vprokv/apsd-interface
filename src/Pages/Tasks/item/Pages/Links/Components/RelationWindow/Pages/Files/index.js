@@ -19,16 +19,18 @@ import {
 } from '@/Pages/Tasks/item/Pages/Links/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлена связь',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Связь добавлена успешно',
+    }
   },
 }
 
@@ -66,12 +68,21 @@ const Files = (props) => {
       })
       update()
       close()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, files, parentId, userObject, close, update])
+  }, [
+    api,
+    files,
+    update,
+    close,
+    getNotification,
+    parentId,
+    userObject.r_object_id,
+    userObject.dss_user_name,
+  ])
   const columns = useMemo(
     () => [
       {

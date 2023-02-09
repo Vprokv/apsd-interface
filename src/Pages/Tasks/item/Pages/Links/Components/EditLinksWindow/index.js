@@ -19,16 +19,18 @@ import Comment from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/C
 import { ApiContext } from '@/contants'
 import { URL_LINK_UPDATE, URL_SUBSCRIPTION_DELETE } from '@/ApiList'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Обновлена связь',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Связь обновлена',
+    }
   },
 }
 
@@ -117,15 +119,17 @@ const EditLinksWindow = ({ value }) => {
         ),
       ])
       response.flat().map((item) => {
-        item.then(({ status }) => getNotification(customMessagesMap[status]))
+        item.then(({ status }) =>
+          getNotification(customMessagesFuncMap[status]()),
+        )
       })
       changeModalState(false)
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, changeModalState, comment, date, link, value])
+  }, [api, changeModalState, comment, date, getNotification, link, value])
 
   return (
     <EditLinkContext.Provider value={context}>

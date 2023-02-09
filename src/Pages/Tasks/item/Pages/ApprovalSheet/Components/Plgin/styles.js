@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 export const Row = styled.div`
-  border-bottom: 1px solid var(--separator);
   font-size: 14px;
 `
 

@@ -52,7 +52,7 @@ import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -193,13 +193,17 @@ function TaskList() {
               : {}),
             ...filter,
           },
+          sort: [
+            {
+              direction: sortQuery.direction,
+              property: sortQuery.key,
+            },
+          ],
         },
         {
           params: {
             limit,
             offset,
-            orderBy: sortQuery.key,
-            sortType: sortQuery.direction,
           },
         },
       )

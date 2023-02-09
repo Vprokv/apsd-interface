@@ -10,18 +10,23 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import BaseCell from '../../../../../../../Components/ListTableComponents/BaseCell'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import {LoadContext, PermitDisableContext} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
-  defaultMessageMap,
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен шаблон',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Шаблон добавлен успешно',
+    }
   },
 }
 
@@ -89,25 +94,6 @@ const ApplyTemplateWindow = () => {
     setListTemplates(data)
   }, [changeModalState, api, listTemplates])
 
-  const applyTemplate = useCallback(
-    async (id) => {
-      try {
-        const { data } = await api.post(URL_TEMPLATE, {
-          type: 'ddt_approve_template',
-          id: id,
-        })
-        if (data && data.length > 0) {
-          createStage(data)
-          getNotification(customMessagesMap[200])
-        }
-      } catch (e) {
-        const { response: { status } = {} } = e
-        getNotification(customMessagesMap[status])
-      }
-    },
-    [api],
-  )
-
   const createStage = useCallback(
     async (v) => {
       await api.post(URL_CREATE_STAGE, {
@@ -118,8 +104,28 @@ const ApplyTemplateWindow = () => {
       await loadData()
       changeModalState(false)()
     },
-    [api, loadData],
+    [api, changeModalState, documentId, loadData],
   )
+
+  const applyTemplate = useCallback(
+    async (id) => {
+      try {
+        const { data } = await api.post(URL_TEMPLATE, {
+          type: 'ddt_approve_template',
+          id: id,
+        })
+        if (data && data.length > 0) {
+          await createStage(data)
+          getNotification(customMessagesFuncMap[200]())
+        }
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
+    },
+    [api, createStage, getNotification],
+  )
+
   return (
     <>
       <SecondaryBlueButton

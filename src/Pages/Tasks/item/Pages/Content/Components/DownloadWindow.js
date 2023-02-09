@@ -14,27 +14,26 @@ import { URL_CREATE_VERSION, URL_ENTITY_LIST } from '@/ApiList'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
-import FileInput from '@/Components/Inputs/FileInput'
-// import { FileInput as NewFileInput } from '@/Components/Inputs/'
-import { useParams } from 'react-router-dom'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import { ContainerContext } from '@Components/constants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const rules = {}
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен файл/версия',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Файл добавлен успешно',
+    }
   },
 }
 
@@ -65,12 +64,12 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
       })
       setChange()
       onClose()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(status)
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, onClose, values])
+  }, [api, contentId, getNotification, id, onClose, setChange, values])
   const userObject = useRecoilValue(userAtom)
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { ApiContext, DocumentTypeContext } from '@/contants'
-import Button, {SecondaryBlueButton} from '@/Components/Button'
+import Button, { SecondaryBlueButton } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { URL_CREATE_TEMPLATE } from '@/ApiList'
 import InputComponent from '@Components/Components/Inputs/Input'
@@ -9,17 +9,19 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import PropTypes from 'prop-types'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import {
-  defaultMessageMap,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
-const customMessagesMap = {
-  ...defaultMessageMap,
-  200: {
-    type: NOTIFICATION_TYPE_SUCCESS,
-    message: 'Добавлен шаблон',
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Шаблон добавлен успешно',
+    }
   },
 }
 
@@ -70,10 +72,10 @@ const CreateTemplateWindow = ({ jsonData }) => {
         },
       })
       changeModalState(true)()
-      getNotification(customMessagesMap[response.status])
+      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(customMessagesMap[status])
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, changeModalState, documentType, getNotification, jsonData, values])
   return (
