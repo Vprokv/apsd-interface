@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { WithWithValidationForm } from '@Components/Components/Forms'
+import { WithValidationForm } from '@Components/Components/Forms'
 
-export const FilterForm = styled(WithWithValidationForm)`
+export const FilterForm = styled(WithValidationForm)`
   display: grid;
   //grid-row-gap: 20px;
 `

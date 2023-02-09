@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { WithWithValidationForm } from '@Components/Components/Forms'
+import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import Button from '@/Components/Button'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -36,7 +36,7 @@ function Login({ loginRequest }) {
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">
-      <WithWithValidationForm
+      <WithValidationForm
         className="mb-4"
         value={state}
         onInput={setState}
@@ -56,7 +56,7 @@ function Login({ loginRequest }) {
             Вход
           </Button>
         </div>
-      </WithWithValidationForm>
+      </WithValidationForm>
     </LoginTemplate>
   )
 }

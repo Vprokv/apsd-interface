@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import Form, { WithWithValidationForm } from '@Components/Components/Forms'
+import Form, { WithValidationForm } from '@Components/Components/Forms'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 
-export const FilterForm = styled(WithWithValidationForm)`
+export const FilterForm = styled(WithValidationForm)`
   width: 100%;
   display: grid;
   margin-left: auto;

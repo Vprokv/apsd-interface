@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { WithWithValidationForm } from '@Components/Components/Forms'
+import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import Button from '@/Components/Button'
 import {
@@ -112,7 +112,7 @@ const CreatePassword = ({ loginRequest }) => {
 
   return (
     <LoginTemplate backgroundUrlPath="./d67acfda04fca2473676bbd7ef137b44.png">
-      <WithWithValidationForm
+      <WithValidationForm
         className="mb-4"
         value={state}
         onInput={setState}
@@ -130,7 +130,7 @@ const CreatePassword = ({ loginRequest }) => {
             <Button className="bg-light-gray w-full">Отмена</Button>
           </Link>
         </div>
-      </WithWithValidationForm>
+      </WithValidationForm>
     </LoginTemplate>
   )
 }

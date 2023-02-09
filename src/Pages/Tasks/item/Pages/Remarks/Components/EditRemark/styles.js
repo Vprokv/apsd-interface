@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import Form, {WithWithValidationForm} from '@Components/Components/Forms'
+import Form, {WithValidationForm} from '@Components/Components/Forms'
 
-export const FilterForm = styled(WithWithValidationForm)`
+export const FilterForm = styled(WithValidationForm)`
   display: grid;
 `
 

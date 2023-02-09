@@ -1,7 +1,6 @@
 import { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { FilterForm, SearchInput } from '../../styles'
-import Switch from '@/Components/Inputs/Switch'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'

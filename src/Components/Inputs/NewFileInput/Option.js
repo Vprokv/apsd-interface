@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import uploadIcon from '@Components/Icons/uploadIcon'
 import { preloader } from '@Components/Icons/preloader'
-import { close } from '@Components/Icons/close'
+import Close from '@Components/Icons/close'
 
 import {
   OptionContainer,
@@ -66,7 +66,7 @@ const UploadedOption = ({ value, onDelete }) => (
   <OptionContainer>
     {value}
     <RemoveButton type="button" onClick={onDelete}>
-      <Icon icon={close} size={6} />
+      <Icon icon={Close} size={6} />
     </RemoveButton>
   </OptionContainer>
 )
