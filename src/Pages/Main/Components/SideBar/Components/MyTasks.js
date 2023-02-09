@@ -19,10 +19,27 @@ import { ApiContext, ITEM_TASK, SIDEBAR_STATE } from '@/contants'
 import { useStatistic } from '@/Pages/Tasks/helper'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  defaultFunctionsMap,
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_SUCCESS,
+} from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
+
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  500: () => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Не удалось загрузить данные статистики',
+    }
+  },
+}
 
 const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
   const api = useContext(ApiContext)
   const { tabs } = useContext(CurrentTabContext)
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: SIDEBAR_STATE,
@@ -34,16 +51,42 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
 
   const statistic = useStatistic(stat)
 
-  useEffect(() => {
-    async function fetchData() {
-      const {
-        data: [data],
-      } = await api.post(URL_TASK_STATISTIC)
-      setTabState({ stat: data })
-    }
+  const poll = useCallback(
+    async ({ interval, maxAttempts }) => {
+      let attempts = 0
 
-    fetchData()
-  }, [api, setTabState])
+      const executePoll = async (resolve, reject) => {
+        const {
+          data: [data],
+          status,
+        } = await api.post(URL_TASK_STATISTIC)
+
+        try {
+          if (status === 200) {
+            setTabState({ stat: data })
+            setTimeout(executePoll, interval, resolve, reject)
+            return resolve(data)
+          }
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          if (maxAttempts && attempts === maxAttempts) {
+            getNotification(customMessagesFuncMap[status]())
+          } else {
+            setTimeout(executePoll, interval, resolve, reject)
+          }
+        }
+      }
+
+      return new Promise(executePoll)
+    },
+    [api, getNotification, setTabState],
+  )
+
+  useEffect(() => {
+    ;(async () => {
+      await poll({ interval: 300000, maxAttempts: 10 })
+    })()
+  }, [poll])
 
   const handleOpenNewTab = useCallback(
     (path) => () => {
