@@ -1,8 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { CirclePlus } from '@Components/Components/Tables/ListTable/Tree/icons/CirclePlus'
-import { CircleMinus } from '@Components/Components/Tables/ListTable/Tree/icons/CircleMinus'
-import { Dot } from '@Components/Components/Tables/ListTable/Tree/icons/Dot'
+import CirclePlus from '@Components/Components/Tables/ListTable/Tree/icons/CirclePlus'
+import CircleMinus from '@Components/Components/Tables/ListTable/Tree/icons/CircleMinus'
+import Dot from '@Components/Components/Tables/ListTable/Tree/icons/Dot'
 import Icon from '@Components/Components/Icon'
 import {
   ChildrenContainer,
