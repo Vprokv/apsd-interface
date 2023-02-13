@@ -15,10 +15,10 @@ const rules = {}
 const CreatingAdditionalAgreementWindow = ({
   onClose,
   approverId,
+  documentType,
   closeCurrenTab,
 }) => {
   const api = useContext(ApiContext)
-  const documentType = useContext(DocumentTypeContext)
   const documentId = useContext(DocumentIdContext)
   const [values, setValues] = useState({})
 
@@ -50,7 +50,7 @@ const CreatingAdditionalAgreementWindow = ({
       })
       closeCurrenTab()
     } catch (_) {}
-  }, [api, values, approverId, closeCurrenTab])
+  }, [api, values, approverId, documentType, documentId, closeCurrenTab])
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <Form

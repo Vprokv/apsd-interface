@@ -279,6 +279,7 @@ const Task = () => {
             <DocumentActions documentActions={actions} />
             <CreatingAdditionalAgreementWindow
               approverId={approverId}
+              documentType={type}
               open={showWindow}
               onClose={closeWindow}
               closeCurrenTab={closeCurrenTab}

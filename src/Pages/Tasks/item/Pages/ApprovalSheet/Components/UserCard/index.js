@@ -8,7 +8,7 @@ const UserCard = ({ fio, position, avatar } = {}) => {
     return typeof fio === 'string' && colorFromString(fio, 30, 80)
   }, [fio])
 
-  const name = useMemo(() => fio.split(' ')[1], [fio])
+  const name = useMemo(() => fio?.split(' ')[1], [fio])
 
   return (
     <div className="flex items-center">
