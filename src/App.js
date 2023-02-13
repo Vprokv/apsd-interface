@@ -10,7 +10,12 @@ import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
 import createAxiosInstance from './api'
 import Main from './Pages/Main'
-import { URL_LOGIN, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT } from './ApiList'
+import {
+  URL_LOGIN,
+  URL_SYSTEM_META,
+  URL_USER_CHANGE_PASSWORD,
+  URL_USER_OBJECT,
+} from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
@@ -85,14 +90,6 @@ function App() {
     },
     [apiInstance, login, loginRequest, token],
   )
-
-  useEffect(() => {
-    ;(async () => {
-      // TODO включить что-то из этого, пока оба запроса валятся
-      // const {data} = axios.get(URL_SYSTEM_META)
-      // const {data} = axios.get("/settings.json")
-    })()
-  }, [])
 
   useEffect(() => {
     apiInstance.interceptors.response.use(

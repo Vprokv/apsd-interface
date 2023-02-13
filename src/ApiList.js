@@ -1,9 +1,14 @@
 // SYSTEM
 export const URL_LOGIN = '/ts/simple/login'
 export const URL_USER_OBJECT = '/sedo/employee/bylogin' // {token <String>}
-export const URL_SYSTEM_META = '/apsd/system/ui/settings'
 export const URL_USER_CHANGE_PASSWORD = '/sedo/user/password'
 export const URL_USER_PASSWORD_RULES = '/sedo/user/password_policy'
+
+//setting
+export const URL_SYSTEM_META = '/settings.json'
+export const URL_REVISION_APSD = '/apsd/revision'
+export const URL_REVISION_CHAT = '/ts/revision'
+export const URL_REVISION_SEDO = '/sedo/revision'
 
 // TASK
 export const URL_TASK_LIST = '/sedo/task/list'

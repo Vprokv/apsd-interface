@@ -12,13 +12,6 @@ import {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
-// import { ChildrenContainer, HeaderContainer, LeafContainer } from './styles'
-// import Icon from '../Icon'
-// // import CheckBox from '../Inputs/CheckBox'
-// import { CircleMinus } from './Icons/CircleMinus'
-// import { CirclePlus } from './Icons/CirclePlus'
-// import { Dot } from './Icons/Dot'
-// import Row from './Row'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon
@@ -72,7 +65,6 @@ const Leaf = (props) => {
     className,
     returnObjects,
   } = props
-
 
   const refProps = useRef(props)
   refProps.current = props

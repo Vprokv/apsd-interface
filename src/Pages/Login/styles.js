@@ -23,7 +23,14 @@ export const LoginFormContainer = styled.div`
   width: 100%;
   height: 100%;
   flex: 0 0 auto;
-  padding: 150px 80px 50px;
+  padding: 20px 10px 10px;
+`
+
+export const FormContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  flex: 0 0 auto;
+  padding: 100px 80px 50px;
 `
 
 export const Background = styled.div`
