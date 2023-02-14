@@ -35,7 +35,7 @@ const StageRowComponent = ({ node }, props) => {
   return (
     <Row>
       <div className="flex h-full items-center">
-        <div className="mr-12 font-medium w-32">{name}</div>
+        <div className="mr-12 font-medium w-32 ml-2">{name}</div>
         <div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>
         <div>{`Дата завершения: ${
           finishDate === null

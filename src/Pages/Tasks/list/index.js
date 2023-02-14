@@ -138,6 +138,12 @@ const columns = [
       }),
     sizes: useCardSizes,
   },
+  {
+    id: 'dueDate',
+    label: 'Контрольный срок',
+    // component: BaseCell,
+    // sizes: baseCellSize,
+  },
 ]
 
 function TaskList() {

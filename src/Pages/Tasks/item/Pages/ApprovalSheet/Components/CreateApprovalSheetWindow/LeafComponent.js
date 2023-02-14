@@ -1,7 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import CirclePlus from '@Components/Components/Tables/ListTable/Tree/icons/CirclePlus'
-import CircleMinus from '@Components/Components/Tables/ListTable/Tree/icons/CircleMinus'
 import Dot from '@Components/Components/Tables/ListTable/Tree/icons/Dot'
 import Icon from '@Components/Components/Icon'
 import {
@@ -31,9 +29,9 @@ const CircleMinusIcon = ({ className, onClick }) => (
   />
 )
 
-const DotIcon = ({ className, onClick }) => (
-  <Icon icon={Dot} onClick={onClick} size={4} className={className} />
-)
+// const DotIcon = ({ className, onClick }) => (
+//   <Icon icon={Dot} onClick={onClick} size={4} className={className} />
+// )
 
 const Leaf = (props) => {
   const {
@@ -199,7 +197,6 @@ const Leaf = (props) => {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        <OpenStateIcon onClick={toggleOpen} className="mr-1.5" />
         {editable && (
           <CheckBox
             className="mr-1.5"
@@ -271,8 +268,9 @@ Leaf.defaultProps = {
   labelKey: 'title',
   OpenIcon: CirclePlusIcon,
   CloseIcon: CircleMinusIcon,
-  ChildrenLessIcon: DotIcon,
+  // ChildrenLessIcon: DotIcon,
   LeafComponent: Leaf,
+  level: 0,
 }
 
 export default Leaf
