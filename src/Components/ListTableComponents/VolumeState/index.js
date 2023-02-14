@@ -18,8 +18,6 @@ const VolumeState = ({
     return `${color.slice(0, 3)}a${color.slice(3, -1)}, 0.1)`
   }, [color])
 
-  console.log(display, 'display')
-
   return (
     <div className="flex flex-col w-min">
       <VolumeStatus

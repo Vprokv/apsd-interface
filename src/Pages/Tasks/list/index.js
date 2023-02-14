@@ -60,6 +60,7 @@ const plugins = {
     valueKey: 'id',
   },
 }
+
 const columns = [
   {
     id: 'task',
@@ -93,25 +94,30 @@ const columns = [
     sizes: volumeStatusSize,
   },
   {
+    id: 'fromAuthor',
+    label: 'От кого',
+    component: ({ ParentValue: { fromWhomEmployee } = {} }) =>
+      fromWhomEmployee &&
+      UserCard({
+        name: fromWhomEmployee?.firstName,
+        lastName: fromWhomEmployee?.lastName,
+        middleName: fromWhomEmployee?.middleName,
+        position: fromWhomEmployee?.position,
+        avatar: fromWhomEmployee?.avatartId,
+      }),
+    sizes: useCardSizes,
+  },
+  {
     id: 'maintainer',
     label: 'Назначенный исполнитель',
-    component: ({
-      ParentValue: {
-        performerEmployee: {
-          firstName = '',
-          position = '',
-          avatartId,
-          lastName,
-          middleName,
-        } = {},
-      } = {},
-    }) =>
+    component: ({ ParentValue: { appointedExecutors } = {} }) =>
+      appointedExecutors &&
       UserCard({
-        name: firstName,
-        lastName: lastName,
-        middleName: middleName,
-        position: position,
-        avatar: avatartId,
+        name: appointedExecutors?.firstName,
+        lastName: appointedExecutors?.lastName,
+        middleName: appointedExecutors?.middleName,
+        position: appointedExecutors?.position,
+        avatar: appointedExecutors?.avatartId,
       }),
     sizes: useCardSizes,
   },
