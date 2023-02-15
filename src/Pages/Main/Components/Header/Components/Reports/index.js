@@ -8,7 +8,16 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import { useNavigate } from 'react-router-dom'
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import { TabStateManipulation } from '@Components/Logic/Tab'
-import {ContHover, LeafContainer, Message} from "@/Pages/Rporting/styled";
+import { ContHover, LeafContainer, Message } from '@/Pages/Rporting/styled'
+
+const mockReports = [
+  {
+    id: '000002fd004ufhhx', //- id отчета
+    systemName: 'string', // - системное наименование отчета
+    name: 'string', //- русское имя отчета (для отображения)
+    description: 'string', // - расширенное имя отчета (не выводим пользователю)
+  },
+]
 
 const Reports = () => {
   const [open, setOpenState] = useState(false)
@@ -38,9 +47,11 @@ const Reports = () => {
     [changeModalState, navigate, openNewTab],
   )
 
+  console.log(reports, 'reports')
+
   const renderedEntities = useMemo(
     () =>
-      reports.map(({ id, description }) => (
+      reports.map(({ id, name }) => (
         <button
           key={id}
           type="button"
@@ -49,7 +60,7 @@ const Reports = () => {
           }`}
           onClick={() => onClick(id)}
         >
-          <span className="mr-auto ml-2">{description}</span>
+          <div className="mr-auto ml-2">{name}</div>
         </button>
       )),
     [onClick, reports, selected],

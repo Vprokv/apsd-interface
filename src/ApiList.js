@@ -131,3 +131,4 @@ export const URL_CREATE_TEMPLATE = '/sedo/template/create'
 
 //REPORT
 export const URL_REPORTS_LIST = '/apsd/reporting/list'
+export const URL_REPORTS_ITEM = '/apsd/reporting/get'

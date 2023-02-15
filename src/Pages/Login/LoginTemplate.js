@@ -18,10 +18,11 @@ import axios from 'axios'
 const LoginTemplate = ({ children, backgroundUrlPath }) => {
   const api = useContext(ApiContext)
   const [direction, setDirection] = useState({})
+  const [support, setSupport] = useState({})
 
   useEffect(() => {
     ;(async () => {
-      const [{ data: apsd }, { data: ts }, { data: sedo }, { data: support }] =
+      const [{ data: apsd }, { data: ts }, { data: sedo }, support] =
         await Promise.all([
           api.post(URL_REVISION_APSD),
           api.post(URL_REVISION_CHAT),
@@ -31,6 +32,15 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
       setDirection({ apsd, ts, sedo, support })
     })()
   }, [api])
+
+  useEffect(() => {
+    ;(async () => {
+      const support = await axios.get('/settings.json')
+      setSupport(support)
+    })()
+  }, [api])
+
+  console.log(support, 'support')
 
   return (
     <LoginContainer сlassName="flex-col">
@@ -51,7 +61,7 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
           <div className="font-bold mt-4">Сборка apsd:</div>
           <div>
             {direction.ts &&
-            `${direction.ts?.commit}/${direction.ts?.branches}`}
+              `${direction.ts?.commit}/${direction.ts?.branches}`}
           </div>
         </div>
         <FormContainer className="p-5 flex flex-col">
