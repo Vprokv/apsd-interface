@@ -7,6 +7,14 @@ const refsMap = {
     valueKey: 'dss_name',
     labelKey: 'dss_caption',
   },
+  Branch: {
+    valueKey: 'id',
+    labelKey: 'organizationName',
+  },
+  Department: {
+    valueKey: 'dsid_departmen',
+    labelKey: 'dss_department_name',
+  },
 }
 
 const defaultObject = { valueKey: 'r_object_id', labelKey: 'dss_name' }

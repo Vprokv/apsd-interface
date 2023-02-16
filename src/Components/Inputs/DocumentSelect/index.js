@@ -26,6 +26,7 @@ import closeIcon from '@/Icons/closeIcon'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import Input from '../../Fields/Input'
 import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
+import log from 'tailwindcss/lib/util/log'
 
 const changeInput = () => {}
 
@@ -41,6 +42,7 @@ const DocumentSelect = ({
   const [searchState, setSearchState] = useState({})
   const [selectedState, setSelectedState] = useState(value)
   const [filter, setFilter] = useState(filters)
+  console.log(filters, 'filters')
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpen(nextState)
@@ -252,6 +254,7 @@ DocumentSelect.propTypes = {}
 
 DocumentSelect.defaultProps = {
   className: '',
+  filters: { type: 'ddt_startup_complex_type_doc' },
 }
 
 export default DocumentSelect

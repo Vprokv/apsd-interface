@@ -7,7 +7,7 @@ import axios from 'axios'
 export const API_URL = 'http://10.20.56.47/'
 
 //production
-// export const API_URL = 'http://10.20.56.50/'
+// export const API_URL = 'https://psd.moesk.ru'
 
 //config for master branch
 // export const API_URL =
