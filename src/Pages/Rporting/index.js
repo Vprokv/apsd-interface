@@ -1,28 +1,31 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, REPORTING, TASK_LIST } from '@/contants'
-import { useLocation, useParams } from 'react-router-dom'
+import { ApiContext, REPORTING, TASK_LIST, TokenContext } from '@/contants'
+import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_REPORTS_ITEM, URL_TITLE_CONTAIN } from '@/ApiList'
+import {
+  URL_PREVIEW_DOCUMENT,
+  URL_REPORTS_BUILD,
+  URL_REPORTS_GET,
+  URL_REPORTS_ITEM,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import Icon from '@Components/Components/Icon'
-import closeIcon from '@/Icons/closeIcon'
 import { ReportsForm } from '@/Pages/Rporting/styled'
-import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
-import { defaultOperator, operators } from '@/Pages/Search/constans'
 import InputWrapper from '@Components/Components/Forms/InputWrapper'
+import { getField, getLoadFunction } from '@/Pages/Rporting/rules'
 
 const Reporting = (props) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const tabItemState = useTabItem({ stateId: REPORTING })
   const [filter, setFilter] = useState({})
+  const { token } = useContext(TokenContext)
 
   const {
     tabState,
-    tabState: { data: { name, parameters = [] } = {} },
+    tabState: { data: { name, parameters = [], id: reportId } = {} },
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
@@ -70,6 +73,17 @@ const Reporting = (props) => {
       ),
     [api, parameters],
   )
+
+  const onBuild = useCallback(async () => {
+    const {
+      data: { fileKey },
+    } = await api.post(URL_REPORTS_BUILD, {
+      id: reportId,
+      reportParameters: filter,
+    })
+
+    const { data } = await api.get(`${URL_REPORTS_GET}:${fileKey}:${token}`)
+  }, [api, filter, reportId, token])
 
   return (
     <div>

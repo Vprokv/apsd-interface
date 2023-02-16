@@ -24,6 +24,17 @@ const fields = {
   Checkbox: CheckBox,
 }
 
+//Combobox
+//Orgstructure
+//Orgstructure
+//Checkbox
+//Date
+//Branch
+//Department
+//Document
+//DocumentPicker
+//NoFieldType
+
 export const getField = (type) => fields[type] ?? fields.DocStatus
 export const getLoadFunction =
   (api) =>
