@@ -31,7 +31,7 @@ import {
 import NoFieldType from '@/Components/NoFieldType'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
+import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 
 export const UserContext = createContext({})
 
@@ -132,14 +132,16 @@ const Reporting = (props) => {
           onInput={setFilter}
           inputWrapper={DefaultWrapper}
           rules={rules}
-        />
-        {/*</div>*/}
+          onSubmit={onBuild}
+        >
+          <div></div>
+          <div className="flex items-center justify-end my-4">
+            <SecondaryOverBlueButton type="submit">
+              Сформировать
+            </SecondaryOverBlueButton>
+          </div>
+        </ReportsForm>
       </ScrollBar>
-      <div className="flex items-center justify-end m-4">
-        <SecondaryOverBlueButton onClick={onBuild}>
-          Сформировать
-        </SecondaryOverBlueButton>
-      </div>
     </>
   )
 }
