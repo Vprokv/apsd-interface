@@ -31,6 +31,7 @@ import {
 import NoFieldType from '@/Components/NoFieldType'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import DefaultWrapper from "@/Components/Fields/DefaultWrapper";
 
 export const UserContext = createContext({})
 
@@ -120,27 +121,26 @@ const Reporting = (props) => {
   }, [api, dss_def_format, filter, reportId, token])
 
   return (
-    <UserContext.Provider value={user}>
-      <div className="flex items-center m-4">
+    <>
+      <div className="flex items-center p-4">
         <span className="text-2xl font-medium">{name}</span>
       </div>
-      <ScrollBar>
-        <div className="flex py-4 flex-col h-full">
-          <ReportsForm
-            fields={fields}
-            value={filter}
-            onInput={setFilter}
-            inputWrapper={InputWrapper}
-            rules={rules}
-          />
-        </div>
+      <ScrollBar className="m-4">
+        <ReportsForm
+          fields={fields}
+          value={filter}
+          onInput={setFilter}
+          inputWrapper={DefaultWrapper}
+          rules={rules}
+        />
+        {/*</div>*/}
       </ScrollBar>
       <div className="flex items-center justify-end m-4">
         <SecondaryOverBlueButton onClick={onBuild}>
           Сформировать
         </SecondaryOverBlueButton>
       </div>
-    </UserContext.Provider>
+    </>
   )
 }
 

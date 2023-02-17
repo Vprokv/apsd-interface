@@ -42,7 +42,6 @@ const DocumentSelect = ({
   const [searchState, setSearchState] = useState({})
   const [selectedState, setSelectedState] = useState(value)
   const [filter, setFilter] = useState(filters)
-  console.log(filters, 'filters')
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpen(nextState)

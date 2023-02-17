@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Validation from '@Components/Logic/Validator/V'
-import Form, {WithValidationForm} from '@Components/Components/Forms'
+import Form, { WithValidationForm } from '@Components/Components/Forms'
 import InputWrapper, {
   InputLabel,
   InputLabelStart,
@@ -38,7 +38,7 @@ export const ReportsForm = styled(WithValidationForm)`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 32px;
-  padding: 1rem;
+  padding: 0.5rem;
   --form-elements-indent: 0px;
   grid-row-gap: 20px;
 `

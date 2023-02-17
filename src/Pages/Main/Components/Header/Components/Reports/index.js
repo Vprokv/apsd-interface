@@ -47,8 +47,6 @@ const Reports = () => {
     [changeModalState, navigate, openNewTab],
   )
 
-  console.log(reports, 'reports')
-
   const renderedEntities = useMemo(
     () =>
       reports.map(({ id, name }) => (

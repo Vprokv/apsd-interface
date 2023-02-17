@@ -35,8 +35,8 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
 
   useEffect(() => {
     ;(async () => {
-      const support = await axios.get('/settings.json')
-      setSupport(support)
+      const { data } = await axios.get('/settings.json')
+      setSupport(data)
     })()
   }, [api])
 
@@ -73,11 +73,9 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
           />
           {children}
           <div className="mt-auto font-size-12 font-medium">
-            <div className="mb-4 color-blue-1 font-bold">
-              {direction.support?.message}
-            </div>
-            <div className="mb-4">{direction.support?.phone}</div>
-            <div>{direction.support?.email}</div>
+            <div className="mb-4 color-blue-1 font-bold">{support.message}</div>
+            <div className="mb-4">{support.phone}</div>
+            <div>{support.email}</div>
           </div>
         </FormContainer>
       </LoginFormContainer>
