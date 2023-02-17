@@ -30,6 +30,7 @@ import {
 } from '@/Components/Button'
 import NoFieldType from '@/Components/NoFieldType'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 
 export const UserContext = createContext({})
 
@@ -42,7 +43,9 @@ const Reporting = (props) => {
   const user = useRecoilValue(userAtom)
 
   const {
-    tabState: { data: { name, parameters = [], id: reportId } = {} },
+    tabState: {
+      data: { name, parameters = [], id: reportId, dss_def_format } = {},
+    },
   } = tabItemState
 
   const loadData = useCallback(async () => {
@@ -52,29 +55,39 @@ const Reporting = (props) => {
     return data
   }, [api, id])
 
+  console.log(filter, 'filter')
+
   useSetTabName(useCallback(() => name, [name]))
   useAutoReload(loadData, tabItemState)
 
-  const parseFields = useMemo(
+  const { fields, rules } = useMemo(
     () =>
-      parameters.map((attr) => {
-        const { label, name, type } = attr
-        const { [type]: transmission = () => ({ component: NoFieldType }) } =
-          propsTransmission
+      parameters.reduce(
+        (acc, attr) => {
+          const { label, name, type, required } = attr
+          const { [type]: transmission = () => ({ component: NoFieldType }) } =
+            propsTransmission
 
-        return {
-          label,
-          id: name,
-          type,
-          ...transmission({
-            api,
-            backConfig: attr,
-            nextProps: {},
-            type,
-            user,
-          }),
-        }
-      }),
+          if (required) {
+            acc.rules[name] = [{ name: VALIDATION_RULE_REQUIRED }]
+          }
+
+          acc.fields.push({
+            label,
+            id: name,
+            ...transmission({
+              api,
+              backConfig: attr,
+              nextProps: {},
+              type,
+              user,
+            }),
+          })
+
+          return acc
+        },
+        { rules: {}, fields: [] },
+      ),
     [api, parameters, user],
   )
 
@@ -84,9 +97,8 @@ const Reporting = (props) => {
     } = await api.post(URL_REPORTS_BUILD, {
       id: reportId,
       reportParameters: {
-        branch_performer: filter.branch_name,
-        department_performer: filter.branch_name
-        // res_author: ''
+        ...filter,
+        format: dss_def_format,
       },
     })
 
@@ -105,7 +117,7 @@ const Reporting = (props) => {
     )
 
     downloadFile(sdsd, 'dsdsds')
-  }, [api, filter, reportId, token])
+  }, [api, dss_def_format, filter, reportId, token])
 
   return (
     <UserContext.Provider value={user}>
@@ -115,11 +127,11 @@ const Reporting = (props) => {
       <ScrollBar>
         <div className="flex py-4 flex-col h-full">
           <ReportsForm
-            fields={parseFields}
+            fields={fields}
             value={filter}
             onInput={setFilter}
             inputWrapper={InputWrapper}
-            // rules={}
+            rules={rules}
           />
         </div>
       </ScrollBar>
