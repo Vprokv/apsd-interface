@@ -3,29 +3,61 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import Input from '@Components/Components/Inputs/Input'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import {URL_ENTITY_LIST, URL_REPORTS_BRUNCH, URL_REPORTS_DEPARTMENT} from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_REPORTS_BRUNCH,
+  URL_REPORTS_DEPARTMENT,
+} from '@/ApiList'
 import refsTransmission from '@/RefsTransmission'
-import DocumentSelect from "@/Components/Inputs/DocumentSelect";
-import CustomValuesPipe from "@/Pages/Tasks/item/Pages/Requisites/PipeComponents/CustomValues";
-import FiltersPipe from "@/Pages/Tasks/item/Pages/Requisites/PipeComponents/Filters";
+import DocumentSelect from '@/Components/Inputs/DocumentSelect'
+import CustomValuesPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/CustomValues'
+import FiltersPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/Filters'
+import { useEffect, useState } from 'react'
 
-const fields = {
-  Department: Select,
-  Document: Select,
-  DocumentPicker: Select,
-  TextualCombobox: Select,
+const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
+  const [filter, setFilter] = useState()
+
+  useEffect(() => {
+    const val = filter?.map(({ emplId, fullDescription, userName }) => {
+      return {
+        [res_author ? 'res_author_label' : `${props.id}_label`]:
+          fullDescription,
+        [res_author ? 'res_author_dss_user_name' : `${props.id}_dss_user_name`]:
+          userName,
+        [res_author ? 'res_author' : 'emplId']: emplId,
+      }
+    })
+
+    onInput(val, props.id)
+  }, [filter, onInput, props.id, res_author])
+
+  return (
+    <UserSelect
+      {...props}
+      returnObjects={true}
+      value={filter}
+      onInput={setFilter}
+    />
+  )
 }
 
-//Combobox
-//Orgstructure
-//Orgstructure
-//Checkbox
-//Date
-//Branch
-//Department
-//Document
-//DocumentPicker
-//NoFieldType
+const CustomDatePicker = ({ onInput, value, ...props }) => {
+  const [filter, setFilter] = useState()
+
+  useEffect(() => {
+    onInput(
+      filter && {
+        r_creation_dateFirst: filter[0],
+        r_creation_dateSecond: filter[1],
+      },
+      props.id,
+    )
+  }, [filter, onInput, props.id, value])
+
+  return (
+    <DatePicker {...props} range={true} value={filter} onInput={setFilter} />
+  )
+}
 
 const loadFunctions = {
   default: (accumulator) => {
@@ -130,7 +162,7 @@ export const propsTransmission = {
     return accumulator.nextProps
   },
   Date: (accumulator) => {
-    accumulator.nextProps.component = () => <DatePicker range={true} />
+    accumulator.nextProps.component = CustomDatePicker
     return accumulator.nextProps
   },
   Checkbox: (accumulator) => {
@@ -142,7 +174,7 @@ export const propsTransmission = {
     return accumulator.nextProps
   },
   Orgstructure: (accumulator) => {
-    accumulator.nextProps.component = UserSelect
+    accumulator.nextProps.component = CustomOrgstructure
     getMultiply(accumulator)
     getRequired(accumulator)
     return accumulator.nextProps
@@ -167,11 +199,9 @@ export const propsTransmission = {
     getMultiply(accumulator)
     CustomValuesPipe(accumulator)
     FiltersPipe(accumulator)
-    // accumulator.nextProps.filters = {
-    //   type: accumulator.backConfig.dss_component_reference[0],
-    // }
-    // accumulator.nextProps.displayName =
-    //   accumulator.backConfig.dss_display_template
+    accumulator.nextProps.filters = {
+      type: accumulator.backConfig.dss_component_reference,
+    }
     accumulator.nextProps.valueKey = 'id'
     accumulator.nextProps.labelKey = 'displayName'
     accumulator.nextProps.refKey = 'documentSelect'
