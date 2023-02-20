@@ -21,7 +21,7 @@ import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
 import InputWrapper from '@Components/Components/Forms/InputWrapper'
 import { propsTransmission } from '@/Pages/Rporting/rules'
-import downloadFile from '@/Utils/DownloadFile'
+import downloadFile, {downloadFileXslx} from '@/Utils/DownloadFile'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
 import {
@@ -55,8 +55,6 @@ const Reporting = (props) => {
     })
     return data
   }, [api, id])
-
-  console.log(filter, 'filter')
 
   useSetTabName(useCallback(() => name, [name]))
   useAutoReload(loadData, tabItemState)
@@ -103,22 +101,12 @@ const Reporting = (props) => {
       },
     })
 
-    const {
-      data: { contentId },
-    } = await api.get(`${URL_REPORTS_GET}:${fileKey}:${token}`)
+    const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
+      responseType: 'blob',
+    })
 
-    const sdsd = await api.post(
-      URL_DOWNLOAD_FILE,
-      {
-        type: 'ddt_document_content',
-        column: 'dsc_content',
-        id: contentId,
-      },
-      { responseType: 'blob' },
-    )
-
-    downloadFile(sdsd, 'dsdsds')
-  }, [api, dss_def_format, filter, reportId, token])
+    downloadFile(data, `${name}.${dss_def_format}`)
+  }, [api, dss_def_format, filter, name, reportId, token])
 
   return (
     <>

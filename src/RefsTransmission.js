@@ -9,7 +9,7 @@ const refsMap = {
   },
   Branch: {
     valueKey: 'id',
-    labelKey: 'organizationName',
+    labelKey: 'name',
   },
   Department: {
     valueKey: 'dsid_departmen',

@@ -34,6 +34,7 @@ const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
   return (
     <UserSelect
       {...props}
+      returnOption={true}
       returnObjects={true}
       value={filter}
       onInput={setFilter}

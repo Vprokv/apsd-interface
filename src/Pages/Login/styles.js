@@ -30,7 +30,7 @@ export const FormContainer = styled.div`
   width: 100%;
   height: 100%;
   flex: 0 0 auto;
-  padding: 100px 80px 50px;
+  padding: 100px 80px 100px;
 `
 
 export const Background = styled.div`

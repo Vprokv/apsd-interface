@@ -141,8 +141,6 @@ const OrgStructureWindow = (props) => {
     }
   }, [filter.organization, filterRef])
 
-  console.log(branches, 'branches')
-
   const fields = useMemo(
     () => [
       {

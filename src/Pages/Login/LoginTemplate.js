@@ -40,8 +40,6 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
     })()
   }, [api])
 
-  console.log(support, 'support')
-
   return (
     <LoginContainer сlassName="flex-col">
       <LoginFormContainer>
