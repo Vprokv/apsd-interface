@@ -122,8 +122,7 @@ const Reporting = (props) => {
           rules={rules}
           onSubmit={onBuild}
         >
-          <div></div>
-          <div className="flex items-center justify-end my-4">
+          <div className="flex items-center justify-end my-4 col-span-1 col-span-2">
             <SecondaryOverBlueButton type="submit">
               Сформировать
             </SecondaryOverBlueButton>
