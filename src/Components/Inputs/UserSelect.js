@@ -39,11 +39,7 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 `
 
 const UserSelect = (props) => {
-  const {
-    loadFunction,
-    docId,
-    filter: { source },
-  } = props
+  const { loadFunction, docId, filter: { source } = {} } = props
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter: { source } })
 
