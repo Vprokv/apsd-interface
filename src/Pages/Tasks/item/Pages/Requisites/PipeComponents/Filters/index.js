@@ -9,7 +9,15 @@ const filtersType = {
 }
 
 const wrappersMap = {
-  [TYPE_ORGSTRUCTURE]: () => {},
+  [TYPE_ORGSTRUCTURE]: (conf) => {
+    const {
+      nextProps,
+      backConfig: { dss_attr_name },
+      documentType,
+    } = conf
+
+    nextProps.filter = { source: `${documentType}.${dss_attr_name}` }
+  },
 }
 
 const selectComponent = (conf) => {

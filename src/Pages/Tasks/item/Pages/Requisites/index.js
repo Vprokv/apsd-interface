@@ -16,7 +16,7 @@ import NoFieldType from '@/Components/NoFieldType'
 import { CustomValuesContext } from './constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
-export const Requisites = ({ type, documentState }) => {
+export const Requisites = ({ type: documentType, documentState }) => {
   const api = useContext(ApiContext)
 
   const tabItemState = useTabItem({
@@ -59,9 +59,9 @@ export const Requisites = ({ type, documentState }) => {
   const loadData = useCallback(async () => {
     const {
       data: { children },
-    } = await api.post(`/sedo/type/config/${type}/design`)
+    } = await api.post(`/sedo/type/config/${documentType}/design`)
     return children
-  }, [api, type])
+  }, [api, documentType])
 
   useAutoReload(loadData, tabItemState)
 
@@ -162,6 +162,7 @@ export const Requisites = ({ type, documentState }) => {
               backConfig: attr,
               nextProps: {},
               type,
+              documentType,
               interceptors: acc.interceptors,
             }),
             style: {
@@ -180,7 +181,7 @@ export const Requisites = ({ type, documentState }) => {
           interceptors: new Map(),
         },
       ),
-    [api, data],
+    [api, data, documentType],
   )
 
   const { fields, rules, interceptors } = useMemo(() => {
@@ -236,6 +237,9 @@ export const Requisites = ({ type, documentState }) => {
   )
 }
 
+Requisites.defaultProps = {}
+Requisites.propTypes = {}
+
 const RequisitesWrapper = () => {
   const { type } = useParams()
   const documentType = useContext(DocumentTypeContext)
@@ -246,5 +250,8 @@ const RequisitesWrapper = () => {
 
   return <Requisites type={type} documentState={documentState} />
 }
+
+RequisitesWrapper.defaultProps = {}
+RequisitesWrapper.propTypes = {}
 
 export default RequisitesWrapper
