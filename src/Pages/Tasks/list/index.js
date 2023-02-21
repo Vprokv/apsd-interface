@@ -254,7 +254,7 @@ function TaskList() {
           </ButtonForIcon>
         </div>
       </div>
-      <ListTable
+      <ListTable className="mt-2"
         rowComponent={useMemo(
           () => (props) =>
             <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
