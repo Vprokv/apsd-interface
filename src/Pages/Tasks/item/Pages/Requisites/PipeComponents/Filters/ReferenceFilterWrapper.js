@@ -2,9 +2,13 @@ import { forwardRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import memoize from 'lodash/memoize'
 
+const mock = () => () => null
+
 const FilterWrapper = memoize((Component) => {
   const FilterWrapper = forwardRef(
-    ({ filter, loadFunction, ...props }, ref) => {
+    ({ filter, loadFunction = mock, ...props }, ref) => {
+      console.log(loadFunction, 'loadFunction')
+
       const loadFunctionWithFilters = useMemo(
         () => loadFunction(filter),
         [loadFunction, filter],

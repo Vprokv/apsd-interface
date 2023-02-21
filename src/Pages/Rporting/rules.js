@@ -11,7 +11,7 @@ import {
 import refsTransmission from '@/RefsTransmission'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import CustomValuesPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/CustomValues'
-import FiltersPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/Filters'
+import FiltersPipe from './Filters/index'
 import { useEffect, useState } from 'react'
 
 const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
@@ -60,6 +60,16 @@ const CustomDatePicker = ({ onInput, value, ...props }) => {
   )
 }
 
+const CustomCheckBox = ({ onInput, value, ...props }) => {
+  const [filter, setFilter] = useState(false)
+
+  useEffect(() => {
+    onInput(filter, props.id)
+  }, [props.id, onInput, value, filter])
+
+  return <CheckBox {...props} value={filter} onInput={setFilter} />
+}
+
 const loadFunctions = {
   default: (accumulator) => {
     const {
@@ -69,12 +79,12 @@ const loadFunctions = {
     } = accumulator
 
     if (dss_component_reference) {
-      nextProps.loadFunction = async (query) => {
+      nextProps.loadFunction = (filters) => async (query) => {
         const { data } = await api.post(URL_ENTITY_LIST, {
           id: dss_attr_name,
           type: dss_component_reference,
           query,
-          // filters,
+          filters,
         })
         return data
       }
@@ -88,14 +98,15 @@ const loadFunctions = {
     const { nextProps, api, type, user } = accumulator
     const { organization } = user
 
-    nextProps.loadFunction = async (query) => {
+    nextProps.loadFunction = (filters) => async (query) => {
       const {
         data: { content },
       } = await api.post(URL_REPORTS_BRUNCH, {
         type: 'branch_list',
         query,
         filter: {
-          organizationId: organization[0]?.r_object_id,
+          ...filters,
+          // organizationId: organization[0]?.r_object_id,
         },
       })
       return content
@@ -109,15 +120,16 @@ const loadFunctions = {
 
     const { organization, organization: [{ branches }] = [{}] } = user
 
-    nextProps.loadFunction = async (query) => {
+    nextProps.loadFunction = (filters) => async (query) => {
       const {
         data: { content },
       } = await api.post(URL_REPORTS_DEPARTMENT, {
         type: 'branch_list',
         query,
         filter: {
-          dsid_organization: organization[0]?.r_object_id,
-          branchId: branches[0]?.r_object_id,
+          ...filters,
+          // dsid_organization: organization[0]?.r_object_id,
+          // branchId: branches[0]?.r_object_id,
         },
       })
       return content
@@ -160,6 +172,7 @@ export const propsTransmission = {
     getLoadFunction(accumulator)
     getMultiply(accumulator)
     getRequired(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   Date: (accumulator) => {
@@ -167,7 +180,7 @@ export const propsTransmission = {
     return accumulator.nextProps
   },
   Checkbox: (accumulator) => {
-    accumulator.nextProps.component = CheckBox
+    accumulator.nextProps.component = CustomCheckBox
     return accumulator.nextProps
   },
   InputString: (accumulator) => {
@@ -185,6 +198,7 @@ export const propsTransmission = {
     getLoadFunction(accumulator)
     getMultiply(accumulator)
     getRequired(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   Department: (accumulator) => {
@@ -192,6 +206,7 @@ export const propsTransmission = {
     getLoadFunction(accumulator)
     getMultiply(accumulator)
     getRequired(accumulator)
+    FiltersPipe(accumulator)
     return accumulator.nextProps
   },
   Document: (accumulator) => {
