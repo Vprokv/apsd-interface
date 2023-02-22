@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import Validation from '@Components/Logic/Validator/V'
+import { repeat } from 'lodash'
 
 export const RequisitesForm = styled(Validation(Form))`
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-column-gap: 32px;
   padding: 1rem;
   --form-elements-indent: 0px;
