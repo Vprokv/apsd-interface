@@ -13,6 +13,7 @@ import PrintIcon from './Icons/PrintIcon.svg'
 import UploadDoc from './Icons/UploadDoc.svg'
 import FinishApproveIcon from './Icons/FinishApproveIcon.svg'
 import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
+import AnnulIcon from './Icons/AnnulIcon.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
@@ -85,5 +86,11 @@ export const defaultDocumentHandlers = {
 
 export const defaultTaskIcon = {
   finish_approve: FinishApproveIcon,
+  finish_prepare: FinishApproveIcon,
+  finish_approval: FinishApproveIcon,
+  revision_finish: FinishApproveIcon,
   reject_approve: RejectApproveIcon,
+  reject_prepare: RejectApproveIcon,
+  reject_approval: RejectApproveIcon,
+  on_cancel: AnnulIcon,
 }

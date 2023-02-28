@@ -267,7 +267,7 @@ const Task = () => {
             getNotification(customMessagesFuncMap[status](data))
           }
         },
-        icon: DefaultIcon,
+        icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
     [

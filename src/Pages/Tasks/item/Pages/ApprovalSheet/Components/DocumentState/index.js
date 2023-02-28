@@ -2,18 +2,28 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { StatusDot } from './styles'
 
+const notSent = 'Не разослано'
 const approve = 'Согласовано'
 const notApprove = 'Не согласовано'
-const notSent = 'Не разослано'
-const accepted = 'Принято к исполнению'
-const simple = 'Простаивает'
+const sent_out = 'Разолано'
+const idle = 'Простаивает'
+const agreed_with_comments = 'Согласовано с замечаниями'
+const revoked = 'Отозвано'
+const accepted_for_execution = 'Принято к исполнению'
+const rejected = 'Отклонено'
+const approved = 'Утверждено'
 
 const colors = {
+  [notSent]: 'bg-text-secondary',
   [approve]: 'bg-green',
   [notApprove]: 'bg-red',
-  [notSent]: 'bg-text-secondary',
-  [simple]: 'bg-text-secondary',
-  [accepted]: 'bg-text-secondary',
+  [sent_out]: 'bg-green',
+  [idle]: 'bg-text-secondary',
+  [agreed_with_comments]: 'bg-text-secondary',
+  [revoked]: 'bg-red',
+  [accepted_for_execution]: 'bg-blue-1',
+  [rejected]: 'bg-red',
+  [approved]: 'bg-green',
 }
 
 const VolumeStatus = ({ value, className }) => {
