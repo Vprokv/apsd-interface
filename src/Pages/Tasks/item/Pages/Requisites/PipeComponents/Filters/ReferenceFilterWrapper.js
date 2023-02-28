@@ -7,8 +7,6 @@ const mock = () => () => null
 const FilterWrapper = memoize((Component) => {
   const FilterWrapper = forwardRef(
     ({ filter, loadFunction = mock, ...props }, ref) => {
-      console.log(loadFunction, 'loadFunction')
-
       const loadFunctionWithFilters = useMemo(
         () => loadFunction(filter),
         [loadFunction, filter],

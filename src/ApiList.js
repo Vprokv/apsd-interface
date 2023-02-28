@@ -112,6 +112,7 @@ export const URL_SEARCH_LIST = '/apsd/search?limit=101&offset=0'
 export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/tom/letter/send'
 export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
 export const URL_BUSINESS_PERMIT = '/apsd/business/permit'
+export const URL_BUSINESS_DOCUMENT_STAGES = '/apsd/business/document/stages'
 
 export const URL_PREVIEW_VERSION = 'preview/pdf/ddt_apsd_content_version'
 export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'

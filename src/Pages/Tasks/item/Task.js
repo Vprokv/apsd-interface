@@ -1,4 +1,4 @@
-import {
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -8,7 +8,7 @@ import {
 } from 'react'
 import Document from './Components/Layout'
 import {
-  URL_BUSINESS_DOCUMENT_RECALL,
+  URL_BUSINESS_DOCUMENT_RECALL, URL_BUSINESS_DOCUMENT_STAGES,
   URL_CONTENT_SEND_EEHD,
   URL_DOCUMENT_UPDATE,
   URL_INTEGRATION_SEND_LETTER,
@@ -43,9 +43,14 @@ import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import { FormWindow } from '@/Components/ModalWindow'
-import { SecondaryGreyButton } from '@/Components/Button'
+import { SecondaryBlueButton, SecondaryGreyButton } from '@/Components/Button'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { Button } from '@Components/Components/Button'
+import CreatingAdditionalAgreementWindowWrapper from './Components/CreatingAdditionalAgreementWindow'
+import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWindow'
+import RejectApproveIcon from '@/Pages/Tasks/item/Icons/RejectApproveIcon.svg'
+import LoadableSelect from "@/Components/Inputs/Select";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -57,7 +62,9 @@ const Task = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [documentId, setIdDocument] = useState('')
-  const [showWindow, setShowWindow] = useState(false)
+  const [ActionComponent, setActionComponent] = useState(null)
+  const closeAction = useCallback(() => setActionComponent(null), [])
+
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
   const [message, setMessage] = useState('')
@@ -106,10 +113,9 @@ const Task = () => {
         taskActions,
         documentTabs,
         values,
-        values: { dss_work_number = 'Документ' } = {},
-        approverId,
       } = {},
     },
+    setTabState: setItemTaskState,
   } = tabItemState
 
   const docId = useMemo(() => {
@@ -122,11 +128,11 @@ const Task = () => {
 
   useSetTabName(useCallback(() => docId, [docId]))
 
-  useAutoReload(loadData, tabItemState)
-
-  const closeWindow = useCallback(() => {
-    setShowWindow(false)
+  const setComponent = useCallback((Comp) => {
+    setActionComponent(Comp)
   }, [])
+
+  useAutoReload(loadData, tabItemState)
 
   const refValues = useRef()
   useEffect(() => {
@@ -154,8 +160,20 @@ const Task = () => {
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
+      reject_approve: {
+        handler: () => setComponent({ Component: RejectApproveWindow }),
+        icon: defaultTaskIcon[name] || DefaultIcon,
+      },
     }),
-    [api, closeCurrenTab, getNotification, id],
+    [
+      api,
+      closeCurrenTab,
+      getNotification,
+      id,
+      loadData,
+      setComponent,
+      setTabState,
+    ],
   )
 
   const documentHandlers = useMemo(
@@ -227,6 +245,12 @@ const Task = () => {
         },
         icon: DefaultIcon,
       },
+      additional_agreement: {
+        icon: UploadDoc,
+        caption: 'Создание доп. согласования',
+        handler: () =>
+          setComponent({ Component: CreatingAdditionalAgreementWindowWrapper }),
+      },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
@@ -246,7 +270,16 @@ const Task = () => {
         icon: DefaultIcon,
       }),
     }),
-    [api, documentId, getNotification, id, setTabState, type],
+    [
+      api,
+      documentId,
+      getNotification,
+      id,
+      loadData,
+      setComponent,
+      setTabState,
+      type,
+    ],
   )
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
@@ -254,13 +287,6 @@ const Task = () => {
   const wrappedDocumentActions = useDocumentActions(documentActions, {
     ...defaultDocumentHandlers,
     ...documentHandlers,
-    ...{
-      additional_agreement: {
-        icon: UploadDoc,
-        caption: 'Создание доп. согласования',
-        handler: () => setShowWindow(true),
-      },
-    },
   })
 
   const actions = useMemo(
@@ -277,15 +303,16 @@ const Task = () => {
           <SidebarContainer>
             <Report previousTaskReport={previousTaskReport} />
             <DocumentActions documentActions={actions} />
-            <CreatingAdditionalAgreementWindow
-              approverId={approverId}
-              documentType={type}
-              open={showWindow}
-              onClose={closeWindow}
-              closeCurrenTab={closeCurrenTab}
-            />
           </SidebarContainer>
         </Document>
+        {ActionComponent && (
+          <ActionComponent.Component
+            open={true}
+            documentId={documentId}
+            onClose={closeAction}
+            loadData={loadData}
+          />
+        )}
         <FormWindow open={message} onClose={closeModalWindow}>
           <div className="text-center mt-4 mb-12">{message}</div>
           <SecondaryGreyButton

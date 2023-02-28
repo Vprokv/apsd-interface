@@ -22,6 +22,7 @@ const UnderButtons = ({
         {leftLabel}
       </SecondaryGreyButton>
       <LoadableSecondaryOverBlueButton
+        type="submit"
         className={rightStyle}
         onClick={rightFunc}
       >
