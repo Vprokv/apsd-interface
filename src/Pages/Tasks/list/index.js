@@ -16,9 +16,6 @@ import UserCard, {
 import DocumentState, {
   sizes as DocumentStateSizes,
 } from '@/Components/ListTableComponents/DocumentState'
-import AlertComponent, {
-  sizes as alertSizes,
-} from '@/Components/ListTableComponents/AlertComponent'
 import VolumeState, {
   sizes as volumeStateSize,
 } from '@/Components/ListTableComponents/VolumeState'
@@ -36,12 +33,7 @@ import volumeIcon from './icons/volumeIcon'
 import Pagination from '../../../Components/Pagination'
 import RowComponent from './Components/RowComponent'
 import CheckBox from '../../../Components/Inputs/CheckBox'
-import {
-  URL_DOCUMENT_CREATION_OPTIONS,
-  URL_TASK_LIST,
-  URL_TASK_LIST_V2,
-  URL_TASK_STATISTIC,
-} from '@/ApiList'
+import { URL_TASK_LIST_V2 } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
@@ -50,6 +42,7 @@ import SortCellComponent from '../../../Components/ListTableComponents/SortCellC
 import Filter from './Components/Filter'
 import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import PropTypes from 'prop-types'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -152,7 +145,7 @@ const columns = [
   },
 ]
 
-function TaskList() {
+function TaskList({ loadFunctionRest }) {
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
     direction: 'DESC',
@@ -165,10 +158,8 @@ function TaskList() {
     shouldReloadDataFlag,
     loadDataHelper,
     tabState: { data: { content = [], total = 0 } = {} },
-    tabItemState,
   } = useTabItem({ stateId: TASK_LIST })
 
-  useSetTabName(useCallback(() => TabNames[search], [search]))
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
     state: tabState,
@@ -190,7 +181,7 @@ function TaskList() {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
       const { data } = await api.post(
-        URL_TASK_LIST_V2,
+        loadFunctionRest,
         {
           filter: {
             ...(search
@@ -221,7 +212,16 @@ function TaskList() {
       )
       return data
     })
-  }, [sortQuery, api, loadDataHelper, paginationState, search, filter])
+  }, [
+    paginationState,
+    loadDataHelper,
+    api,
+    loadFunctionRest,
+    search,
+    filter,
+    sortQuery.direction,
+    sortQuery.key,
+  ])
 
   const refLoadDataFunction = useRef(loadData)
 
@@ -254,7 +254,8 @@ function TaskList() {
           </ButtonForIcon>
         </div>
       </div>
-      <ListTable className="mt-2"
+      <ListTable
+        className="mt-2"
         rowComponent={useMemo(
           () => (props) =>
             <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
@@ -283,4 +284,26 @@ function TaskList() {
   )
 }
 
-export default TaskList
+TaskList.propTypes = {
+  loadFunctionRest: PropTypes.string.isRequired,
+}
+
+const TaskListWrapper = ({ loadFunctionRest, setTabName }) => {
+  const { search } = useLocation()
+  console.log(setTabName, 'setTabName')
+  // const setTabName = useCallback(() => TabNames[search], [search])
+  useSetTabName(useCallback(() => setTabName(search), [search, setTabName]))
+
+  return <TaskList loadFunctionRest={loadFunctionRest} />
+}
+
+TaskListWrapper.propTypes = {
+  setTabName: PropTypes.func.isRequired,
+  loadFunctionRest: PropTypes.string.isRequired,
+}
+
+TaskListWrapper.defaultProps = {
+  loadFunctionRest: URL_TASK_LIST_V2,
+  setTabName: (search) => TabNames[search],
+}
+export default TaskListWrapper

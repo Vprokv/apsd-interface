@@ -7,6 +7,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import ArchiveItem, { LevelOneArchiveItem } from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
 import { FirstLevelArchiveButton } from './Components/ArchiveButton'
+import {SearchInput} from "@/Pages/Tasks/list/styles";
 
 const Archive = ({ onOpenNewTab }) => {
   return (
@@ -27,7 +28,17 @@ const Archive = ({ onOpenNewTab }) => {
           </button>
           {isDisplayed && (
             <ScrollBar className="max-h-80">
+
               <div className="px-2 ">
+                <SearchInput
+                  className="my-4 form-element-sizes-32 "
+                  placeholder="Поиск"
+                  // loadFunction={async (query) => {
+                  //   console.log(query, 'query')
+                  //   const { [level]: req = apisMap.defaultRequest } = apisMap
+                  //   await req({ api, id, sectionId })
+                  // }}
+                />
                 <ArchiveItem
                   onOpenNewTab={onOpenNewTab}
                   buttonComponent={FirstLevelArchiveButton}
