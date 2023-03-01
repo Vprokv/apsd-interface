@@ -83,7 +83,7 @@ const Reports = () => {
         </svg>
       </ButtonForIcon>
       <StandardSizeModalWindow
-        title="Выберите этап"
+        title="Выберите отчет"
         open={open}
         onClose={changeModalState(false)}
       >
