@@ -10,16 +10,13 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import { OthersLevelsArchiveButton, SecondArchiveButton } from './ArchiveButton'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/Archive/Components/WithToggleNavigationItem'
-import log from "tailwindcss/lib/util/log";
 
 const apisMap = {
   0: async ({ api, query }) => {
-
     const { data } = await api.post(URL_STORAGE_BRANCH, { filter: { query } })
     return data
   },
   1: async ({ api, id, query }) => {
-    console.log(query, 'query')
     const { data } = await api.post(URL_STORAGE_TITLE, {
       filter: {
         branchId: id,
