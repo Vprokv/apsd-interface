@@ -68,7 +68,6 @@ export const URL_LINK_DELETE = '/apsd/link/delete'
 export const URL_LINK_UPDATE = '/apsd/link/update'
 export const URL_LINK_VIEWED_LIST = '/apsd/task/v2/list/recently'
 
-
 // REMARK
 export const URL_REMARK_LIST = '/apsd/remark/list'
 export const URL_REMARK_CREATE = '/apsd/remark/create'
