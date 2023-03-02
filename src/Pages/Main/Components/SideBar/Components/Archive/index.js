@@ -8,12 +8,10 @@ import ArchiveItem, { LevelOneArchiveItem } from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
 import { FirstLevelArchiveButton } from './Components/ArchiveButton'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import { useContext, useState } from 'react'
-import { URL_STORAGE_SECTION } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import {  useState } from 'react'
 
 const Archive = ({ onOpenNewTab }) => {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState()
 
   return (
     <WithToggleNavigationItem id="Архив">
