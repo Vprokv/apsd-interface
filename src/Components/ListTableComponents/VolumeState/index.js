@@ -18,8 +18,13 @@ const VolumeState = ({
     return `${color.slice(0, 3)}a${color.slice(3, -1)}, 0.1)`
   }, [color])
 
+  const date = useMemo(
+    () => dayjs(creationDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
+    [creationDate],
+  )
+
   return (
-    <div className="flex flex-col w-min">
+    <div className="flex flex-col w-full h-full items-start ">
       <VolumeStatus
         className="font-size-14 mb-1 font-medium px-1 py-0.5 rounded-md w-fit"
         color={color}
@@ -28,24 +33,16 @@ const VolumeState = ({
           __html: useMemo(() => display.replaceAll('-', '&#x2011'), [display]),
         }}
       />
-      <div className="flex items-center font-size-12">
-        <div className="flex items-center justify-center mr-2 whitespace-nowrap">
+      <div className="flex items-center font-size-12 flex-col ">
+        <div className="flex  justify-center mr-2 h-full">
           <Icon
             icon={documentIcon}
             size={14}
             className="mr-1 color-text-secondary"
           />
-          {documentRegNumber}
-        </div>
-        <div>
-          <span className="mr-2">от</span>
-          {useMemo(
-            () =>
-              dayjs(creationDate, DEFAULT_DATE_FORMAT).format(
-                PRESENT_DATE_FORMAT,
-              ),
-            [creationDate],
-          )}
+          <div
+            className={'break-all'}
+          >{`${documentRegNumber} от ${date} `}</div>
         </div>
       </div>
     </div>

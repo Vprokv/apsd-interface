@@ -1,4 +1,4 @@
-import {
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -70,7 +70,12 @@ const columns = [
   {
     id: 'documentDescription',
     label: 'Наименование тома',
-    component: BaseCell,
+    component: (props) => (
+      <BaseCell
+        className="flex items-center break-words break-all min-h-10"
+        {...props}
+      />
+    ),
     sizes: baseCellSize,
   },
   {
