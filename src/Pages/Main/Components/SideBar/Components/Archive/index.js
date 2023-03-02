@@ -8,7 +8,7 @@ import ArchiveItem, { LevelOneArchiveItem } from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
 import { FirstLevelArchiveButton } from './Components/ArchiveButton'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import {  useState } from 'react'
+import { useState } from 'react'
 
 const Archive = ({ onOpenNewTab }) => {
   const [query, setQuery] = useState()

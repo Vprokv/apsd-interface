@@ -9,7 +9,9 @@ export const FilterForm = styled(Form)`
 `
 
 export const SidebarContainer = styled.div`
-  width: 220px;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
   border-right: 2px solid var(--separator);
   padding: 1rem 0;
   height: 100%;
