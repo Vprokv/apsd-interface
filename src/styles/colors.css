@@ -82,6 +82,6 @@
     color: var(--red);
 }
 
-.bg-red {
-    background-color: var(--red);
+.bg-color-yellow {
+    background-color: var(--yellow);
 }

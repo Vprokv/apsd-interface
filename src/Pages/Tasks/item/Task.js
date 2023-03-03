@@ -162,7 +162,7 @@ const Task = () => {
       }),
       reject_approve: {
         handler: () => setComponent({ Component: RejectApproveWindow }),
-        icon: defaultTaskIcon[name] || DefaultIcon,
+        icon: defaultTaskIcon['reject_approve'],
       },
     }),
     [

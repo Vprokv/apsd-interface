@@ -30,15 +30,15 @@ const Archive = ({ onOpenNewTab }) => {
             />
           </button>
           {isDisplayed && (
-            <>
+            <div className="px-2 ">
               <SearchInput
                 value={query}
                 onInput={setQuery}
-                className="my-4 form-element-sizes-32 "
+                className="my-4 form-element-sizes-32"
                 placeholder="Поиск"
               />
               <ScrollBar className="max-h-80">
-                <div className="px-2 ">
+                <div>
                   <ArchiveItem
                     query={query}
                     onOpenNewTab={onOpenNewTab}
@@ -47,7 +47,7 @@ const Archive = ({ onOpenNewTab }) => {
                   />
                 </div>
               </ScrollBar>
-            </>
+            </div>
           )}
         </div>
       )}
