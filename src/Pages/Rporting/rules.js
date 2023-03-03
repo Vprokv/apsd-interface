@@ -95,7 +95,7 @@ const loadFunctions = {
     }
   },
   Branch: (accumulator) => {
-    const { nextProps, api, type} = accumulator
+    const { nextProps, api, type } = accumulator
 
     nextProps.loadFunction = (filters) => async (query) => {
       const {
@@ -212,6 +212,7 @@ export const propsTransmission = {
     accumulator.nextProps.filters = {
       type: accumulator.backConfig.dss_component_reference,
     }
+    accumulator.nextProps.displayName = '${dss_description}'
     accumulator.nextProps.valueKey = 'id'
     accumulator.nextProps.labelKey = 'displayName'
     accumulator.nextProps.refKey = 'documentSelect'

@@ -78,13 +78,15 @@ const DocumentSelect = ({
 
       if (Array.isArray(selectedState)) {
         return selectedState.map(
-          returnOption ? (v) => getLabel(v[valueKey]) : (v) => v,
+          returnOption ? (v) => getLabel(v[valueKey]) : (v) => getLabel(v),
         )
       } else {
         return getLabel(returnOption ? selectedState[valueKey] : selectedState)
       }
     }
   }, [cache, displayName, returnOption, selectedState, valueKey])
+
+  console.log(renderValue, 'renderValue')
 
   const openModalWindow = useCallback(() => {
     changeModalState(true)()
@@ -124,9 +126,13 @@ const DocumentSelect = ({
   )
   const handleClick = useCallback(() => {
     onInput(selectedState, id)
-    changeModalState(false)
-    setSelectedState(undefined)
+    changeModalState(false)()
   }, [onInput, selectedState, id, changeModalState])
+
+  const onClose = useCallback(() => {
+    changeModalState(false)()
+    setSelectedState(undefined)
+  }, [changeModalState])
 
   const tableSettings = useMemo(
     () =>
@@ -232,7 +238,7 @@ const DocumentSelect = ({
           <div className="flex items-center justify-end">
             <Button
               className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
-              onClick={changeModalState(false)}
+              onClick={onClose}
             >
               Закрыть
             </Button>
