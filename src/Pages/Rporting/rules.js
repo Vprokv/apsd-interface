@@ -95,18 +95,16 @@ const loadFunctions = {
     }
   },
   Branch: (accumulator) => {
-    const { nextProps, api, type, user } = accumulator
-    const { organization } = user
+    const { nextProps, api, type} = accumulator
 
     nextProps.loadFunction = (filters) => async (query) => {
       const {
         data: { content },
       } = await api.post(URL_REPORTS_BRUNCH, {
         type: 'branch_list',
-        query,
         filter: {
           ...filters,
-          // organizationId: organization[0]?.r_object_id,
+          query,
         },
       })
       return content
@@ -116,9 +114,7 @@ const loadFunctions = {
     nextProps.labelKey = labelKey
   },
   Department: (accumulator) => {
-    const { nextProps, api, type, user } = accumulator
-
-    const { organization, organization: [{ branches }] = [{}] } = user
+    const { nextProps, api, type } = accumulator
 
     nextProps.loadFunction = (filters) => async (query) => {
       const {
@@ -128,8 +124,6 @@ const loadFunctions = {
         query,
         filter: {
           ...filters,
-          // dsid_organization: organization[0]?.r_object_id,
-          // branchId: branches[0]?.r_object_id,
         },
       })
       return content
