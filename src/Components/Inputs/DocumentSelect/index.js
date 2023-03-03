@@ -86,8 +86,6 @@ const DocumentSelect = ({
     }
   }, [cache, displayName, returnOption, selectedState, valueKey])
 
-  console.log(renderValue, 'renderValue')
-
   const openModalWindow = useCallback(() => {
     changeModalState(true)()
     setSelectedState(value)

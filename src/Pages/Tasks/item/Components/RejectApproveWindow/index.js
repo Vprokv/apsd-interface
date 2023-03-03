@@ -26,7 +26,7 @@ import axios from 'axios'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
-  height: 22.65%;
+  min-height: 22.65%;
   margin: auto;
 `
 
@@ -132,7 +132,7 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
     <StandardSizeModalWindow
       open={open}
       onClose={onClose}
-      title="Выберете этап, на который будет возвращен том после доработки"
+      title="Выберите этап, на который будет возвращен том после доработки"
     >
       <div className="flex flex-col overflow-hidden ">
         <WithValidationForm
