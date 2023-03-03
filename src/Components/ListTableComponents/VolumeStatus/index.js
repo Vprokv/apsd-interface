@@ -7,7 +7,6 @@ const VolumeStatus = ({ value, className }) => {
     <div
       className={`${className} word-wrap-anywhere font-size-14 flex h-full items-center justify-center`}
     >
-      <StatusDot className="mr-2" />
       {value}
     </div>
   )
