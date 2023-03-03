@@ -66,7 +66,9 @@ const columns = [
     id: 'contentName',
     label: 'Описание',
     sizes: 190,
-    component: (props) => <BaseCell {...props} className="break-all h-full" />,
+    component: (props) => (
+      <BaseCell {...props} className="break-all h-10 h-full" />
+    ),
   },
   {
     id: 'versionDate',
@@ -121,7 +123,6 @@ const Content = () => {
   const [sortQuery, onSort] = useState({})
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
-  const EditVersionContext = useContext(EditVersion)
   const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
@@ -133,7 +134,6 @@ const Content = () => {
     tabState: { data: { content = [], total = 0 } = {}, change },
     tabState,
     loadDataHelper,
-    shouldReloadDataFlag,
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({

@@ -1,10 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import PropTypes from 'prop-types'
-import Button from '@/Components/Button'
 import InputComponent from '@Components/Components/Inputs/Input'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import Form from '@Components/Components/Forms'
+import { WithValidationForm } from '@Components/Components/Forms'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import dayjs from 'dayjs'
@@ -24,8 +22,14 @@ import {
 } from '@/Components/Notificator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 
-const rules = {}
+const rules = {
+  versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
+  regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
+  author: [{ name: VALIDATION_RULE_REQUIRED }],
+  contentType: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -135,10 +139,6 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
         ],
         placeholder: 'Введите данные',
       },
-      // {
-      //   id: 'files',
-      //   component: FileInput,
-      // },
       {
         id: 'files',
         multiple: true,
@@ -146,26 +146,27 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
         component: NewFileInput,
       },
     ]
-  }, [api, userObject])
+  }, [api, context, userObject])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <ScrollBar>
-        <Form
+        <WithValidationForm
           className="mb-10"
           inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}
           rules={rules}
-        />
+          onSubmit={onSave}
+        >
+          <UnderButtons
+            leftFunc={onClose}
+            rightLabel={'Сохранить'}
+            leftLabel={'Закрыть'}
+          />
+        </WithValidationForm>
       </ScrollBar>
-      <UnderButtons
-        leftFunc={onClose}
-        rightFunc={onSave}
-        rightLabel={'Сохранить'}
-        leftLabel={'Закрыть'}
-      />
     </div>
   )
 }

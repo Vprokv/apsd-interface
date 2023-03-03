@@ -3,18 +3,22 @@ import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import PropTypes from 'prop-types'
 import Button from '@/Components/Button'
 import InputComponent from '@Components/Components/Inputs/Input'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import Form from '@Components/Components/Forms'
+import { WithValidationForm } from '@Components/Components/Forms'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { ApiContext, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
 import { URL_ENTITY_LIST, URL_UPDATE_VERSION } from '@/ApiList'
-import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import UnderButtons from "@/Components/Inputs/UnderButtons";
 
-const rules = {}
+const rules = {
+  versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
+  regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
+  author: [{ name: VALIDATION_RULE_REQUIRED }],
+  contentTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const EditVersionWindow = ({ onClose, formData, setChange }) => {
   const [values, setValues] = useState(formData)
@@ -91,28 +95,21 @@ const EditVersionWindow = ({ onClose, formData, setChange }) => {
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <ScrollBar className="flex flex-col">
-        <Form
+        <WithValidationForm
           className="mb-10"
           inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}
           rules={rules}
-        />
-        <div className="flex items-center justify-end mt-auto">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center font-weight-normal"
-            onClick={onClose}
-          >
-            Закрыть
-          </Button>
-          <Button
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-            onClick={onSave}
-          >
-            Сохранить
-          </Button>
-        </div>
+          onSubmit={onSave}
+        >
+          <UnderButtons
+            leftFunc={onClose}
+            rightLabel={'Сохранить'}
+            leftLabel={'Закрыть'}
+          />
+        </WithValidationForm>
       </ScrollBar>
     </div>
   )
