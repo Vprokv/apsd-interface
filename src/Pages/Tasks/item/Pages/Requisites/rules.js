@@ -157,9 +157,11 @@ const getLoadFunction = (accumulator) => {
         id: dss_attr_name,
         type: dss_component_reference,
         // query,
-        filter: {
-          query,
-        },
+        filter: query
+          ? {
+              query,
+            }
+          : {},
         filters,
       })
       return data
