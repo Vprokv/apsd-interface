@@ -34,6 +34,7 @@ import refsTransmission from '../../../../../RefsTransmission'
 import CustomValuesPipe from './PipeComponents/CustomValues'
 import FiltersPipe from './PipeComponents/Filters'
 import NoFieldType from '@/Components/NoFieldType'
+
 export const VisibleIf = (key, values) => ({
   condition: `${key} === "${values[0]}"`,
 })
@@ -155,7 +156,10 @@ const getLoadFunction = (accumulator) => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         id: dss_attr_name,
         type: dss_component_reference,
-        query,
+        // query,
+        filter: {
+          query,
+        },
         filters,
       })
       return data
