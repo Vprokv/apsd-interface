@@ -22,6 +22,7 @@ import {
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
+import log from 'tailwindcss/lib/util/log'
 
 const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   const api = useContext(ApiContext)
@@ -103,6 +104,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
 
   const onSearch = useCallback(async () => {
     const { type, ...filters } = filter
+    console.log(type, 'type onSearch')
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
         acc.push({
@@ -124,7 +126,10 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
     setRenderTable(true)
   }, [api, defaultOperators, filter, setSearchState])
 
-  const onRemove = useCallback(() => setFilter({}), [setFilter])
+  const onRemove = useCallback(
+    () => setFilter({ type: filter.type }),
+    [filter.type, setFilter],
+  )
 
   const isSearchDisabled = useMemo(() => {
     const { type, ...keys } = filter

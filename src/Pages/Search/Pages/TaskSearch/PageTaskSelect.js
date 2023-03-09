@@ -149,10 +149,10 @@ const PageTaskSelect = () => {
       setFilter={updateTabState('filter')}
     >
       {(onClick) => (
-        <>
+        <div className="flex flex-col">
           <SecondaryBlueButton
             onClick={onClick}
-            className="ml-auto form-element-sizes-32"
+            className="ml-auto form-element-sizes-32 mr-4 mb-4"
           >
             Изменить условие
           </SecondaryBlueButton>
@@ -164,8 +164,7 @@ const PageTaskSelect = () => {
               value={searchState.results}
             />
           </ScrollBar>
-        </>
-
+        </div>
       )}
     </TaskSearch>
   )

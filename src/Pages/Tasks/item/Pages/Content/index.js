@@ -66,9 +66,7 @@ const columns = [
     id: 'contentName',
     label: 'Описание',
     sizes: 190,
-    component: (props) => (
-      <BaseCell {...props} className="break-all h-10 h-full" />
-    ),
+    component: (props) => <BaseCell {...props} className="break-all h-full" />,
   },
   {
     id: 'versionDate',

@@ -16,7 +16,7 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 export const MiniModalWindow = styled(ModalWindow)`
   width: 28.22%;
-  height: 26.56%;
+  min-height: 26.56%;
   margin: auto;
 `
 
