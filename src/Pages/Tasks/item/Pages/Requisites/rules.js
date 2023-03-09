@@ -156,12 +156,12 @@ const getLoadFunction = (accumulator) => {
       const { data } = await api.post(URL_ENTITY_LIST, {
         id: dss_attr_name,
         type: dss_component_reference,
-        // query,
-        filter: query
-          ? {
-              query,
-            }
-          : {},
+        query,
+        // filter: query
+        // ? {
+        //     query,
+        //   }
+        // : {}, //TODO тут непонятно как передавать query корректно, оставила как работает
         filters,
       })
       return data
