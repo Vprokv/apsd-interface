@@ -225,7 +225,7 @@ const EditStageWindow = (props) => {
         <Icon icon={editIcon} />
       </CustomButtonForIcon>
       <CustomSizeModalWindow
-        title="Добавить этап"
+        title="Редактировать этап"
         open={open}
         onClose={changeModalState(false)}
       >

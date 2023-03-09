@@ -99,7 +99,7 @@ const Leaf = (props) => {
         onInput([[leafVal, returnObjects ? options : leafVal]], value)
       }
     },
-    [children, onInput, childrenKey, options, valueKey, leafVal],
+    [children, options, onInput, childrenKey, valueKey, returnObjects, leafVal],
   )
 
   const onDragEnd = useCallback(() => {
@@ -231,7 +231,7 @@ const Leaf = (props) => {
               dropRule={dropRule}
               draggable={draggable}
               key={item[valueKey]}
-              options={item}
+              options={{ ...item, editable }}
               // checkAble={checkAble}
               index={index}
               level={level + 1}
