@@ -46,23 +46,23 @@ const CreateDocumentWindow = ({ onClose }) => {
     })()
   }, [api])
 
-  useEffect(() => {
-    selectedDocument.id &&
-      (async () => {
-        try {
-          const { data } = await api.post(
-            `/sedo/classification/${selectedDocument.id}/template`,
-          )
-          if (data) {
-            setNewDocumentData(data)
-          } else {
-            setNewDocumentData({})
-          }
-        } catch (_) {
-          setNewDocumentData({})
-        }
-      })()
-  }, [api, selectedDocument])
+  // useEffect(() => {
+  //   selectedDocument.id &&
+  //     (async () => {
+  //       try {
+  //         const { data } = await api.post(
+  //           `/sedo/classification/${selectedDocument.id}/template`,
+  //         )
+  //         if (data) {
+  //           setNewDocumentData(data)
+  //         } else {
+  //           setNewDocumentData({})
+  //         }
+  //       } catch (_) {
+  //         setNewDocumentData({})
+  //       }
+  //     })()
+  // }, [api, selectedDocument])
 
   const toNewItem = useCallback(() => {
     if (!selectedDocument.id) {
@@ -79,25 +79,25 @@ const CreateDocumentWindow = ({ onClose }) => {
     [],
   )
 
-  const renderAttributes = useMemo(() => {
-    const templates =
-      (!!newDocumentData?.attrTemplate &&
-        Object.values(newDocumentData?.attrTemplate)) ||
-      []
-
-    return (
-      <div className="flex flex-wrap">
-        {templates.map(({ label, value }) => (
-          <text
-            key={value}
-            className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2"
-          >
-            {`${label} = ${value}`}
-          </text>
-        ))}
-      </div>
-    )
-  }, [newDocumentData])
+  // const renderAttributes = useMemo(() => {
+  //   const templates =
+  //     (!!newDocumentData?.attrTemplate &&
+  //       Object.values(newDocumentData?.attrTemplate)) ||
+  //     []
+  //
+  //   return (
+  //     <div className="flex flex-wrap">
+  //       {templates.map(({ label, value }) => (
+  //         <text
+  //           key={value}
+  //           className="font-size-14 bg-light-gray rounded-md p-2 ml-2 mb-2"
+  //         >
+  //           {`${label} = ${value}`}
+  //         </text>
+  //       ))}
+  //     </div>
+  //   )
+  // }, [newDocumentData])
 
   const renderDocumentItem = useCallback(
     (HeaderComponent) =>

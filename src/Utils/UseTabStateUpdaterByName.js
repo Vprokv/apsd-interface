@@ -11,10 +11,12 @@ const UseTabStateUpdaterByName = (tabName = baseArr) => {
         ? (newState) => {
             setTabDataState((prevState) => {
               const nextState = { ...prevState }
+
               tabName.forEach((name) => {
                 for (const tabId of EntityMap[name]) {
-                  const key = `${name}${tabId}`
+                  const key = `${tabId}${name}`
                   const state = nextState[key]
+
                   if (state) {
                     nextState[key] = { ...state, ...newState }
                   }

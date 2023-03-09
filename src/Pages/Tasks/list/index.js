@@ -295,8 +295,6 @@ TaskList.propTypes = {
 
 const TaskListWrapper = ({ loadFunctionRest, setTabName }) => {
   const { search } = useLocation()
-  console.log(setTabName, 'setTabName')
-  // const setTabName = useCallback(() => TabNames[search], [search])
   useSetTabName(useCallback(() => setTabName(search), [search, setTabName]))
 
   return <TaskList loadFunctionRest={loadFunctionRest} />

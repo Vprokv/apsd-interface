@@ -16,7 +16,12 @@ import {
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import { ApiContext, ITEM_DOCUMENT } from '@/contants'
+import {
+  ApiContext,
+  ITEM_DOCUMENT,
+  SIDEBAR_STATE,
+  TASK_ITEM_APPROVAL_SHEET,
+} from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
@@ -40,6 +45,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -70,15 +76,7 @@ const Document = () => {
     stateId: ITEM_DOCUMENT,
   })
   const {
-    tabState: {
-      data: {
-        documentActions,
-        documentTabs,
-        values,
-        values: { dss_work_number = 'Документ' } = {},
-      } = {},
-    },
-    setTabState,
+    tabState: { data: { documentActions, documentTabs, values } = {} },
   } = tabItemState
 
   const documentId = useMemo(() => {
@@ -89,6 +87,12 @@ const Document = () => {
 
     return v || 'Документ'
   }, [type, values])
+
+  const remoteTabUpdater = UseTabStateUpdaterByName([ITEM_DOCUMENT])
+  const remoteApprovalUpdater = UseTabStateUpdaterByName([
+    TASK_ITEM_APPROVAL_SHEET,
+  ])
+  const remoteSideBarUpdater = UseTabStateUpdaterByName([SIDEBAR_STATE])
 
   useSetTabName(useCallback(() => documentId, [documentId]))
   const refValues = useRef()
@@ -170,8 +174,9 @@ const Document = () => {
               signal: name,
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ update: true })
-            setTabState({ data: await loadData() })
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
+            remoteSideBarUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -180,7 +185,7 @@ const Document = () => {
         icon: DefaultIcon,
       }),
     }),
-    [api, getNotification, id, loadData, setTabState, type],
+    [api, getNotification, id, type],
   )
 
   const wrappedDocumentActions = useDocumentActions(

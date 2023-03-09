@@ -21,7 +21,7 @@ import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
 import InputWrapper from '@Components/Components/Forms/InputWrapper'
 import { propsTransmission } from '@/Pages/Rporting/rules'
-import downloadFile, {downloadFileXslx} from '@/Utils/DownloadFile'
+import downloadFile, { downloadFileXslx } from '@/Utils/DownloadFile'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
 import {
@@ -32,6 +32,7 @@ import NoFieldType from '@/Components/NoFieldType'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import { API_URL } from '@/api'
 
 export const UserContext = createContext({})
 
@@ -101,12 +102,18 @@ const Reporting = (props) => {
       },
     })
 
-    const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
-      responseType: 'blob',
-    })
+    // const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
+    //   responseType: 'blob',
+    // })
 
-    downloadFile(data, `${name}.${dss_def_format}`)
-  }, [api, dss_def_format, filter, name, reportId, token])
+    window.open(
+      `${API_URL}${URL_REPORTS_GET}${fileKey}:${token}`,
+      '_blank',
+      'noopener',
+    )
+
+    // downloadFile(data, `${name}.${dss_def_format}`)
+  }, [api, dss_def_format, filter, reportId, token])
 
   return (
     <>
