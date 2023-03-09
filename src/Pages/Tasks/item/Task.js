@@ -8,7 +8,8 @@ import React, {
 } from 'react'
 import Document from './Components/Layout'
 import {
-  URL_BUSINESS_DOCUMENT_RECALL, URL_BUSINESS_DOCUMENT_STAGES,
+  URL_BUSINESS_DOCUMENT_RECALL,
+  URL_BUSINESS_DOCUMENT_STAGES,
   URL_CONTENT_SEND_EEHD,
   URL_DOCUMENT_UPDATE,
   URL_INTEGRATION_SEND_LETTER,
@@ -19,7 +20,13 @@ import {
   URL_TASK_STATISTIC,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import { ApiContext, ITEM_TASK, SIDEBAR_STATE } from '@/contants'
+import {
+  ApiContext,
+  ITEM_DOCUMENT,
+  ITEM_TASK,
+  SIDEBAR_STATE,
+  TASK_ITEM_APPROVAL_SHEET,
+} from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
@@ -50,7 +57,8 @@ import { Button } from '@Components/Components/Button'
 import CreatingAdditionalAgreementWindowWrapper from './Components/CreatingAdditionalAgreementWindow'
 import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWindow'
 import RejectApproveIcon from '@/Pages/Tasks/item/Icons/RejectApproveIcon.svg'
-import LoadableSelect from "@/Components/Inputs/Select";
+import LoadableSelect from '@/Components/Inputs/Select'
+import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -139,6 +147,11 @@ const Task = () => {
     refValues.current = values
   }, [values])
 
+  const remoteTabUpdater = UseTabStateUpdaterByName([ITEM_DOCUMENT])
+  const remoteApprovalUpdater = UseTabStateUpdaterByName([
+    TASK_ITEM_APPROVAL_SHEET,
+  ])
+
   const TaskHandlers = useMemo(
     () => ({
       defaultHandler: ({ caption, name }) => ({
@@ -150,9 +163,11 @@ const Task = () => {
               taskId: id,
               signal: name,
             })
-            setTabState({ data: await loadData() })
             closeCurrenTab()
             getNotification(customMessagesFuncMap[status]())
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
+            // setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -188,6 +203,8 @@ const Task = () => {
               id,
             })
             getNotification(customMessagesFuncMap[status]())
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -202,6 +219,8 @@ const Task = () => {
               documentId,
             })
             getNotification(customMessagesFuncMap[status]())
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -220,6 +239,8 @@ const Task = () => {
             )
             setMessage(data)
             getNotification(customMessagesFuncMap[status]())
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -260,8 +281,10 @@ const Task = () => {
               signal: name,
             })
             getNotification(customMessagesFuncMap[status]())
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
             // setTabState({ update: true })
-            setTabState({ data: await loadData() })
+            // setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -275,9 +298,9 @@ const Task = () => {
       documentId,
       getNotification,
       id,
-      loadData,
+      remoteApprovalUpdater,
+      remoteTabUpdater,
       setComponent,
-      setTabState,
       type,
     ],
   )

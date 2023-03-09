@@ -176,7 +176,6 @@ const Document = () => {
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
             remoteApprovalUpdater({ loading: false, fetched: false })
-            remoteSideBarUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -185,7 +184,7 @@ const Document = () => {
         icon: DefaultIcon,
       }),
     }),
-    [api, getNotification, id, type],
+    [api, getNotification, id, remoteApprovalUpdater, remoteTabUpdater, type],
   )
 
   const wrappedDocumentActions = useDocumentActions(
