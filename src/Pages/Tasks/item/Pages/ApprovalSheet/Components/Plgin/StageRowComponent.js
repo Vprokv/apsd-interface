@@ -10,7 +10,10 @@ import AddUserWindow from '../AddUserWindow/AddUserWindow'
 import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
 import EditStageWindow from '../EditStageWindow'
 import PopUp from '../PopUp'
-import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  LoadContext,
+  PermitDisableContext,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import dayjs from 'dayjs'
 import {
@@ -33,6 +36,7 @@ const Row = styled.div`
 
 const StageRowComponent = ({ node }, props) => {
   const api = useContext(ApiContext)
+  const loadData = useContext(LoadContext)
   const {
     term,
     id,
@@ -43,14 +47,19 @@ const StageRowComponent = ({ node }, props) => {
     deletable,
     selectedState,
     stageType,
+    approvers,
   } = node
+
   const permit = useContext(PermitDisableContext)
 
   const onDelete = useCallback(async () => {
     await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
       performersIds: Object.keys(Object.fromEntries(selectedState.entries())),
     })
-  }, [api, selectedState])
+    loadData()
+  }, [api, loadData, selectedState])
+
+  const includeApprove = approvers.some(({ id }) => selectedState.has(id))
 
   return (
     <Row>
@@ -74,7 +83,7 @@ const StageRowComponent = ({ node }, props) => {
               />
               <CustomButtonForIcon
                 onClick={onDelete}
-                disabled={permit && !selectedState.size}
+                disabled={!permit && !includeApprove}
                 className="color-blue-1"
               >
                 <Icon icon={DeleteUserIcon} />

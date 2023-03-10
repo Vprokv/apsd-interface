@@ -61,8 +61,9 @@ const rules = {
 const NAME = 'Указать наименование этапа вручную'
 
 export const AddUserOptionsFullName = (v = {}) => ({
-  ...v,
-  fullName: `${v.dssApproverFio}`,
+  // ...v,
+  emplId: v.dsidApproverEmpl,
+  // fullName: `${v.dssApproverFio}`,
   fullDescription: v.fullDescription
     ? v.fullDescription
     : `${v.dssApproverFio}, ${v.dssApproverDep}`,
@@ -169,7 +170,6 @@ const EditStageWindow = (props) => {
           id: 'approvers',
           component: UserSelect,
           options: options,
-          valueKey: 'dsidApproverEmpl',
           multiple: true,
           returnOption: false,
           placeholder: 'Выберите участников',
@@ -211,9 +211,9 @@ const EditStageWindow = (props) => {
   }, [api, stage, loadData, changeModalState, getNotification])
 
   const onClose = useCallback(() => {
-    setFilterValue({})
+    setFilterValue(initialFilterState)
     changeModalState(false)()
-  }, [changeModalState])
+  }, [changeModalState, initialFilterState])
 
   return (
     <div className="flex items-center ml-auto ">
