@@ -86,6 +86,7 @@ export const defaultDocumentHandlers = {
 
 export const defaultTaskIcon = {
   finish_approve: FinishApproveIcon,
+  on_approved: FinishApproveIcon,
   finish_prepare: FinishApproveIcon,
   finish_approval: FinishApproveIcon,
   revision_finish: FinishApproveIcon,

@@ -185,9 +185,9 @@ const Task = () => {
       closeCurrenTab,
       getNotification,
       id,
-      loadData,
+      remoteApprovalUpdater,
+      remoteTabUpdater,
       setComponent,
-      setTabState,
     ],
   )
 
