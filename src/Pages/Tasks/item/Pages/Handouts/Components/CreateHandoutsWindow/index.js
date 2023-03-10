@@ -18,7 +18,10 @@ import {
 } from '@/contants'
 import { useParams } from 'react-router-dom'
 import { FilterForm, TitlesContainer } from './styles'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
+import {
+  EmptyInputWrapper,
+  WithValidationForm,
+} from '@Components/Components/Forms'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -32,6 +35,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -60,15 +64,10 @@ const CreateHandoutsWindow = ({ setChange }) => {
   const fields = useMemo(
     () => [
       {
-        id: '1',
-        component: EmptyInput,
-        value: 'Операция',
-        disabled: true,
-      },
-      {
         id: 'operationId',
         component: LoadableSelect,
         placeholder: 'Выберите операцию',
+        label: 'Операция',
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         loadFunction: async (query) => {
@@ -80,62 +79,41 @@ const CreateHandoutsWindow = ({ setChange }) => {
         },
       },
       {
-        id: '2',
-        component: EmptyInput,
-        value: 'Дата операции',
-        disabled: true,
-      },
-      {
         id: 'operationDate',
+        label: 'Дата операции',
         component: DatePickerComponent,
         placeholder: 'Выберите дату',
       },
       {
-        id: '3',
-        component: EmptyInput,
-        value: 'Архивариус',
-        disabled: true,
-      },
-      {
         id: 'archivistId',
+        label: 'Архивариус',
         component: BaseUserSelect,
         placeholder: 'Выберите архивариуса',
       },
       {
-        id: '4',
-        component: EmptyInput,
-        value: 'Сотрудник',
-        disabled: true,
-      },
-      {
         id: 'worker',
+        label: 'Сотрудник',
         component: UserSelect,
         multiple: false,
-        returnOption: true,
+        returnObjects: true,
         placeholder: 'Выберите участников',
       },
       {
-        id: '4',
-        component: EmptyInput,
-        value: 'Поддразделение',
-        disabled: true,
-      },
-      {
         id: 'departmentName',
+        label: 'Поддразделение',
         component: Select,
         placeholder: 'Выберите департамент',
         valueKey: 'department',
         labelKey: 'department',
-        options: filterValue?.workerId && [filterValue?.workerId],
-      },
-      {
-        id: '5',
-        component: EmptyInput,
-        value: 'Комментарий',
-        disabled: true,
+        options: [
+          {
+            department: filterValue?.departmentName,
+          },
+        ],
       },
       {
         id: 'comment',
+        label: 'Комментарий',
         component: SearchInput,
         placeholder: 'Введите комментарий',
       },
@@ -145,7 +123,7 @@ const CreateHandoutsWindow = ({ setChange }) => {
   useEffect(() => {
     const { worker } = filterValue
     worker
-      ? setFilterValue({ ...filterValue, departmentName: worker.department })
+      ? setFilterValue({ ...filterValue, departmentName: worker?.department })
       : setFilterValue(({ departmentName, ...item }) => item)
   }, [filterValue.worker])
 
@@ -191,12 +169,12 @@ const CreateHandoutsWindow = ({ setChange }) => {
         onClose={changeModalState(false)}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <FilterForm
+          <WithValidationForm
             className="form-element-sizes-40"
             fields={fields}
             value={filterValue}
             onInput={setFilterValue}
-            inputWrapper={EmptyInputWrapper}
+            inputWrapper={InputWrapper}
           />
         </div>
         <div className="flex items-center justify-end mt-8">
