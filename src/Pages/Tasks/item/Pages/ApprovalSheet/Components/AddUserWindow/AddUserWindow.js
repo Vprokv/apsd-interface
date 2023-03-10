@@ -1,10 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 import Icon from '@Components/Components/Icon'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import {
-  CanAddContext,
   LoadContext,
   PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
@@ -19,6 +16,9 @@ import {
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Form from '@Components/Components/Forms'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import UnderButtons from '@/Components/Inputs/UnderButtons'
+import styled from 'styled-components'
+import ModalWindowWrapper from '@/Components/ModalWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -32,6 +32,7 @@ const customMessagesFuncMap = {
 
 const fieldMap = [
   {
+    id: 'user',
     label: 'Участник этапа',
     component: UserSelect,
     placeholder: 'Выберите участников',
@@ -41,9 +42,16 @@ const fieldMap = [
 
 const rules = {}
 
-const AddUserWindow = ({ stageId, documentId }) => {
+export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
+  width: 41.6%;
+  min-height: 42.65%;
+  margin: auto;
+  z-index: 10;
+`
+
+const AddUserWindow = ({ stageId, documentId, stageType }) => {
   const [open, setOpenState] = useState(false)
-  const [user, setUser] = useState([])
+  const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
   const permit = useContext(PermitDisableContext)
 
@@ -61,7 +69,8 @@ const AddUserWindow = ({ stageId, documentId }) => {
       const response = await api.post(URL_APPROVAL_CREATE, {
         stageId,
         documentId,
-        approvers: user.map((val) => {
+        stageType,
+        approvers: filter.user?.map((val) => {
           return { dsidApproverEmpl: val }
         }),
       })
@@ -69,14 +78,15 @@ const AddUserWindow = ({ stageId, documentId }) => {
       getNotification(customMessagesFuncMap[response.status]())
       changeModalState(false)()
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 500, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
+    filter,
     api,
     stageId,
     documentId,
-    user,
+    stageType,
     loadData,
     getNotification,
     changeModalState,
@@ -84,10 +94,10 @@ const AddUserWindow = ({ stageId, documentId }) => {
 
   const onClose = useCallback(() => {
     changeModalState(false)()
-    setUser([])
+    setFilter({})
   }, [changeModalState])
   return (
-    <>
+    <div className="h-full">
       <CustomButtonForIcon
         className="color-blue-1"
         onClick={changeModalState(true)}
@@ -98,32 +108,24 @@ const AddUserWindow = ({ stageId, documentId }) => {
       <StandardSizeModalWindow
         title="Добавить согласующего"
         open={open}
-        onClose={changeModalState(false)}
+        onClose={onClose}
       >
         <Form
           className="mb-10"
           inputWrapper={InputWrapper}
-          value={user}
-          onInput={setUser}
+          value={filter}
+          onInput={setFilter}
           fields={fieldMap}
           rules={rules}
         />
-        <div className="flex items-center justify-end mt-8">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-            onClick={onClose}
-          >
-            Закрыть
-          </Button>
-          <LoadableBaseButton
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-            onClick={onSave}
-          >
-            Сохранить
-          </LoadableBaseButton>
-        </div>
+        <UnderButtons
+          leftFunc={onClose}
+          rightFunc={onSave}
+          leftLabel="Закрыть"
+          rightLabel="Сохранить"
+        />
       </StandardSizeModalWindow>
-    </>
+    </div>
   )
 }
 

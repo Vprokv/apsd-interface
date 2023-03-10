@@ -62,6 +62,7 @@ const Leaf = (props) => {
     LeafComponent,
     className,
     returnObjects,
+    selectedState,
   } = props
 
   const refProps = useRef(props)
@@ -207,14 +208,14 @@ const Leaf = (props) => {
         <Row
           level={level}
           title={title}
-          onClick={toggleOpen} // мне надо так //TODO переделать
+          // onClick={toggleOpen} // мне надо так //TODO переделать
           // onClick={selectNode} // а он делает так
           selected={leafVal === selectedNode}
           borderState={borderState}
           draggable={draggable}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
-          node={options}
+          node={{ ...options, selectedState }}
           parent={parent}
           rowComponent={rowComponent}
           onInput={onUpdateLeafOption}
@@ -226,6 +227,7 @@ const Leaf = (props) => {
           children &&
           children?.map((item, index) => (
             <LeafComponent
+              selectedState={selectedState}
               getSequence={handleGetSequence}
               LeafComponent={LeafComponent}
               dropRule={dropRule}

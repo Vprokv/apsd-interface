@@ -14,9 +14,11 @@ import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/con
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import dayjs from 'dayjs'
 import {
+  ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   PRESENT_DATE_FORMAT,
 } from '@/contants'
+import { URL_APPROVAL_SHEET_APPROVER_DELETE } from '@/ApiList'
 
 const Row = styled.div`
   height: 48px;
@@ -30,8 +32,26 @@ const Row = styled.div`
 `
 
 const StageRowComponent = ({ node }, props) => {
-  const { term, id, name, documentId, finishDate, editable, deletable } = node
+  const api = useContext(ApiContext)
+  const {
+    term,
+    id,
+    name,
+    documentId,
+    finishDate,
+    editable,
+    deletable,
+    selectedState,
+    stageType,
+  } = node
   const permit = useContext(PermitDisableContext)
+
+  const onDelete = useCallback(async () => {
+    await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
+      performersIds: Object.keys(Object.fromEntries(selectedState.entries())),
+    })
+  }, [api, selectedState])
+
   return (
     <Row>
       <div className="flex h-full items-center">
@@ -47,8 +67,16 @@ const StageRowComponent = ({ node }, props) => {
         <div className="flex items-center ml-auto">
           {editable && (
             <>
-              <AddUserWindow stageId={id} documentId={documentId} />
-              <CustomButtonForIcon disabled={permit} className="color-blue-1">
+              <AddUserWindow
+                stageId={id}
+                documentId={documentId}
+                stageType={stageType}
+              />
+              <CustomButtonForIcon
+                onClick={onDelete}
+                disabled={permit && !selectedState.size}
+                className="color-blue-1"
+              >
                 <Icon icon={DeleteUserIcon} />
               </CustomButtonForIcon>
               <EditStageWindow {...node} />
