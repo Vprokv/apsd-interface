@@ -14,7 +14,7 @@ const Main = () => {
     <Tab userId={r_object_id}>
       {({
         tabState: { tabs, currentTabIndex },
-        onOpenNewTab,
+        openTabOrCreateNewTab,
         onChangeActiveTab,
         onCloseTab,
       }) => (
@@ -22,7 +22,7 @@ const Main = () => {
           <Header />
           <div className="flex h-full overflow-hidden">
             <SideBar
-              onOpenNewTab={onOpenNewTab}
+              onOpenNewTab={openTabOrCreateNewTab}
               onChangeActiveTab={onChangeActiveTab}
             />
             <div className="flex-container w-full overflow-hidden">

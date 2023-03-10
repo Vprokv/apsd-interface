@@ -31,11 +31,10 @@ const DefaultHeaderComponent = ({ children }) => (
 
 const CreateDocumentWindow = ({ onClose }) => {
   const api = useContext(ApiContext)
-  const navigate = useNavigate()
   const [documents, setDocuments] = useState([])
   const [selectedDocument, setSelectedDocument] = useState({})
   const [newDocumentData, setNewDocumentData] = useState({})
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
   useEffect(() => {
     ;(async () => {
@@ -68,11 +67,11 @@ const CreateDocumentWindow = ({ onClose }) => {
     if (!selectedDocument.id) {
       return
     }
-    openNewTab(
-      navigate(`/task/new/${selectedDocument.id}/${selectedDocument.typeName}`),
+    openTabOrCreateNewTab(
+      `/task/new/${selectedDocument.id}/${selectedDocument.typeName}`,
     )
     onClose()
-  }, [navigate, onClose, openNewTab, selectedDocument])
+  }, [onClose, openTabOrCreateNewTab, selectedDocument])
 
   const handleSelectDocument = useCallback(
     (obj) => () => setSelectedDocument(obj),
@@ -158,12 +157,12 @@ const CreateDocumentWindow = ({ onClose }) => {
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <div className="flex overflow-hidden mb-6 h-full">
-        {/*<DocumentTypesContainer className="flex flex-col h-full flex-0">*/}
+        {/* <DocumentTypesContainer className="flex flex-col h-full flex-0">*/}
         <ScrollBar className="pr-6 w-full px-2">
           {documents.map(renderDocumentItem(FirstLevelHeaderComponent))}
         </ScrollBar>
-        {/*</DocumentTypesContainer>*/}
-        {/*<div className="pl-6 w-full h-full">*/}
+        {/* </DocumentTypesContainer>*/}
+        {/* <div className="pl-6 w-full h-full">*/}
         {/*  <h2 className="font-medium text-2xl color-blue-1 mb-4">*/}
         {/*    {selectedDocument.name}*/}
         {/*  </h2>*/}
@@ -182,7 +181,7 @@ const CreateDocumentWindow = ({ onClose }) => {
         {/*  </h3>*/}
         {/*  <div className="p-4">{renderAttributes}</div>*/}
         {/* </div>*/}
-        {/*</div>*/}
+        {/* </div>*/}
       </div>
       <div className="flex w-full items-center justify-end">
         <Button

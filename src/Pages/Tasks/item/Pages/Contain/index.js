@@ -131,7 +131,7 @@ const columns = [
 
 const Contain = () => {
   const api = useContext(ApiContext)
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const navigate = useNavigate()
   const { id } = useParams()
   const [filterValue, setFilterValue] = useState({})
@@ -284,8 +284,8 @@ const Contain = () => {
   const handleDoubleClick = useCallback(
     ({ tomId, type }) =>
       () =>
-        tomId && openNewTab(`/document/${tomId}/${type}`),
-    [openNewTab],
+        tomId && openTabOrCreateNewTab(`/document/${tomId}/${type}`),
+    [openTabOrCreateNewTab],
   )
 
   return (

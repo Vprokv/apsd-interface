@@ -65,7 +65,7 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
   const [open, setOpen] = useState(false)
   const api = useContext(ApiContext)
   const navigate = useNavigate()
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -82,10 +82,8 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
 
   const handleClick = useCallback(
     () =>
-      openNewTab(
-        navigate(`/document/${selectedState}/ddt_startup_complex_type_doc`),
-      ),
-    [navigate, openNewTab, selectedState],
+      openTabOrCreateNewTab(`/document/${selectedState}/ddt_startup_complex_type_doc`),
+    [navigate, openTabOrCreateNewTab, selectedState],
   )
 
   const getDocumentData = useCallback(async () => {

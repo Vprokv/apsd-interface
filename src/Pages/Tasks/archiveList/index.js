@@ -86,15 +86,15 @@ const plugins = {
 const ArchiveList = () => {
   const [sortQuery, onSort] = useState({})
   const api = useContext(ApiContext)
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
       () =>
-        openNewTab(navigate(`/document/${id}/${type}`)),
-    [navigate, openNewTab],
+        openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
+    [navigate, openTabOrCreateNewTab],
   )
   const tabItemState = useTabItem({ stateId: TASK_LIST_ARCHIVE })
 

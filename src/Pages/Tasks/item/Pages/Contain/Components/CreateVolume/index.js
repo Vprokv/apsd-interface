@@ -21,7 +21,7 @@ const CreateVolume = ({ addVolumeState }) => {
   } = useTabItem({
     stateId: documentType,
   })
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
@@ -64,7 +64,7 @@ const CreateVolume = ({ addVolumeState }) => {
   const handleClick = useCallback(async () => {
     const { row: { id: parentId, name: parentName } = {} } = addVolumeState
     const { id: docTypeId, typeName } = selected
-    openNewTab(`/task/new/${docTypeId}/${typeName}`, {
+    openTabOrCreateNewTab(`/task/new/${docTypeId}/${typeName}`, {
       parentTabName: [TASK_ITEM_STRUCTURE],
       values: {
         dsid_startup_complex: id,
@@ -80,7 +80,7 @@ const CreateVolume = ({ addVolumeState }) => {
     })
     handleClose()
     setSelected({})
-  }, [addVolumeState, selected, openNewTab, id, data, handleClose])
+  }, [addVolumeState, selected, openTabOrCreateNewTab, id, data, handleClose])
 
   const renderEntities = useCallback(
     (level = 1) =>

@@ -40,7 +40,7 @@ const Leaf = ({
     onChange,
   } = useContext(TreeStateContext)
   const api = useContext(ApiContext)
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { loadData, addDepartment, addVolume } = useContext(
     LoadContainChildrenContext,
   )
@@ -120,8 +120,8 @@ const Leaf = ({
   }, [ParentValue, addVolume, closeContextMenu, nestedDataKey, onInput])
 
   const edit = useCallback(
-    () => openNewTab(`/document/${tomId}/${type}`),
-    [openNewTab, tomId, type],
+    () => openTabOrCreateNewTab(`/document/${tomId}/${type}`),
+    [openTabOrCreateNewTab, tomId, type],
   )
 
   return (

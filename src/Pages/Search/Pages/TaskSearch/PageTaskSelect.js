@@ -112,14 +112,14 @@ const defaultSearchState = {}
 const defaultFilter = { type: 'ddt_task' }
 
 const PageTaskSelect = () => {
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
     ({ taskId, documentType }) =>
       () =>
-        openNewTab(navigate(`/task/${taskId}/${documentType}`)),
-    [navigate, openNewTab],
+        openTabOrCreateNewTab(navigate(`/task/${taskId}/${documentType}`)),
+    [navigate, openTabOrCreateNewTab],
   )
 
   const tabItemState = useTabItem({

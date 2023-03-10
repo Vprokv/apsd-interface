@@ -7,12 +7,12 @@ import { useNavigate } from 'react-router-dom'
 import { SEARCH_PAGE_PATH } from '@/routePaths'
 
 const Search = () => {
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const navigate = useNavigate()
 
   const openSearch = useCallback(
-    () => openNewTab(navigate(`${SEARCH_PAGE_PATH}`)),
-    [navigate, openNewTab],
+    () => openTabOrCreateNewTab(navigate(`${SEARCH_PAGE_PATH}`)),
+    [navigate, openTabOrCreateNewTab],
   )
 
   return (

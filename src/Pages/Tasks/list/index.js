@@ -43,6 +43,7 @@ import Filter from './Components/Filter'
 import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -156,6 +157,7 @@ function TaskList({ loadFunctionRest }) {
     direction: 'DESC',
   })
   const api = useContext(ApiContext)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
   const {
     tabState,
@@ -178,7 +180,7 @@ function TaskList({ loadFunctionRest }) {
   const handleDoubleClick = useCallback(
     ({ taskId, type }) =>
       () =>
-        navigate(`/task/${taskId}/${type}`),
+        openTabOrCreateNewTab(`/task/${taskId}/${type}`),
     [navigate],
   )
 

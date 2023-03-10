@@ -24,7 +24,7 @@ const Reports = () => {
   const [reports, setReports] = useState([])
   const [selected, setSelected] = useState([])
   const navigate = useNavigate()
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const api = useContext(ApiContext)
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -41,10 +41,10 @@ const Reports = () => {
 
   const onClick = useCallback(
     (id) => {
-      openNewTab(navigate(`/report/${id}`))
+      openTabOrCreateNewTab(navigate(`/report/${id}`))
       changeModalState(false)()
     },
-    [changeModalState, navigate, openNewTab],
+    [changeModalState, navigate, openTabOrCreateNewTab],
   )
 
   const renderedEntities = useMemo(

@@ -23,14 +23,14 @@ const defaultOptions = [
 const defaultSearchState = {}
 
 const PageDocumentSelect = ({ props }) => {
-  const { openNewTab } = useContext(TabStateManipulation)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
   const navigate = useNavigate()
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
       () =>
-        openNewTab(navigate(`/document/${id}/${type}`)),
-    [navigate, openNewTab],
+        openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
+    [navigate, openTabOrCreateNewTab],
   )
 
   const tabItemState = useTabItem({
