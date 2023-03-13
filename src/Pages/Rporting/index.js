@@ -33,6 +33,7 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { API_URL } from '@/api'
+import downloadFileWithReload from "@/Utils/DownloadFileWithReload";
 
 export const UserContext = createContext({})
 
@@ -102,18 +103,12 @@ const Reporting = (props) => {
       },
     })
 
-    // const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
-    //   responseType: 'blob',
-    // })
+    const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
+      responseType: 'blob',
+    })
 
-    window.open(
-      `${API_URL}${URL_REPORTS_GET}${fileKey}:${token}`,
-      '_blank',
-      'noopener',
-    )
-
-    // downloadFile(data, `${name}.${dss_def_format}`)
-  }, [api, dss_def_format, filter, reportId, token])
+    downloadFileWithReload(data, `${name}.${dss_def_format}`)
+  }, [api, dss_def_format, filter, name, reportId, token])
 
   return (
     <>
