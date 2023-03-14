@@ -8,6 +8,7 @@ import {
 } from 'react'
 import Layout from './Components/Layout'
 import {
+  URL_BASKET_ADD,
   URL_BUSINESS_DOCUMENT_RECALL,
   URL_CONTENT_SEND_EEHD,
   URL_DOCUMENT_ITEM,
@@ -16,23 +17,18 @@ import {
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import {
-  ApiContext,
-  ITEM_DOCUMENT,
-  SIDEBAR_STATE,
-  TASK_ITEM_APPROVAL_SHEET,
-} from '@/contants'
+import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultDocumentHandlers,
   defaultPages,
-  defaultTaskIcon,
   DocumentIdContext,
   DocumentTypeContext,
 } from './constants'
 import DefaultIcon from './Icons/DefaultIcon.svg'
+import DeleteIcon from './Icons/DeleteIcon.svg'
 import SendASUD from './Icons/SendASUD.svg'
 import SaveIcon from './Icons/SaveIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
@@ -165,6 +161,23 @@ const Document = () => {
         },
         icon: DefaultIcon,
       },
+      delete: {
+        handler: async () => {
+          try {
+            const { data, status } = await api.post(URL_BASKET_ADD, {
+              documentIds: [id],
+            })
+            setMessage(data)
+            remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
+            getNotification(customMessagesFuncMap[status]())
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
+        icon: DefaultIcon,
+      },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
@@ -181,7 +194,7 @@ const Document = () => {
             getNotification(customMessagesFuncMap[status](data))
           }
         },
-        icon: defaultTaskIcon[name] || DefaultIcon,
+        icon: DeleteIcon,
       }),
     }),
     [api, getNotification, id, remoteApprovalUpdater, remoteTabUpdater, type],

@@ -11,7 +11,12 @@ import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useLocation } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import usePagination from '@Components/Logic/usePagination'
-import { URL_BASKET_LIST, URL_DOCUMENT_ITEM } from '@/ApiList'
+import {
+  URL_BASKET_DELETED,
+  URL_BASKET_LIST,
+  URL_BASKET_RESTORE_DELETED,
+  URL_DOCUMENT_ITEM,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
@@ -50,6 +55,8 @@ import UserCard, {
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
+import DeleteIcon from '@/Icons/deleteIcon'
+import ExportIcon from '@/Icons/ExportIcon'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -230,22 +237,34 @@ function BasketList(props) {
 
   useAutoReload(loadData, tabBasketState)
 
+  const onDelete = useCallback(async () => {
+    await api.post(URL_BASKET_DELETED, { documentIds: selectState })
+  }, [api, selectState])
+
+  const onRestore = useCallback(async () => {
+    await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
+  }, [api, selectState])
+
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
-          <ButtonForIcon className="mr-2">
-            <Icon icon={filterIcon} />
+          {/*<ButtonForIcon className="mr-2">*/}
+          {/*  <Icon icon={filterIcon} />*/}
+          {/*</ButtonForIcon>*/}
+          {/*<ButtonForIcon className="mr-2">*/}
+          {/*  <Icon icon={sortIcon} />*/}
+          {/*</ButtonForIcon>*/}
+          <ButtonForIcon
+            onClick={onRestore}
+            disabled={!selectState.length}
+            className="mr-2"
+          >
+            <Icon icon={ExportIcon} />
           </ButtonForIcon>
-          <ButtonForIcon className="mr-2">
-            <Icon icon={sortIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon className="mr-2">
-            <Icon icon={volumeIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon className="color-green">
-            <Icon icon={XlsIcon} />
+          <ButtonForIcon onClick={onDelete} disabled={!selectState.length}>
+            <Icon icon={DeleteIcon} />
           </ButtonForIcon>
         </div>
       </div>

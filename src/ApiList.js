@@ -141,3 +141,6 @@ export const URL_REPORTS_DEPARTMENT = '/sedo/os/branch/list?limit=100&offset=0'
 
 //BASKET
 export const URL_BASKET_LIST = '/apsd/basket/list'
+export const URL_BASKET_DELETED = '/apsd/basket/deleteDocument'
+export const URL_BASKET_RESTORE_DELETED = '/apsd/basket/delete'
+export const URL_BASKET_ADD = '/apsd/basket/add'
