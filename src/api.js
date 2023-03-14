@@ -12,7 +12,7 @@ import axios from 'axios'
 // config for master branch
 export const API_URL =
   process.env.NODE_ENV !== 'production'
-    ? process.env.REACT_APP_API_BASE_URL || 'http://192.168.42.105/'
+    ? process.env.REACT_APP_API_BASE_URL || 'http://10.20.56.47/'
     : window.location.origin
 
 axios.defaults.baseURL = API_URL
