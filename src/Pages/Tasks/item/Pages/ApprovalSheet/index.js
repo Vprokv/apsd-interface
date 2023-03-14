@@ -57,6 +57,7 @@ const ApprovalSheet = (props) => {
   const api = useContext(ApiContext)
   const [filterValue, setFilterValue] = useState({})
   const [permit, setPermit] = useState(false)
+  const [toggleNavigationData, setToggleNavigationData] = useState([])
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
   //
@@ -108,6 +109,14 @@ const ApprovalSheet = (props) => {
   // }, [loadData, setDocumentTypeState, setTabState, update])
 
   useEffect(() => {
+    setToggleNavigationData(
+      data.map(({ type }) => {
+        return { id: type, isDisplayed: false }
+      }),
+    )
+  }, [data])
+
+  useEffect(() => {
     ;(async () => {
       const { data } = await api.post(URL_BUSINESS_PERMIT, {
         documentType: type,
@@ -145,6 +154,23 @@ const ApprovalSheet = (props) => {
     console.log(v)
   }, [])
 
+  const openAllStages = useCallback(() => {
+    console.log(66)
+    data.forEach(({ type }) => {
+      console.log(type)
+    })
+  }, [data])
+
+  const aaa = useCallback(
+    (v) => {
+      console.log(666)
+      // setToggleNavigationData((item) =>
+      //   item.id === v ? (item.isDisplayed = !item.isDisplayed) : '',
+      // )
+    },
+    [toggleNavigationData],
+  )
+
   return (
     <PermitDisableContext.Provider value={!permit}>
       <LoadContext.Provider value={setChange}>
@@ -167,8 +193,8 @@ const ApprovalSheet = (props) => {
                 <Icon icon={PostponeIcon} />
               </ButtonForIcon>
               <ButtonForIcon
-                disabled={!permit}
                 className="color-text-secondary"
+                onClick={openAllStages}
               >
                 <Icon icon={OtherIcon} />
               </ButtonForIcon>
