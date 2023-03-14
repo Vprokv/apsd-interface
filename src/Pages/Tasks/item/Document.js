@@ -93,7 +93,6 @@ const Document = () => {
   const remoteApprovalUpdater = UseTabStateUpdaterByName([
     TASK_ITEM_APPROVAL_SHEET,
   ])
-  const remoteSideBarUpdater = UseTabStateUpdaterByName([SIDEBAR_STATE])
 
   useSetTabName(useCallback(() => documentId, [documentId]))
   const refValues = useRef()

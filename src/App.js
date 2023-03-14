@@ -19,7 +19,7 @@ import {
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import { CREATE_PASSWORD_PAGE_PATH } from './routePaths'
+import { CREATE_PASSWORD_PAGE_PATH, DELETED_LIST_PATH } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'
@@ -171,7 +171,7 @@ function App() {
                     element={<VolumeItem />}
                   />
                   <Route
-                    path={routePath.DELETED_ITEM_PATH}
+                    path={routePath.DELETED_LIST_PATH}
                     element={<BasketList />}
                   />
                   <Route

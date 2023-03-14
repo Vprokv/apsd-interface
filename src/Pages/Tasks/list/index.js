@@ -176,12 +176,11 @@ function TaskList({ loadFunctionRest }) {
 
   const [filter, setFilter] = useState({ readTask: false })
   const [selectState, setSelectState] = useState([])
-  const navigate = useNavigate()
   const handleDoubleClick = useCallback(
     ({ taskId, type }) =>
       () =>
         openTabOrCreateNewTab(`/task/${taskId}/${type}`),
-    [navigate],
+    [openTabOrCreateNewTab],
   )
 
   const loadData = useMemo(() => {

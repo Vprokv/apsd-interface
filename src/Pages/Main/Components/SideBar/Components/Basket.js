@@ -5,8 +5,7 @@ import SidebarBasketIcon from '../icons/SidebarBasketIcon'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
 import WithToggleNavigationItem from './withToggleNavigationItem'
-import { DELETED_LIST_PATH, TASK_LIST_PATH } from '@/routePaths'
-import { EXPIRED } from '@/Pages/Tasks/list/constants'
+import { DELETED_LIST_PATH } from '@/routePaths'
 import {
   DELETED_1,
   DELETED_3,
@@ -36,11 +35,11 @@ const Basket = ({ onOpenNewTab }) => {
             />
           </button>
           {isDisplayed && (
-            <div className="font-size-12 mt-2">
+            <div className="font-size-12 mt-4">
               <button
                 type="button"
                 className="flex w-full py-1.5"
-                onClick={handleOpenNewTab(DELETED_LIST_PATH)}
+                onClick={handleOpenNewTab(`${DELETED_LIST_PATH}`)}
               >
                 <span className="mr-auto">Все удаленные</span>
               </button>
