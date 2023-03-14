@@ -40,7 +40,6 @@ import {
 import DefaultIcon from './Icons/DefaultIcon.svg'
 import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
-import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { SidebarContainer } from './styles'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PrintIcon from './Icons/PrintIcon.svg'
@@ -59,6 +58,7 @@ import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWind
 import RejectApproveIcon from '@/Pages/Tasks/item/Icons/RejectApproveIcon.svg'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
+import WrapperDocumentActions from './Components/WrapperDocumentActions'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -312,11 +312,6 @@ const Task = () => {
     ...documentHandlers,
   })
 
-  const actions = useMemo(
-    () => [...wrappedTaskActions, ...wrappedDocumentActions],
-    [wrappedDocumentActions, wrappedTaskActions],
-  )
-
   const closeModalWindow = useCallback(() => setMessage(''), [])
 
   return (
@@ -325,7 +320,8 @@ const Task = () => {
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
             <Report previousTaskReport={previousTaskReport} />
-            <DocumentActions documentActions={actions} />
+            <WrapperDocumentActions documentActions={wrappedTaskActions} />
+            <WrapperDocumentActions documentActions={wrappedDocumentActions} />
           </SidebarContainer>
         </Document>
         {ActionComponent && (
