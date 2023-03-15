@@ -22,7 +22,7 @@ const columns = [
     id: 'name',
     label: 'Раздел/том',
     className: 'flex items-center',
-    component: BaseCell,
+    component: (props) => <BaseCell {...props} className="h-10" />,
     sizes: 300,
   },
   {

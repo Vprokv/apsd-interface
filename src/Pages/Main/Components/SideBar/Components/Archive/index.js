@@ -3,12 +3,18 @@ import ArchiveIcon from '../../icons/ArchiveIcon'
 import WithToggleNavigationItem from '../withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
-import ScrollBar from '@Components/Components/ScrollBar'
+// import ScrollBar from '@Components/Components/ScrollBar'
 import ArchiveItem, { LevelOneArchiveItem } from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
 import { FirstLevelArchiveButton } from './Components/ArchiveButton'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { useState } from 'react'
+import styled from 'styled-components'
+import SimpleBar from 'simplebar-react'
+
+const ScrollBar = styled(SimpleBar)`
+  max-height: 80px;
+`
 
 const Archive = ({ onOpenNewTab }) => {
   const [query, setQuery] = useState()
@@ -37,15 +43,13 @@ const Archive = ({ onOpenNewTab }) => {
                 className="my-4 form-element-sizes-32"
                 placeholder="Поиск"
               />
-              <ScrollBar className="max-h-80">
-                <div>
-                  <ArchiveItem
-                    query={query}
-                    onOpenNewTab={onOpenNewTab}
-                    buttonComponent={FirstLevelArchiveButton}
-                    childrenComponent={LevelOneArchiveItem}
-                  />
-                </div>
+              <ScrollBar>
+                <ArchiveItem
+                  query={query}
+                  onOpenNewTab={onOpenNewTab}
+                  buttonComponent={FirstLevelArchiveButton}
+                  childrenComponent={LevelOneArchiveItem}
+                />
               </ScrollBar>
             </div>
           )}
