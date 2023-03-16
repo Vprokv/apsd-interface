@@ -20,24 +20,15 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 
 const Row = styled.div`
-  height: 46px;
   background-color: var(--notifications);
   font-size: 12px;
-  display: flex;
-  flex-direction: column;
+  //display: flex;
+  //flex-direction: column;
   border-bottom: 1px solid var(--separator);
   align-content: center;
+  justify-content: center;
   //border-top: 1px solid var(--separator);
 `
-
-const plugins = {
-  selectPlugin: {
-    driver: FlatSelect,
-    component: CheckBox,
-    style: { margin: 'auto 0' },
-    valueKey: 'remarkId',
-  },
-}
 
 const columns = [
   {
@@ -58,15 +49,19 @@ const columns = [
     id: 'date',
     label: 'Дата создания/ ответа',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({
+      ParentValue: { itsRemark, remarkCreationDate, answerCreationDate },
+    }) => (
+      <BaseCell value={itsRemark ? remarkCreationDate : answerCreationDate} />
+    ),
     sizes: 180,
   },
   {
     id: 'remarkText',
     label: 'Значение / Ответ',
     className: 'h-10 flex items-center',
-    component: ({ ParentValue: { itsRemark, remarkText } }) => (
-      <BaseCell value={itsRemark ? remarkText : ''} />
+    component: ({ ParentValue: { itsRemark, remarkText, answerText } }) => (
+      <BaseCell value={itsRemark ? remarkText : answerText} />
     ),
     sizes: 400,
   },
@@ -103,7 +98,14 @@ const columns = [
   },
 ]
 
-const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
+const RowComponent = ({
+  children,
+  setSelectState,
+  selectState,
+  toggleDisplayedFlag,
+  isDisplayed,
+  ...props
+}) => {
   const data = useMemo(() => {
     const {
       remarkMemberFullName,
@@ -112,6 +114,7 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
       remarkType,
       remarkText,
       setRemark,
+      remarkCreationDate,
       number,
       ...item
     } = props
@@ -124,6 +127,7 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
       {
         itsRemark: true,
         remarkMemberFullName,
+        remarkCreationDate,
         remarkId,
         number,
         remarkMemberPosition,
@@ -136,20 +140,23 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
   }, [props])
 
   return (
-    <>
-      <Row>{children}</Row>
-      <ListTable
-        value={data}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        selectState={selectState}
-        onSelect={setSelectState}
-        // sortQuery={sortQuery}
-        // onSort={onSort}
-        valueKey="id"
-      />
-    </>
+    data && (
+      <div className='flex flex-col'>
+        <button type={'button'} onClick={toggleDisplayedFlag}>
+          <Row>{children}</Row>
+        </button>
+        {isDisplayed && (
+          <ListTable
+            value={data}
+            columns={columns}
+            headerCellComponent={HeaderCell}
+            selectState={selectState}
+            onSelect={setSelectState}
+            valueKey="id"
+          />
+        )}
+      </div>
+    )
   )
 }
 

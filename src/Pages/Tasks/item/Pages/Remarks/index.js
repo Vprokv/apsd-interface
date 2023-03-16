@@ -7,11 +7,9 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
-import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
-  URL_APPROVAL_SHEET,
-  URL_DOCUMENT_CREATION_OPTIONS,
   URL_ENTITY_LIST,
   URL_REMARK_DELETE,
   URL_REMARK_LIST,
@@ -19,27 +17,26 @@ import {
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
-import UserSelect from '@/Components/Inputs/UserSelect'
-import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import {
-  ButtonForIcon,
-  LoadableBaseButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import ExportIcon from '@/Icons/ExportIcon'
 import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
-import deleteIcon from '@/Icons/deleteIcon'
-import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 import {
   ShowAnswerButtonContext,
+  ToggleContext,
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import CheckBox from '@/Components/Inputs/CheckBox'
+import angleIcon from '@/Icons/angleIcon'
+import ToggleNavigationItemWrapper, {
+  WithToggleNavigationItem,
+} from '@/Pages/Tasks/item/Pages/Remarks/Components/WithToggleNavigationItem'
+
+const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
 const Remarks = (props) => {
   const { type } = useParams()
@@ -47,14 +44,16 @@ const Remarks = (props) => {
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState()
+  const [toggle, onToggle] = useState({})
+  const [open, setOpen] = useState(false)
 
   const tabItemState = useTabItem({
-    stateId: TASK_ITEM_APPROVAL_SHEET,
+    stateId: TASK_ITEM_REMARKS,
   })
   const {
     tabState,
     setTabState,
-    tabState: { data = [], permit, change },
+    tabState: { data: { data = [], permit = {} } = {}, change },
   } = tabItemState
 
   const setChange = useCallback(
@@ -65,26 +64,31 @@ const Remarks = (props) => {
     [setTabState],
   )
 
+  useEffect(() => {
+    return (
+      !toggle.size &&
+      data.forEach(({ remarkId }) => {
+        onToggle((map) => {
+          return { ...map, [remarkId]: true }
+        })
+      })
+    )
+  }, [data, toggle.size])
+
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_REMARK_LIST, {
       documentId: id,
       filter,
     })
 
-    return data
-  }, [api, id, type, filter, change])
+    const { data: permit } = await api.post(URL_REMARK_PERMIT, {
+      documentId: id,
+    })
+
+    return { data, permit }
+  }, [api, id, filter, change])
 
   useAutoReload(loadData, tabItemState)
-
-  useEffect(() => {
-    ;(async () => {
-      const { data } = await api.post(URL_REMARK_PERMIT, {
-        documentId: id,
-      })
-
-      setTabState({ permit: data })
-    })()
-  }, [api, filter, id, setTabState])
 
   const fields = useMemo(
     () => [
@@ -103,7 +107,7 @@ const Remarks = (props) => {
         },
       },
       {
-        id: 'type',
+        id: 'typeId',
         component: LoadableSelect,
         placeholder: 'Выберите тип',
         valueKey: 'r_object_id',
@@ -124,6 +128,20 @@ const Remarks = (props) => {
     ],
     [api],
   )
+
+  const ChangeAllToggls = useCallback(() => {
+    onToggle((prev) => {
+      let newToggle = {}
+
+      Object.keys(prev).forEach((key) => {
+        newToggle[key] = open
+      })
+
+      return newToggle
+    })
+
+    setOpen((open) => !open)
+  }, [open])
 
   const onDelete = useCallback(async () => {
     await api.post(URL_REMARK_DELETE, {
@@ -148,39 +166,60 @@ const Remarks = (props) => {
             <SecondaryBlueButton className="ml-2">
               Выгрузить свод замечаний
             </SecondaryBlueButton>
-            <ButtonForIcon className="ml-2 color-text-secondary">
+            <ButtonForIcon
+              onClick={ChangeAllToggls}
+              className="ml-2 color-text-secondary"
+            >
               <Icon icon={ExportIcon} />
             </ButtonForIcon>
           </div>
         </div>
         <div className="flex flex-col">
           <ShowAnswerButtonContext.Provider value={permit?.answer}>
-            {data.map((val, key) => {
-              // if (val) {
-              return (
-                <RowComponent
-                  key={key}
-                  selectState={selectState}
-                  setSelectState={setSelectState}
-                  {...val}
-                >
-                  <div className="flex items-center">
-                    <div className="ml-4 font-medium">{val?.stageName}</div>
-                    <div className="flex items-center ml-auto">
-                      <EditRemark disabled={permit?.edit} {...val} />
-                      <LoadableBaseButton
-                        disabled={permit?.delete}
-                        onClick={onDelete}
-                        className="color-blue-1"
+            <ToggleContext.Provider value={{ toggle, onToggle }}>
+              {data.map((val) => (
+                <WithToggle key={val.remarkId} id={val.remarkId}>
+                  {({ isDisplayed, toggleDisplayedFlag }) => {
+                    return (
+                      <RowComponent
+                        isDisplayed={isDisplayed}
+                        toggleDisplayedFlag={toggleDisplayedFlag}
+                        key={val.remarkId}
+                        selectState={selectState}
+                        setSelectState={setSelectState}
+                        {...val}
                       >
-                        <Icon icon={deleteIcon} />
-                      </LoadableBaseButton>
-                    </div>
-                  </div>
-                </RowComponent>
-              )
-              // }
-            })}
+                        <div className="h-12 flex items-center">
+                          <div className="pl-2">
+                            <Icon
+                              icon={angleIcon}
+                              size={10}
+                              className={`color-text-secondary ${
+                                isDisplayed ? '' : 'rotate-180'
+                              }`}
+                            />
+                          </div>
+
+                          <div className="ml-4 font-medium flex items-center ">
+                            {val?.stageName}
+                          </div>
+                          {/*<div className="flex items-center ml-auto">*/}
+                          {/*  <EditRemark disabled={permit?.edit} {...val} />*/}
+                          {/*  <LoadableBaseButton*/}
+                          {/*    disabled={permit?.delete}*/}
+                          {/*    onClick={onDelete}*/}
+                          {/*    className="color-blue-1"*/}
+                          {/*  >*/}
+                          {/*    <Icon icon={deleteIcon} />*/}
+                          {/*  </LoadableBaseButton>*/}
+                          {/*</div>*/}
+                        </div>
+                      </RowComponent>
+                    )
+                  }}
+                </WithToggle>
+              ))}
+            </ToggleContext.Provider>
           </ShowAnswerButtonContext.Provider>
         </div>
       </div>

@@ -7,3 +7,8 @@ export const UpdateContext = createContext({
 export const ShowAnswerButtonContext = createContext({
   answer: false,
 })
+
+export const ToggleContext = createContext({
+  toggle: new Map(),
+  onToggle: () => null,
+})

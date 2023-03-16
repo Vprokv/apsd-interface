@@ -11,6 +11,7 @@ const FilterWrapper = memoize((Component) => {
         () => loadFunction(filter),
         [loadFunction, filter],
       )
+
       return (
         <Component
           ref={ref}
