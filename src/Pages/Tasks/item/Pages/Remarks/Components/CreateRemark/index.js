@@ -61,6 +61,8 @@ const CreateRemark = ({ disabled }) => {
       id: 'setRemark',
       label: 'Свод замечаний',
       placeholder: 'Выберите замечание',
+      valueKey: 'ID',
+      labelKey: 'SYS_NAME',
       options: [
         {
           ID: true,

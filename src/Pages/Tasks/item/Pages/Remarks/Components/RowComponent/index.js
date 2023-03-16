@@ -43,16 +43,32 @@ const columns = [
   {
     id: 'number',
     label: 'Номер',
-    className: 'h-10 flex items-center',
+    className: 'min-h-10 flex items-center',
     component: NumberComponent,
-    sizes: 100,
+    sizes: 70,
   },
   {
     id: 'user',
-    label: 'Участник/Подраздедение',
-    className: 'h-10 flex items-center',
+    label: 'Автор замечания / ответа',
+    className: 'min-h-10 flex items-center',
     component: UserComponent,
-    sizes: 300,
+    sizes: 250,
+  },
+  {
+    id: 'date',
+    label: 'Дата создания/ ответа',
+    className: 'h-10 flex items-center',
+    component: BaseCell,
+    sizes: 180,
+  },
+  {
+    id: 'remarkText',
+    label: 'Значение / Ответ',
+    className: 'h-10 flex items-center',
+    component: ({ ParentValue: { itsRemark, remarkText } }) => (
+      <BaseCell value={itsRemark ? remarkText : ''} />
+    ),
+    sizes: 400,
   },
   {
     id: 'status',
@@ -62,20 +78,11 @@ const columns = [
     sizes: 150,
   },
   {
-    id: 'remarkText',
-    label: 'Значение',
-    className: 'h-10 flex items-center',
-    component: ({ ParentValue: { itsRemark, remarkText } }) => (
-      <BaseCell value={itsRemark ? remarkText : ''} />
-    ),
-    sizes: 500,
-  },
-  {
     id: 'remarkType',
     label: 'Тип замечания',
     className: 'h-10 flex items-center',
     component: BaseCell,
-    sizes: 250,
+    sizes: 150,
   },
   {
     id: 'setRemark',
@@ -92,7 +99,7 @@ const columns = [
         }
       />
     ),
-    sizes: 250,
+    sizes: 150,
   },
 ]
 

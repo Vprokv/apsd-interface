@@ -23,7 +23,11 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  LoadableBaseButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import ExportIcon from '@/Icons/ExportIcon'
@@ -35,6 +39,7 @@ import {
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import CheckBox from '@/Components/Inputs/CheckBox'
 
 const Remarks = (props) => {
   const { type } = useParams()
@@ -51,8 +56,6 @@ const Remarks = (props) => {
     setTabState,
     tabState: { data = [], permit, change },
   } = tabItemState
-
-  console.log(permit, 'permit')
 
   const setChange = useCallback(
     () =>
@@ -94,20 +97,29 @@ const Remarks = (props) => {
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_status_remark',
-            query
+            query,
           })
           return data
         },
       },
       {
-        id: 'authorId',
-        component: UserSelect,
-        placeholder: 'Выберите автора',
+        id: 'type',
+        component: LoadableSelect,
+        placeholder: 'Выберите тип',
+        valueKey: 'r_object_id',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_type_remark',
+            query,
+          })
+          return data
+        },
+        labelKey: 'dss_name',
       },
       {
-        id: 'remarkText',
-        component: SearchInput,
-        placeholder: 'Введите замечание',
+        id: 'allIteration',
+        component: CheckBox,
+        text: 'Все итерации',
       },
     ],
     [api],
@@ -122,7 +134,7 @@ const Remarks = (props) => {
 
   return (
     <UpdateContext.Provider value={setChange}>
-      <div className="px-4 pb-4  w-full flex-container">
+      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
         <div className="flex items-center py-4 form-element-sizes-32">
           <FilterForm
             className="mr-2"
@@ -133,6 +145,9 @@ const Remarks = (props) => {
           />
           <div className="flex items-center ml-auto">
             <CreateRemark disabled={permit?.remarkCreate} />
+            <SecondaryBlueButton className="ml-2">
+              Выгрузить свод замечаний
+            </SecondaryBlueButton>
             <ButtonForIcon className="ml-2 color-text-secondary">
               <Icon icon={ExportIcon} />
             </ButtonForIcon>
@@ -150,8 +165,7 @@ const Remarks = (props) => {
                   {...val}
                 >
                   <div className="flex items-center">
-                    <div className="mr-12 font-medium">{!val?.stageName}</div>
-                    <div className="mr-12 w-24">{!val?.stageStatus}</div>
+                    <div className="ml-4 font-medium">{val?.stageName}</div>
                     <div className="flex items-center ml-auto">
                       <EditRemark disabled={permit?.edit} {...val} />
                       <LoadableBaseButton
