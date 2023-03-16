@@ -123,7 +123,6 @@ export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'
 export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'
 
 // PREVIEW
-
 export const URL_ENTITY_PDF_FILE = '/preview/pdf/'
 
 // TEMPLATE
@@ -139,3 +138,9 @@ export const URL_REPORTS_BUILD = '/apsd/reporting/build'
 export const URL_REPORTS_GET = '/sedo/reporting/content/'
 export const URL_REPORTS_BRUNCH = '/sedo/os/branch/list?limit=100&offset=0'
 export const URL_REPORTS_DEPARTMENT = '/sedo/os/branch/list?limit=100&offset=0'
+
+//BASKET
+export const URL_BASKET_LIST = '/apsd/basket/list'
+export const URL_BASKET_DELETED = '/apsd/basket/deleteDocument'
+export const URL_BASKET_RESTORE_DELETED = '/apsd/basket/delete'
+export const URL_BASKET_ADD = '/apsd/basket/add'

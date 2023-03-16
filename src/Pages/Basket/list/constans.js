@@ -1,6 +1,6 @@
-export const DELETED_1 = '?dueFrom=1&dueTo=3'
-export const DELETED_3 = '?dueFrom=4&dueTo=7'
-export const DELETED_YEAR = '?dueFrom=8&dueTo=null'
+export const DELETED_1 = '?last_month'
+export const DELETED_3 = '?three_month'
+export const DELETED_YEAR = '?last_year'
 
 export const TabNames = {
   '': 'Все удаленные',
