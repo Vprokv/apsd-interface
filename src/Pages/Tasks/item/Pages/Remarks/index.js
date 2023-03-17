@@ -199,7 +199,6 @@ const Remarks = (props) => {
                             {val?.stageName}
                           </div>
                           {/*<div className="flex items-center ml-auto">*/}
-                          {/*  <EditRemark disabled={permit?.edit} {...val} />*/}
                           {/*  <LoadableBaseButton*/}
                           {/*    disabled={permit?.delete}*/}
                           {/*    onClick={onDelete}*/}

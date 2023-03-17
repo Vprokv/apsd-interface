@@ -20,6 +20,17 @@ import { useParams } from 'react-router-dom'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import UserSelect from '@/Components/Inputs/UserSelect'
+import {
+  VALIDATION_RULE_REQUIRED,
+  VALIDATION_RULE_SAME,
+} from '@Components/Logic/Validator/constants'
+
+const rules = {
+  author: [{ name: VALIDATION_RULE_REQUIRED }],
+  remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const CreateRemark = ({ disabled }) => {
   const api = useContext(ApiContext)
@@ -36,6 +47,11 @@ const CreateRemark = ({ disabled }) => {
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
 
   const fields = [
+    {
+      id: 'author',
+      label: 'Автор',
+      component: UserSelect,
+    },
     {
       id: 'remarkTypeId',
       component: LoadableSelect,
@@ -56,24 +72,6 @@ const CreateRemark = ({ disabled }) => {
       label: 'Текст замечания',
       component: CustomInput,
       placeholder: 'Введите текст замечания',
-    },
-    {
-      id: 'setRemark',
-      label: 'Свод замечаний',
-      placeholder: 'Выберите замечание',
-      valueKey: 'ID',
-      labelKey: 'SYS_NAME',
-      options: [
-        {
-          ID: true,
-          SYS_NAME: 'Включено',
-        },
-        {
-          ID: false,
-          SYS_NAME: 'Не включено',
-        },
-      ],
-      component: Select,
     },
   ]
 
@@ -113,20 +111,20 @@ const CreateRemark = ({ disabled }) => {
               fields={fields}
               value={filter}
               onInput={setFilterValue}
+              rules={rules}
               inputWrapper={InputWrapper}
             />
-            <div className="flex">
-              <LinkNdt links={filter} setLinks={setFilterValue}>
-                <SecondaryBlueButton className="ml-4 form-element-sizes-32">
-                  Импорт значений
-                </SecondaryBlueButton>
-                <SecondaryBlueButton className="ml-4 form-element-sizes-32">
-                  Скачать шаблон таблицы
-                </SecondaryBlueButton>
-              </LinkNdt>
+            <div className="flex w-full">
+              <LinkNdt links={filter} setLinks={setFilterValue} />
             </div>
           </div>
         </div>
+        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64">
+          Импорт значений
+        </SecondaryBlueButton>
+        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mt-2">
+          Скачать шаблон таблицы
+        </SecondaryBlueButton>
         <UnderButtons leftFunc={onClose} rightFunc={onSave} />
       </StandardSizeModalWindow>
     </div>

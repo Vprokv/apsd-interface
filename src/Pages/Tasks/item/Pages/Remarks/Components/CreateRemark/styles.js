@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import Form from '@Components/Components/Forms'
+import Form, { WithValidationForm } from '@Components/Components/Forms'
 import InputComponent, { Input } from '@Components/Components/Inputs/Input'
 
-export const FilterForm = styled(Form)`
+export const FilterForm = styled(WithValidationForm)`
   display: grid;
 `
 

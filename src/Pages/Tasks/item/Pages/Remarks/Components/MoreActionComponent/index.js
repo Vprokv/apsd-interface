@@ -7,11 +7,15 @@ import {
 import Icon from '@Components/Components/Icon'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
-import { ShowAnswerButtonContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import {
+  ShowAnswerButtonContext,
+  UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import styled from 'styled-components'
-import { URL_REMARK_DELETE } from '@/ApiList'
+import { URL_REMARK_DELETE, URL_REMARK_UPDATE } from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 
 export const ThreeDotButton = styled.button`
   height: 20px;
@@ -24,12 +28,22 @@ export const ThreeDotButton = styled.button`
 
 const MoreActionComponent = ({
   setRemark,
+  props,
   props: { answerCreationDate = '', remarkId } = {},
 }) => {
   const api = useContext(ApiContext)
   const permit = useContext(ShowAnswerButtonContext)
   const [open, setOpen] = useState(false)
+  const [openEditWindow, setOpenEditWindow] = useState(false)
+  const update = useContext(UpdateContext)
   const [target, setTarget] = useState({})
+
+  const changeModalState = useCallback(
+    (nextState) => () => {
+      setOpenEditWindow(nextState)
+    },
+    [],
+  )
 
   const { setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
@@ -58,10 +72,18 @@ const MoreActionComponent = ({
         remarkId,
         remark,
       })
-      setChange()
+      update()
     },
-    [api, remarkId, setChange],
+    [api, remarkId, update],
   )
+
+  const onSetRemark = useCallback(async () => {
+    await api.post(URL_REMARK_UPDATE, {
+      remarkId,
+      setRemark: !setRemark,
+    })
+    update()
+  }, [api, remarkId, setRemark, update])
 
   return (
     <div className="flex items-center w-full justify-center">
@@ -82,7 +104,8 @@ const MoreActionComponent = ({
         <ContextMenu width={200} target={target} onClose={closeContextMenu}>
           <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
             <StyledItem
-              disabled={!permit.editRemark}
+              onClick={changeModalState(true)}
+              disabled={permit.editRemark}
               className="mb-3 font-size-12"
             >
               Редактировать
@@ -94,7 +117,7 @@ const MoreActionComponent = ({
             >
               Удалить
             </StyledItem>
-            {!answerCreationDate && (
+            {answerCreationDate && (
               <StyledItem
                 onClick={onDelete(false)}
                 disabled={!permit.deleteAnswer}
@@ -104,6 +127,7 @@ const MoreActionComponent = ({
               </StyledItem>
             )}
             <StyledItem
+              onClick={onSetRemark}
               disabled={!permit.editRemark}
               className="mb-3 font-size-12"
             >
@@ -112,6 +136,12 @@ const MoreActionComponent = ({
           </StyledContextMenu>
         </ContextMenu>
       )}
+      <EditRemark
+        open={openEditWindow}
+        onClose={changeModalState(false)}
+        disabled={permit?.edit}
+        {...props}
+      />
     </div>
   )
 }

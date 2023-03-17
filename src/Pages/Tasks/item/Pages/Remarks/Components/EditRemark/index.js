@@ -29,6 +29,8 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const EditRemark = ({
+  onClose,
+  open,
   remarkText,
   ndtLinks,
   remarkType,
@@ -39,19 +41,11 @@ const EditRemark = ({
   const api = useContext(ApiContext)
   const { id } = useParams()
   const update = useContext(UpdateContext)
-  const [open, setOpenState] = useState(false)
   const [filter, setFilterValue] = useState({
     text: remarkText,
     // ndtLinks,
     setRemark,
   })
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenState(nextState)
-    },
-    [],
-  )
-  const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
 
   const fields = [
     {
@@ -64,7 +58,7 @@ const EditRemark = ({
       loadFunction: async (query) => {
         const { data } = await api.post(URL_ENTITY_LIST, {
           type: 'ddt_dict_type_remark',
-          query
+          query,
         })
         return data
       },
@@ -103,40 +97,31 @@ const EditRemark = ({
       ...other,
     })
     update()
-    changeModalState(false)()
-  }, [api, changeModalState, filter, remarkId])
+    onClose()
+  }, [api, onClose, filter, remarkId])
 
   return (
-    <div>
-      <Button
-        disabled={disabled}
-        onClick={changeModalState(true)}
-        className="color-blue-1"
-      >
-        <Icon icon={editIcon} />
-      </Button>
-      <StandardSizeModalWindow
-        title="Откорректировать замечание"
-        open={open}
-        onClose={changeModalState(false)}
-      >
-        <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex flex-col py-4">
-            <FilterForm
-              className="form-element-sizes-40"
-              fields={fields}
-              value={filter}
-              onInput={setFilterValue}
-              inputWrapper={InputWrapper}
-            />
-            <div className="flex form-element-sizes-40">
-              <LinkNdt links={filter} setLinks={setFilterValue} />
-            </div>
+    <StandardSizeModalWindow
+      title="Откорректировать замечание"
+      open={open}
+      onClose={onClose}
+    >
+      <div className="flex flex-col overflow-hidden h-full">
+        <div className="flex flex-col py-4">
+          <FilterForm
+            className="form-element-sizes-40"
+            fields={fields}
+            value={filter}
+            onInput={setFilterValue}
+            inputWrapper={InputWrapper}
+          />
+          <div className="flex form-element-sizes-40">
+            <LinkNdt links={filter} setLinks={setFilterValue} />
           </div>
         </div>
-        <UnderButtons leftFunc={changeModalState(false)} rightFunc={onSave} />
-      </StandardSizeModalWindow>
-    </div>
+      </div>
+      <UnderButtons leftFunc={onClose} rightFunc={onSave} />
+    </StandardSizeModalWindow>
   )
 }
 
