@@ -143,12 +143,7 @@ const Remarks = (props) => {
     setOpen((open) => !open)
   }, [open])
 
-  const onDelete = useCallback(async () => {
-    await api.post(URL_REMARK_DELETE, {
-      remarkIds: selectState,
-    })
-    setChange()
-  }, [api, selectState, setChange])
+
 
   return (
     <UpdateContext.Provider value={setChange}>
@@ -175,7 +170,7 @@ const Remarks = (props) => {
           </div>
         </div>
         <div className="flex flex-col">
-          <ShowAnswerButtonContext.Provider value={permit?.answer}>
+          <ShowAnswerButtonContext.Provider value={permit}>
             <ToggleContext.Provider value={{ toggle, onToggle }}>
               {data.map((val) => (
                 <WithToggle key={val.remarkId} id={val.remarkId}>

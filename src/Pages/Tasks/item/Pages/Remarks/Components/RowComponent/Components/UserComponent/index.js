@@ -40,7 +40,7 @@ import { ShowAnswerButtonContext } from '@/Pages/Tasks/item/Pages/Remarks/consta
 import log from 'tailwindcss/lib/util/log'
 
 const UserComponent = ({ ParentValue }) => {
-  const show = useContext(ShowAnswerButtonContext)
+  const { answer } = useContext(ShowAnswerButtonContext)
   const {
     itsRemark,
     remarkMemberFullName,
@@ -51,7 +51,7 @@ const UserComponent = ({ ParentValue }) => {
 
   return itsRemark ? (
     <UserCard fio={remarkMemberFullName} position={remarkMemberPosition} />
-  ) : answerMemberFullName || !show ? (
+  ) : answerMemberFullName || !answer ? (
     <UserCard fio={answerMemberFullName} position={answerMemberPosition} />
   ) : (
     <CreateAnswer {...ParentValue} />

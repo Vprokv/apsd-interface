@@ -18,16 +18,23 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
+import MoreActionComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/MoreActionComponent'
+import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 
 const Row = styled.div`
   background-color: var(--notifications);
   font-size: 12px;
-  //display: flex;
-  //flex-direction: column;
   border-bottom: 1px solid var(--separator);
   align-content: center;
   justify-content: center;
-  //border-top: 1px solid var(--separator);
+`
+
+export const RowTableComponent = styled.div`
+  &:hover {
+    ${ContHover} {
+      opacity: 1;
+    }
+  }
 `
 
 const columns = [
@@ -70,14 +77,14 @@ const columns = [
     label: 'Статус',
     className: 'h-10 flex items-center',
     component: BaseCell,
-    sizes: 150,
+    sizes: 120,
   },
   {
     id: 'remarkType',
     label: 'Тип замечания',
     className: 'h-10 flex items-center',
     component: BaseCell,
-    sizes: 150,
+    sizes: 120,
   },
   {
     id: 'setRemark',
@@ -95,6 +102,14 @@ const columns = [
       />
     ),
     sizes: 150,
+  },
+  {
+    id: 'more',
+    label: '',
+    className: 'h-10 flex items-center',
+    component: ({ ParentValue: { remarkCreationDate }, ParentValue }) =>
+      remarkCreationDate ? <MoreActionComponent {...ParentValue} /> : <div />,
+    sizes: 50,
   },
 ]
 
@@ -134,19 +149,26 @@ const RowComponent = ({
         remarkType,
         remarkText,
         setRemark,
+        props,
       },
-      { ...item, remarkText, remarkId },
+      { ...item, remarkText, remarkId, props },
     ]
   }, [props])
 
+  const rowComponent = useMemo(
+    () => (props) => <RowTableComponent {...props} />,
+    [],
+  )
+
   return (
     data && (
-      <div className='flex flex-col'>
+      <div className="flex flex-col">
         <button type={'button'} onClick={toggleDisplayedFlag}>
           <Row>{children}</Row>
         </button>
         {isDisplayed && (
           <ListTable
+            rowComponent={rowComponent}
             value={data}
             columns={columns}
             headerCellComponent={HeaderCell}
