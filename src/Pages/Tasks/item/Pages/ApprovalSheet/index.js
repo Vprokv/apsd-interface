@@ -57,7 +57,7 @@ const ApprovalSheet = (props) => {
   const api = useContext(ApiContext)
   const [filterValue, setFilterValue] = useState({})
   const [permit, setPermit] = useState(false)
-  const [toggleNavigationData, setToggleNavigationData] = useState([])
+  const [toggleNavigationData, setToggleNavigationData] = useState({})
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
   //
@@ -110,9 +110,12 @@ const ApprovalSheet = (props) => {
 
   useEffect(() => {
     setToggleNavigationData(
-      data.map(({ type }) => {
-        return { id: type, isDisplayed: false }
-      }),
+      data.reduce((acc, { type }) => {
+        return {
+          ...acc,
+          [type]: true,
+        }
+      }, {}),
     )
   }, [data])
 
@@ -155,18 +158,17 @@ const ApprovalSheet = (props) => {
   }, [])
 
   const openAllStages = useCallback(() => {
-    console.log(66)
-    data.forEach(({ type }) => {
-      console.log(type)
-    })
-  }, [data])
+    for (let key in toggleNavigationData) {
+      let c = (toggleNavigationData[key] = true)
+      setToggleNavigationData((prevState) => ({ ...prevState, ...c }))
+    }
+  }, [data, toggleNavigationData])
 
-  const aaa = useCallback(
+  const toggleStage = useCallback(
     (v) => {
-      console.log(666)
-      // setToggleNavigationData((item) =>
-      //   item.id === v ? (item.isDisplayed = !item.isDisplayed) : '',
-      // )
+      setToggleNavigationData(({ [v]: prevAmount, ...prevState }) => {
+        return { ...prevState, [v]: !prevAmount }
+      })
     },
     [toggleNavigationData],
   )
@@ -210,13 +212,13 @@ const ApprovalSheet = (props) => {
                         <button
                           className="pl-2"
                           type="button"
-                          onClick={toggleDisplayedFlag}
+                          onClick={() => toggleStage(type)}
                         >
                           <Icon
                             icon={angleIcon}
                             size={10}
                             className={`color-text-secondary ${
-                              isDisplayed ? '' : 'rotate-180'
+                              toggleNavigationData[type] ? '' : 'rotate-180'
                             }`}
                           />
                         </button>
@@ -235,7 +237,7 @@ const ApprovalSheet = (props) => {
                         />
                       )}
                     </LevelStage>
-                    {isDisplayed && (
+                    {toggleNavigationData[type] && (
                       <Tree
                         childrenLessIcon={DotIcon}
                         DefaultChildrenIcon={DotIcon}
