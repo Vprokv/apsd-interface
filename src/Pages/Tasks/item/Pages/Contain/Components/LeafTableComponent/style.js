@@ -11,6 +11,10 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
   &:hover {
     color: var(--blue-4);
   }
+
+  &:disabled {
+    color: var(--text-secondary);
+  }
 `
 
 export const ThreeDotButton = styled.button`
@@ -31,6 +35,7 @@ export const ContHover = styled.div`
 
 export const LeafContainer = styled.div`
   padding-left: ${({ subRow }) => subRow * 15}px;
+
   &:hover {
     ${ContHover} {
       opacity: 1;

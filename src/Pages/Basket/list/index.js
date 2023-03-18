@@ -231,7 +231,6 @@ function BasketList(props) {
       },
     })
 
-    console.log(data, 'data')
     return data
   }, [api, paginationState, search, sortQuery.direction, sortQuery.key])
 

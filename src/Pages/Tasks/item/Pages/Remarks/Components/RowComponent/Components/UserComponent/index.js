@@ -6,7 +6,7 @@ const UserCard = ({ fio = '', position, avatar } = {}) => {
     return typeof fio === 'string' && colorFromString(fio, 30, 80)
   }, [fio])
 
-  const name = useMemo(() => fio.split(' ')[1], [fio])
+  const name = useMemo(() => (fio ? fio.split(' ')[1] : []), [fio])
 
   return (
     <div className="flex items-center justify-center">
@@ -14,7 +14,7 @@ const UserCard = ({ fio = '', position, avatar } = {}) => {
         <img className="w-10 h-10 rounded-full" src={avatar} />
       ) : (
         <UserCircle bg={bg} className="mr-2">
-          {fio[0]} {name && name[0]}
+          {fio && fio[0]} {name && name[0]}
         </UserCircle>
       )}
       <div>
@@ -37,9 +37,10 @@ import colorFromString from '@Components/Utils/colorFromString'
 import { UserCircle } from '@/Components/ListTableComponents/UserCard/styles'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
 import { ShowAnswerButtonContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import log from 'tailwindcss/lib/util/log'
 
 const UserComponent = ({ ParentValue }) => {
-  const show = useContext(ShowAnswerButtonContext)
+  const { answer } = useContext(ShowAnswerButtonContext)
   const {
     itsRemark,
     remarkMemberFullName,
@@ -50,7 +51,7 @@ const UserComponent = ({ ParentValue }) => {
 
   return itsRemark ? (
     <UserCard fio={remarkMemberFullName} position={remarkMemberPosition} />
-  ) : answerMemberFullName || !show ? (
+  ) : answerMemberFullName || !answer ? (
     <UserCard fio={answerMemberFullName} position={answerMemberPosition} />
   ) : (
     <CreateAnswer {...ParentValue} />

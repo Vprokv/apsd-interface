@@ -18,64 +18,73 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
+import MoreActionComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/MoreActionComponent'
+import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 
 const Row = styled.div`
-  height: 46px;
   background-color: var(--notifications);
   font-size: 12px;
-  display: flex;
-  flex-direction: column;
   border-bottom: 1px solid var(--separator);
   align-content: center;
-  //border-top: 1px solid var(--separator);
+  justify-content: center;
 `
 
-const plugins = {
-  selectPlugin: {
-    driver: FlatSelect,
-    component: CheckBox,
-    style: { margin: 'auto 0' },
-    valueKey: 'remarkId',
-  },
-}
+export const RowTableComponent = styled.div`
+  &:hover {
+    ${ContHover} {
+      opacity: 1;
+    }
+  }
+`
 
 const columns = [
   {
     id: 'number',
     label: 'Номер',
-    className: 'h-10 flex items-center',
+    className: 'min-h-10 flex items-center',
     component: NumberComponent,
-    sizes: 100,
+    sizes: 70,
   },
   {
     id: 'user',
-    label: 'Участник/Подраздедение',
-    className: 'h-10 flex items-center',
+    label: 'Автор замечания / ответа',
+    className: 'min-h-10 flex items-center',
     component: UserComponent,
-    sizes: 300,
+    sizes: 250,
+  },
+  {
+    id: 'date',
+    label: 'Дата создания/ ответа',
+    className: 'h-10 flex items-center',
+    component: ({
+      ParentValue: { itsRemark, remarkCreationDate, answerCreationDate },
+    }) => (
+      <BaseCell value={itsRemark ? remarkCreationDate : answerCreationDate} />
+    ),
+    sizes: 180,
+  },
+  {
+    id: 'remarkText',
+    label: 'Значение / Ответ',
+    className: 'h-10 flex items-center',
+    component: ({ ParentValue: { itsRemark, remarkText, answerText } }) => (
+      <BaseCell value={itsRemark ? remarkText : answerText} />
+    ),
+    sizes: 400,
   },
   {
     id: 'status',
     label: 'Статус',
     className: 'h-10 flex items-center',
     component: BaseCell,
-    sizes: 150,
-  },
-  {
-    id: 'remarkText',
-    label: 'Значение',
-    className: 'h-10 flex items-center',
-    component: ({ ParentValue: { itsRemark, remarkText } }) => (
-      <BaseCell value={itsRemark ? remarkText : ''} />
-    ),
-    sizes: 500,
+    sizes: 120,
   },
   {
     id: 'remarkType',
     label: 'Тип замечания',
     className: 'h-10 flex items-center',
     component: BaseCell,
-    sizes: 250,
+    sizes: 120,
   },
   {
     id: 'setRemark',
@@ -92,11 +101,26 @@ const columns = [
         }
       />
     ),
-    sizes: 250,
+    sizes: 150,
+  },
+  {
+    id: 'more',
+    label: '',
+    className: 'h-10 flex items-center',
+    component: ({ ParentValue: { remarkCreationDate }, ParentValue }) =>
+      remarkCreationDate ? <MoreActionComponent {...ParentValue} /> : <div />,
+    sizes: 50,
   },
 ]
 
-const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
+const RowComponent = ({
+  children,
+  setSelectState,
+  selectState,
+  toggleDisplayedFlag,
+  isDisplayed,
+  ...props
+}) => {
   const data = useMemo(() => {
     const {
       remarkMemberFullName,
@@ -105,6 +129,7 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
       remarkType,
       remarkText,
       setRemark,
+      remarkCreationDate,
       number,
       ...item
     } = props
@@ -117,32 +142,43 @@ const RowComponent = ({ children, setSelectState, selectState, ...props }) => {
       {
         itsRemark: true,
         remarkMemberFullName,
+        remarkCreationDate,
         remarkId,
         number,
         remarkMemberPosition,
         remarkType,
         remarkText,
         setRemark,
+        props,
       },
-      { ...item, remarkText, remarkId },
+      { ...item, remarkText, remarkId, props },
     ]
   }, [props])
 
+  const rowComponent = useMemo(
+    () => (props) => <RowTableComponent {...props} />,
+    [],
+  )
+
   return (
-    <>
-      <Row>{children}</Row>
-      <ListTable
-        value={data}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        selectState={selectState}
-        onSelect={setSelectState}
-        // sortQuery={sortQuery}
-        // onSort={onSort}
-        valueKey="id"
-      />
-    </>
+    data && (
+      <div className="flex flex-col">
+        <button type={'button'} onClick={toggleDisplayedFlag}>
+          <Row>{children}</Row>
+        </button>
+        {isDisplayed && (
+          <ListTable
+            rowComponent={rowComponent}
+            value={data}
+            columns={columns}
+            headerCellComponent={HeaderCell}
+            selectState={selectState}
+            onSelect={setSelectState}
+            valueKey="id"
+          />
+        )}
+      </div>
+    )
   )
 }
 
