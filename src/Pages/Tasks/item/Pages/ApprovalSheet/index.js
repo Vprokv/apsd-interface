@@ -34,7 +34,6 @@ import {
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
-import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext, DocumentTypeContext } from '../../constants'
 import { CircleMinus } from '@Components/Components/Tree/Icons/CircleMinus'
@@ -204,57 +203,53 @@ const ApprovalSheet = (props) => {
           </div>
           <ScrollBar>
             {data.map(({ stages, type, name, canAdd }, key) => (
-              <WithToggleNavigationItem key={type} id={type}>
-                {({ isDisplayed, toggleDisplayedFlag }) => (
-                  <div className="flex flex-col" key={type}>
-                    <LevelStage>
-                      {!!stages?.length && (
-                        <button
-                          className="pl-2"
-                          type="button"
-                          onClick={() => toggleStage(type)}
-                        >
-                          <Icon
-                            icon={angleIcon}
-                            size={10}
-                            className={`color-text-secondary ${
-                              toggleNavigationData[type] ? '' : 'rotate-180'
-                            }`}
-                          />
-                        </button>
-                      )}
-                      <div
-                        className={`${
-                          !stages?.length ? 'ml-6' : 'ml-2'
-                        } my-4 flex bold`}
-                      >
-                        {name}
-                      </div>
-                      {canAdd && (
-                        <CreateApprovalSheetWindow
-                          loadData={setChange}
-                          stageType={type}
-                        />
-                      )}
-                    </LevelStage>
-                    {toggleNavigationData[type] && (
-                      <Tree
-                        childrenLessIcon={DotIcon}
-                        DefaultChildrenIcon={DotIcon}
-                        key={key}
-                        defaultExpandAll={true}
-                        valueKey="id"
-                        options={stages}
-                        rowComponent={RowSelector}
-                        onUpdateOptions={() => null}
-                        childrenKey="approvers"
-                        onInput={handleInput}
-                        LeafComponent={LeafComponent}
+              <div className="flex flex-col" key={type}>
+                <LevelStage>
+                  {!!stages?.length && (
+                    <button
+                      className="pl-2"
+                      type="button"
+                      onClick={() => toggleStage(type)}
+                    >
+                      <Icon
+                        icon={angleIcon}
+                        size={10}
+                        className={`color-text-secondary ${
+                          toggleNavigationData[type] ? '' : 'rotate-180'
+                        }`}
                       />
-                    )}
+                    </button>
+                  )}
+                  <div
+                    className={`${
+                      !stages?.length ? 'ml-6' : 'ml-2'
+                    } my-4 flex bold`}
+                  >
+                    {name}
                   </div>
+                  {canAdd && (
+                    <CreateApprovalSheetWindow
+                      loadData={setChange}
+                      stageType={type}
+                    />
+                  )}
+                </LevelStage>
+                {toggleNavigationData[type] && (
+                  <Tree
+                    childrenLessIcon={DotIcon}
+                    DefaultChildrenIcon={DotIcon}
+                    key={key}
+                    defaultExpandAll={true}
+                    valueKey="id"
+                    options={stages}
+                    rowComponent={RowSelector}
+                    onUpdateOptions={() => null}
+                    childrenKey="approvers"
+                    onInput={handleInput}
+                    LeafComponent={LeafComponent}
+                  />
                 )}
-              </WithToggleNavigationItem>
+              </div>
             ))}
           </ScrollBar>
         </div>
