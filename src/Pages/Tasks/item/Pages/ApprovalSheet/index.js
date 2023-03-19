@@ -204,7 +204,7 @@ const ApprovalSheet = (props) => {
           <ScrollBar>
             {data.map(({ stages, type, name, canAdd }, key) => (
               <div className="flex flex-col" key={type}>
-                <LevelStage>
+                <LevelStage onClick={() => toggleStage(type)}>
                   {!!stages?.length && (
                     <button
                       className="pl-2"

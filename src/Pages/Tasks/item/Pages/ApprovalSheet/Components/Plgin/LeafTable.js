@@ -70,7 +70,7 @@ const RowComponent = ({ node, RowC }) => {
       </RowGrid>
       {approvers && (
         <div className="ml-6">
-          <LevelStage>
+          <LevelStage onClick={toggleDisplayedFlag}>
             <button
               className="pl-2"
               type="button"
