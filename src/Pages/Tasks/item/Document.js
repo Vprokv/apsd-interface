@@ -24,6 +24,7 @@ import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultDocumentHandlers,
   defaultPages,
+  defaultTaskIcon,
   DocumentIdContext,
   DocumentTypeContext,
 } from './constants'
@@ -176,7 +177,7 @@ const Document = () => {
             getNotification(customMessagesFuncMap[status](data))
           }
         },
-        icon: DefaultIcon,
+        icon: DeleteIcon,
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
@@ -194,7 +195,7 @@ const Document = () => {
             getNotification(customMessagesFuncMap[status](data))
           }
         },
-        icon: DeleteIcon,
+        icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
     [api, getNotification, id, remoteApprovalUpdater, remoteTabUpdater, type],

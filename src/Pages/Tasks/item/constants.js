@@ -14,6 +14,7 @@ import UploadDoc from './Icons/UploadDoc.svg'
 import FinishApproveIcon from './Icons/FinishApproveIcon.svg'
 import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
 import AnnulIcon from './Icons/AnnulIcon.svg'
+import StrelkaRight from './Icons/StrelkaRight.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
@@ -94,4 +95,6 @@ export const defaultTaskIcon = {
   reject_prepare: RejectApproveIcon,
   reject_approval: RejectApproveIcon,
   on_cancel: AnnulIcon,
+  sent_to_curator: StrelkaRight,
+  on_approve: StrelkaRight,
 }
