@@ -46,7 +46,10 @@ const Select = (props) => (
 
 // кастомизируем view инпута селекта
 const AlwaysRenderValuesMultipleSelect = (props) => (
-  <StyledSelect {...props} inputComponent={RenderMultipleValueSelectInput} />
+  <BaseMultipleSelect
+    {...props}
+    inputComponent={RenderMultipleValueSelectInput}
+  />
 )
 
 // создаем LoadableSelect(адаптеры к Loadable контроллерам) версии всех этих селектов
