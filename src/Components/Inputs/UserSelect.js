@@ -39,10 +39,9 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 `
 
 const UserSelect = (props) => {
-  const { loadFunction, docId, filter: { source } = {} } = props
+  const { loadFunction, docId, filter: baseFilter } = props
   const api = useContext(ApiContext)
-  const defaultFilter = useDefaultFilter({ baseFilter: { source } })
-
+  const defaultFilter = useDefaultFilter({ baseFilter })
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(
     () => setAddEmployeeWindowState(true),

@@ -1,7 +1,6 @@
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useMemo } from 'react'
-import log from 'tailwindcss/lib/util/log'
 
 const ORGANIZATION_FIELD = 'organization'
 const BRANCH_FIELD = 'branchId'

@@ -30,36 +30,35 @@ const ToggleIndicatorIconComponent = () => (
 const RemoveIconComponent = () => (
   <Icon icon={closeIcon} className="color-text-secondary" size={12} />
 )
+// делаем мультипл версию базового селекта
+const BaseMultipleSelect = MultipleSelect(StyledSelect)
 
 // кофигурируем сам компонент селекта
 const Select = (props) => (
-  <StyledSelect
+  <SelectController
+    multipleSelectComponent={BaseMultipleSelect}
+    singleSelectComponent={StyledSelect}
     toggleIndicatorIconComponent={ToggleIndicatorIconComponent}
     removeIconComponent={RemoveIconComponent}
     {...props}
   />
 )
-// делаем мультипл версию базового селекта
-const BaseMultipleSelect = MultipleSelect(Select)
 
 // кастомизируем view инпута селекта
 const AlwaysRenderValuesMultipleSelect = (props) => (
-  <BaseMultipleSelect
-    {...props}
-    inputComponent={RenderMultipleValueSelectInput}
-  />
+  <StyledSelect {...props} inputComponent={RenderMultipleValueSelectInput} />
 )
 
 // создаем LoadableSelect(адаптеры к Loadable контроллерам) версии всех этих селектов
 const LoadableMultiSelect = LoadableAdapterSelect(BaseMultipleSelect)
-const LoadableSelectComponent = LoadableAdapterSelect(Select)
+const LoadableSelectComponent = LoadableAdapterSelect(StyledSelect)
 const LoadableAlwaysRenderValuesMultipleSelect = LoadableAdapterSelect(
   AlwaysRenderValuesMultipleSelect,
 )
 
 // добавляем контроллер loadable к селектам
 const LoadableSelect = Loadable((props) => (
-  <SelectController
+  <Select
     multipleSelectComponent={LoadableMultiSelect}
     singleSelectComponent={LoadableSelectComponent}
     {...props}
@@ -68,7 +67,7 @@ const LoadableSelect = Loadable((props) => (
 
 // добавляем контроллер loadable к селектам и кастомный рендер Multiple версии
 const LoadableAlwaysRenderValuesSelect = Loadable((props) => (
-  <SelectController
+  <Select
     multipleSelectComponent={LoadableAlwaysRenderValuesMultipleSelect}
     singleSelectComponent={LoadableSelectComponent}
     {...props}
@@ -81,7 +80,7 @@ const WithAutoLoadableSelect = AutoLoadable(LoadableSelectComponent)
 
 // подключаем контроллер loadable
 const AutoLoadableSelect = Loadable((props) => (
-  <SelectController
+  <Select
     multipleSelectComponent={AutoLoadableMultipleSelect}
     singleSelectComponent={WithAutoLoadableSelect}
     {...props}
