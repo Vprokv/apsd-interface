@@ -10,13 +10,7 @@ export const InputLabel = styled.label`
 
 export const LinkContainer = styled.div`
   display: grid;
-  width: 99.3%;
-  grid-template-columns: 0.4fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  margin: 20px 0 0 0;
-`
-
-export const Container = styled.div`
-  display: grid;
-  //margin: 20px 0 0 0;
+  margin: 0 0 20px 0;
 `

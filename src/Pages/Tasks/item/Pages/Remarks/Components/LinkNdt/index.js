@@ -7,18 +7,31 @@ import { LinkContainer, InputLabel, Container } from './styles'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import { InputLabelStart } from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import Icon from '@Components/Components/Icon'
+import DocumentShowIcon from '@/Icons/DocumentShowIcon'
+import { ShowDocumentButton } from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
+import styled from 'styled-components'
+import closeIcon from '@/Icons/closeIcon'
+import ViewIcon from '@/Icons/ViewIcon'
+import log from 'tailwindcss/lib/util/log'
 
-const Label = ({ label, isRequired }) => (
-  <InputLabel>
-    {label} {isRequired && <InputLabelStart>*</InputLabelStart>}
-  </InputLabel>
-)
-Label.defaultProps = {
-  label: 'Ссылка на НДТ',
-  isRequired: true,
-}
+export const DocumentButton = styled.button.attrs({ type: 'button' })`
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  height: var(--form--elements_height);
+  width: var(--form--elements_height);
+  min-width: var(--form--elements_height);
 
-const Field = ({ onInput, prevValue }) => {
+  &:disabled {
+    background: var(--text-secondary);
+    color: var(--form-elements-border-color);
+  }
+`
+
+const Field = ({ onInput, prevValue, notFirstElement, deleteLink, id }) => {
   const api = useContext(ApiContext)
 
   const options = useMemo(() => {
@@ -32,90 +45,119 @@ const Field = ({ onInput, prevValue }) => {
 
   return (
     <LinkContainer>
-      <Label />
-      <LoadableSelect
-        placeholder="Выберите значение"
-        id="id"
-        options={options}
-        value={prevValue?.id}
-        onInput={onInput('id')}
-        valueKey="r_object_id"
-        labelKey="dss_name"
-        loadFunction={async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_ndt',
-            query
-          })
-          return data
-        }}
-      />
-      <Input
-        id="comment"
-        placeholder="Добавьте комментарий"
-        value={prevValue?.comment}
-        className="ml-2"
-        onInput={onInput('comment')}
-      />
+      <div className="flex ">
+        <LoadableSelect
+          placeholder="Выберите значение"
+          id="id"
+          options={options}
+          value={prevValue.id}
+          onInput={onInput}
+          valueKey="r_object_id"
+          labelKey="dss_name"
+          loadFunction={async (query) => {
+            const { data } = await api.post(URL_ENTITY_LIST, {
+              type: 'ddt_dict_ndt',
+              query,
+            })
+            return data
+          }}
+        />
+        <DocumentButton className="ml-2 bg-light-gray color-text-secondary">
+          <Icon className="color-text-secondary" size={24} icon={ViewIcon} />
+        </DocumentButton>
+      </div>
+      <div className="flex">
+        <Input
+          id="comment"
+          placeholder="Добавьте комментарий"
+          value={prevValue?.comment}
+          className="ml-2"
+          onInput={onInput}
+        />
+        {notFirstElement && (
+          <DocumentButton
+            onClick={deleteLink(id)}
+            className="ml-2 bg-color-red"
+          >
+            <Icon icon={closeIcon} />
+          </DocumentButton>
+        )}
+      </div>
     </LinkContainer>
   )
 }
 
-const LinkNdt = ({ links, setLinks, children }) => {
-  const [count, setCount] = useState(links?.ndtLinks?.length || 0)
-  const onBaseInput = useCallback(
-    (index) => (key) => (val) => {
-      const { ndtLinks = [] } = links
-      const prevValue = [...ndtLinks]
-      const el = { ...prevValue[index] }
+const LinkNdt = (props) => {
+  const { onInput, value } = props
 
-      el[key] = val
-      prevValue.splice(index, 1, el)
+  const addLink = useCallback(() => {
+    onInput(({ nthLinks, ...prev }) => {
+      const prevNth = [...nthLinks]
+      prevNth.push({})
+      return { ...prev, nthLinks: prevNth }
+    })
+  }, [onInput])
 
-      setLinks({
-        ...links,
-        ndtLinks: prevValue,
+  const deleteLink = useCallback(
+    (index) => () => {
+      onInput(({ nthLinks, ...prev }) => {
+        const prevNth = [...nthLinks]
+        prevNth.splice(index, 1)
+        return { ...prev, nthLinks: prevNth }
       })
     },
-    [links, setLinks],
+    [onInput],
+  )
+
+  const onBaseInput = useCallback(
+    (index) => (val, key) => {
+      onInput(({ nthLinks, ...prev }) => {
+        const prevNth = [...nthLinks]
+
+        const el = { ...prevNth[index] }
+        el[key] = val
+        prevNth.splice(index, 1, el)
+
+        return { ...prev, nthLinks: prevNth }
+      })
+    },
+    [onInput],
   )
 
   const renderFields = useMemo(() => {
     const arr = []
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < value.length; i++) {
       const onInput = onBaseInput(i)
-      const { ndtLinks = [] } = links
-      const prevValue = ndtLinks[i]
-      arr.push(<Field onInput={onInput} prevValue={prevValue} key={i} />)
+      const prevValue = value[i]
+
+      arr.push(
+        <Field
+          deleteLink={deleteLink}
+          id={i}
+          notFirstElement={i > 0}
+          onInput={onInput}
+          prevValue={prevValue}
+          key={i}
+        />,
+      )
     }
 
     return arr
-  }, [count, links, onBaseInput])
-
-  const addLink = useCallback(() => {
-    const { ndtLinks = [] } = links
-    const prevNdtLinks = [...ndtLinks]
-    setCount(count + 1)
-    prevNdtLinks.push({})
-    setLinks({ ...links, ndtLinks: prevNdtLinks })
-  }, [count, links, setLinks])
+  }, [deleteLink, onBaseInput, value])
 
   return (
-    <Container>
+    <div className="w-full">
       {renderFields}
-      <LinkContainer>
-        <Label label={!count ? 'Ссылка нв НДТ' : ''} isRequired={!count} />
-        <div className="flex">
-          <SecondaryBlueButton
-            onClick={addLink}
-            className="w-64 form-element-sizes-32"
-          >
-            Добавить ссылку
-          </SecondaryBlueButton>
-          {children}
-        </div>
-      </LinkContainer>
-    </Container>
+      <div className="flex mt-4">
+        <SecondaryBlueButton
+          onClick={addLink}
+          className="w-64 form-element-sizes-32"
+        >
+          Добавить ссылку
+        </SecondaryBlueButton>
+      </div>
+    </div>
   )
 }
 
