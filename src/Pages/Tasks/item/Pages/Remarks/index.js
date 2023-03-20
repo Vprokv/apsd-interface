@@ -143,8 +143,6 @@ const Remarks = (props) => {
     setOpen((open) => !open)
   }, [open])
 
-
-
   return (
     <UpdateContext.Provider value={setChange}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -198,15 +196,6 @@ const Remarks = (props) => {
                           <div className="ml-4 font-medium flex items-center ">
                             {val?.stageName}
                           </div>
-                          {/*<div className="flex items-center ml-auto">*/}
-                          {/*  <LoadableBaseButton*/}
-                          {/*    disabled={permit?.delete}*/}
-                          {/*    onClick={onDelete}*/}
-                          {/*    className="color-blue-1"*/}
-                          {/*  >*/}
-                          {/*    <Icon icon={deleteIcon} />*/}
-                          {/*  </LoadableBaseButton>*/}
-                          {/*</div>*/}
                         </div>
                       </RowComponent>
                     )

@@ -15,9 +15,11 @@ const UnderButtons = ({
   rightLabel,
   leftStyle,
   rightStyle,
+  children,
 }) => {
   return (
-    <div className="flex items-center justify-end mt-8">
+    <div className="flex items-center justify-end">
+      {children}
       <SecondaryGreyButton className={leftStyle} onClick={leftFunc}>
         {leftLabel}
       </SecondaryGreyButton>
