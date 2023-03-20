@@ -167,7 +167,8 @@ export const Requisites = ({ type: documentType, documentState }) => {
             }),
             style: {
               gridColumn: `${col + 1}/${col + width + 1}`,
-              gridRow: `grid-row: ${row + 1}/${row + height + 1}`,
+              gridRow: `${row + 1}/${row + height + 1}`,
+              height: height > 1 ? '100%' : undefined,
             },
           })
 
@@ -215,7 +216,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
-        {/*<CacheContext.Provider value={cache}>*/}
+        {/* <CacheContext.Provider value={cache}>*/}
         <RequisitesForm
           touched={touched}
           changed={changed}
@@ -231,7 +232,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
           rules={rules}
           interceptors={interceptors}
         />
-        {/*</CacheContext.Provider>*/}
+        {/* </CacheContext.Provider>*/}
       </CustomValuesContext.Provider>
     </ScrollBar>
   )
