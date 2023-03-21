@@ -132,7 +132,6 @@ const CreateRemark = () => {
   )
 
   const onSave = useCallback(async () => {
-    console.log(1)
     const { member, ...other } = filter
     await api.post(URL_REMARK_CREATE, {
       documentId: id,
@@ -140,7 +139,6 @@ const CreateRemark = () => {
       memberName: member.userName,
       ...other,
     })
-    console.log(2)
     update()
     changeModalState(false)()
     setFilterValue(initialUserValue)

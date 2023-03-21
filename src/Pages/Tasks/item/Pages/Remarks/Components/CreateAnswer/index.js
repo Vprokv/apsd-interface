@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Button, {
   LoadableBaseButton,
@@ -20,12 +20,25 @@ import {
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useParams } from 'react-router-dom'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import InputWrapper, {
+  InputLabel,
+  InputLabelStart,
+} from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { TextArea } from '@Components/Components/Inputs/TextArea'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import {ShowAnswerButtonContext, UpdateContext} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import {
+  ShowAnswerButtonContext,
+  UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import UserSelect from '@/Components/Inputs/UserSelect'
+
+const rules = {
+  solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [{ name: VALIDATION_RULE_REQUIRED }],
+  member: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const CreateAnswer = ({ remarkText, remarkId }) => {
   const api = useContext(ApiContext)
@@ -33,19 +46,45 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
   const { answer } = useContext(ShowAnswerButtonContext)
-  const [filter, setFilterValue] = useState({ remarkText })
+  const { editAuthor } = useContext(ShowAnswerButtonContext)
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
     },
     [],
   )
-  const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
+  const {
+    r_object_id,
+    dss_user_name,
+    dss_last_name,
+    dss_first_name,
+    dss_middle_name,
+    department_name,
+    position_name,
+  } = useRecoilValue(userAtom)
 
-  const rules = {
-    solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
-    text: [{ name: VALIDATION_RULE_REQUIRED }],
-  }
+  const initialUserValue = useMemo(() => {
+    return {
+      ndtLinks: [{}],
+      remarkText,
+      member: {
+        emplId: r_object_id,
+        fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
+        userName: dss_user_name,
+      },
+    }
+  }, [
+    department_name,
+    dss_first_name,
+    dss_last_name,
+    dss_middle_name,
+    dss_user_name,
+    position_name,
+    r_object_id,
+    remarkText,
+  ])
+
+  const [filter, setFilterValue] = useState(initialUserValue)
 
   const fields = [
     {
@@ -54,6 +93,15 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
       placeholder: 'Введите текст замечания',
       label: 'Текст замечания',
       disabled: true,
+    },
+    {
+      id: 'member',
+      label: 'Автор',
+      disabled: !editAuthor,
+      returnOption: true,
+      returnObjects: true,
+      options: [initialUserValue.member],
+      component: UserSelect,
     },
     {
       id: 'solutionId',
@@ -83,31 +131,23 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
 
   const onSave = useCallback(async () => {
     // eslint-disable-next-line no-unused-vars
-    const { remarkText, ...other } = filter
+    const { remarkText, member, ...other } = filter
     await api.post(URL_REMARK_ANSWER, {
       documentId: id,
-      memberId: r_object_id,
-      memberName: dss_user_name,
+      memberId: member.emplId,
+      memberName: member.userName,
       remarkId,
       ...other,
     })
     update()
     changeModalState(false)()
-  }, [
-    api,
-    changeModalState,
-    dss_user_name,
-    filter,
-    id,
-    r_object_id,
-    remarkId,
-    update,
-  ])
+    setFilterValue(initialUserValue)
+  }, [api, changeModalState, filter, id, initialUserValue, remarkId, update])
 
   const onClose = useCallback(() => {
     changeModalState(false)()
-    setFilterValue({ remarkText })
-  }, [changeModalState, remarkText])
+    setFilterValue(initialUserValue)
+  }, [changeModalState, initialUserValue])
 
   return (
     <div>
@@ -115,7 +155,7 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
         Ответить
       </SecondaryBlueButton>
       <StandardSizeModalWindow
-        title="Добавить ответ"
+        title="Добавить ответ на замечание"
         open={open}
         onClose={onClose}
       >
@@ -128,11 +168,18 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
               onInput={setFilterValue}
               inputWrapper={InputWrapper}
               rules={rules}
-            />
-            <LinkNdt links={filter} setLinks={setFilterValue} />
+              onSubmit={onSave}
+            >
+              <div className="flex">
+                <InputLabel>{'Ссылка нa НДТ'}}</InputLabel>
+                <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+              </div>
+              <div className="mt-10">
+                <UnderButtons leftFunc={onClose} />
+              </div>
+            </FilterForm>
           </div>
         </div>
-        <UnderButtons leftFunc={onClose} rightFunc={onSave} />
       </StandardSizeModalWindow>
     </div>
   )
