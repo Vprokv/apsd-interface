@@ -88,7 +88,7 @@ const CreateRemark = () => {
         disabled: !editAuthor,
         returnOption: true,
         returnObjects: true,
-        options: [initialUserValue],
+        options: [initialUserValue.member],
         component: UserSelect,
       },
       {

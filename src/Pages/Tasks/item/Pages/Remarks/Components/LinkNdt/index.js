@@ -122,7 +122,7 @@ const LinkNdt = (props) => {
   const renderFields = useMemo(() => {
     const arr = []
 
-    for (let i = 0; i < value.length; i++) {
+    for (let i = 0; i < value?.length; i++) {
       const onInput = onBaseInput(i)
       const prevValue = value[i]
 

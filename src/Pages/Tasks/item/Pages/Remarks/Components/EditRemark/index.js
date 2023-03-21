@@ -25,32 +25,58 @@ import { useParams } from 'react-router-dom'
 import Icon from '@Components/Components/Icon'
 import editIcon from '@/Icons/editIcon'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import InputWrapper, {
+  InputLabel,
+  InputLabelStart,
+} from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import {
+  ShowAnswerButtonContext,
+  UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import log from 'tailwindcss/lib/util/log'
+import UserSelect from '@/Components/Inputs/UserSelect'
 
 const EditRemark = ({
   onClose,
   open,
   remarkText,
-  ndtLinks,
-  remarkType,
-  setRemark,
+  ndtLinks = [],
   remarkId,
-  disabled,
+  remarkMemberFullName,
+  remarkType,
 }) => {
+  const { editAuthor } = useContext(ShowAnswerButtonContext)
   const api = useContext(ApiContext)
-  const { id } = useParams()
   const update = useContext(UpdateContext)
   const [filter, setFilterValue] = useState({
     text: remarkText,
-    // ndtLinks,
+    ndtLinks,
+    remarkTypeId: remarkType,
+    member: {
+      emplId: `${remarkMemberFullName}`,
+      fullDescription: `${remarkMemberFullName}`,
+    },
   })
 
   const fields = [
     {
+      id: 'member',
+      label: 'Автор',
+      disabled: !editAuthor,
+      returnOption: true,
+      returnObjects: true,
+      component: UserSelect,
+    },
+    {
       id: 'remarkTypeId',
       component: LoadableSelect,
       placeholder: 'Выберите тип',
+      options: [
+        {
+          r_object_id: remarkType,
+          dss_name: remarkType,
+        },
+      ],
       label: 'Тип замечания',
       valueKey: 'r_object_id',
       labelKey: 'dss_name',
@@ -68,26 +94,10 @@ const EditRemark = ({
       component: CustomInput,
       placeholder: 'Введите текст замечания',
     },
-    {
-      id: 'setRemark',
-      label: 'Свод замечаний',
-      placeholder: 'Выберите замечание',
-      options: [
-        {
-          ID: true,
-          SYS_NAME: 'Включено',
-        },
-        {
-          ID: false,
-          SYS_NAME: 'Не включено',
-        },
-      ],
-      component: Select,
-    },
   ]
 
   const onSave = useCallback(async () => {
-    const { ndtLinks, ...other } = filter
+    const { ndtLinks, member, ...other } = filter //TODO добавить member, когда появится ид
     await api.post(URL_REMARK_UPDATE, {
       remarkId,
       ndtLinks: ndtLinks.map(({ id, comment }) => {
@@ -97,7 +107,7 @@ const EditRemark = ({
     })
     update()
     onClose()
-  }, [api, onClose, filter, remarkId])
+  }, [filter, api, remarkId, update, onClose])
 
   return (
     <StandardSizeModalWindow
@@ -113,10 +123,14 @@ const EditRemark = ({
             value={filter}
             onInput={setFilterValue}
             inputWrapper={InputWrapper}
-          />
-          <div className="flex form-element-sizes-40">
-            <LinkNdt links={filter} setLinks={setFilterValue} />
-          </div>
+          >
+            <div className="flex">
+              <InputLabel>
+                {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
+              </InputLabel>
+              <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+            </div>
+          </FilterForm>
         </div>
       </div>
       <UnderButtons leftFunc={onClose} rightFunc={onSave} />
