@@ -44,7 +44,6 @@ const EditRemark = ({
   const [filter, setFilterValue] = useState({
     text: remarkText,
     // ndtLinks,
-    setRemark,
   })
 
   const fields = [

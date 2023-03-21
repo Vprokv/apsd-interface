@@ -23,16 +23,17 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
+import { WithValidationForm } from '@Components/Components/Forms'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
 `
 
 const rules = {
-  author: [{ name: VALIDATION_RULE_REQUIRED }],
+  member: [{ name: VALIDATION_RULE_REQUIRED }],
   remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [{ name: VALIDATION_RULE_REQUIRED }],
-  nthLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  // nthLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
@@ -41,10 +42,10 @@ const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const CreateRemark = ({ disabled }) => {
+const CreateRemark = () => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
-  const { editAuthor } = useContext(ShowAnswerButtonContext)
+  const { editAuthor, createRemark } = useContext(ShowAnswerButtonContext)
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
 
@@ -58,23 +59,36 @@ const CreateRemark = ({ disabled }) => {
     position_name,
   } = useRecoilValue(userAtom)
 
-  const [filter, setFilterValue] = useState({
-    nthLinks: [{}],
-    author: r_object_id,
-  })
+  const initialUserValue = useMemo(() => {
+    return {
+      nthLinks: [{}],
+      member: {
+        emplId: r_object_id,
+        fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
+        userName: dss_user_name,
+      },
+    }
+  }, [
+    department_name,
+    dss_first_name,
+    dss_last_name,
+    dss_middle_name,
+    dss_user_name,
+    position_name,
+    r_object_id,
+  ])
+
+  const [filter, setFilterValue] = useState(initialUserValue)
 
   const fields = useMemo(
     () => [
       {
-        id: 'author',
+        id: 'member',
         label: 'Автор',
-        disabled: !editAuthor,
-        options: [
-          {
-            emplId: r_object_id,
-            fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
-          },
-        ],
+        // disabled: !editAuthor,
+        returnOption: true,
+        returnObjects: true,
+        options: [initialUserValue],
         component: UserSelect,
       },
       {
@@ -107,16 +121,7 @@ const CreateRemark = ({ disabled }) => {
       //   placeholder: 'Выберите значение',
       // },
     ],
-    [
-      api,
-      department_name,
-      dss_first_name,
-      dss_last_name,
-      dss_middle_name,
-      editAuthor,
-      position_name,
-      r_object_id,
-    ],
+    [api, editAuthor, initialUserValue],
   )
 
   const changeModalState = useCallback(
@@ -127,26 +132,29 @@ const CreateRemark = ({ disabled }) => {
   )
 
   const onSave = useCallback(async () => {
+    console.log(1)
+    const { member, ...other } = filter
     await api.post(URL_REMARK_CREATE, {
       documentId: id,
-      memberId: r_object_id,
-      memberName: dss_user_name,
-      ...filter,
+      memberId: member.emplId,
+      memberName: member.userName,
+      ...other,
     })
+    console.log(2)
     update()
     changeModalState(false)()
-    setFilterValue({ nthLinks: [{}], author: r_object_id })
-  }, [api, changeModalState, dss_user_name, filter, id, r_object_id, update])
+    setFilterValue(initialUserValue)
+  }, [api, changeModalState, filter, id, initialUserValue, update])
 
   const onClose = useCallback(() => {
     changeModalState(false)()
-    setFilterValue({ nthLinks: [{}], author: r_object_id })
-  }, [changeModalState, r_object_id])
+    setFilterValue(initialUserValue)
+  }, [changeModalState, initialUserValue])
 
   return (
     <div>
       <SecondaryBlueButton
-        disabled={!disabled}
+        disabled={!createRemark}
         onClick={changeModalState(true)}
       >
         Добавить замечание
@@ -160,7 +168,7 @@ const CreateRemark = ({ disabled }) => {
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4 h-full">
             <ScrollBar>
-              <FilterForm
+              <WithValidationForm
                 className="form-element-sizes-40"
                 fields={fields}
                 value={filter}
@@ -185,7 +193,7 @@ const CreateRemark = ({ disabled }) => {
                     </SecondaryBlueButton>
                   </UnderButtons>
                 </div>
-              </FilterForm>
+              </WithValidationForm>
             </ScrollBar>
           </div>
         </div>

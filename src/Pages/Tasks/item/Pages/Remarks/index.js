@@ -145,30 +145,30 @@ const Remarks = (props) => {
 
   return (
     <UpdateContext.Provider value={setChange}>
-      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-        <div className="flex items-center py-4 form-element-sizes-32">
-          <FilterForm
-            className="mr-2"
-            value={filter}
-            onInput={setFilterValue}
-            fields={fields}
-            inputWrapper={EmptyInputWrapper}
-          />
-          <div className="flex items-center ml-auto">
-            <CreateRemark disabled={permit?.remarkCreate} />
-            <SecondaryBlueButton className="ml-2">
-              Выгрузить свод замечаний
-            </SecondaryBlueButton>
-            <ButtonForIcon
-              onClick={ChangeAllToggls}
-              className="ml-2 color-text-secondary"
-            >
-              <Icon icon={ExportIcon} />
-            </ButtonForIcon>
+      <ShowAnswerButtonContext.Provider value={permit}>
+        <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+          <div className="flex items-center py-4 form-element-sizes-32">
+            <FilterForm
+              className="mr-2"
+              value={filter}
+              onInput={setFilterValue}
+              fields={fields}
+              inputWrapper={EmptyInputWrapper}
+            />
+            <div className="flex items-center ml-auto">
+              <CreateRemark disabled={permit?.remarkCreate} />
+              <SecondaryBlueButton className="ml-2">
+                Выгрузить свод замечаний
+              </SecondaryBlueButton>
+              <ButtonForIcon
+                onClick={ChangeAllToggls}
+                className="ml-2 color-text-secondary"
+              >
+                <Icon icon={ExportIcon} />
+              </ButtonForIcon>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col">
-          <ShowAnswerButtonContext.Provider value={permit}>
+          <div className="flex flex-col">
             <ToggleContext.Provider value={{ toggle, onToggle }}>
               {data.map((val) => (
                 <WithToggle key={val.remarkId} id={val.remarkId}>
@@ -203,9 +203,9 @@ const Remarks = (props) => {
                 </WithToggle>
               ))}
             </ToggleContext.Provider>
-          </ShowAnswerButtonContext.Provider>
+          </div>
         </div>
-      </div>
+      </ShowAnswerButtonContext.Provider>
     </UpdateContext.Provider>
   )
 }

@@ -69,7 +69,7 @@ const Field = ({ onInput, prevValue, notFirstElement, deleteLink, id }) => {
       <div className="flex">
         <Input
           id="comment"
-          placeholder="Добавьте комментарий"
+          placeholder="Раздел/Статья/Пункт НТД"
           value={prevValue?.comment}
           className="ml-2"
           onInput={onInput}
@@ -149,10 +149,10 @@ const LinkNdt = (props) => {
   return (
     <div className="w-full">
       {renderFields}
-      <div className="flex mt-4">
+      <div className="flex ml-auto mt-4">
         <SecondaryBlueButton
           onClick={addLink}
-          className="w-64 form-element-sizes-32"
+          className="w-64 form-element-sizes-32 ml-auto"
         >
           Добавить ссылку
         </SecondaryBlueButton>
