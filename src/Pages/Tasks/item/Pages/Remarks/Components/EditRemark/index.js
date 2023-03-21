@@ -43,6 +43,11 @@ const EditRemark = ({
   ndtLinks = [],
   remarkId,
   remarkMemberFullName,
+  remarkMemberPosition,
+  remarkMemberId,
+  departmentName,
+  remarkMember,
+  remarkTypeId,
   remarkType,
 }) => {
   const { editAuthor } = useContext(ShowAnswerButtonContext)
@@ -51,10 +56,11 @@ const EditRemark = ({
   const [filter, setFilterValue] = useState({
     text: remarkText,
     ndtLinks,
-    remarkTypeId: remarkType,
+    remarkTypeId: remarkTypeId,
     member: {
-      emplId: `${remarkMemberFullName}`,
-      fullDescription: `${remarkMemberFullName}`,
+      emplId: `${remarkMemberId}`,
+      userName: remarkMember,
+      fullDescription: `${remarkMemberFullName}, ${remarkMemberPosition}, ${departmentName}`,
     },
   })
 
@@ -73,7 +79,7 @@ const EditRemark = ({
       placeholder: 'Выберите тип',
       options: [
         {
-          r_object_id: remarkType,
+          r_object_id: remarkTypeId,
           dss_name: remarkType,
         },
       ],
