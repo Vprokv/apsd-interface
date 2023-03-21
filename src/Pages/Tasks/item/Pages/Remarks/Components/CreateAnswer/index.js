@@ -24,7 +24,7 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import { TextArea } from '@Components/Components/Inputs/TextArea'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import {ShowAnswerButtonContext, UpdateContext} from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const CreateAnswer = ({ remarkText, remarkId }) => {
@@ -32,6 +32,7 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
+  const { answer } = useContext(ShowAnswerButtonContext)
   const [filter, setFilterValue] = useState({ remarkText })
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -110,7 +111,7 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
 
   return (
     <div>
-      <SecondaryBlueButton onClick={changeModalState(true)}>
+      <SecondaryBlueButton disabled={!answer} onClick={changeModalState(true)}>
         Ответить
       </SecondaryBlueButton>
       <StandardSizeModalWindow

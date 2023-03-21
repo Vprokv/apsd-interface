@@ -39,7 +39,6 @@ import ToggleNavigationItemWrapper, {
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
 const Remarks = (props) => {
-  const { type } = useParams()
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
@@ -51,7 +50,6 @@ const Remarks = (props) => {
     stateId: TASK_ITEM_REMARKS,
   })
   const {
-    tabState,
     setTabState,
     tabState: { data: { data = [], permit = {} } = {}, change },
   } = tabItemState

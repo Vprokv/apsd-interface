@@ -12,10 +12,11 @@ import {
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import styled from 'styled-components'
-import { URL_REMARK_DELETE, URL_REMARK_UPDATE } from '@/ApiList'
+import {URL_REMARK_DELETE, URL_REMARK_EDIT_SET_REMARK, URL_REMARK_UPDATE} from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
+import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
 
 export const ThreeDotButton = styled.button`
   height: 20px;
@@ -32,6 +33,7 @@ const MoreActionComponent = ({
   props: { answerCreationDate = '', remarkId } = {},
 }) => {
   const api = useContext(ApiContext)
+  const documentId = useContext(DocumentIdContext)
   const permit = useContext(ShowAnswerButtonContext)
   const [open, setOpen] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
@@ -58,14 +60,6 @@ const MoreActionComponent = ({
     setOpen(false)
   }, [])
 
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
-
   const onDelete = useCallback(
     (remark) => async () => {
       await api.post(URL_REMARK_DELETE, {
@@ -78,12 +72,13 @@ const MoreActionComponent = ({
   )
 
   const onSetRemark = useCallback(async () => {
-    await api.post(URL_REMARK_UPDATE, {
+    await api.post(URL_REMARK_EDIT_SET_REMARK, {
+      documentId,
       remarkId,
-      setRemark: !setRemark,
+      vault: !setRemark,
     })
     update()
-  }, [api, remarkId, setRemark, update])
+  }, [api, documentId, remarkId, setRemark, update])
 
   return (
     <div className="flex items-center w-full justify-center">
@@ -105,7 +100,7 @@ const MoreActionComponent = ({
           <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
             <StyledItem
               onClick={changeModalState(true)}
-              disabled={permit.editRemark}
+              disabled={!permit.editRemark}
               className="mb-3 font-size-12"
             >
               Редактировать

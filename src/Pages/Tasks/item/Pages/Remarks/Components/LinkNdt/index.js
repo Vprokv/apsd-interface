@@ -45,27 +45,22 @@ const Field = ({ onInput, prevValue, notFirstElement, deleteLink, id }) => {
 
   return (
     <LinkContainer>
-      <div className="flex ">
-        <LoadableSelect
-          placeholder="Выберите значение"
-          id="id"
-          options={options}
-          value={prevValue.id}
-          onInput={onInput}
-          valueKey="r_object_id"
-          labelKey="dss_name"
-          loadFunction={async (query) => {
-            const { data } = await api.post(URL_ENTITY_LIST, {
-              type: 'ddt_dict_ndt',
-              query,
-            })
-            return data
-          }}
-        />
-        <DocumentButton className="ml-2 bg-light-gray color-text-secondary">
-          <Icon className="color-text-secondary" size={24} icon={ViewIcon} />
-        </DocumentButton>
-      </div>
+      <LoadableSelect
+        placeholder="Выберите значение"
+        id="id"
+        options={options}
+        value={prevValue.id}
+        onInput={onInput}
+        valueKey="r_object_id"
+        labelKey="dss_name"
+        loadFunction={async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_ndt',
+            query,
+          })
+          return data
+        }}
+      />
       <div className="flex">
         <Input
           id="comment"
@@ -91,19 +86,19 @@ const LinkNdt = (props) => {
   const { onInput, value } = props
 
   const addLink = useCallback(() => {
-    onInput(({ nthLinks, ...prev }) => {
-      const prevNth = [...nthLinks]
+    onInput(({ ndtLinks, ...prev }) => {
+      const prevNth = [...ndtLinks]
       prevNth.push({})
-      return { ...prev, nthLinks: prevNth }
+      return { ...prev, ndtLinks: prevNth }
     })
   }, [onInput])
 
   const deleteLink = useCallback(
     (index) => () => {
-      onInput(({ nthLinks, ...prev }) => {
-        const prevNth = [...nthLinks]
+      onInput(({ ndtLinks, ...prev }) => {
+        const prevNth = [...ndtLinks]
         prevNth.splice(index, 1)
-        return { ...prev, nthLinks: prevNth }
+        return { ...prev, ndtLinks: prevNth }
       })
     },
     [onInput],
@@ -111,14 +106,14 @@ const LinkNdt = (props) => {
 
   const onBaseInput = useCallback(
     (index) => (val, key) => {
-      onInput(({ nthLinks, ...prev }) => {
-        const prevNth = [...nthLinks]
+      onInput(({ ndtLinks, ...prev }) => {
+        const prevNth = [...ndtLinks]
 
         const el = { ...prevNth[index] }
         el[key] = val
         prevNth.splice(index, 1, el)
 
-        return { ...prev, nthLinks: prevNth }
+        return { ...prev, ndtLinks: prevNth }
       })
     },
     [onInput],

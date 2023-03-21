@@ -61,7 +61,7 @@ const CreateRemark = () => {
 
   const initialUserValue = useMemo(() => {
     return {
-      nthLinks: [{}],
+      ndtLinks: [{}],
       member: {
         emplId: r_object_id,
         fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
@@ -85,7 +85,7 @@ const CreateRemark = () => {
       {
         id: 'member',
         label: 'Автор',
-        // disabled: !editAuthor,
+        disabled: !editAuthor,
         returnOption: true,
         returnObjects: true,
         options: [initialUserValue],
@@ -113,7 +113,7 @@ const CreateRemark = () => {
         placeholder: 'Введите текст замечания',
       },
       // {
-      //   id: 'nthLinks',
+      //   id: 'ndtLinks',
       //   label: 'Ссылка нa НДТ',
       //   component: (props) => (
       //     <LinkNdt {...props} value={filter.nthLinks} onInput={setFilterValue} />
@@ -181,14 +181,14 @@ const CreateRemark = () => {
                   <InputLabel>
                     {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
                   </InputLabel>
-                  <LinkNdt value={filter.nthLinks} onInput={setFilterValue} />
+                  <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
                 </div>
                 <div className="mt-10">
-                  <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mt-2">
+                  <SecondaryBlueButton className="ml-4 form-element-sizes-40 w-64 mb-2">
                     Скачать шаблон таблицы
                   </SecondaryBlueButton>
                   <UnderButtons leftFunc={onClose}>
-                    <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
+                    <SecondaryBlueButton className="ml-4 form-element-sizes-40 w-48 mr-auto">
                       Импорт значений
                     </SecondaryBlueButton>
                   </UnderButtons>

@@ -36,11 +36,8 @@ UserCard.defaultProps = {}
 import colorFromString from '@Components/Utils/colorFromString'
 import { UserCircle } from '@/Components/ListTableComponents/UserCard/styles'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
-import { ShowAnswerButtonContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
-import log from 'tailwindcss/lib/util/log'
 
 const UserComponent = ({ ParentValue }) => {
-  const { answer } = useContext(ShowAnswerButtonContext)
   const {
     itsRemark,
     remarkMemberFullName,
@@ -51,7 +48,7 @@ const UserComponent = ({ ParentValue }) => {
 
   return itsRemark ? (
     <UserCard fio={remarkMemberFullName} position={remarkMemberPosition} />
-  ) : answerMemberFullName || !answer ? (
+  ) : answerMemberFullName ? (
     <UserCard fio={answerMemberFullName} position={answerMemberPosition} />
   ) : (
     <CreateAnswer {...ParentValue} />
