@@ -123,17 +123,20 @@ const EditRemark = ({
             value={filter}
             onInput={setFilterValue}
             inputWrapper={InputWrapper}
+            onSubmit={onSave}
           >
             <div className="flex">
               <InputLabel>
                 {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
               </InputLabel>
               <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+              <div className="mt-10">
+                <UnderButtons leftFunc={onClose} />
+              </div>
             </div>
           </FilterForm>
         </div>
       </div>
-      <UnderButtons leftFunc={onClose} rightFunc={onSave} />
     </StandardSizeModalWindow>
   )
 }
