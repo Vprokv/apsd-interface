@@ -177,12 +177,20 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
       loadData()
       changeModalState(false)()
+      setFilterValue(initialFilterState)
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, stage, loadData, changeModalState, getNotification])
+  }, [
+    api,
+    stage,
+    loadData,
+    changeModalState,
+    initialFilterState,
+    getNotification,
+  ])
 
   const onClose = useCallback(() => {
     setFilterValue(initialFilterState)
@@ -223,7 +231,6 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
             </div>
           </ScrollBar>
         </div>
-
         <div className="flex items-center justify-end mt-4">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
