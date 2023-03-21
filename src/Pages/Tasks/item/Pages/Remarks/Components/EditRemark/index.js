@@ -103,9 +103,11 @@ const EditRemark = ({
   ]
 
   const onSave = useCallback(async () => {
-    const { ndtLinks, member, ...other } = filter //TODO добавить member, когда появится ид
+    const { ndtLinks, member, ...other } = filter
     await api.post(URL_REMARK_UPDATE, {
       remarkId,
+      memberId: member.emplId,
+      memberName: member.userName,
       ndtLinks: ndtLinks.map(({ id, comment }) => {
         return { id, comment }
       }),
