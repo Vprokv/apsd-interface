@@ -131,6 +131,7 @@ const RowComponent = ({
       setRemark,
       remarkCreationDate,
       number,
+      status,
       ...item
     } = props
 
@@ -149,6 +150,7 @@ const RowComponent = ({
         remarkType,
         remarkText,
         setRemark,
+        status,
         props,
       },
       { ...item, remarkText, remarkId, props },
