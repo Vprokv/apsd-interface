@@ -33,6 +33,11 @@ import {
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import UserSelect from '@/Components/Inputs/UserSelect'
+import {
+  defaultFunctionsMap,
+  NOTIFICATION_TYPE_SUCCESS,
+} from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -47,6 +52,7 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
   const update = useContext(UpdateContext)
   const { answer } = useContext(ShowAnswerButtonContext)
   const { editAuthor } = useContext(ShowAnswerButtonContext)
+  const getNotification = useOpenNotification()
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
@@ -129,20 +135,46 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
     },
   ]
 
+  const customMessagesFuncMap = {
+    ...defaultFunctionsMap,
+    200: () => {
+      return {
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Ответ на замечание добавлен успешно',
+      }
+    },
+  }
+
   const onSave = useCallback(async () => {
     // eslint-disable-next-line no-unused-vars
-    const { remarkText, member, ...other } = filter
-    await api.post(URL_REMARK_ANSWER, {
-      documentId: id,
-      memberId: member.emplId,
-      memberName: member.userName,
-      remarkId,
-      ...other,
-    })
-    update()
-    changeModalState(false)()
-    setFilterValue(initialUserValue)
-  }, [api, changeModalState, filter, id, initialUserValue, remarkId, update])
+    try {
+      const { remarkText, member, ...other } = filter
+      const { status } = await api.post(URL_REMARK_ANSWER, {
+        documentId: id,
+        memberId: member.emplId,
+        memberName: member.userName,
+        remarkId,
+        ...other,
+      })
+      update()
+      getNotification(customMessagesFuncMap[status]())
+      changeModalState(false)()
+      setFilterValue(initialUserValue)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [
+    api,
+    changeModalState,
+    customMessagesFuncMap,
+    filter,
+    getNotification,
+    id,
+    initialUserValue,
+    remarkId,
+    update,
+  ])
 
   const onClose = useCallback(() => {
     changeModalState(false)()

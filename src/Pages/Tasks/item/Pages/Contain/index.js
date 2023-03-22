@@ -25,7 +25,10 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useNavigate, useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
-import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
+import {
+  LoadContainChildrenContext,
+  ShowContentByTypeButtonContext,
+} from '@/Pages/Tasks/item/Pages/Contain/constants'
 import CreateVolume from './Components/CreateVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 import DateCell from './Components/DateCell'
@@ -140,6 +143,7 @@ const Contain = () => {
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const [showContentByTypeButton, setShowContentByTypeButton] = useState()
   const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
@@ -288,6 +292,15 @@ const Contain = () => {
     [openTabOrCreateNewTab],
   )
 
+  const onShowContentByTypeButton = useCallback(
+    (id) => () => {
+      setSelectState([])
+      setShowContentByTypeButton(id)
+      setRenderPreviewWindowState(true)
+    },
+    [],
+  )
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -336,26 +349,30 @@ const Contain = () => {
             </div>
           </div>
         </div>
-        <ListTable
-          rowComponent={useMemo(
-            () => (props) =>
-              <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
-            [handleDoubleClick],
-          )}
-          plugins={plugins}
-          headerCellComponent={HeaderCell}
-          columns={columns}
-          selectState={selectState}
-          onSelect={setSelectState}
-          sortQuery={sortQuery}
-          onSort={onSort}
-          value={data}
-          onInput={onTableUpdate}
-        />
+        <ShowContentByTypeButtonContext.Provider
+          value={onShowContentByTypeButton}
+        >
+          <ListTable
+            rowComponent={useMemo(
+              () => (props) =>
+                <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
+              [handleDoubleClick],
+            )}
+            plugins={plugins}
+            headerCellComponent={HeaderCell}
+            columns={columns}
+            selectState={selectState}
+            onSelect={setSelectState}
+            sortQuery={sortQuery}
+            onSort={onSort}
+            value={data}
+            onInput={onTableUpdate}
+          />
+        </ShowContentByTypeButtonContext.Provider>
         <PreviewContentWindow
           open={renderPreviewWindow}
           onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-          id={selectState[0]?.content?.id}
+          id={selectState[0]?.content?.id || showContentByTypeButton}
           type="ddt_document_content"
         />
       </div>

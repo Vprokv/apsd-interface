@@ -1,29 +1,13 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import Button, {
-  LoadableBaseButton,
-  SecondaryBlueButton,
-  SecondaryGreyButton,
-} from '@/Components/Button'
+
 import { ApiContext } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import Input from '@/Components/Fields/Input'
+import LoadableSelect from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
-import {
-  URL_ENTITY_LIST,
-  URL_REMARK_ANSWER,
-  URL_REMARK_CREATE,
-  URL_REMARK_UPDATE,
-} from '@/ApiList'
-import { useRecoilValue } from 'recoil'
-import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import { useParams } from 'react-router-dom'
-import Icon from '@Components/Components/Icon'
-import editIcon from '@/Icons/editIcon'
+import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper, {
   InputLabel,
@@ -33,8 +17,36 @@ import {
   ShowAnswerButtonContext,
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
-import log from 'tailwindcss/lib/util/log'
 import UserSelect from '@/Components/Inputs/UserSelect'
+import styled from 'styled-components'
+import SimpleBar from 'simplebar-react'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import {
+  defaultFunctionsMap,
+  NOTIFICATION_TYPE_SUCCESS,
+} from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
+
+const rules = {
+  member: [{ name: VALIDATION_RULE_REQUIRED }],
+  remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [{ name: VALIDATION_RULE_REQUIRED }],
+  // nthLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+}
+
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Замечание откорректировано успешно',
+    }
+  },
+}
+
+const ScrollBar = styled(SimpleBar)`
+  min-height: 400px;
+`
 
 const EditRemark = ({
   onClose,
@@ -43,9 +55,7 @@ const EditRemark = ({
   ndtLinks = [],
   remarkId,
   remarkMemberFullName,
-  remarkMemberPosition,
   remarkMemberId,
-  departmentName,
   remarkMember,
   remarkTypeId,
   remarkType,
@@ -53,6 +63,7 @@ const EditRemark = ({
   const { editAuthor } = useContext(ShowAnswerButtonContext)
   const api = useContext(ApiContext)
   const update = useContext(UpdateContext)
+  const getNotification = useOpenNotification()
   const [filter, setFilterValue] = useState({
     text: remarkText,
     ndtLinks,
@@ -60,7 +71,7 @@ const EditRemark = ({
     member: {
       emplId: `${remarkMemberId}`,
       userName: remarkMember,
-      fullDescription: `${remarkMemberFullName}, ${remarkMemberPosition}, ${departmentName}`,
+      fullDescription: `${remarkMemberFullName}`,
     },
   })
 
@@ -103,19 +114,26 @@ const EditRemark = ({
   ]
 
   const onSave = useCallback(async () => {
-    const { ndtLinks, member, ...other } = filter
-    await api.post(URL_REMARK_UPDATE, {
-      remarkId,
-      memberId: member.emplId,
-      memberName: member.userName,
-      ndtLinks: ndtLinks.map(({ id, comment }) => {
-        return { id, comment }
-      }),
-      ...other,
-    })
-    update()
-    onClose()
-  }, [filter, api, remarkId, update, onClose])
+    try {
+      const { ndtLinks, member, ...other } = filter
+      const { status } = await api.post(URL_REMARK_UPDATE, {
+        remarkId,
+        memberId: member.emplId,
+        memberName: member.userName,
+        ndtLinks: ndtLinks.map(({ id, comment }) => {
+          return { id, comment }
+        }),
+        ...other,
+      })
+
+      getNotification(customMessagesFuncMap[status]())
+      update()
+      onClose()
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [filter, api, remarkId, getNotification, update, onClose])
 
   return (
     <StandardSizeModalWindow
@@ -124,25 +142,28 @@ const EditRemark = ({
       onClose={onClose}
     >
       <div className="flex flex-col overflow-hidden h-full">
-        <div className="flex flex-col py-4">
-          <FilterForm
-            className="form-element-sizes-40"
-            fields={fields}
-            value={filter}
-            onInput={setFilterValue}
-            inputWrapper={InputWrapper}
-            onSubmit={onSave}
-          >
-            <div className="flex">
-              <InputLabel>
-                {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
-              </InputLabel>
-              <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+        <div className="flex flex-col py-4 h-full">
+          <ScrollBar>
+            <FilterForm
+              className="form-element-sizes-40"
+              fields={fields}
+              value={filter}
+              onInput={setFilterValue}
+              rules={rules}
+              inputWrapper={InputWrapper}
+              onSubmit={onSave}
+            >
+              <div className="flex">
+                <InputLabel>
+                  {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
+                </InputLabel>
+                <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+              </div>
               <div className="mt-10">
                 <UnderButtons leftFunc={onClose} />
               </div>
-            </div>
-          </FilterForm>
+            </FilterForm>
+          </ScrollBar>
         </div>
       </div>
     </StandardSizeModalWindow>
