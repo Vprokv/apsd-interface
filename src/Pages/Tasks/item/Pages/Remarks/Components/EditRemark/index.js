@@ -35,6 +35,16 @@ import {
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import log from 'tailwindcss/lib/util/log'
 import UserSelect from '@/Components/Inputs/UserSelect'
+import styled from 'styled-components'
+import SimpleBar from 'simplebar-react'
+import {VALIDATION_RULE_REQUIRED} from "@Components/Logic/Validator/constants";
+
+const rules = {
+  member: [{ name: VALIDATION_RULE_REQUIRED }],
+  remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [{ name: VALIDATION_RULE_REQUIRED }],
+  // nthLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const EditRemark = ({
   onClose,
@@ -43,9 +53,7 @@ const EditRemark = ({
   ndtLinks = [],
   remarkId,
   remarkMemberFullName,
-  remarkMemberPosition,
   remarkMemberId,
-  departmentName,
   remarkMember,
   remarkTypeId,
   remarkType,
@@ -63,6 +71,10 @@ const EditRemark = ({
       fullDescription: `${remarkMemberFullName}`,
     },
   })
+
+  const ScrollBar = styled(SimpleBar)`
+    min-height: 400px;
+  `
 
   const fields = [
     {
@@ -124,25 +136,28 @@ const EditRemark = ({
       onClose={onClose}
     >
       <div className="flex flex-col overflow-hidden h-full">
-        <div className="flex flex-col py-4">
-          <FilterForm
-            className="form-element-sizes-40"
-            fields={fields}
-            value={filter}
-            onInput={setFilterValue}
-            inputWrapper={InputWrapper}
-            onSubmit={onSave}
-          >
-            <div className="flex">
-              <InputLabel>
-                {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
-              </InputLabel>
-              <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+        <div className="flex flex-col py-4 h-full">
+          <ScrollBar>
+            <FilterForm
+              className="form-element-sizes-40"
+              fields={fields}
+              value={filter}
+              onInput={setFilterValue}
+              rules={rules}
+              inputWrapper={InputWrapper}
+              onSubmit={onSave}
+            >
+              <div className="flex">
+                <InputLabel>
+                  {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
+                </InputLabel>
+                <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
+              </div>
               <div className="mt-10">
                 <UnderButtons leftFunc={onClose} />
               </div>
-            </div>
-          </FilterForm>
+            </FilterForm>
+          </ScrollBar>
         </div>
       </div>
     </StandardSizeModalWindow>
