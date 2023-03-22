@@ -60,7 +60,7 @@ const EditRemark = ({
     member: {
       emplId: `${remarkMemberId}`,
       userName: remarkMember,
-      fullDescription: `${remarkMemberFullName}, ${remarkMemberPosition}, ${departmentName}`,
+      fullDescription: `${remarkMemberFullName}`,
     },
   })
 
