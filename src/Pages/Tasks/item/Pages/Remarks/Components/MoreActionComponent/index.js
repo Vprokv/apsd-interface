@@ -12,11 +12,20 @@ import {
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import styled from 'styled-components'
-import {URL_REMARK_DELETE, URL_REMARK_EDIT_SET_REMARK, URL_REMARK_UPDATE} from '@/ApiList'
+import {
+  URL_REMARK_DELETE,
+  URL_REMARK_EDIT_SET_REMARK,
+  URL_REMARK_UPDATE,
+} from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
-import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 export const ThreeDotButton = styled.button`
   height: 20px;
@@ -26,6 +35,16 @@ export const ThreeDotButton = styled.button`
   display: flex;
   align-items: center;
 `
+
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: (mess) => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: mess,
+    }
+  },
+}
 
 const MoreActionComponent = ({
   setRemark,
@@ -39,6 +58,7 @@ const MoreActionComponent = ({
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const update = useContext(UpdateContext)
   const [target, setTarget] = useState({})
+  const getNotification = useOpenNotification()
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -46,10 +66,6 @@ const MoreActionComponent = ({
     },
     [],
   )
-
-  const { setTabState } = useTabItem({
-    stateId: TASK_ITEM_REMARKS,
-  })
 
   const openContextMenu = useCallback((event) => {
     setTarget(event.target)
@@ -62,23 +78,39 @@ const MoreActionComponent = ({
 
   const onDelete = useCallback(
     (remark) => async () => {
-      await api.post(URL_REMARK_DELETE, {
-        remarkId,
-        remark,
-      })
-      update()
+      try {
+        const { status } = await api.post(URL_REMARK_DELETE, {
+          remarkId,
+          remark,
+        })
+        getNotification(
+          customMessagesFuncMap[status]('Удаление выполнено успешно'),
+        )
+        update()
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
     },
-    [api, remarkId, update],
+    [api, getNotification, remarkId, update],
   )
 
   const onSetRemark = useCallback(async () => {
-    await api.post(URL_REMARK_EDIT_SET_REMARK, {
-      documentId,
-      remarkId,
-      vault: !setRemark,
-    })
-    update()
-  }, [api, documentId, remarkId, setRemark, update])
+    try {
+      await api.post(URL_REMARK_EDIT_SET_REMARK, {
+        documentId,
+        remarkId,
+        vault: !setRemark,
+      })
+      getNotification(
+        customMessagesFuncMap[status]('Изменение выполнено успешно'),
+      )
+      update()
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [api, documentId, getNotification, remarkId, setRemark, update])
 
   return (
     <div className="flex items-center w-full justify-center">

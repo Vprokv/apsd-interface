@@ -24,6 +24,11 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
 import { WithValidationForm } from '@Components/Components/Forms'
+import {
+  defaultFunctionsMap,
+  NOTIFICATION_TYPE_SUCCESS,
+} from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -42,12 +47,23 @@ const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Замечание создано успешно',
+    }
+  },
+}
+
 const CreateRemark = () => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const { editAuthor, createRemark } = useContext(ShowAnswerButtonContext)
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
+  const getNotification = useOpenNotification()
 
   const {
     r_object_id,
@@ -132,17 +148,31 @@ const CreateRemark = () => {
   )
 
   const onSave = useCallback(async () => {
-    const { member, ...other } = filter
-    await api.post(URL_REMARK_CREATE, {
-      documentId: id,
-      memberId: member.emplId,
-      memberName: member.userName,
-      ...other,
-    })
-    update()
-    changeModalState(false)()
-    setFilterValue(initialUserValue)
-  }, [api, changeModalState, filter, id, initialUserValue, update])
+    try {
+      const { member, ...other } = filter
+      const { status } = api.post(URL_REMARK_CREATE, {
+        documentId: id,
+        memberId: member.emplId,
+        memberName: member.userName,
+        ...other,
+      })
+      getNotification(customMessagesFuncMap[status]())
+      update()
+      changeModalState(false)()
+      setFilterValue(initialUserValue)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [
+    api,
+    changeModalState,
+    filter,
+    getNotification,
+    id,
+    initialUserValue,
+    update,
+  ])
 
   const onClose = useCallback(() => {
     changeModalState(false)()
