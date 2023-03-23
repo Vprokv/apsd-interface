@@ -44,7 +44,7 @@ const BaseFileInputComponent = ({
   )
 
   return (
-    <div className="flex-container w-64">
+    <div className="flex flex-col w-64">
       <div className="grid">
         {!!value.length > 0 &&
           value.map((v, index) => (

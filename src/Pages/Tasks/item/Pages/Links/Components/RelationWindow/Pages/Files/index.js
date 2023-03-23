@@ -23,6 +23,11 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { ContainerContext } from '@Components/constants'
+import NewFileInput from '@/Components/Inputs/NewFileInput'
+import WithValidationHoc from '@Components/Logic/Validator'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import RowComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/RowComponent'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -34,29 +39,50 @@ const customMessagesFuncMap = {
   },
 }
 
+const rules = {
+  '*.linkType': [{ name: VALIDATION_RULE_REQUIRED }],
+}
+
 const Files = (props) => {
+  const { validateForm, validationErrors } = props
   const userObject = useRecoilValue(userAtom)
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
   const update = useContext(UpdateContext)
   const parentId = useContext(DocumentIdContext)
+  const context = useContext(ContainerContext)
   const [files, setFiles] = useState([])
   const getNotification = useOpenNotification()
   const onFileInput = useCallback(
     (file) => {
-      setFiles([{ file }, ...files])
+      setFiles([...files, ...file])
     },
     [files],
   )
 
+  const onDeleteFile = useCallback(
+    (id) => () => {
+      setFiles((arr) => {
+        const prevVal = [...arr]
+        prevVal.splice(id, 1)
+        return prevVal
+      })
+    },
+    [],
+  )
+
   const save = useCallback(async () => {
+    const res = validateForm(files)
+
+    if (res instanceof Error) {
+      return getNotification(
+        customMessagesFuncMap[412]('Заполните обязательные поля'),
+      )
+    }
     try {
       const response = await api.post(URL_LINK_CREATE, {
         linkObjects: files.map(
-          ({
-            file: [{ dsc_content, dss_content_name }],
-            ...documentPayload
-          }) => ({
+          ({ dsc_content, dss_content_name, ...documentPayload }) => ({
             ...documentPayload,
             parentId,
             documentType: dss_content_name,
@@ -74,22 +100,33 @@ const Files = (props) => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
-    api,
+    validateForm,
     files,
+    getNotification,
+    api,
     update,
     close,
-    getNotification,
     parentId,
     userObject.r_object_id,
     userObject.dss_user_name,
   ])
   const columns = useMemo(
     () => [
+      // {
+      //   id: 'file',
+      //   label: 'Файл',
+      //   component: Option,
+      //   sizes: 270,
+      // },
       {
-        id: 'file',
-        label: 'Файл',
-        component: Option,
-        sizes: 270,
+        id: 'dss_content_name',
+        label: 'Наименование',
+        style: {
+          alignItems: 'center',
+          marginRight: '0.5rem',
+        },
+        component: Input,
+        sizes: 300,
       },
       {
         id: 'regNumber',
@@ -102,41 +139,7 @@ const Files = (props) => {
         sizes: 200,
       },
       {
-        label: 'Тип файла',
-        id: 'documentType',
-        style: {
-          alignItems: 'center',
-          marginRight: '0.5rem',
-        },
-        component: (props) => (
-          <LoadableSelect
-            {...props}
-            valueKey="r_object_id"
-            labelKey="dss_name"
-            placeholder="Выберите тип файла"
-            loadFunction={async (query) => {
-              const { data } = await api.post(URL_ENTITY_LIST, {
-                type: 'ddt_dict_type_content',
-                query,
-              })
-              return data
-            }}
-          />
-        ),
-        sizes: 220,
-      },
-      {
-        id: 'comment',
-        label: 'Комментарий',
-        component: TextArea,
-        style: {
-          alignItems: 'center',
-          marginRight: '0.5rem',
-        },
-        sizes: 200,
-      },
-      {
-        label: 'Тип связи',
+        label: 'Тип связи/файла',
         id: 'linkType',
         style: {
           alignItems: 'center',
@@ -156,27 +159,56 @@ const Files = (props) => {
             }}
           />
         ),
-        sizes: 220,
+        sizes: 200,
+      },
+      {
+        id: 'comment',
+        label: 'Комментарий',
+        component: TextArea,
+        style: {
+          alignItems: 'center',
+          marginRight: '0.5rem',
+        },
+        sizes: 250,
       },
     ],
     [api],
   )
   return (
-    <div className="p-4 flex-container">
-      <FileInput onInput={onFileInput} />
-      <ScrollBar>
-        <ListTable
-          columns={columns}
-          onInput={setFiles}
-          value={files}
-          headerCellComponent={HeaderCell}
-        />
-      </ScrollBar>
+    <>
+      <div className="px-4 pb-4 flex flex-col overflow-hidden h-full">
+        <div className="mt-2">
+          <NewFileInput
+            className="h-10"
+            multiple={true}
+            containerRef={context}
+            onInput={onFileInput}
+          />
+          <ScrollBar className="mt-8">
+            <ListTable
+              rowComponent={useMemo(
+                () => (props) =>
+                  <RowComponent onDeleteFile={onDeleteFile} {...props} />,
+                [onDeleteFile],
+              )}
+              rules={rules}
+              columns={columns}
+              onInput={setFiles}
+              value={files}
+              headerCellComponent={HeaderCell}
+              onSubmit={save}
+            />
+          </ScrollBar>
+        </div>
+      </div>
       <UnderButtons leftFunc={close} rightLabel="Cвязать" rightFunc={save} />
-    </div>
+    </>
   )
 }
 
 Files.propTypes = {}
 
-export default Files
+const WithValidationForm = WithValidationHoc(Files)
+export default (props) => (
+  <WithValidationForm rules={rules} {...props} value={[]} />
+)

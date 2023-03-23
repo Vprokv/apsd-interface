@@ -8,7 +8,7 @@ export const FilterForm = styled(Form)`
   grid-column-gap: 0.5rem;
 `
 export const CreateLinkComponent = styled(ModalWindow)`
-  width: 81.25%;
+  width: 65.25%;
   height: 87.21%;
   margin: auto;
 `
