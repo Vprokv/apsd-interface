@@ -6,6 +6,7 @@ import {
   InputLabel,
   InputLabelStart,
   InputWrapperContainer,
+  Label,
 } from './styles'
 
 export {
@@ -13,7 +14,6 @@ export {
   InputLabel,
   InputContainer,
   InputErrorContainer,
-  InputLabelStart,
 }
 
 const InputWrapper = React.forwardRef(
@@ -21,7 +21,6 @@ const InputWrapper = React.forwardRef(
     {
       className,
       style,
-      withoutLabel,
       id,
       label,
       validationErrors,
@@ -33,19 +32,19 @@ const InputWrapper = React.forwardRef(
   ) => {
     return (
       <InputWrapperContainer
-        className={`${className} flex items-center `}
+        className={`${className} flex`}
         style={style}
         ref={ref}
-        hasError={hasError}
       >
-        {!withoutLabel && (
-          <InputLabel htmlFor={id}>
-            {label} {isRequired && <InputLabelStart>*</InputLabelStart>}
-          </InputLabel>
-        )}
-        <InputContainer className="flex flex-col flex-auto relative w-full">
+        <Label className="flex-0 w-48 mr-6 " htmlFor={id}>
+          {label} {isRequired && <InputLabelStart>*</InputLabelStart>}
+        </Label>
+        <InputContainer
+          hasError={hasError && validationErrors.length > 0}
+          className="flex-col flex-auto"
+        >
           {children}
-          {hasError && (
+          {hasError && validationErrors.length > 0 && (
             <InputErrorContainer>{validationErrors[0]}</InputErrorContainer>
           )}
         </InputContainer>
@@ -55,21 +54,22 @@ const InputWrapper = React.forwardRef(
 )
 
 InputWrapper.propTypes = {
-  withoutLabel: PropTypes.bool,
-  suffix: PropTypes.string,
-  label: PropTypes.string,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  label: PropTypes.string.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
-  ]),
+  ]).isRequired,
   validationErrors: PropTypes.array,
   className: PropTypes.string,
   style: PropTypes.object,
+  hasError: PropTypes.bool,
+  isRequired: PropTypes.bool,
 }
 
 InputWrapper.defaultProps = {
   className: '',
+  validationErrors: [],
 }
 
 export default InputWrapper

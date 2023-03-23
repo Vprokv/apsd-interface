@@ -22,7 +22,6 @@ import {
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
-import log from 'tailwindcss/lib/util/log'
 
 const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   const api = useContext(ApiContext)

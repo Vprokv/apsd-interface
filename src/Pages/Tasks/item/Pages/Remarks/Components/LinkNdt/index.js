@@ -1,19 +1,25 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import LoadableSelect from '@/Components/Inputs/Select'
 import Input from '@/Components/Fields/Input'
-import { LinkContainer, InputLabel, Container } from './styles'
+import { LinkContainer } from './styles'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
-import { InputLabelStart } from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Icon from '@Components/Components/Icon'
-import DocumentShowIcon from '@/Icons/DocumentShowIcon'
-import { ShowDocumentButton } from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
 import styled from 'styled-components'
 import closeIcon from '@/Icons/closeIcon'
-import ViewIcon from '@/Icons/ViewIcon'
-import log from 'tailwindcss/lib/util/log'
+import pureDeleteItems from '@Components/Utils/Arrays/PureDeleteItems'
+import pureUpdateArrayItems from '@Components/Utils/Arrays/PureUpdateArrayItems'
+import { returnChildren } from '@Components/Components/Forms'
+import { ValidationConsumer } from '@/Components/InputWrapperRefactor'
 
 export const DocumentButton = styled.button.attrs({ type: 'button' })`
   border-radius: 6px;
@@ -30,50 +36,52 @@ export const DocumentButton = styled.button.attrs({ type: 'button' })`
     color: var(--form-elements-border-color);
   }
 `
-
-const Field = ({ onInput, prevValue, notFirstElement, deleteLink, id }) => {
+const baseFieldValue = {}
+const Field = ({
+  onInput,
+  value = baseFieldValue,
+  index,
+  valueIndex,
+  deleteLink,
+  className,
+}) => {
   const api = useContext(ApiContext)
 
-  const options = useMemo(() => {
-    return [
-      {
-        dss_name: prevValue?.name,
-        r_object_id: prevValue?.id,
-      },
-    ]
-  }, [prevValue])
-
   return (
-    <LinkContainer>
-      <LoadableSelect
-        placeholder="Выберите значение"
-        id="id"
-        options={options}
-        value={prevValue.id}
-        onInput={onInput}
-        valueKey="r_object_id"
-        labelKey="dss_name"
-        loadFunction={async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_ndt',
-            query,
-          })
-          return data
-        }}
-      />
-      <div className="flex">
-        <Input
-          id="comment"
-          placeholder="Раздел/Статья/Пункт НТД"
-          value={prevValue?.comment}
-          className="ml-2"
-          onInput={onInput}
+    <LinkContainer className={className}>
+      <ValidationConsumer path={`${valueIndex}.id`}>
+        <LoadableSelect
+          placeholder="Выберите значение"
+          id={`${index}_id`}
+          value={value.id}
+          onInput={onInput('id')}
+          valueKey="r_object_id"
+          labelKey="dss_name"
+          refKey="ddt_dict_ndt"
+          loadFunction={useCallback(
+            async (query) => {
+              const { data } = await api.post(URL_ENTITY_LIST, {
+                type: 'ddt_dict_ndt',
+                query,
+              })
+              return data
+            },
+            [api],
+          )}
         />
-        {notFirstElement && (
-          <DocumentButton
-            onClick={deleteLink(id)}
-            className="ml-2 bg-color-red"
-          >
+      </ValidationConsumer>
+      <div className="flex">
+        <ValidationConsumer path={`${index}.comment`}>
+          <Input
+            id={`${index}_comment`}
+            placeholder="Раздел/Статья/Пункт НТД"
+            value={value.comment}
+            className="ml-2"
+            onInput={onInput('comment')}
+          />
+        </ValidationConsumer>
+        {index !== 0 && (
+          <DocumentButton onClick={deleteLink} className="ml-2 bg-color-red">
             <Icon icon={closeIcon} />
           </DocumentButton>
         )}
@@ -81,69 +89,110 @@ const Field = ({ onInput, prevValue, notFirstElement, deleteLink, id }) => {
     </LinkContainer>
   )
 }
+const baseValue = []
+const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
+  const { onInput, value = baseValue, id } = props
+  const [fields, setFields] = useState(1)
+  const [isTouchedFieldMap, setTouchedState] = useState({})
+  const valueRef = useRef()
 
-const LinkNdt = (props) => {
-  const { onInput, value } = props
-
-  const addLink = useCallback(() => {
-    onInput(({ ndtLinks, ...prev }) => {
-      const prevNth = [...ndtLinks]
-      prevNth.push({})
-      return { ...prev, ndtLinks: prevNth }
-    })
-  }, [onInput])
-
-  const deleteLink = useCallback(
-    (index) => () => {
-      onInput(({ ndtLinks, ...prev }) => {
-        const prevNth = [...ndtLinks]
-        prevNth.splice(index, 1)
-        return { ...prev, ndtLinks: prevNth }
-      })
+  const handleInput = useCallback(
+    (v) => {
+      onInput(v, id)
+      valueRef.current = v
     },
-    [onInput],
+    [id, onInput],
   )
 
-  const onBaseInput = useCallback(
-    (index) => (val, key) => {
-      onInput(({ ndtLinks, ...prev }) => {
-        const prevNth = [...ndtLinks]
+  const addLink = useCallback(() => setFields((s) => s + 1), [])
 
-        const el = { ...prevNth[index] }
-        el[key] = val
-        prevNth.splice(index, 1, el)
-
-        return { ...prev, ndtLinks: prevNth }
+  const deleteLink = useCallback(
+    (index, valueIndex) => () => {
+      if (valueIndex !== undefined) {
+        handleInput(pureDeleteItems(value, valueIndex))
+        setTouchedState(({ [index]: _, ...nextState }) => nextState)
+      }
+      setTouchedState((prevState) => {
+        const nextState = {}
+        for (let i = 0; i < fields; i++) {
+          if (i > index) {
+            if (prevState[i]) {
+              nextState[i - 1] = prevState[i]
+            }
+          } else if (prevState[i]) {
+            nextState[i] = prevState[i]
+          }
+        }
+        return nextState
       })
+      setFields((s) => s - 1)
     },
-    [onInput],
+    [fields, handleInput, value],
+  )
+
+  useLayoutEffect(() => {
+    if (valueRef.current !== value) {
+      if (value.length > 0) {
+        setFields(value.length)
+        const touchedState = {}
+        for (let i = 0; i < value.length; i++) {
+          touchedState[i] = true
+          setTouchedState(touchedState)
+        }
+      }
+    }
+  }, [value])
+
+  const handleFieldInput = useCallback(
+    (index, valueIndex, prevValueIndex) => (key) => (val) => {
+      if (valueIndex !== undefined) {
+        handleInput(
+          pureUpdateArrayItems(value, valueIndex, {
+            ...value[valueIndex],
+            [key]: val,
+          }),
+        )
+      } else {
+        let nextVal = [...value]
+        nextVal.splice(prevValueIndex, 0, { [key]: val })
+        handleInput(nextVal)
+        setTouchedState((nextState) => ({ ...nextState, [index]: true }))
+      }
+    },
+    [handleInput, value],
   )
 
   const renderFields = useMemo(() => {
     const arr = []
+    let vIndex = 0
 
-    for (let i = 0; i < value?.length; i++) {
-      const onInput = onBaseInput(i)
-      const prevValue = value[i]
-
+    for (let i = 0; i < fields; i++) {
+      let v
+      let valueIndex
+      if (isTouchedFieldMap[i]) {
+        v = value[vIndex]
+        valueIndex = vIndex
+        vIndex += 1
+      }
       arr.push(
         <Field
-          deleteLink={deleteLink}
-          id={i}
-          notFirstElement={i > 0}
-          onInput={onInput}
-          prevValue={prevValue}
+          className={i !== fields - 1 ? 'mb-6' : ''}
+          deleteLink={deleteLink(i, valueIndex)}
+          index={i}
+          onInput={handleFieldInput(i, valueIndex, vIndex)}
+          value={v}
+          valueIndex={valueIndex}
           key={i}
         />,
       )
     }
 
     return arr
-  }, [deleteLink, onBaseInput, value])
+  }, [deleteLink, fields, handleFieldInput, isTouchedFieldMap, value])
 
   return (
     <div className="w-full">
-      {renderFields}
+      <InputUiContext {...props}>{renderFields}</InputUiContext>
       <div className="flex ml-auto mt-4">
         <SecondaryBlueButton
           onClick={addLink}
@@ -156,7 +205,11 @@ const LinkNdt = (props) => {
   )
 }
 
-LinkNdt.propTypes = {}
+LinkNdt.propTypes = {
+  value: PropTypes.array,
+  onInput: PropTypes.func.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+}
 LinkNdt.defaultProps = {
   label: 'Ссылка на НДТ',
   isRequired: true,

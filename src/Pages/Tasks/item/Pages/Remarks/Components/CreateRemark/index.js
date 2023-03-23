@@ -23,12 +23,13 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
-import { WithValidationForm } from '@Components/Components/Forms'
+import { returnChildren, WithValidationForm } from '@Components/Components/Forms'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import { RowInputWrapperRefactor, ValidationProvider } from '@/Components/InputWrapperRefactor'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -38,7 +39,8 @@ const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [{ name: VALIDATION_RULE_REQUIRED }],
-  // nthLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
@@ -56,6 +58,8 @@ const customMessagesFuncMap = {
     }
   },
 }
+
+const NdtLinkWrapper = ValidationProvider(RowInputWrapperRefactor)
 
 const CreateRemark = () => {
   const api = useContext(ApiContext)
@@ -77,7 +81,6 @@ const CreateRemark = () => {
 
   const initialUserValue = useMemo(() => {
     return {
-      ndtLinks: [{}],
       member: {
         emplId: r_object_id,
         fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
@@ -128,14 +131,14 @@ const CreateRemark = () => {
         component: CustomInput,
         placeholder: 'Введите текст замечания',
       },
-      // {
-      //   id: 'ndtLinks',
-      //   label: 'Ссылка нa НДТ',
-      //   component: (props) => (
-      //     <LinkNdt {...props} value={filter.nthLinks} onInput={setFilterValue} />
-      //   ),
-      //   placeholder: 'Выберите значение',
-      // },
+      {
+        id: 'ndtLinks',
+        label: 'Ссылка нa НДТ',
+        component: LinkNdt,
+        placeholder: 'Выберите значение',
+        inputWrapper: returnChildren,
+        InputUiContext: NdtLinkWrapper,
+      },
     ],
     [api, editAuthor, initialUserValue],
   )
@@ -205,12 +208,6 @@ const CreateRemark = () => {
                 inputWrapper={InputWrapper}
                 onSubmit={onSave}
               >
-                <div className="flex">
-                  <InputLabel>
-                    {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
-                  </InputLabel>
-                  <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
-                </div>
                 <div className="mt-10">
                   <SecondaryBlueButton className="ml-4 form-element-sizes-40 w-64 mb-2">
                     Скачать шаблон таблицы

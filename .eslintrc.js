@@ -62,7 +62,7 @@ module.exports = {
     ],
     'react/no-unescaped-entities': 'off',
     'react/prop-types': 'warn',
-    'react/require-default-props': 'warn',
+    'react/require-default-props': 'off',
     'sort-imports': [
       'error',
       {
