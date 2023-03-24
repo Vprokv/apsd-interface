@@ -20,18 +20,23 @@ export const NotificationItem = styled.div`
   //right: 16px;
   &.info {
     background: rgba(212, 247, 255);
+
     ${Line} {
       background-color: var(--light-blue);
     }
   }
+
   &.success {
     background-color: #d2f7c5;
+
     ${Line} {
       background-color: var(--green);
     }
   }
+
   &.error {
     background: #ffe3e4;
+
     ${Line} {
       background: var(--red);
     }
@@ -46,6 +51,7 @@ export const NotificationActions = styled.div`
   gap: 8px;
 `
 export const NotificationContainer = styled.div`
+  z-index: 1001;
   position: fixed;
   top: 88px;
   right: 16px;
