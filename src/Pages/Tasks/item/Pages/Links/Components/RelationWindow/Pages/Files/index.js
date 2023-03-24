@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import FileInput from '@/Components/Inputs/FileInput'
 import Option from '@Components/Components/Inputs/FileInput/Option'
@@ -28,6 +34,9 @@ import NewFileInput from '@/Components/Inputs/NewFileInput'
 import WithValidationHoc from '@Components/Logic/Validator'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import RowComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/RowComponent'
+import SelectWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/SelectWrapper'
+import { get } from '@Components/Utils/ObjectPath'
+import { FieldValidationStateContext } from '@/Components/InputWrapperRefactor/constants'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -44,7 +53,8 @@ const rules = {
 }
 
 const Files = (props) => {
-  const { validateForm, validationErrors } = props
+  const { validateForm, validationErrors, hasError } = props
+  // console.log(props, 'props')
   const userObject = useRecoilValue(userAtom)
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
@@ -59,6 +69,9 @@ const Files = (props) => {
     },
     [files],
   )
+  // const ref = useRef(validationErrors)
+
+  // const changeRef = useMemo(() => ref !== validationErrors, [validationErrors])
 
   const onDeleteFile = useCallback(
     (id) => () => {
@@ -69,6 +82,13 @@ const Files = (props) => {
       })
     },
     [],
+  )
+
+  const getErrors = useCallback(
+    (path) => {
+      return get(path, validationErrors)[0] ?? ''
+    },
+    [validationErrors],
   )
 
   const save = useCallback(async () => {
@@ -146,11 +166,11 @@ const Files = (props) => {
           marginRight: '0.5rem',
         },
         component: (props) => (
-          <LoadableSelect
+          <SelectWrapper
             {...props}
             valueKey="r_object_id"
             labelKey="dss_name"
-            placeholder="Выберите тип связи"
+            placeholder="Выберите тип файла"
             loadFunction={async () => {
               const { data } = await api.post(URL_ENTITY_LIST, {
                 type: 'ddt_dict_link_type',
@@ -185,19 +205,21 @@ const Files = (props) => {
             onInput={onFileInput}
           />
           <ScrollBar className="mt-8">
-            <ListTable
-              rowComponent={useMemo(
-                () => (props) =>
-                  <RowComponent onDeleteFile={onDeleteFile} {...props} />,
-                [onDeleteFile],
-              )}
-              rules={rules}
-              columns={columns}
-              onInput={setFiles}
-              value={files}
-              headerCellComponent={HeaderCell}
-              onSubmit={save}
-            />
+            <FieldValidationStateContext.Provider value={getErrors}>
+              <ListTable
+                rowComponent={useMemo(
+                  () => (props) =>
+                    <RowComponent onDeleteFile={onDeleteFile} {...props} />,
+                  [onDeleteFile],
+                )}
+                rules={rules}
+                columns={columns}
+                onInput={setFiles}
+                value={files}
+                headerCellComponent={HeaderCell}
+                onSubmit={save}
+              />
+            </FieldValidationStateContext.Provider>
           </ScrollBar>
         </div>
       </div>

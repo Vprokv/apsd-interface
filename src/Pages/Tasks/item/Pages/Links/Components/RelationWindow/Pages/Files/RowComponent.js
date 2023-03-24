@@ -5,7 +5,6 @@ import closeIcon from '@/Icons/closeIcon'
 import { DocumentButton } from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 
 const RowComponent = ({ children, onDeleteFile, id, ...props }) => {
-  console.log(props)
   return (
     <div className="flex mt-2">
       {children}
