@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import DocumentShowIcon from '@/Icons/DocumentShowIcon'
@@ -8,8 +14,9 @@ import TitleCard from '@/Components/Inputs/DocumentSelect/Component/ShowDocument
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, WINDOW_SHOW_TITLE } from '@/contants'
 import { URL_DOCUMENT_ITEM } from '@/ApiList'
-import {useNavigate} from "react-router-dom";
-import {TabStateManipulation} from "@Components/Logic/Tab";
+import { useNavigate } from 'react-router-dom'
+import { TabStateManipulation } from '@Components/Logic/Tab'
+import RenderOverlayMenu from '../../../../OverlayMenu/RenderOverlayMenu'
 
 const Message = styled.div`
   margin-top: 4px;
@@ -25,15 +32,16 @@ const Message = styled.div`
 `
 
 const ContHover = styled.div`
-  display: flex;
   height: 100%;
-  opacity: 0;
+  //opacity: 0;
+  display: none;
 `
 
 const LeafContainer = styled.div`
   &:hover {
     ${ContHover} {
-      opacity: 1;
+      //opacity: 1;
+      display: flex;
     }
   }
 `
@@ -82,7 +90,9 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
 
   const handleClick = useCallback(
     () =>
-      openTabOrCreateNewTab(`/document/${selectedState}/ddt_startup_complex_type_doc`),
+      openTabOrCreateNewTab(
+        `/document/${selectedState}/ddt_startup_complex_type_doc`,
+      ),
     [navigate, openTabOrCreateNewTab, selectedState],
   )
 
@@ -102,16 +112,33 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
   return (
     <LeafContainer>
       <div className={`${className}`}>
-        <ShowDocumentButton disabled={!selectedState} onClick={handleClick}>
-          <Icon icon={DocumentShowIcon} />
-        </ShowDocumentButton>
-        <ContHover>
-          <Message>Перейти в документ</Message>
-        </ContHover>
+        <RenderOverlayMenu
+          onOpenOverlayMenu={() => {
+            changeModalState(true)()
+          }}
+          renderOverlayMenu={open}
+        >
+          {(overlayBoundRef, onOpenOverlayMenu, OverlayMenu) => (
+            <>
+              <ShowDocumentButton
+                ref={overlayBoundRef}
+                disabled={!selectedState}
+                onClick={handleClick}
+                onMouseOver={onOpenOverlayMenu}
+                onMouseOut={() => {
+                  changeModalState(false)()
+                }}
+              >
+                <Icon icon={DocumentShowIcon} />
+                <OverlayMenu>Перейти в документ</OverlayMenu>
+              </ShowDocumentButton>
+            </>
+          )}
+        </RenderOverlayMenu>
       </div>
-      {/*<ShowDocumentWindow open={open} onClose={changeModalState(false)}>*/}
+      {/* <ShowDocumentWindow open={open} onClose={changeModalState(false)}>*/}
       {/*  <TitleCard documentId={selectedState} documentState={tabItemState} />*/}
-      {/*</ShowDocumentWindow>*/}
+      {/* </ShowDocumentWindow>*/}
     </LeafContainer>
   )
 }
