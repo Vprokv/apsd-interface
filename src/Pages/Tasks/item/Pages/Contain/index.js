@@ -112,22 +112,26 @@ const columns = [
     id: 'Даты разраб.(план/факт)',
     label: 'Даты разраб.(план/факт)',
     sizes: 200,
-    component: ({ ParentValue }) => <DateCell />,
+    component: ({ ParentValue: { plannedDevDate, actualDevDate } }) => (
+      <DateCell plan={plannedDevDate} real={actualDevDate} />
+    ),
   },
   {
     id: 'Дата согл.(план/факт)',
     label: 'Дата сог.(план/факт)',
     sizes: 200,
-    component: ({ ParentValue }) => <DateCell hot />,
+    component: ({ ParentValue: { plannedApproveDate, actualApproveDate } }) => (
+      <DateCell plan={plannedApproveDate} real={actualApproveDate} />
+    ),
   },
   {
-    id: 'Просрочка разработки',
+    id: 'delayDevelopmentDay',
     label: 'Просрочка разработки',
     className: 'flex font-size-12',
     sizes: 180,
   },
   {
-    id: 'Просрочка согласования',
+    id: 'delayApprovalDay',
     label: 'Просрочка согласования',
     className: 'flex font-size-12',
     sizes: 180,

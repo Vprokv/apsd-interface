@@ -185,7 +185,7 @@ const CreateRemark = () => {
   return (
     <div>
       <SecondaryBlueButton
-        disabled={!createRemark}
+        // disabled={!createRemark}
         onClick={changeModalState(true)}
       >
         Добавить замечание
