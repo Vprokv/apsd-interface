@@ -26,7 +26,7 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
-  regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
+  // regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
   author: [{ name: VALIDATION_RULE_REQUIRED }],
   contentType: [{ name: VALIDATION_RULE_REQUIRED }],
 }

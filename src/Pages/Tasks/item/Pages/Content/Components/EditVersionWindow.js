@@ -15,7 +15,7 @@ import UnderButtons from "@/Components/Inputs/UnderButtons";
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
-  regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
+  // regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
   author: [{ name: VALIDATION_RULE_REQUIRED }],
   contentTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
 }
