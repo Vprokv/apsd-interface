@@ -41,6 +41,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/TitleNameComponent'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -73,6 +74,7 @@ const columns = [
     id: 'name',
     label: 'Наименование',
     className: 'flex font-size-12',
+    component: TitleNameComponent,
     sizes: 500,
   },
   {

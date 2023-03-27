@@ -12,7 +12,7 @@ import pngIcon from '@/Icons/DocumentType/pngIcon.svg'
 import pdfIcon from '@/Icons/DocumentType/pdfIcon.svg'
 import jpgIcon from '@/Icons/DocumentType/jpgIcon.svg'
 import anyTypeIcon from '@/Icons/DocumentType/anyTypeIcon.svg'
-import { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
+import styled from 'styled-components'
 import { ShowContentByTypeButtonContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 
 const TYPE_XLS = 'XLS'
@@ -51,13 +51,29 @@ const typesIcon = {
   [TYPE_OTHER]: anyTypeIcon,
 }
 
+export const ButtonForIcon = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 4px;
+  //
+  //&:disabled {
+  //  background: var(--separator);
+  //  color: var(--text-secondary);
+  //}
+`
+
 const CustomIconComponent = ({ tomId, content: { mimeType, contentId } }) => {
   const showButton = useContext(ShowContentByTypeButtonContext)
   const { [mimeType]: Icon = anyTypeIcon } = typesIcon
   return (
-    <LoadableBaseButton onClick={showButton(contentId)} className="">
-      {tomId && <img src={Icon} alt="" className="" />}
-    </LoadableBaseButton>
+    tomId && (
+      <ButtonForIcon onClick={showButton(contentId)} className="">
+        {<img src={Icon} alt="" className=" w-4 h-4" />}
+      </ButtonForIcon>
+    )
   )
 }
 

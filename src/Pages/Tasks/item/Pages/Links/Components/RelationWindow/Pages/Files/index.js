@@ -54,7 +54,6 @@ const rules = {
 
 const Files = (props) => {
   const { validateForm, validationErrors, hasError } = props
-  // console.log(props, 'props')
   const userObject = useRecoilValue(userAtom)
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
