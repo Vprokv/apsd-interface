@@ -37,23 +37,26 @@ import colorFromString from '@Components/Utils/colorFromString'
 import { UserCircle } from '@/Components/ListTableComponents/UserCard/styles'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
 
-const UserComponent = ({ ParentValue }) => {
-  const {
+const UserComponent = ({
+  ParentValue: {
+    props: { remarkAuthor, answerAuthor },
+    props,
     itsRemark,
-    remarkMemberFullName,
-    remarkMemberPosition,
-    answerMemberFullName,
-    answerMemberPosition,
-  } = ParentValue
-
-  return itsRemark ? (
-    <UserCard fio={remarkMemberFullName} position={remarkMemberPosition} />
-  ) : answerMemberFullName ? (
-    <UserCard fio={answerMemberFullName} position={answerMemberPosition} />
+  },
+}) =>
+  itsRemark ? (
+    <UserCard
+      fio={remarkAuthor.memberFullName}
+      position={remarkAuthor.memberPosition}
+    />
+  ) : answerAuthor ? (
+    <UserCard
+      fio={answerAuthor.memberFullName}
+      position={answerAuthor.memberPosition}
+    />
   ) : (
-    <CreateAnswer {...ParentValue} />
+    <CreateAnswer {...props} />
   )
-}
 
 UserComponent.propTypes = {}
 

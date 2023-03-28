@@ -23,13 +23,19 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
-import { returnChildren, WithValidationForm } from '@Components/Components/Forms'
+import {
+  returnChildren,
+  WithValidationForm,
+} from '@Components/Components/Forms'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import { RowInputWrapperRefactor, ValidationProvider } from '@/Components/InputWrapperRefactor'
+import {
+  RowInputWrapperRefactor,
+  ValidationProvider,
+} from '@/Components/InputWrapperRefactor'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -59,7 +65,7 @@ const customMessagesFuncMap = {
   },
 }
 
-const NdtLinkWrapper = ValidationProvider(RowInputWrapperRefactor)
+export const NdtLinkWrapper = ValidationProvider(RowInputWrapperRefactor)
 
 const CreateRemark = () => {
   const api = useContext(ApiContext)
@@ -185,7 +191,7 @@ const CreateRemark = () => {
   return (
     <div>
       <SecondaryBlueButton
-        // disabled={!createRemark}
+        disabled={!createRemark}
         onClick={changeModalState(true)}
       >
         Добавить замечание

@@ -38,6 +38,8 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import { returnChildren } from '@Components/Components/Forms'
+import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -45,13 +47,15 @@ const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const CreateAnswer = ({ remarkText, remarkId }) => {
+const CreateAnswer = ({
+  remarkText,
+  remarkId,
+  permits: { edit, editAuthor },
+}) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
-  const { answer } = useContext(ShowAnswerButtonContext)
-  const { editAuthor } = useContext(ShowAnswerButtonContext)
   const getNotification = useOpenNotification()
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -71,7 +75,6 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
 
   const initialUserValue = useMemo(() => {
     return {
-      ndtLinks: [{}],
       remarkText,
       member: {
         emplId: r_object_id,
@@ -133,6 +136,14 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
       component: CustomInput,
       placeholder: 'Введите текст ответа',
     },
+    {
+      id: 'ndtLinks',
+      label: 'Ссылка нa НДТ',
+      component: LinkNdt,
+      placeholder: 'Выберите значение',
+      inputWrapper: returnChildren,
+      InputUiContext: NdtLinkWrapper,
+    },
   ]
 
   const customMessagesFuncMap = {
@@ -183,7 +194,7 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
 
   return (
     <div>
-      <SecondaryBlueButton disabled={!answer} onClick={changeModalState(true)}>
+      <SecondaryBlueButton disabled={!edit} onClick={changeModalState(true)}>
         Ответить
       </SecondaryBlueButton>
       <StandardSizeModalWindow
@@ -202,10 +213,6 @@ const CreateAnswer = ({ remarkText, remarkId }) => {
               rules={rules}
               onSubmit={onSave}
             >
-              <div className="flex">
-                <InputLabel>{'Ссылка нa НДТ'}}</InputLabel>
-                <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
-              </div>
               <div className="mt-10">
                 <UnderButtons leftFunc={onClose} />
               </div>

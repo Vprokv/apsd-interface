@@ -11,9 +11,7 @@ import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_ENTITY_LIST,
-  URL_REMARK_DELETE,
   URL_REMARK_LIST,
-  URL_REMARK_PERMIT,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -51,7 +49,10 @@ const Remarks = (props) => {
   })
   const {
     setTabState,
-    tabState: { data: { data = [], permit = {} } = {}, change },
+    tabState: {
+      data: { remarks = [], tabPermit: { createRemark = false } = {} } = {},
+      change,
+    },
   } = tabItemState
 
   const setChange = useCallback(
@@ -65,13 +66,13 @@ const Remarks = (props) => {
   useEffect(() => {
     return (
       !toggle.size &&
-      data.forEach(({ remarkId }) => {
+      remarks.forEach(({ remarkId }) => {
         onToggle((map) => {
           return { ...map, [remarkId]: true }
         })
       })
     )
-  }, [data, toggle.size])
+  }, [remarks, toggle.size])
 
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_REMARK_LIST, {
@@ -79,11 +80,7 @@ const Remarks = (props) => {
       filter,
     })
 
-    const { data: permit } = await api.post(URL_REMARK_PERMIT, {
-      documentId: id,
-    })
-
-    return { data, permit }
+    return data
   }, [api, id, filter, change])
 
   useAutoReload(loadData, tabItemState)
@@ -143,7 +140,7 @@ const Remarks = (props) => {
 
   return (
     <UpdateContext.Provider value={setChange}>
-      <ShowAnswerButtonContext.Provider value={permit}>
+      <ShowAnswerButtonContext.Provider value={{}}>
         <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
           <div className="flex items-center py-4 form-element-sizes-32">
             <FilterForm
@@ -154,7 +151,7 @@ const Remarks = (props) => {
               inputWrapper={EmptyInputWrapper}
             />
             <div className="flex items-center ml-auto">
-              <CreateRemark disabled={permit?.remarkCreate} />
+              <CreateRemark disabled={createRemark} />
               <SecondaryBlueButton className="ml-2">
                 Выгрузить свод замечаний
               </SecondaryBlueButton>
@@ -168,7 +165,7 @@ const Remarks = (props) => {
           </div>
           <div className="flex flex-col">
             <ToggleContext.Provider value={{ toggle, onToggle }}>
-              {data.map((val) => (
+              {remarks.map((val) => (
                 <WithToggle key={val.remarkId} id={val.remarkId}>
                   {({ isDisplayed, toggleDisplayedFlag }) => {
                     return (

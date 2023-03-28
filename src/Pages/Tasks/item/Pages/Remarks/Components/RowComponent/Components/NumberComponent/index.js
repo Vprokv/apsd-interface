@@ -10,8 +10,12 @@ const ItsAnswer = () => (
   <Icon className="h-10 w-5  color-blue-1" size={30} icon={AnswerIcon} />
 )
 
-const NumberComponent = ({ ParentValue: { itsRemark, number } }) =>
-  itsRemark ? <Number number={number} /> : <ItsAnswer />
+const NumberComponent = ({
+  ParentValue: {
+    itsRemark,
+    props: { number },
+  },
+}) => (itsRemark ? <Number number={number} /> : <ItsAnswer />)
 
 NumberComponent.propTypes = {}
 

@@ -36,9 +36,9 @@ const InputWrapper = React.forwardRef(
         style={style}
         ref={ref}
       >
-        <Label className="flex-0 w-48 mr-6 " htmlFor={id}>
+        <InputLabel className="" htmlFor={id}>
           {label} {isRequired && <InputLabelStart>*</InputLabelStart>}
-        </Label>
+        </InputLabel>
         <InputContainer
           hasError={hasError && validationErrors.length > 0}
           className="flex-col flex-auto"

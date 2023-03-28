@@ -46,14 +46,15 @@ const customMessagesFuncMap = {
   },
 }
 
-const MoreActionComponent = ({
-  setRemark,
-  props,
-  props: { answerCreationDate = '', remarkId } = {},
-}) => {
+const MoreActionComponent = (props) => {
+  const {
+    answerCreationDate = '',
+    remarkId,
+    setRemark,
+    permits: { vault, deleteAnswer, deleteRemark, edit },
+  } = props
   const api = useContext(ApiContext)
   const documentId = useContext(DocumentIdContext)
-  const permit = useContext(ShowAnswerButtonContext)
   const [open, setOpen] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const update = useContext(UpdateContext)
@@ -132,14 +133,14 @@ const MoreActionComponent = ({
           <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
             <StyledItem
               onClick={changeModalState(true)}
-              disabled={!permit.editRemark}
+              // disabled={edit}
               className="mb-3 font-size-12"
             >
               Редактировать
             </StyledItem>
             <StyledItem
               onClick={onDelete(true)}
-              disabled={!permit.deleteRemark}
+              disabled={deleteRemark}
               className="mb-3 font-size-12"
             >
               Удалить
@@ -147,7 +148,7 @@ const MoreActionComponent = ({
             {answerCreationDate && (
               <StyledItem
                 onClick={onDelete(false)}
-                disabled={!permit.deleteAnswer}
+                disabled={deleteAnswer}
                 className="mb-3 font-size-12"
               >
                 Удалить ответ
@@ -155,7 +156,7 @@ const MoreActionComponent = ({
             )}
             <StyledItem
               onClick={onSetRemark}
-              disabled={!permit.editRemark}
+              disabled={!vault}
               className="mb-3 font-size-12"
             >
               {setRemark ? 'Исключить из свода' : 'Включить в свод'}
@@ -166,7 +167,7 @@ const MoreActionComponent = ({
       <EditRemark
         open={openEditWindow}
         onClose={changeModalState(false)}
-        disabled={permit?.edit}
+        disabled={edit}
         {...props}
       />
     </div>

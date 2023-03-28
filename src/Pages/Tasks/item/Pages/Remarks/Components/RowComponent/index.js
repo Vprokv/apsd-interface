@@ -57,7 +57,10 @@ const columns = [
     label: 'Дата создания/ ответа',
     className: 'h-10 flex items-center',
     component: ({
-      ParentValue: { itsRemark, remarkCreationDate, answerCreationDate },
+      ParentValue: {
+        itsRemark,
+        props: { remarkCreationDate, answerCreationDate },
+      },
     }) => (
       <BaseCell value={itsRemark ? remarkCreationDate : answerCreationDate} />
     ),
@@ -67,23 +70,36 @@ const columns = [
     id: 'remarkText',
     label: 'Значение / Ответ',
     className: 'h-10 flex items-center',
-    component: ({ ParentValue: { itsRemark, remarkText, answerText } }) => (
-      <BaseCell value={itsRemark ? remarkText : answerText} />
-    ),
+    component: ({
+      ParentValue: {
+        itsRemark,
+        props: { remarkText, answerText },
+      },
+    }) => <BaseCell value={itsRemark ? remarkText : answerText} />,
     sizes: 400,
   },
   {
     id: 'status',
     label: 'Статус',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({
+      ParentValue: {
+        itsRemark,
+        props: { status },
+      },
+    }) => itsRemark && <BaseCell value={status} />,
     sizes: 120,
   },
   {
     id: 'remarkType',
     label: 'Тип замечания',
     className: 'h-10 flex items-center',
-    component: BaseCell,
+    component: ({
+      ParentValue: {
+        itsRemark,
+        props: { remarkType },
+      },
+    }) => itsRemark && <BaseCell value={remarkType} />,
     sizes: 120,
   },
   {
@@ -107,8 +123,8 @@ const columns = [
     id: 'more',
     label: '',
     className: 'h-10 flex items-center',
-    component: ({ ParentValue: { remarkCreationDate }, ParentValue }) =>
-      remarkCreationDate ? <MoreActionComponent {...ParentValue} /> : <div />,
+    component: ({ ParentValue: { props, itsRemark } }) =>
+      itsRemark ? <MoreActionComponent {...props} /> : <div />,
     sizes: 50,
   },
 ]
@@ -122,38 +138,18 @@ const RowComponent = ({
   ...props
 }) => {
   const data = useMemo(() => {
-    const {
-      remarkMemberFullName,
-      remarkId,
-      remarkMemberPosition,
-      remarkType,
-      remarkText,
-      setRemark,
-      remarkCreationDate,
-      number,
-      status,
-      ...item
-    } = props
+    const { remarkCreationDate } = props
 
-    if (!remarkMemberFullName) {
+    if (!remarkCreationDate) {
       return []
     }
 
     return [
       {
         itsRemark: true,
-        remarkMemberFullName,
-        remarkCreationDate,
-        remarkId,
-        number,
-        remarkMemberPosition,
-        remarkType,
-        remarkText,
-        setRemark,
-        status,
         props,
       },
-      { ...item, remarkText, remarkId, props },
+      { itsRemark: false, props },
     ]
   }, [props])
 

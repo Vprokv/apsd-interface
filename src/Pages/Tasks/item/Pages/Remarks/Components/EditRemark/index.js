@@ -26,12 +26,15 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import { returnChildren } from '@Components/Components/Forms'
+import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [{ name: VALIDATION_RULE_REQUIRED }],
-  // nthLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const customMessagesFuncMap = {
@@ -54,13 +57,11 @@ const EditRemark = ({
   remarkText,
   ndtLinks = [],
   remarkId,
-  remarkMemberFullName,
-  remarkMemberId,
-  remarkMember,
   remarkTypeId,
   remarkType,
+  permits: { editAuthor },
+  remarkAuthor: { memberFullName, memberPosition, memberId },
 }) => {
-  const { editAuthor } = useContext(ShowAnswerButtonContext)
   const api = useContext(ApiContext)
   const update = useContext(UpdateContext)
   const getNotification = useOpenNotification()
@@ -69,9 +70,8 @@ const EditRemark = ({
     ndtLinks,
     remarkTypeId: remarkTypeId,
     member: {
-      emplId: `${remarkMemberId}`,
-      userName: remarkMember,
-      fullDescription: `${remarkMemberFullName}`,
+      emplId: memberId,
+      fullDescription: `${memberFullName}, ${memberPosition}`,
     },
   })
 
@@ -110,6 +110,14 @@ const EditRemark = ({
       label: 'Текст замечания',
       component: CustomInput,
       placeholder: 'Введите текст замечания',
+    },
+    {
+      id: 'ndtLinks',
+      label: 'Ссылка нa НДТ',
+      component: LinkNdt,
+      placeholder: 'Выберите значение',
+      inputWrapper: returnChildren,
+      InputUiContext: NdtLinkWrapper,
     },
   ]
 
@@ -153,12 +161,6 @@ const EditRemark = ({
               inputWrapper={InputWrapper}
               onSubmit={onSave}
             >
-              <div className="flex">
-                <InputLabel>
-                  {'Ссылка нa НДТ'} {<InputLabelStart>*</InputLabelStart>}
-                </InputLabel>
-                <LinkNdt value={filter.ndtLinks} onInput={setFilterValue} />
-              </div>
               <div className="mt-10">
                 <UnderButtons leftFunc={onClose} />
               </div>
