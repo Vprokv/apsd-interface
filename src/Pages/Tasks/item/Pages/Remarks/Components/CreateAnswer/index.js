@@ -45,6 +45,8 @@ const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [{ name: VALIDATION_RULE_REQUIRED }],
   member: [{ name: VALIDATION_RULE_REQUIRED }],
+  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const CreateAnswer = ({
