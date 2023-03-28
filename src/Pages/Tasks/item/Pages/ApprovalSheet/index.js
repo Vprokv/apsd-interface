@@ -59,6 +59,7 @@ const ApprovalSheet = (props) => {
   const [toggleNavigationData, setToggleNavigationData] = useState({})
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
+  const [state, setState] = useState(false)
   //
   // const {
   //   tabState: { update },
@@ -158,10 +159,11 @@ const ApprovalSheet = (props) => {
 
   const openAllStages = useCallback(() => {
     for (let key in toggleNavigationData) {
-      let c = (toggleNavigationData[key] = true)
+      let c = (toggleNavigationData[key] = state)
       setToggleNavigationData((prevState) => ({ ...prevState, ...c }))
     }
-  }, [data, toggleNavigationData])
+    setState((state) => !state)
+  }, [state, toggleNavigationData])
 
   const toggleStage = useCallback(
     (v) => {
