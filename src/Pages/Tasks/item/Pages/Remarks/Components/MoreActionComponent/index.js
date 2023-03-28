@@ -133,7 +133,7 @@ const MoreActionComponent = (props) => {
           <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
             <StyledItem
               onClick={changeModalState(true)}
-              // disabled={edit}
+              disabled={edit}
               className="mb-3 font-size-12"
             >
               Редактировать
