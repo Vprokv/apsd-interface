@@ -13,7 +13,7 @@ import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
 
 const ScrollBar = styled(SimpleBar)`
-  max-height: 80px;
+  max-height: 100px;
 `
 
 const Archive = ({ onOpenNewTab }) => {
