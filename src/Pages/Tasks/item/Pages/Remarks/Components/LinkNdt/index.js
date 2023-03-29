@@ -44,6 +44,7 @@ const Field = ({
   valueIndex,
   deleteLink,
   className,
+  options,
 }) => {
   const api = useContext(ApiContext)
 
@@ -51,6 +52,7 @@ const Field = ({
     <LinkContainer className={className}>
       <ValidationConsumer path={`${valueIndex}.id`}>
         <LoadableSelect
+          options={options}
           placeholder="Выберите значение"
           id={`${index}_id`}
           value={value.id}
@@ -91,7 +93,7 @@ const Field = ({
 }
 const baseValue = []
 const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
-  const { onInput, value = baseValue, id } = props
+  const { onInput, value = baseValue, id, options } = props
   const [fields, setFields] = useState(1)
   const [isTouchedFieldMap, setTouchedState] = useState({})
   const valueRef = useRef()
@@ -176,6 +178,7 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
       }
       arr.push(
         <Field
+          options={options}
           className={i !== fields - 1 ? 'mb-6' : ''}
           deleteLink={deleteLink(i, valueIndex)}
           index={i}

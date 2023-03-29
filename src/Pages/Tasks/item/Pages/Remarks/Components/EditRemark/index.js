@@ -75,6 +75,8 @@ const EditRemark = ({
     },
   })
 
+  console.log(filter, 'filter')
+
   const fields = [
     {
       id: 'member',
@@ -114,6 +116,9 @@ const EditRemark = ({
     {
       id: 'ndtLinks',
       label: 'Ссылка нa НДТ',
+      options: ndtLinks.map(({ id, name }) => {
+        return { r_object_id: id, dss_name: name }
+      }),
       component: LinkNdt,
       placeholder: 'Выберите значение',
       inputWrapper: returnChildren,
