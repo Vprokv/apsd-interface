@@ -133,14 +133,14 @@ const MoreActionComponent = (props) => {
           <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
             <StyledItem
               onClick={changeModalState(true)}
-              disabled={edit}
+              disabled={!edit}
               className="mb-3 font-size-12"
             >
               Редактировать
             </StyledItem>
             <StyledItem
               onClick={onDelete(true)}
-              disabled={deleteRemark}
+              disabled={!deleteRemark}
               className="mb-3 font-size-12"
             >
               Удалить
@@ -148,7 +148,7 @@ const MoreActionComponent = (props) => {
             {answerCreationDate && (
               <StyledItem
                 onClick={onDelete(false)}
-                disabled={deleteAnswer}
+                disabled={!deleteAnswer}
                 className="mb-3 font-size-12"
               >
                 Удалить ответ
