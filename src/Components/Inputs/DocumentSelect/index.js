@@ -50,10 +50,10 @@ const DocumentSelect = ({
   )
 
   useEffect(() => {
-    if (open) {
+    if (open || !selectedState) {
       setSelectedState(value)
     }
-  }, [open, value])
+  }, [open, selectedState, value])
 
   const { cache } = useLoadableCache({
     ...props,
