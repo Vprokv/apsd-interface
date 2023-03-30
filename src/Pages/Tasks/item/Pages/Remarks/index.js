@@ -9,10 +9,7 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  URL_ENTITY_LIST,
-  URL_REMARK_LIST,
-} from '@/ApiList'
+import { URL_ENTITY_LIST, URL_REMARK_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
@@ -49,10 +46,7 @@ const Remarks = (props) => {
   })
   const {
     setTabState,
-    tabState: {
-      data: { remarks = [], tabPermit: { createRemark = false } = {} } = {},
-      change,
-    },
+    tabState: { data: { remarks = [], tabPermit } = {}, change },
   } = tabItemState
 
   const setChange = useCallback(
@@ -151,7 +145,7 @@ const Remarks = (props) => {
               inputWrapper={EmptyInputWrapper}
             />
             <div className="flex items-center ml-auto">
-              <CreateRemark createRemark={!createRemark} />
+              <CreateRemark tabPermit={tabPermit} />
               <SecondaryBlueButton className="ml-2">
                 Выгрузить свод замечаний
               </SecondaryBlueButton>
