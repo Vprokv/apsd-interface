@@ -104,7 +104,7 @@ const Task = () => {
         const {
           data: [data],
         } = await api.post(URL_TASK_STATISTIC)
-        setTabState({ stat: data })
+        setTabState({ data })
       }
     }
     return data
@@ -147,10 +147,14 @@ const Task = () => {
     refValues.current = values
   }, [values])
 
-  const remoteTabUpdater = UseTabStateUpdaterByName([ITEM_DOCUMENT])
-  const remoteApprovalUpdater = UseTabStateUpdaterByName([
+  const remoteTabUpdater = UseTabStateUpdaterByName([
+    ITEM_DOCUMENT,
     TASK_ITEM_APPROVAL_SHEET,
+    SIDEBAR_STATE,
   ])
+  // const remoteApprovalUpdater = UseTabStateUpdaterByName([
+  //   TASK_ITEM_APPROVAL_SHEET,
+  // ])
 
   const TaskHandlers = useMemo(
     () => ({
@@ -166,7 +170,7 @@ const Task = () => {
             closeCurrenTab()
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            // remoteApprovalUpdater({ loading: false, fetched: false })
             // setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -185,7 +189,7 @@ const Task = () => {
       closeCurrenTab,
       getNotification,
       id,
-      remoteApprovalUpdater,
+      // remoteApprovalUpdater,
       remoteTabUpdater,
       setComponent,
     ],
@@ -204,7 +208,7 @@ const Task = () => {
             })
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            // remoteApprovalUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -220,7 +224,7 @@ const Task = () => {
             })
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            // remoteApprovalUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -240,7 +244,7 @@ const Task = () => {
             setMessage(data)
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            // remoteApprovalUpdater({ loading: false, fetched: false })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -282,7 +286,7 @@ const Task = () => {
             })
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            // remoteApprovalUpdater({ loading: false, fetched: false })
             // setTabState({ update: true })
             // setTabState({ data: await loadData() })
           } catch (e) {
@@ -298,7 +302,7 @@ const Task = () => {
       documentId,
       getNotification,
       id,
-      remoteApprovalUpdater,
+      // remoteApprovalUpdater,
       remoteTabUpdater,
       setComponent,
       type,

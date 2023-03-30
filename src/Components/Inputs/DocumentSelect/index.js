@@ -51,7 +51,6 @@ const DocumentSelect = ({
 
   useEffect(() => {
     if (!selectedState) {
-      console.log(1)
       setSelectedState(value)
     }
   }, [open, selectedState, value])

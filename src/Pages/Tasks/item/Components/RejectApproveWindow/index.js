@@ -97,8 +97,9 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
     getNotification,
     id,
     loadData,
-    selected.id,
-    selected.type,
+    onClose,
+    selected?.id,
+    selected?.type,
     setTabState,
   ])
 
