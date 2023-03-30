@@ -50,43 +50,43 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
 
   const statistic = useStatistic(data)
 
-  const poll = useCallback(async () => {
-    const {
-      data: [data],
-      status,
-    } = await api.post(URL_TASK_STATISTIC)
-    return data
-  }, [api])
+  // const poll = useCallback(async () => {
+  //   const {
+  //     data: [data],
+  //     status,
+  //   } = await api.post(URL_TASK_STATISTIC)
+  //   return data
+  // }, [api]) // todo для теста простой вызов
 
-  // const poll = useCallback(
-  //   async ({ interval = 300000, maxAttempts = 10 } = {}) => {
-  //     let attempts = 0
-  //
-  //     const executePoll = async (resolve, reject) => {
-  //       const {
-  //         data: [data],
-  //         status,
-  //       } = await api.post(URL_TASK_STATISTIC)
-  //
-  //       try {
-  //         if (status === 200) {
-  //           setTimeout(executePoll, interval, resolve, reject)
-  //           return resolve(data)
-  //         }
-  //       } catch (e) {
-  //         const { response: { status, data } = {} } = e
-  //         if (maxAttempts && attempts === maxAttempts) {
-  //           getNotification(customMessagesFuncMap[status]())
-  //         } else {
-  //           setTimeout(executePoll, interval, resolve, reject)
-  //         }
-  //       }
-  //     }
-  //
-  //     return new Promise(executePoll).then((result) => result)
-  //   },
-  //   [api, getNotification],
-  // )
+  const poll = useCallback(
+    async ({ interval = 300000, maxAttempts = 10 } = {}) => {
+      let attempts = 0
+
+      const executePoll = async (resolve, reject) => {
+        const {
+          data: [data],
+          status,
+        } = await api.post(URL_TASK_STATISTIC)
+
+        try {
+          if (status === 200) {
+            setTimeout(executePoll, interval, resolve, reject)
+            return resolve(data)
+          }
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          if (maxAttempts && attempts === maxAttempts) {
+            getNotification(customMessagesFuncMap[status]())
+          } else {
+            setTimeout(executePoll, interval, resolve, reject)
+          }
+        }
+      }
+
+      return new Promise(executePoll).then((result) => result)
+    },
+    [api, getNotification],
+  )
 
   useAutoReload(poll, tabItemState)
 
