@@ -151,7 +151,7 @@ const Remarks = (props) => {
               inputWrapper={EmptyInputWrapper}
             />
             <div className="flex items-center ml-auto">
-              <CreateRemark disabled={createRemark} />
+              <CreateRemark createRemark={!createRemark} />
               <SecondaryBlueButton className="ml-2">
                 Выгрузить свод замечаний
               </SecondaryBlueButton>

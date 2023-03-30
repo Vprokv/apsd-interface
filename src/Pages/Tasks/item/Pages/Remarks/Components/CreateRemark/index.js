@@ -67,10 +67,9 @@ const customMessagesFuncMap = {
 
 export const NdtLinkWrapper = ValidationProvider(RowInputWrapperRefactor)
 
-const CreateRemark = () => {
+const CreateRemark = ({ createRemark }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
-  const { editAuthor, createRemark } = useContext(ShowAnswerButtonContext)
   const [open, setOpenState] = useState(false)
   const update = useContext(UpdateContext)
   const getNotification = useOpenNotification()
@@ -110,7 +109,7 @@ const CreateRemark = () => {
       {
         id: 'member',
         label: 'Автор',
-        disabled: !editAuthor,
+        // disabled: !editAuthor,
         returnOption: true,
         returnObjects: true,
         options: [initialUserValue.member],
@@ -146,7 +145,7 @@ const CreateRemark = () => {
         InputUiContext: NdtLinkWrapper,
       },
     ],
-    [api, editAuthor, initialUserValue],
+    [api, initialUserValue],
   )
 
   const changeModalState = useCallback(
@@ -191,7 +190,7 @@ const CreateRemark = () => {
   return (
     <div>
       <SecondaryBlueButton
-        disabled={!createRemark}
+        disabled={createRemark}
         onClick={changeModalState(true)}
       >
         Добавить замечание
