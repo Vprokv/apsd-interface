@@ -13,7 +13,7 @@ import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
 
 const ScrollBar = styled(SimpleBar)`
-  max-height: 100px;
+  max-height: 300px;
 `
 
 const Archive = ({ onOpenNewTab }) => {
@@ -28,7 +28,7 @@ const Archive = ({ onOpenNewTab }) => {
             onClick={toggleDisplayedFlag}
           >
             <NavigationHeaderIcon icon={ArchiveIcon} size={22} />
-            <span className="font-size-14 mr-auto font-medium">Архив</span>
+            <span className="font-size-12 mr-auto font-medium">Архив</span>
             <Icon
               icon={angleIcon}
               size={10}
@@ -40,7 +40,7 @@ const Archive = ({ onOpenNewTab }) => {
               <SearchInput
                 value={query}
                 onInput={setQuery}
-                className="my-4 form-element-sizes-32"
+                className="my-4 form-element-sizes-32 font-size-12"
                 placeholder="Поиск"
               />
               <ScrollBar>

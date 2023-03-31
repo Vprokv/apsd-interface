@@ -10,13 +10,13 @@ const UserCard = ({ fio = '', position, avatar } = {}) => {
 
   return (
     <div className="flex items-center justify-center">
-      {avatar ? (
-        <img className="w-10 h-10 rounded-full" src={avatar} />
-      ) : (
-        <UserCircle bg={bg} className="mr-2">
-          {fio && fio[0]} {name && name[0]}
-        </UserCircle>
-      )}
+      {/*{avatar ? (*/}
+      {/*  <img className="w-10 h-10 rounded-full" src={avatar} />*/}
+      {/*) : (*/}
+      {/*  <UserCircle bg={bg} className="mr-2">*/}
+      {/*    {fio && fio[0]} {name && name[0]}*/}
+      {/*  </UserCircle>*/}
+      {/*)}*/}
       <div>
         <div className="font-size-14">{fio}</div>
         <div className="font-size-12 color-text-secondary">{position}</div>

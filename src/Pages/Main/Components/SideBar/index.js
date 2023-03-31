@@ -27,13 +27,13 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
     [],
   )
   return (
-    <SideBarContainer className="py-4 bg-light-gray flex-container">
+    <SideBarContainer className="py-4 bg-white flex-container">
       <Button
         className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 "
         onClick={openCreateDocumentWindow}
       >
         <Icon className="mr-2 ml-auto" icon={plusIcon} size={10} />
-        <span className="mr-auto">Создать</span>
+        <span className="mr-auto font-size-12">Создать</span>
       </Button>
       <ScrollBar className="flex-container">
         <MyTasks
@@ -44,8 +44,12 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
           onClick={() => onOpenNewTab(`${TASK_VIEWED_LIST_PATH}`)}
           className="flex items-center w-full px-2 mb-4"
         >
-          <NavigationHeaderIcon className="" icon={ViewedIcon} size={22} />
-          <span className="font-size-14 mr-auto font-medium">
+          <NavigationHeaderIcon
+            className="color-blue-6"
+            icon={ViewedIcon}
+            size={22}
+          />
+          <span className="font-size-12 mr-auto font-medium">
             Просмотренные
           </span>
         </button>
@@ -55,7 +59,7 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab }) => {
             icon={CreatedByMeIcon}
             size={20}
           />
-          <div className="font-size-14 mr-auto font-medium">Созданные мной</div>
+          <div className="font-size-12 mr-auto font-medium">Созданные мной</div>
         </div>
         <Storage />
         <Archive onOpenNewTab={onOpenNewTab} />

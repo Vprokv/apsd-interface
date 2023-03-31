@@ -106,7 +106,7 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
             onClick={toggleDisplayedFlag}
           >
             <NavigationHeaderIcon icon={NavigationDocumentIcon} size={22} />
-            <span className="font-size-14 mr-auto font-medium">
+            <span className="font-size-12 mr-auto font-medium">
               Мои задания
             </span>
             <Icon

@@ -27,7 +27,7 @@ const Basket = ({ onOpenNewTab }) => {
             onClick={toggleDisplayedFlag}
           >
             <NavigationHeaderIcon icon={SidebarBasketIcon} size={22} />
-            <span className="font-size-14 mr-auto font-medium">Корзина</span>
+            <span className="font-size-12 mr-auto font-medium">Корзина</span>
             <Icon
               icon={angleIcon}
               size={10}
