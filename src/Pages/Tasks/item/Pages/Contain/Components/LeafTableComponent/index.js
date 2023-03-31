@@ -12,9 +12,10 @@ import { LeafContainer } from './style'
 const Leaf = ({ ParentValue, className, onInput, ParentValue: { expand } }) => {
   const {
     valueKey,
-    defaultExpandAll,
+    defaultOpen,
     nestedDataKey,
-    state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
+    state,
+    state: { [ParentValue[valueKey]]: expanded = defaultOpen },
     onChange,
   } = useContext(TreeStateContext)
   const { loadData } = useContext(LoadContainChildrenContext)

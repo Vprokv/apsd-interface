@@ -57,7 +57,8 @@ const plugins = {
   outerSortPlugin: { component: SortCellComponent },
   treePlugin: {
     valueKey: 'id',
-    nestedDataKey: 'children',
+    nestedDataKey: 'childs',
+    defaultOpen: false,
     component: LeafTableComponent,
   },
   selectPlugin: {
@@ -151,6 +152,7 @@ const Contain = () => {
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const [showContentByTypeButton, setShowContentByTypeButton] = useState()
   const getNotification = useOpenNotification()
+  const [defaultOpen, setDefaultOpen] = useState(true)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
@@ -160,9 +162,12 @@ const Contain = () => {
     tabState: { data },
   } = tabItemState
 
+  console.log(data, 'data')
+
   const loadData = useCallback(
     async (partId = null) => {
       const { data } = await api.post(URL_TITLE_CONTAIN, {
+        expand: true,
         titleId: id,
         partId,
       })
@@ -307,6 +312,8 @@ const Contain = () => {
     [],
   )
 
+  const changeOpenState = useCallback(() => setDefaultOpen((prev) => !prev), [])
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -346,7 +353,7 @@ const Contain = () => {
                 selectState={selectState}
                 onDeleteData={deleteData}
               />
-              <ButtonForIcon className="mr-2">
+              <ButtonForIcon onClick={changeOpenState} className="mr-2">
                 <Icon icon={SortIcon} />
               </ButtonForIcon>
               <ButtonForIcon className="color-green">
@@ -364,7 +371,24 @@ const Contain = () => {
                 <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
               [handleDoubleClick],
             )}
-            plugins={plugins}
+            plugins={useMemo(() => {
+              return {
+                outerSortPlugin: { component: SortCellComponent },
+                treePlugin: {
+                  valueKey: 'id',
+                  nestedDataKey: 'childs',
+                  defaultOpen,
+                  component: LeafTableComponent,
+                },
+                selectPlugin: {
+                  driver: FlatSelect,
+                  component: CheckBox,
+                  style: { margin: 'auto 0' },
+                  valueKey: 'id',
+                  returnObjects: true,
+                },
+              }
+            }, [defaultOpen])}
             headerCellComponent={HeaderCell}
             columns={columns}
             selectState={selectState}
