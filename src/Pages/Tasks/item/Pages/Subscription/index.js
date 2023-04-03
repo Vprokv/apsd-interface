@@ -1,4 +1,4 @@
-import {
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -42,6 +42,7 @@ import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -262,6 +263,10 @@ const Subscription = () => {
       </div>
       <EventsContext.Provider value={events}>
         <ListTable
+          rowComponent={useMemo(
+            () => (props) => <ShowLineRowComponent {...props} />,
+            [],
+          )}
           value={content}
           columns={columns}
           plugins={plugins}

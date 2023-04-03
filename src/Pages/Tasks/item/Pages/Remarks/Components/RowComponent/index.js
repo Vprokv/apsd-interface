@@ -34,6 +34,8 @@ export const RowTableComponent = styled.div`
     ${ContHover} {
       opacity: 1;
     }
+
+    background-color: #e3e9f8;
   }
 `
 

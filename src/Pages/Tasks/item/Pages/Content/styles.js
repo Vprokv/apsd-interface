@@ -1,7 +1,7 @@
 import styled from 'styled-components'
+import Form from '@Components/Components/Forms'
 
-export const GridContainer = styled.div`
-  border-bottom: 1px solid #e6ebf4;
+export const RowComponent = styled.div`
 
   &:hover {
     background-color: #e3e9f8;

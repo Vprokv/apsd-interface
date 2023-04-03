@@ -1,4 +1,4 @@
-import {
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -30,6 +30,7 @@ import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -227,8 +228,7 @@ const Objects = (props) => {
       </div>
       <ListTable
         rowComponent={useMemo(
-          () => (props) =>
-            <RowComponent onDoubleClick={() => null} {...props} />,
+          () => (props) => <ShowLineRowComponent {...props} />,
           [],
         )}
         value={data}

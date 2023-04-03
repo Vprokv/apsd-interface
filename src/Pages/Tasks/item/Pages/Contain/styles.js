@@ -10,3 +10,9 @@ export const FilterForm = styled(Form)`
 export const NestedButton = styled.button`
   padding-left: ${({ level }) => level * 1}rem;
 `
+export const GridContainer = styled.div`
+
+  &:hover {
+    background-color: #e3e9f8;
+  }
+`

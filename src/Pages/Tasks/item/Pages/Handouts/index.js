@@ -18,6 +18,7 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
+import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -177,6 +178,10 @@ const Handouts = (props) => {
       </div>
       <ListTable
         // key={change}
+        rowComponent={useMemo(
+          () => (props) => <ShowLineRowComponent {...props} />,
+          [],
+        )}
         plugins={plugins}
         headerCellComponent={HeaderCell}
         columns={columns}

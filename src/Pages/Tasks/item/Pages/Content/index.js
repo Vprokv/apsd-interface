@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
@@ -40,6 +40,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import ShowLineRowComponent from "@/Components/ShowLineRowComponent";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -305,6 +306,7 @@ const Content = () => {
         </SecondaryGreyButton>
       </FormWindow>
       <ListTable
+        rowComponent={useMemo(() => (props) => <ShowLineRowComponent {...props} />, [])}
         value={content || []}
         columns={columns}
         plugins={plugins}

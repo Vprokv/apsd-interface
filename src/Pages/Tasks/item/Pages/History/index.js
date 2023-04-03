@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
@@ -14,6 +14,7 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
+import ShowLineRowComponent from "@/Components/ShowLineRowComponent";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -169,6 +170,7 @@ const History = () => {
         />
       </div>
       <ListTable
+        rowComponent={useMemo(() => (props) => <ShowLineRowComponent {...props} />, [])}
         value={data}
         columns={columns}
         plugins={plugins}
