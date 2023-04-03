@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -9,7 +9,6 @@ import React, {
 import Document from './Components/Layout'
 import {
   URL_BUSINESS_DOCUMENT_RECALL,
-  URL_BUSINESS_DOCUMENT_STAGES,
   URL_CONTENT_SEND_EEHD,
   URL_DOCUMENT_UPDATE,
   URL_INTEGRATION_SEND_LETTER,
@@ -17,16 +16,9 @@ import {
   URL_TASK_ITEM,
   URL_TASK_MARK_READ,
   URL_TASK_PROMOTE,
-  URL_TASK_STATISTIC,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import {
-  ApiContext,
-  ITEM_DOCUMENT,
-  ITEM_TASK,
-  SIDEBAR_STATE,
-  TASK_ITEM_APPROVAL_SHEET,
-} from '@/contants'
+import { ApiContext, ITEM_TASK, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
@@ -42,23 +34,19 @@ import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import { SidebarContainer } from './styles'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import PrintIcon from './Icons/PrintIcon.svg'
-import CreatingAdditionalAgreementWindow from './Components/CreatingAdditionalAgreementWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import { FormWindow } from '@/Components/ModalWindow'
-import { SecondaryBlueButton, SecondaryGreyButton } from '@/Components/Button'
+import { SecondaryGreyButton } from '@/Components/Button'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { Button } from '@Components/Components/Button'
 import CreatingAdditionalAgreementWindowWrapper from './Components/CreatingAdditionalAgreementWindow'
 import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWindow'
-import RejectApproveIcon from '@/Pages/Tasks/item/Icons/RejectApproveIcon.svg'
-import LoadableSelect from '@/Components/Inputs/Select'
-import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
 import WrapperDocumentActions from './Components/WrapperDocumentActions'
+import { LoadTasks } from '@/Pages/Main/constants'
+import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -78,9 +66,7 @@ const Task = () => {
   const [message, setMessage] = useState('')
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
-    stateId: SIDEBAR_STATE,
-  })
+  const reloadSidebarTaskCounters = useContext(LoadTasks)
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -98,17 +84,12 @@ const Task = () => {
         await api.post(URL_TASK_MARK_READ, {
           tasksIds: [id],
         })
-        // eslint-disable-next-line no-empty
-      } catch (e) {
       } finally {
-        const {
-          data: [data],
-        } = await api.post(URL_TASK_STATISTIC)
-        setTabState({ data })
+        reloadSidebarTaskCounters()
       }
     }
     return data
-  }, [api, id, setTabState])
+  }, [api, id, reloadSidebarTaskCounters])
 
   const tabItemState = useTabItem({
     stateId: ITEM_TASK,
@@ -123,7 +104,7 @@ const Task = () => {
         values,
       } = {},
     },
-    setTabState: setItemTaskState,
+    setTabState,
   } = tabItemState
 
   const docId = useMemo(() => {
@@ -147,14 +128,7 @@ const Task = () => {
     refValues.current = values
   }, [values])
 
-  const remoteTabUpdater = UseTabStateUpdaterByName([
-    ITEM_DOCUMENT,
-    TASK_ITEM_APPROVAL_SHEET,
-    SIDEBAR_STATE,
-  ])
-  const remoteApprovalUpdater = UseTabStateUpdaterByName([
-    TASK_ITEM_APPROVAL_SHEET,
-  ])
+  const updateCurrentTabChildrenStates = updateTabChildrenStates()
 
   const TaskHandlers = useMemo(
     () => ({
@@ -169,8 +143,12 @@ const Task = () => {
             })
             closeCurrenTab()
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            reloadSidebarTaskCounters()
             // setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -189,9 +167,10 @@ const Task = () => {
       closeCurrenTab,
       getNotification,
       id,
-      remoteApprovalUpdater,
-      remoteTabUpdater,
+      reloadSidebarTaskCounters,
       setComponent,
+      setTabState,
+      updateCurrentTabChildrenStates,
     ],
   )
 
@@ -207,8 +186,12 @@ const Task = () => {
               id,
             })
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -223,8 +206,12 @@ const Task = () => {
               documentId,
             })
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -243,8 +230,12 @@ const Task = () => {
             )
             setMessage(data)
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -285,10 +276,12 @@ const Task = () => {
               signal: name,
             })
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
-            // setTabState({ update: true })
-            // setTabState({ data: await loadData() })
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -302,10 +295,11 @@ const Task = () => {
       documentId,
       getNotification,
       id,
-      remoteApprovalUpdater,
-      remoteTabUpdater,
+      reloadSidebarTaskCounters,
       setComponent,
+      setTabState,
       type,
+      updateCurrentTabChildrenStates,
     ],
   )
 

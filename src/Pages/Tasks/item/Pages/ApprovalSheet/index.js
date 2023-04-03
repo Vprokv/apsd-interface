@@ -1,34 +1,22 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
-import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  URL_APPROVAL_SHEET,
-  URL_BUSINESS_PERMIT,
-  URL_TEMPLATE_LIST,
-} from '@/ApiList'
+import { URL_APPROVAL_SHEET, URL_BUSINESS_PERMIT } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
 import {
-  CanAddContext,
   LoadContext,
-  PermitContext,
   PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
@@ -36,7 +24,6 @@ import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext, DocumentTypeContext } from '../../constants'
-import { CircleMinus } from '@Components/Components/Tree/Icons/CircleMinus'
 import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
 import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
 import CreateTemplateWindow from './Components/CreateTemplateWindow'
@@ -51,8 +38,8 @@ const DotIcon = ({ className, onClick }) => (
   />
 )
 
-const ApprovalSheet = (props) => {
-  const { id, type } = useParams()
+const ApprovalSheet = () => {
+  const { type } = useParams()
   const api = useContext(ApiContext)
   const [filterValue, setFilterValue] = useState({})
   const [permit, setPermit] = useState(false)
@@ -72,7 +59,6 @@ const ApprovalSheet = (props) => {
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const {
-    tabState,
     setTabState,
     tabState: { data = [], change },
   } = tabItemState
@@ -97,7 +83,7 @@ const ApprovalSheet = (props) => {
       type,
     })
     return data
-  }, [api, documentId, type, change])
+  }, [api, documentId, type])
 
   // useEffect(() => {
   //   ;(async () => {
@@ -165,14 +151,11 @@ const ApprovalSheet = (props) => {
     setState((state) => !state)
   }, [state, toggleNavigationData])
 
-  const toggleStage = useCallback(
-    (v) => {
-      setToggleNavigationData(({ [v]: prevAmount, ...prevState }) => {
-        return { ...prevState, [v]: !prevAmount }
-      })
-    },
-    [toggleNavigationData],
-  )
+  const toggleStage = useCallback((v) => {
+    setToggleNavigationData(({ [v]: prevAmount, ...prevState }) => {
+      return { ...prevState, [v]: !prevAmount }
+    })
+  }, [])
 
   return (
     <PermitDisableContext.Provider value={!permit}>

@@ -6,7 +6,6 @@ import WithToggleNavigationItem from './withToggleNavigationItem'
 import angleIcon from '@/Icons/angleIcon'
 import Icon from '@Components/Components/Icon'
 import { TASK_LIST_PATH } from '@/routePaths'
-import { URL_TASK_STATISTIC } from '@/ApiList'
 import {
   EXPIRED,
   EXPIRED_1_3,
@@ -15,80 +14,12 @@ import {
   EXPIRED_TODAY,
   TabNames,
 } from '@/Pages/Tasks/list/constants'
-import { ApiContext, SIDEBAR_STATE } from '@/contants'
 import { useStatistic } from '@/Pages/Tasks/helper'
 import { CurrentTabContext } from '@Components/Logic/Tab'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  defaultFunctionsMap,
-  NOTIFICATION_TYPE_ERROR,
-} from '@/Components/Notificator/constants'
-import { useOpenNotification } from '@/Components/Notificator'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
-const customMessagesFuncMap = {
-  ...defaultFunctionsMap,
-  500: () => {
-    return {
-      type: NOTIFICATION_TYPE_ERROR,
-      message: 'Не удалось загрузить данные статистики',
-    }
-  },
-}
-
-const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
-  const api = useContext(ApiContext)
+const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task }) => {
   const { tabs } = useContext(CurrentTabContext)
-  const getNotification = useOpenNotification()
-
-  const tabItemState = useTabItem({
-    stateId: SIDEBAR_STATE,
-  })
-  const {
-    tabState: { data },
-  } = tabItemState
-
-  const statistic = useStatistic(data)
-
-  // const poll = useCallback(async () => {
-  //   const {
-  //     data: [data],
-  //     status,
-  //   } = await api.post(URL_TASK_STATISTIC)
-  //   return data
-  // }, [api]) // todo для теста простой вызов
-
-  const poll = useCallback(
-    async ({ interval = 300000, maxAttempts = 10 } = {}) => {
-      let attempts = 0
-
-      const executePoll = async (resolve, reject) => {
-        const {
-          data: [data],
-          status,
-        } = await api.post(URL_TASK_STATISTIC)
-
-        try {
-          if (status === 200) {
-            setTimeout(executePoll, interval, resolve, reject)
-            return resolve(data)
-          }
-        } catch (e) {
-          const { response: { status, data } = {} } = e
-          if (maxAttempts && attempts === maxAttempts) {
-            getNotification(customMessagesFuncMap[status]())
-          } else {
-            setTimeout(executePoll, interval, resolve, reject)
-          }
-        }
-      }
-
-      return new Promise(executePoll).then((result) => result)
-    },
-    [api, getNotification],
-  )
-
-  useAutoReload(poll, tabItemState)
+  const statistic = useStatistic(task)
 
   const handleOpenNewTab = useCallback(
     (path) => () => {
@@ -205,6 +136,8 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab }) => {
 
 MyTasks.propTypes = {
   onOpenNewTab: PropTypes.func.isRequired,
+  onChangeActiveTab: PropTypes.func.isRequired,
+  task: PropTypes.object,
 }
 
 export default MyTasks
