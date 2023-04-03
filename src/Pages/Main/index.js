@@ -20,11 +20,10 @@ const Main = () => {
       }) => (
         <div className="flex-container ">
           <Header />
-          <div className="flex h-full overflow-hidden">
-            <SideBar
-              onOpenNewTab={openTabOrCreateNewTab}
-              onChangeActiveTab={onChangeActiveTab}
-            />
+          <SideBar
+            onOpenNewTab={openTabOrCreateNewTab}
+            onChangeActiveTab={onChangeActiveTab}
+          >
             <div className="flex-container w-full overflow-hidden">
               <div className="flex p-4 justify-between">
                 <TabsContainer className="flex">
@@ -43,7 +42,7 @@ const Main = () => {
               </div>
               <Outlet />
             </div>
-          </div>
+          </SideBar>
         </div>
       )}
     </Tab>

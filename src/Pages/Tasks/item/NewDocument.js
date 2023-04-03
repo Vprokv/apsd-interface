@@ -18,7 +18,7 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
+import { useTabStateUpdaterByName } from '@/Utils/TabStateUpdaters'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const customMessagesFuncMap = {
@@ -55,7 +55,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
 
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
-  const remoteTabUpdater = UseTabStateUpdaterByName(initialState?.parentTabName)
+  const remoteTabUpdater = useTabStateUpdaterByName()
 
   const refValues = useRef()
   useEffect(() => {
@@ -89,7 +89,10 @@ export const NewTaskItem = ({ classificationId, type }) => {
               type,
             })
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
+            remoteTabUpdater(initialState?.parentTabName, {
+              loading: false,
+              fetched: false,
+            })
             navigate(`/document/${id}/${type}`)
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -112,7 +115,15 @@ export const NewTaskItem = ({ classificationId, type }) => {
         icon: SaveIcon,
       },
     }),
-    [api, getNotification, navigate, remoteTabUpdater, setDocumentState, type],
+    [
+      api,
+      getNotification,
+      initialState?.parentTabName,
+      navigate,
+      remoteTabUpdater,
+      setDocumentState,
+      type,
+    ],
   )
 
   const wrappedDocumentActions = useDocumentActions(

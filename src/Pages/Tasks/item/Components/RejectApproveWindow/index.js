@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -7,22 +7,19 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import Input from '@/Components/Fields/Input'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_BUSINESS_DOCUMENT_STAGES, URL_TASK_COMPLETE } from '@/ApiList'
-import { ApiContext, SIDEBAR_STATE } from '@/contants'
+import { ApiContext } from '@/contants'
 import styled from 'styled-components'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useParams } from 'react-router-dom'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { fieldMap } from '@/Pages/Login'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import axios from 'axios'
+import { LoadTasks } from '@/Pages/Main/constants'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -30,7 +27,7 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
+const RejectApproveWindow = ({ open, onClose, documentId }) => {
   const [options, setOptions] = useState([])
   const api = useContext(ApiContext)
 
@@ -62,9 +59,7 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
   const { currentTabIndex } = useContext(CurrentTabContext)
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
-    stateId: SIDEBAR_STATE,
-  })
+  const reloadSidebarTaskCounters = useContext(LoadTasks)
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -82,7 +77,7 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
       })
       onClose()
       closeCurrenTab()
-      setTabState({ data: await loadData() })
+      reloadSidebarTaskCounters()
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -93,11 +88,10 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
     closeCurrenTab,
     getNotification,
     id,
-    loadData,
     onClose,
+    reloadSidebarTaskCounters,
     selected?.id,
     selected?.type,
-    setTabState,
   ])
 
   const rules = {

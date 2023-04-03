@@ -17,12 +17,7 @@ import {
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import {
-  ApiContext,
-  ITEM_DOCUMENT,
-  SIDEBAR_STATE,
-  TASK_ITEM_APPROVAL_SHEET,
-} from '@/contants'
+import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
@@ -48,7 +43,8 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import UseTabStateUpdaterByName from '@/Utils/UseTabStateUpdaterByName'
+import { LoadTasks } from '@/Pages/Main/constants'
+import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -80,6 +76,7 @@ const Document = () => {
   })
   const {
     tabState: { data: { documentActions, documentTabs, values } = {} },
+    setTabState,
   } = tabItemState
 
   const documentId = useMemo(() => {
@@ -91,12 +88,9 @@ const Document = () => {
     return v || 'Документ'
   }, [type, values])
 
-  const remoteTabUpdater = UseTabStateUpdaterByName([ITEM_DOCUMENT])
-  const remoteApprovalUpdater = UseTabStateUpdaterByName([
-    TASK_ITEM_APPROVAL_SHEET,
-  ])
+  const updateCurrentTabChildrenStates = updateTabChildrenStates()
 
-  const remoteSideBarUpdater = UseTabStateUpdaterByName([SIDEBAR_STATE])
+  const remoteSideBarUpdater = useContext(LoadTasks)
 
   useSetTabName(useCallback(() => documentId, [documentId]))
   const refValues = useRef()
@@ -176,8 +170,11 @@ const Document = () => {
               documentIds: [id],
             })
             setMessage(data)
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
             getNotification(customMessagesFuncMap[status]())
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -196,11 +193,12 @@ const Document = () => {
             })
             remoteSideBarUpdater({ loading: false, fetched: false })
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater({ loading: false, fetched: false })
-            remoteApprovalUpdater({ loading: false, fetched: false })
-            console.log(4)
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
           } catch (e) {
-            console.log(5)
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
           }
@@ -212,10 +210,10 @@ const Document = () => {
       api,
       getNotification,
       id,
-      remoteApprovalUpdater,
       remoteSideBarUpdater,
-      remoteTabUpdater,
+      setTabState,
       type,
+      updateCurrentTabChildrenStates,
     ],
   )
 
