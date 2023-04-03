@@ -314,6 +314,7 @@ function TaskList({ loadFunctionRest }) {
     const { limit, offset } = paginationState
     const { data: id } = await api.post(URL_EXPORT, {
       url: `${API_URL}${URL_TASK_LIST_V2}?limit=${limit}&offset=${offset}`,
+      // url: `https://psd.moesk.ru/apsd/task/v2/list?limit=10&offset=0`,
       label: 'Все задания',
       sheetName: 'Все задания',
       columns: columnMap,
@@ -345,7 +346,7 @@ function TaskList({ loadFunctionRest }) {
 
     const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`)
 
-    downloadFileWithReload(data, `Все задания`)
+    downloadFileWithReload(data, 'Все задания.xlsx')
 
     console.log(data, 'data')
   }, [

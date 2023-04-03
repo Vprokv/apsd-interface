@@ -91,11 +91,12 @@ const Document = () => {
     return v || 'Документ'
   }, [type, values])
 
-  const remoteTabUpdater = UseTabStateUpdaterByName([
-    SIDEBAR_STATE,
-    ITEM_DOCUMENT,
+  const remoteTabUpdater = UseTabStateUpdaterByName([ITEM_DOCUMENT])
+  const remoteApprovalUpdater = UseTabStateUpdaterByName([
     TASK_ITEM_APPROVAL_SHEET,
   ])
+
+  const remoteSideBarUpdater = UseTabStateUpdaterByName([SIDEBAR_STATE])
 
   useSetTabName(useCallback(() => documentId, [documentId]))
   const refValues = useRef()
@@ -176,6 +177,7 @@ const Document = () => {
             })
             setMessage(data)
             remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
             getNotification(customMessagesFuncMap[status]())
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -192,8 +194,10 @@ const Document = () => {
               type,
               signal: name,
             })
+            remoteSideBarUpdater({ loading: false, fetched: false })
             getNotification(customMessagesFuncMap[status]())
             remoteTabUpdater({ loading: false, fetched: false })
+            remoteApprovalUpdater({ loading: false, fetched: false })
             console.log(4)
           } catch (e) {
             console.log(5)
@@ -204,7 +208,15 @@ const Document = () => {
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
     }),
-    [api, getNotification, id, remoteTabUpdater, type],
+    [
+      api,
+      getNotification,
+      id,
+      remoteApprovalUpdater,
+      remoteSideBarUpdater,
+      remoteTabUpdater,
+      type,
+    ],
   )
 
   const wrappedDocumentActions = useDocumentActions(
