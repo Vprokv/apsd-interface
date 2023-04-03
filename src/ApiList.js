@@ -145,3 +145,6 @@ export const URL_BASKET_LIST = '/apsd/basket/list'
 export const URL_BASKET_DELETED = '/apsd/basket/deleteDocument'
 export const URL_BASKET_RESTORE_DELETED = '/apsd/basket/delete'
 export const URL_BASKET_ADD = '/apsd/basket/add'
+
+export const URL_EXPORT = '/export/'
+export const URL_EXPORT_FILE = '/export/file/'

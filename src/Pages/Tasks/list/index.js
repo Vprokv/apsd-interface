@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import Icon from '@Components/Components/Icon'
@@ -33,8 +33,8 @@ import volumeIcon from './icons/volumeIcon'
 import Pagination from '../../../Components/Pagination'
 import RowComponent from './Components/RowComponent'
 import CheckBox from '../../../Components/Inputs/CheckBox'
-import { URL_TASK_LIST_V2 } from '@/ApiList'
-import { ApiContext, TASK_LIST } from '@/contants'
+import { URL_EXPORT, URL_EXPORT_FILE, URL_TASK_LIST_V2 } from '@/ApiList'
+import { ApiContext, TASK_LIST, TokenContext } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
@@ -44,6 +44,8 @@ import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
+import { API_URL } from '@/api'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -54,6 +56,84 @@ const plugins = {
     valueKey: 'id',
   },
 }
+
+const columnMap = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Задание',
+    path: ['documentStatus', 'creationDate', 'dueDate', 'taskType', 'read'],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Том',
+    path: ['documentRegNumber', 'display', 'creationDate'],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Том',
+    path: ['documentRegNumber', 'display', 'creationDate'],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Наименование тома',
+    path: 'documentDescription',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Этап',
+    path: 'stageName',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Статус тома',
+    path: 'documentStatus',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'От кого',
+    path: [
+      'fromWhomEmployee.firstName',
+      'fromWhomEmployee.lastName',
+      'fromWhomEmployee.position',
+      'fromWhomEmployee.middleName',
+    ],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'От кого',
+    path: [
+      'fromWhomEmployee.firstName',
+      'fromWhomEmployee.lastName',
+      'fromWhomEmployee.position',
+      'fromWhomEmployee.middleName',
+    ],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Назначенный исполнитель',
+    path: [
+      'appointedExecutors.firstName',
+      'appointedExecutors.lastName',
+      'appointedExecutors.position',
+      'appointedExecutors.middleName',
+    ],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Автор',
+    path: [
+      'creatorEmployee.firstName',
+      'creatorEmployee.lastName',
+      'creatorEmployee.position',
+      'creatorEmployee.middleName',
+    ],
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Контрольный срок',
+    path: 'dueDate',
+  },
+]
 
 const columns = [
   {
@@ -166,6 +246,7 @@ function TaskList({ loadFunctionRest }) {
     loadDataHelper,
     tabState: { data: { content = [], total = 0 } = {} },
   } = useTabItem({ stateId: TASK_LIST })
+  const { token } = useContext(TokenContext)
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -229,6 +310,54 @@ function TaskList({ loadFunctionRest }) {
     sortQuery.key,
   ])
 
+  const onExportToExcel = useCallback(async () => {
+    const { limit, offset } = paginationState
+    const { data: id } = await api.post(URL_EXPORT, {
+      url: `${API_URL}${URL_TASK_LIST_V2}?limit=${limit}&offset=${offset}`,
+      label: 'Все задания',
+      sheetName: 'Все задания',
+      columns: columnMap,
+      body: {
+        filter: {
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce((acc, p) => {
+                  const [key, value] = p.split('=')
+                  acc[key] = JSON.parse(value)
+                  return acc
+                }, {})
+            : {}),
+          ...filter,
+        },
+        sort: [
+          {
+            direction: sortQuery.direction,
+            property: sortQuery.key,
+          },
+        ],
+        token,
+      },
+    })
+
+    console.log(id, 'data')
+
+    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`)
+
+    downloadFileWithReload(data, `Все задания`)
+
+    console.log(data, 'data')
+  }, [
+    api,
+    filter,
+    paginationState,
+    search,
+    sortQuery.direction,
+    sortQuery.key,
+    token,
+  ])
+
   const refLoadDataFunction = useRef(loadData)
 
   // todo замена useEffect и refLoadDataFunction
@@ -255,7 +384,7 @@ function TaskList({ loadFunctionRest }) {
           <ButtonForIcon className="mr-2">
             <Icon icon={volumeIcon} />
           </ButtonForIcon>
-          <ButtonForIcon className="color-green">
+          <ButtonForIcon onClick={onExportToExcel} className="color-green">
             <Icon icon={XlsIcon} />
           </ButtonForIcon>
         </div>
