@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import DocumentSearch, { tableConfig } from './index'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -9,7 +9,10 @@ import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE } from '@/contants'
-import { SecondaryBlueButton } from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import Icon from '@Components/Components/Icon'
+import XlsIcon from '@/Icons/XlsIcon'
+import { ExportContext } from '@/Pages/Search/Pages/constans'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
@@ -59,14 +62,19 @@ const PageDocumentSelect = ({ props }) => {
       setFilter={updateTabState('filter')}
       options={defaultOptions}
     >
-      {(closeTable) => (
+      {(closeTable, onExport) => (
         <>
-          <SecondaryBlueButton
-            onClick={closeTable}
-            className="ml-auto form-element-sizes-32"
-          >
-            Изменить условие
-          </SecondaryBlueButton>
+          <div className="flex ml-auto">
+            <SecondaryBlueButton
+              onClick={closeTable}
+              className="form-element-sizes-32"
+            >
+              Изменить условие
+            </SecondaryBlueButton>
+            <ButtonForIcon onClick={onExport} className="color-green ml-2">
+              <Icon icon={XlsIcon} />
+            </ButtonForIcon>
+          </div>
           <ScrollBar className=" ">
             <ListTable
               rowComponent={rowComponent}

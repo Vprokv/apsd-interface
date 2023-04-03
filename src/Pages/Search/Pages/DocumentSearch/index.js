@@ -2,11 +2,14 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
 import {
+  URL_EXPORT,
+  URL_EXPORT_FILE,
   URL_SEARCH_ATTRIBUTES,
   URL_SEARCH_LIST,
+  URL_TASK_LIST_V2,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import { ApiContext, TokenContext } from '@/contants'
 import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import {
   LoadableSecondaryOverBlueButton,
@@ -22,6 +25,9 @@ import {
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
+import { API_URL } from '@/api'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import { ExportContext } from '../constans'
 
 export const tableConfig = [
   {
@@ -32,11 +38,11 @@ export const tableConfig = [
       ParentValue: {
         values: { dss_description = '' },
       },
-    }) => <BaseCell value={dss_description} />,
+    }) => <BaseCell className="break-all" value={dss_description} />,
   },
   {
     id: 'dss_type_label',
-    label: 'Вид Тома',
+    label: 'Вид тома',
     sizes: 200,
     component: ({
       ParentValue: {
@@ -127,6 +133,54 @@ export const tableConfig = [
   },
 ]
 
+const columnsMap = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Наименование',
+    path: 'values.dss_description',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Вид тома',
+    path: 'values.dss_type_label',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Статус',
+    path: 'values.dss_status',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Титул',
+    path: 'values.dsid_startup_complex',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата регистрации',
+    path: 'values.dsdt_reg_date',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата создания',
+    path: 'values.dsdt_creation_date',
+  },
+  // {
+  //   componentType: 'DescriptionTableColumn',
+  //   header: 'Этап',
+  //   path: '',
+  // },
+  // {
+  //   componentType: 'DescriptionTableColumn',
+  //   header: 'Контрольный срок',
+  //   path: '',
+  // },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Автор',
+    path: '[valuesCustom.dsid_author_empl.lastName,valuesCustom.dsid_author_empl.middleName,firstName]',
+  },
+]
+
 const DocumentSearch = ({
   documentTypeLoadFunction,
   setSearchState,
@@ -138,7 +192,7 @@ const DocumentSearch = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
-
+  const { token } = useContext(TokenContext)
   const fields = useMemo(
     () => [
       {
@@ -242,7 +296,43 @@ const DocumentSearch = ({
     setRenderTable(true)
   }, [api, defaultOperators, filter, setSearchState])
 
-  const onRemove = useCallback(() => setFilter({}), [])
+  const onExportToExcel = useCallback(async () => {
+    const { type, ...filters } = filter
+    const queryItems = Object.entries(filters).reduce(
+      (acc, [key, { value, operator }]) => {
+        acc.push({
+          attr: key,
+          operator: operator || defaultOperators[key],
+          arguments: [value],
+        })
+        return acc
+      },
+      [],
+    )
+
+    const {
+      data: { id },
+    } = await api.post(URL_EXPORT, {
+      url: `${API_URL}${URL_SEARCH_LIST}`,
+      label: 'Поиск по документам',
+      sheetName: 'Поиск по документам',
+      columns: columnsMap,
+      body: {
+        types: [type],
+        inVersions: false,
+        queryItems,
+        token,
+      },
+    })
+
+    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+      responseType: 'blob',
+    })
+
+    downloadFileWithReload(data, 'Поиск по документам.xlsx')
+  }, [api, defaultOperators, filter, token])
+
+  const onRemove = useCallback(() => setFilter({}), [setFilter])
 
   useEffect(loadData, [loadData])
 
@@ -252,42 +342,44 @@ const DocumentSearch = ({
   }, [filter])
 
   return (
-    <div className="flex flex-col w-full p-6 overflow-hidden">
-      {renderTable ? (
-        children(() => setRenderTable(false))
-      ) : (
-        <div className="flex overflow-hidden">
-          <Form
-            className="w-full grid grid-row-gap-5 h-min mr-4"
-            value={filter}
-            onInput={setFilter}
-            fields={fields}
-            inputWrapper={RowInputWrapper}
-          />
-          <div className="flex flex-col">
-            <LoadableSecondaryOverBlueButton
-              className="mb-5 w-64"
-              onClick={onSearch}
-              // disabled={isSearchDisabled}
-            >
-              Искать
-            </LoadableSecondaryOverBlueButton>
-            <SecondaryBlueButton className="mb-5 w-64" disabled>
-              Применить шаблон
-            </SecondaryBlueButton>
-            <SecondaryBlueButton className="mb-5 w-64" disabled>
-              Сохранить шаблон
-            </SecondaryBlueButton>
-            <SecondaryGreyButton className="mb-5 w-64" onClick={onRemove}>
-              Очистить
-            </SecondaryGreyButton>
-            <SecondaryGreyButton className="mb-5 w-64" disabled>
-              Экспорт
-            </SecondaryGreyButton>
+    <ExportContext.Provider value={'asas'}>
+      <div className="flex flex-col w-full p-6 overflow-hidden">
+        {renderTable ? (
+          children(() => setRenderTable(false), onExportToExcel)
+        ) : (
+          <div className="flex overflow-hidden">
+            <Form
+              className="w-full grid grid-row-gap-5 h-min mr-4"
+              value={filter}
+              onInput={setFilter}
+              fields={fields}
+              inputWrapper={RowInputWrapper}
+            />
+            <div className="flex flex-col">
+              <LoadableSecondaryOverBlueButton
+                className="mb-5 w-64"
+                onClick={onSearch}
+                // disabled={isSearchDisabled}
+              >
+                Искать
+              </LoadableSecondaryOverBlueButton>
+              <SecondaryBlueButton className="mb-5 w-64" disabled>
+                Применить шаблон
+              </SecondaryBlueButton>
+              <SecondaryBlueButton className="mb-5 w-64" disabled>
+                Сохранить шаблон
+              </SecondaryBlueButton>
+              <SecondaryGreyButton className="mb-5 w-64" onClick={onRemove}>
+                Очистить
+              </SecondaryGreyButton>
+              <SecondaryGreyButton className="mb-5 w-64" disabled>
+                Экспорт
+              </SecondaryGreyButton>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ExportContext.Provider>
   )
 }
 

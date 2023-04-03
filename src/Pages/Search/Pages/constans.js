@@ -25,6 +25,8 @@ export const rangeComponent = {
   [DUE_DATE]: true,
 }
 
+export const ExportContext = React.createContext(() => null)
+
 const COMBOBOX_COMPONENT = 'Combobox'
 const ORGSTRUCTURE_COMPONENT = 'Orgstructure'
 const USER_SELECT_COMPONENT = 'UserSelect'

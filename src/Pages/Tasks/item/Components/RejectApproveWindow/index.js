@@ -47,7 +47,6 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
     () => options?.find(({ status }) => status === 'on_work'),
     [options],
   )
-  console.log(initialValue, 'initialValue')
 
   const [selected, setSelected] = useState({})
 
@@ -58,8 +57,6 @@ const RejectApproveWindow = ({ open, onClose, documentId, loadData }) => {
   }, [initialValue])
 
   const { id } = useParams()
-
-  console.log(selected, 'selected')
 
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)

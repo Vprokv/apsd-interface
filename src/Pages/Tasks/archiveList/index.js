@@ -1,8 +1,19 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { ApiContext, TASK_LIST, TASK_LIST_ARCHIVE } from '@/contants'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
+import {
+  ApiContext,
+  TASK_LIST,
+  TASK_LIST_ARCHIVE,
+  TokenContext,
+} from '@/contants'
 import { useNavigate, useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_STORAGE_DOCUMENT, URL_TASK_LIST } from '@/ApiList'
+import {
+  URL_EXPORT,
+  URL_EXPORT_FILE,
+  URL_STORAGE_DOCUMENT,
+  URL_TASK_LIST,
+  URL_TASK_LIST_V2,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
@@ -16,6 +27,12 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import { ButtonForIcon } from '@/Components/Button'
+import Icon from '@Components/Components/Icon'
+import XlsIcon from '@/Icons/XlsIcon'
+import { API_URL } from '@/api'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import log from 'tailwindcss/lib/util/log'
 
 const columns = [
   {
@@ -73,6 +90,44 @@ const columns = [
   },
 ]
 
+const columnMap = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Раздел/том',
+    path: 'name',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Вид/Тип',
+    path: 'kind',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Код/Рег. номер',
+    path: 'code',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата создания',
+    path: 'creationDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Автор',
+    path: '[authorName,authorPosition]',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Подписант',
+    path: '[signerName,signerPosition]',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Статус',
+    path: 'status',
+  },
+]
+
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
   selectPlugin: {
@@ -90,6 +145,7 @@ const ArchiveList = () => {
   const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
+  const { token } = useContext(TokenContext)
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
       () =>
@@ -113,6 +169,8 @@ const ArchiveList = () => {
     defaultLimit: 10,
   })
 
+  const filter = { titleId: id, sectionId: sectionId || undefined }
+
   const loadData = useCallback(async () => {
     const { limit, offset } = paginationState
     const {
@@ -128,8 +186,38 @@ const ArchiveList = () => {
 
   useAutoReload(loadData, tabItemState)
 
+  const onExportToExcel = useCallback(async () => {
+    const { limit, offset } = paginationState
+    const {
+      data: { id },
+    } = await api.post(URL_EXPORT, {
+      url: `${API_URL}${URL_STORAGE_DOCUMENT}`,
+      label: `${parentName}/${name}`,
+      sheetName: `${parentName}/${name}`,
+      columns: columnMap,
+      body: {
+        filter,
+        // filter: { titleId: id, sectionId: sectionId || undefined },
+        limit,
+        offset,
+        token,
+      },
+    })
+
+    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+      responseType: 'blob',
+    })
+
+    downloadFileWithReload(data, `${parentName}/${name}.xlsx`)
+  }, [api, filter, name, paginationState, parentName, token])
+
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
+      <div className="flex items-center color-text-secondary ml-auto">
+        <ButtonForIcon onClick={onExportToExcel} className="color-green">
+          <Icon icon={XlsIcon} />
+        </ButtonForIcon>
+      </div>
       <ListTable
         rowComponent={useMemo(
           () => (props) =>

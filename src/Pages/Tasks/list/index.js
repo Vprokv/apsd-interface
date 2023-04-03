@@ -61,17 +61,17 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Задание',
-    path: ['documentStatus', 'creationDate', 'dueDate', 'taskType', 'read'],
+    path: '[documentStatus, creationDate, dueDate, taskType, read]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Том',
-    path: ['documentRegNumber', 'display', 'creationDate'],
+    path: '[documentRegNumber, display, creationDate]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Том',
-    path: ['documentRegNumber', 'display', 'creationDate'],
+    path: '[documentRegNumber, display, creationDate]',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -91,42 +91,22 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'От кого',
-    path: [
-      'fromWhomEmployee.firstName',
-      'fromWhomEmployee.lastName',
-      'fromWhomEmployee.position',
-      'fromWhomEmployee.middleName',
-    ],
+    path: '[fromWhomEmployee.firstName,fromWhomEmployee.lastName,fromWhomEmployee.position,fromWhomEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'От кого',
-    path: [
-      'fromWhomEmployee.firstName',
-      'fromWhomEmployee.lastName',
-      'fromWhomEmployee.position',
-      'fromWhomEmployee.middleName',
-    ],
+    path: '[fromWhomEmployee.firstName,fromWhomEmployee.lastName,fromWhomEmployee.position,fromWhomEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Назначенный исполнитель',
-    path: [
-      'appointedExecutors.firstName',
-      'appointedExecutors.lastName',
-      'appointedExecutors.position',
-      'appointedExecutors.middleName',
-    ],
+    path: '[appointedExecutors.firstName,appointedExecutors.lastName,appointedExecutors.position,appointedExecutors.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Автор',
-    path: [
-      'creatorEmployee.firstName',
-      'creatorEmployee.lastName',
-      'creatorEmployee.position',
-      'creatorEmployee.middleName',
-    ],
+    path: '[creatorEmployee.firstName,creatorEmployee.lastName,creatorEmployee.position,creatorEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -312,9 +292,10 @@ function TaskList({ loadFunctionRest }) {
 
   const onExportToExcel = useCallback(async () => {
     const { limit, offset } = paginationState
-    const { data: id } = await api.post(URL_EXPORT, {
+    const {
+      data: { id },
+    } = await api.post(URL_EXPORT, {
       url: `${API_URL}${URL_TASK_LIST_V2}?limit=${limit}&offset=${offset}`,
-      // url: `https://psd.moesk.ru/apsd/task/v2/list?limit=10&offset=0`,
       label: 'Все задания',
       sheetName: 'Все задания',
       columns: columnMap,
@@ -342,13 +323,11 @@ function TaskList({ loadFunctionRest }) {
       },
     })
 
-    console.log(id, 'data')
-
-    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`)
+    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+      responseType: 'blob',
+    })
 
     downloadFileWithReload(data, 'Все задания.xlsx')
-
-    console.log(data, 'data')
   }, [
     api,
     filter,

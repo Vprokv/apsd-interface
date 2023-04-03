@@ -5,11 +5,46 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE } from '@/contants'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { SecondaryBlueButton } from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import TaskSearch from '@/Pages/Search/Pages/TaskSearch/index'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import Icon from '@Components/Components/Icon'
+import XlsIcon from '@/Icons/XlsIcon'
+
+const columnsMap = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Задание',
+    path: 'taskType',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Исполнитель',
+    path: 'performerEmployee.userName',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата выдачи',
+    path: 'issueDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Краткое содержание',
+    path: 'documentDescription',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Статус',
+    path: 'documentStatus',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'От кого',
+    path: '[fromWhomEmployee.lastName,fromWhomEmployee.firstName,fromWhomEmployee.middleName]',
+  },
+]
 
 const tableConfig = [
   {
@@ -17,11 +52,6 @@ const tableConfig = [
     label: 'Задание',
     sizes: 200,
     component: BaseCell,
-    // component: ({
-    //   ParentValue: {
-    //     values: {},
-    //   },
-    // }) => <BaseCell />,
   },
   {
     id: 'performerEmployee',
@@ -36,55 +66,30 @@ const tableConfig = [
     label: 'Дата выдачи',
     sizes: 200,
     component: BaseCell,
-    // component: ({
-    //   ParentValue: {
-    //     values: {},
-    //   } = ,
-    // }) => <BaseCell />,
   },
   {
     id: 'Срок исполнения',
     label: 'Срок исполнения',
     sizes: 200,
     component: BaseCell,
-    // component: ({
-    //   ParentValue: {
-    //     values: {},
-    //   },
-    // }) => <BaseCell />,
   },
   {
     id: 'Дата завершения',
     label: 'Дата завершения',
     sizes: 200,
     component: BaseCell,
-    // component: ({
-    //   ParentValue: {
-    //     values: {},
-    //   },
-    // }) => <BaseCell />,
   },
   {
     id: 'documentDescription',
     label: 'Краткое содержание',
     sizes: 200,
     component: BaseCell,
-    // component: ({
-    //   ParentValue: {
-    //     values: {},
-    //   },
-    // }) => <BaseCell />,
   },
   {
     id: 'documentStatus',
     label: 'Статус',
     sizes: 200,
     component: BaseCell,
-    // component: ({
-    //   ParentValue: {
-    //     values: {},
-    //   },
-    // }) => <BaseCell />,
   },
   {
     id: 'insider',
@@ -148,14 +153,19 @@ const PageTaskSelect = () => {
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
     >
-      {(onClick) => (
+      {(onClick, onExport) => (
         <div className="flex flex-col">
-          <SecondaryBlueButton
-            onClick={onClick}
-            className="ml-auto form-element-sizes-32 mr-4 mb-4"
-          >
-            Изменить условие
-          </SecondaryBlueButton>
+          <div className="flex ml-auto">
+            <SecondaryBlueButton
+              onClick={onClick}
+              className="ml-auto form-element-sizes-32 mr-4 mb-4"
+            >
+              Изменить условие
+            </SecondaryBlueButton>
+            <ButtonForIcon onClick={onExport} className="color-green ml-2">
+              <Icon icon={XlsIcon} />
+            </ButtonForIcon>
+          </div>
           <ScrollBar className="px-4">
             <ListTable
               rowComponent={rowComponent}

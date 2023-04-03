@@ -93,7 +93,7 @@ const ShowDocumentComponent = ({ className, selectedState }) => {
       openTabOrCreateNewTab(
         `/document/${selectedState}/ddt_startup_complex_type_doc`,
       ),
-    [navigate, openTabOrCreateNewTab, selectedState],
+    [openTabOrCreateNewTab, selectedState],
   )
 
   const getDocumentData = useCallback(async () => {

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext } from '@/contants'
+import { ApiContext, TokenContext } from '@/contants'
 import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import {
   defaultOperator,
@@ -14,7 +14,12 @@ import {
   operators,
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
-import { URL_SEARCH_ATTRIBUTES, URL_SEARCH_LIST } from '@/ApiList'
+import {
+  URL_EXPORT,
+  URL_EXPORT_FILE,
+  URL_SEARCH_ATTRIBUTES,
+  URL_SEARCH_LIST,
+} from '@/ApiList'
 import Form from '@Components/Components/Forms'
 import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
 import {
@@ -22,12 +27,62 @@ import {
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
+import { API_URL } from '@/api'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+
+const columnsMap = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Наименование',
+    path: 'values.dss_description',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Вид тома',
+    path: 'values.dss_type_label',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Статус',
+    path: 'values.dss_status',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Титул',
+    path: 'values.dsid_startup_complex',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата регистрации',
+    path: 'values.dsdt_reg_date',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата создания',
+    path: 'values.dsdt_creation_date',
+  },
+  // {
+  //   componentType: 'DescriptionTableColumn',
+  //   header: 'Этап',
+  //   path: '',
+  // },
+  // {
+  //   componentType: 'DescriptionTableColumn',
+  //   header: 'Контрольный срок',
+  //   path: '',
+  // },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Автор',
+    path: '[valuesCustom.dsid_author_empl.lastName,valuesCustom.dsid_author_empl.middleName,firstName]',
+  },
+]
 
 const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
-
+  const { token } = useContext(TokenContext)
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
       type: filter.type,
@@ -103,7 +158,6 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
 
   const onSearch = useCallback(async () => {
     const { type, ...filters } = filter
-    console.log(type, 'type onSearch')
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
         acc.push({
@@ -135,10 +189,46 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
     return Object.keys(keys).length === 0
   }, [filter])
 
+  const onExportToExcel = useCallback(async () => {
+    const { type, ...filters } = filter
+    const queryItems = Object.entries(filters).reduce(
+      (acc, [key, { value, operator }]) => {
+        acc.push({
+          attr: key,
+          operator: operator || defaultOperators[key],
+          arguments: [value],
+        })
+        return acc
+      },
+      [],
+    )
+
+    const {
+      data: { id },
+    } = await api.post(URL_EXPORT, {
+      url: `${API_URL}${URL_SEARCH_LIST}`,
+      label: 'Поиск по задания',
+      sheetName: 'Поиск по задания',
+      columns: columnsMap,
+      body: {
+        types: [type],
+        inVersions: false,
+        queryItems,
+        token,
+      },
+    })
+
+    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+      responseType: 'blob',
+    })
+
+    downloadFileWithReload(data, 'Поиск по заданиям.xlsx')
+  }, [api, defaultOperators, filter, token])
+
   return (
     <div className="flex  w-full p-6 overflow-hidden">
       {renderTable ? (
-        children(() => setRenderTable(false))
+        children(() => setRenderTable(false), onExportToExcel)
       ) : (
         <>
           <Form
