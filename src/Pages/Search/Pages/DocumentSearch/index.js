@@ -28,6 +28,7 @@ import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import { ExportContext } from '../constans'
+import ScrollBar from '@Components/Components/ScrollBar'
 
 export const tableConfig = [
   {
@@ -348,13 +349,15 @@ const DocumentSearch = ({
           children(() => setRenderTable(false), onExportToExcel)
         ) : (
           <div className="flex overflow-hidden">
-            <Form
-              className="w-full grid grid-row-gap-5 h-min mr-4"
-              value={filter}
-              onInput={setFilter}
-              fields={fields}
-              inputWrapper={RowInputWrapper}
-            />
+            <ScrollBar className="w-full">
+              <Form
+                className=" grid grid-row-gap-5 h-min mr-4"
+                value={filter}
+                onInput={setFilter}
+                fields={fields}
+                inputWrapper={RowInputWrapper}
+              />
+            </ScrollBar>
             <div className="flex flex-col">
               <LoadableSecondaryOverBlueButton
                 className="mb-5 w-64"
