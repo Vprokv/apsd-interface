@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import BaseButton, { LoadableButton } from '@Components/Components/Button'
+import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
 
 const button = styled(BaseButton)``
 
@@ -43,13 +44,6 @@ export const SecondaryGreyButton = styled(BaseButton)`
     color: var(--text-secondary);
   }
 `
-
-export const LoadableSecondaryBlueButton = LoadableButton(SecondaryBlueButton)
-export const LoadableSecondaryOverBlueButton = LoadableButton(
-  SecondaryOverBlueButton,
-)
-export const LoadableBaseButton = LoadableButton(button)
-
 export const ButtonForIcon = styled.button`
   display: flex;
   align-items: center;
@@ -66,3 +60,10 @@ export const ButtonForIcon = styled.button`
     color: var(--text-secondary);
   }
 `
+
+export const LoadableSecondaryBlueButton = LoadableButton(SecondaryBlueButton)
+export const LoadableSecondaryOverBlueButton = LoadableButton(
+  SecondaryOverBlueButton,
+)
+export const LoadableBaseButton = LoadableButton(button)
+export const OverlayIconButton = OverlayButton(ButtonForIcon)

@@ -5,6 +5,10 @@ import searchIcon from '@/Icons/searchIcon'
 import Icon from '@Components/Components/Icon'
 import { useNavigate } from 'react-router-dom'
 import { SEARCH_PAGE_PATH } from '@/routePaths'
+import RenderOverlayMenu from '@/Components/OverlayMenu/RenderOverlayMenu'
+import OverlayButton from "@/Components/OverlayMenu/OverlayButton";
+
+const OverlayIconButton = OverlayButton(ButtonForIcon)
 
 const Search = () => {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
@@ -16,10 +20,15 @@ const Search = () => {
   )
 
   return (
-    <ButtonForIcon className="items-center" onClick={openSearch}>
-      <Icon className="text-white" icon={searchIcon} />
-    </ButtonForIcon>
+    <OverlayIconButton
+      onClick={openSearch}
+      icon={searchIcon}
+      minSize={'50'}
+      maxSize={'100'}
+      text="Поиск"
+    />
   )
 }
 
 export default Search
+

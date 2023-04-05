@@ -40,7 +40,7 @@ import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import Filter from './Components/Filter'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -206,8 +206,6 @@ const columns = [
   {
     id: 'dueDate',
     label: 'Контрольный срок',
-    // component: BaseCell,
-    // sizes: baseCellSize,
   },
 ]
 
@@ -355,18 +353,27 @@ function TaskList({ loadFunctionRest }) {
       <div className="flex items-center">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
-          <ButtonForIcon className="mr-2">
-            <Icon icon={filterIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon className="mr-2">
-            <Icon icon={sortIcon} />
-          </ButtonForIcon>
+          <OverlayIconButton
+            className="mr-2"
+            icon={filterIcon}
+            text="Фильтры"
+          />
+          <OverlayIconButton
+            className="mr-2"
+            icon={sortIcon}
+            text="Настройка колонок"
+            minSize="120"
+          />
           <ButtonForIcon className="mr-2">
             <Icon icon={volumeIcon} />
           </ButtonForIcon>
-          <ButtonForIcon onClick={onExportToExcel} className="color-green">
-            <Icon icon={XlsIcon} />
-          </ButtonForIcon>
+          <OverlayIconButton
+            onClick={onExportToExcel}
+            className="color-green"
+            icon={XlsIcon}
+            text="Выгрузить в Excel"
+            minSize="120"
+          />
         </div>
       </div>
       <ListTable

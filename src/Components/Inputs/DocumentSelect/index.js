@@ -21,14 +21,17 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import Button, { SecondaryBlueButton } from '@/Components/Button'
+import Button, { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import closeIcon from '@/Icons/closeIcon'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import Input from '../../Fields/Input'
 import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
 import log from 'tailwindcss/lib/util/log'
+import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
 
 const changeInput = () => {}
+
+const OverlayIconButton = OverlayButton(SearchButton)
 
 const DocumentSelect = ({
   className,
@@ -162,9 +165,12 @@ const DocumentSelect = ({
         onInput={changeInput}
         onFocus={openModalWindow}
       />
-      <SearchButton onClick={openModalWindow} className="ml-1">
-        <Icon icon={searchIcon} />
-      </SearchButton>
+      <OverlayIconButton
+        onClick={openModalWindow}
+        className="ml-1"
+        icon={searchIcon}
+        text="Поиск по титулам"
+      />
       <ShowDocumentComponent className="ml-1" selectedState={selectedState} />
       <CreateLinkComponent
         open={open}

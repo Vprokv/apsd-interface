@@ -2,14 +2,12 @@ import React, { useCallback, useContext, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import OverlayMenu from '@/Components/OverlayMenu/index'
 
-const RenderOverlayMenu = ({
-  children,
-  renderOverlayMenu,
-  onOpenOverlayMenu,
-  MenuComponent,
-}) => {
+const RenderOverlayMenu = ({ children, MenuComponent }) => {
+  const [renderOverlayMenu, setRenderOverlayMenu] = useState(false)
   const ScrollContainer = React.createContext(document.body)
   const refContainer = useContext(ScrollContainer)
+  const onOpenOverlayMenu = useCallback(() => setRenderOverlayMenu(true), [])
+  const onMouseOut = useCallback(() => setRenderOverlayMenu(false), [])
   const overlayBoundRef = useRef()
   const [openOverlayEvent, setOpenOverlayEvent] = useState(null)
   const openEvent = useCallback(
@@ -33,13 +31,16 @@ const RenderOverlayMenu = ({
       ) : null,
     [openOverlayEvent, refContainer, renderOverlayMenu],
   )
-  return children(overlayBoundRef, openEvent, renderOverlay)
+  return children({
+    ref: overlayBoundRef,
+    onMouseOver: openEvent,
+    OverlayMenu: renderOverlay,
+    onMouseOut,
+  })
 }
 
 RenderOverlayMenu.propTypes = {
-  onOpenOverlayMenu: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,
-  renderOverlayMenu: PropTypes.bool,
   MenuComponent: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.node,

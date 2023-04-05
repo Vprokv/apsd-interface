@@ -10,15 +10,15 @@ export const SlotContainer = styled.div`
 
 export const FixedContainer = styled.div`
   position: fixed;
+  text-align: center;
   z-index: 2000;
   transition: none;
-  text-align: left;
   margin-top: 4px;
   font-size: 12px;
   background-color: black;
   color: white;
   font-weight: 500;
-  padding: 5px;
+  padding: 5px 0;
   white-space: nowrap;
   border-radius: 5px;
   ${(props) =>
