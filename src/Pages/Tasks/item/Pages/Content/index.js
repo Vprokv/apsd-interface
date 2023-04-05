@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
+  OverlayIconButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
@@ -40,7 +41,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import ShowLineRowComponent from "@/Components/ShowLineRowComponent";
+import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -161,7 +162,7 @@ const Content = () => {
     })
 
     return data
-  }, [api, loadDataHelper, paginationState, filterValue, id, change])
+  }, [api, paginationState, filterValue, id])
 
   useAutoReload(loadData, tabItemState)
 
@@ -183,14 +184,14 @@ const Content = () => {
             })
           }),
         ])
-        setChange()
+        setTabState({ loading: false, fetched: false })
         getNotification(customMessagesFuncMap[response[0].status]())
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
       }
     }
-  }, [api, selectState, setChange])
+  }, [api, getNotification, selectState, setTabState])
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
@@ -266,33 +267,39 @@ const Content = () => {
           >
             Добавить файл /версию
           </SecondaryBlueButton>
-          <ButtonForIcon
+          <OverlayIconButton
             onClick={downLoadContent}
             disabled={disabled}
             className="ml-2"
-          >
-            <Icon icon={DownloadIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon
-            disabled={disabled}
+            icon={DownloadIcon}
+            text="Скачать контент"
+          />
+          <OverlayIconButton
             onClick={editVersion}
+            disabled={disabled}
             className="ml-2"
-          >
-            <Icon icon={EditIcon} />
-          </ButtonForIcon>
+            icon={EditIcon}
+            text="Редактировать"
+          />
           <ButtonForIcon className="ml-2">
             <Icon icon={WarningIcon} />
           </ButtonForIcon>
-          <ButtonForIcon
-            className="ml-2"
-            disabled={!selectState[0]}
+          <OverlayIconButton
             onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
-          >
-            <Icon icon={ViewIcon} size={20} />
-          </ButtonForIcon>
-          <ButtonForIcon className="ml-2" onClick={deleteVersion}>
-            <Icon icon={deleteIcon} />
-          </ButtonForIcon>
+            disabled={!selectState[0]}
+            className="ml-2"
+            icon={ViewIcon}
+            text="Посмотреть файл"
+            size={20}
+          />
+          <OverlayIconButton
+            onClick={deleteVersion}
+            disabled={!selectState[0]}
+            className="ml-2"
+            icon={deleteIcon}
+            text="Удалить"
+            size={20}
+          />
         </div>
       </div>
       <FormWindow open={errorState} onClose={() => setErrorState('')}>
@@ -306,7 +313,10 @@ const Content = () => {
         </SecondaryGreyButton>
       </FormWindow>
       <ListTable
-        rowComponent={useMemo(() => (props) => <ShowLineRowComponent {...props} />, [])}
+        rowComponent={useMemo(
+          () => (props) => <ShowLineRowComponent {...props} />,
+          [],
+        )}
         value={content || []}
         columns={columns}
         plugins={plugins}

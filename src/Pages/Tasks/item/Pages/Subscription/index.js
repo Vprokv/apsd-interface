@@ -29,7 +29,7 @@ import { FilterForm } from '../../styles'
 import Icon from '@/components_ocean/Components/Icon'
 import ListTable from '@/components_ocean/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
-import Button, { ButtonForIcon } from '@/Components/Button'
+import Button, { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
 import filterIcon from '../../../list/icons/filterIcon'
 import deleteIcon from '@/Icons/deleteIcon'
 import UserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
@@ -253,12 +253,18 @@ const Subscription = () => {
           >
             Добавить подписку
           </Button>
-          <ButtonForIcon className="ml-2">
-            <Icon icon={filterIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon onClick={onDelete} className="ml-2">
-            <Icon icon={deleteIcon} />
-          </ButtonForIcon>
+          <OverlayIconButton
+            onClick={onDelete}
+            className="ml-2"
+            icon={filterIcon}
+            text="Фильтры"
+          />
+          <OverlayIconButton
+            onClick={onDelete}
+            className="ml-2"
+            icon={deleteIcon}
+            text="Удалить"
+          />
         </div>
       </div>
       <EventsContext.Provider value={events}>

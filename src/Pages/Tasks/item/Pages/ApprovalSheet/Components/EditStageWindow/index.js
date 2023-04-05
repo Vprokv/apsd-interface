@@ -13,7 +13,7 @@ import Form from '@Components/Components/Forms'
 import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import editIcon from '@/Icons/editIcon'
 import InputComponent from '@Components/Components/Inputs/Input'
-import { ApiContext } from '@/contants'
+import {ApiContext, TASK_ITEM_APPROVAL_SHEET} from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   LoadContext,
@@ -40,8 +40,13 @@ import {
   VALIDATION_RULE_INTEGER,
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
-import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import {
+  CustomButtonForIcon,
+  OverlayCustomIconButton,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
+import useTabItem from "@Components/Logic/Tab/TabItem";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -72,13 +77,16 @@ export const AddUserOptionsFullName = (v = {}) => ({
 const EditStageWindow = (props) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
-  const loadData = useContext(LoadContext)
   const [open, setOpenState] = useState(false)
   const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
   const permit = useContext(PermitDisableContext)
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
 
   const initialFilterState = useMemo(() => {
     if (props) {
@@ -201,14 +209,14 @@ const EditStageWindow = (props) => {
   const onSave = useCallback(async () => {
     try {
       const response = await api.post(URL_APPROVAL_SHEET_UPDATE, { stage })
-      loadData()
+      setTabState({ loading: false, fetched: false })
       changeModalState(false)()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, stage, loadData, changeModalState, getNotification])
+  }, [api, stage, setTabState, changeModalState, getNotification])
 
   const onClose = useCallback(() => {
     setFilterValue(initialFilterState)
@@ -216,14 +224,14 @@ const EditStageWindow = (props) => {
   }, [changeModalState, initialFilterState])
 
   return (
-    <div className="flex items-center ml-auto ">
-      <CustomButtonForIcon
-        disabled={permit}
+    <div className="flex items-center ml-auto">
+      <OverlayCustomIconButton
         className="color-blue-1"
         onClick={changeModalState(true)}
-      >
-        <Icon icon={editIcon} />
-      </CustomButtonForIcon>
+        disabled={permit}
+        icon={editIcon}
+        text="Редактировать этап"
+      />
       <CustomSizeModalWindow
         title="Редактировать этап"
         open={open}

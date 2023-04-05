@@ -1,4 +1,10 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
@@ -10,7 +16,7 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
@@ -28,6 +34,7 @@ import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/D
 import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
 import CreateTemplateWindow from './Components/CreateTemplateWindow'
 import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
+import EditIcon from '@/Icons/editIcon'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -47,20 +54,13 @@ const ApprovalSheet = () => {
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
   const [state, setState] = useState(false)
-  //
-  // const {
-  //   tabState: { update },
-  //   setTabState: setDocumentTypeState,
-  // } = useTabItem({
-  //   stateId: documentType,
-  // })
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const {
     setTabState,
-    tabState: { data = [], change },
+    tabState: { data = []},
   } = tabItemState
 
   const setChange = useCallback(
@@ -71,12 +71,6 @@ const ApprovalSheet = () => {
     [setTabState],
   )
 
-  // useEffect(() => {
-  //   if (!update) {
-  //     setDocumentTypeState({ update: false })
-  //   }
-  // }, [setDocumentTypeState, update])
-
   const loadData = useCallback(async () => {
     const { data } = await api.post(URL_APPROVAL_SHEET, {
       id: documentId,
@@ -84,15 +78,6 @@ const ApprovalSheet = () => {
     })
     return data
   }, [api, documentId, type])
-
-  // useEffect(() => {
-  //   ;(async () => {
-  //     if (update) {
-  //       setTabState({ data: await loadData() })
-  //     }
-  //     setDocumentTypeState({ update: false })
-  //   })()
-  // }, [loadData, setDocumentTypeState, setTabState, update])
 
   useEffect(() => {
     setToggleNavigationData(
@@ -178,12 +163,12 @@ const ApprovalSheet = () => {
               >
                 <Icon icon={PostponeIcon} />
               </ButtonForIcon>
-              <ButtonForIcon
-                className="color-text-secondary"
+              <OverlayIconButton
                 onClick={openAllStages}
-              >
-                <Icon icon={OtherIcon} />
-              </ButtonForIcon>
+                className="color-text-secondary"
+                icon={OtherIcon}
+                text={!state ? 'Свернуть все' : 'Развернуть все'}
+              />
             </div>
           </div>
           <ScrollBar>

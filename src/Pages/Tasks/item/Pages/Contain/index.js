@@ -16,7 +16,11 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  OverlayIconButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
@@ -42,6 +46,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/TitleNameComponent'
+import EditIcon from '@/Icons/editIcon'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -339,26 +344,32 @@ const Contain = () => {
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
-              <ButtonForIcon
-                className="mr-2"
-                disabled={disabled}
+              <OverlayIconButton
                 onClick={useCallback(
                   () => setRenderPreviewWindowState(true),
                   [],
                 )}
-              >
-                <Icon icon={ViewIcon} size={20} />
-              </ButtonForIcon>
+                disabled={disabled}
+                className="mr-2"
+                icon={ViewIcon}
+                size={20}
+                text="Посмотреть файл"
+              />
               <DeleteContain
                 selectState={selectState}
                 onDeleteData={deleteData}
               />
-              <ButtonForIcon onClick={changeOpenState} className="mr-2">
-                <Icon icon={SortIcon} />
-              </ButtonForIcon>
-              <ButtonForIcon className="color-green">
-                <Icon icon={XlsIcon} />
-              </ButtonForIcon>
+              <OverlayIconButton
+                onClick={changeOpenState}
+                className="mr-2"
+                icon={SortIcon}
+                text="Свернуть"
+              />
+              <OverlayIconButton
+                onClick={changeOpenState}
+                icon={XlsIcon}
+                text="Выгрузить в Excel"
+              />
             </div>
           </div>
         </div>

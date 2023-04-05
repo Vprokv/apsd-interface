@@ -14,7 +14,11 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  OverlayIconButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import ExportIcon from '@/Icons/ExportIcon'
@@ -30,6 +34,9 @@ import angleIcon from '@/Icons/angleIcon'
 import ToggleNavigationItemWrapper, {
   WithToggleNavigationItem,
 } from '@/Pages/Tasks/item/Pages/Remarks/Components/WithToggleNavigationItem'
+import SortIcon from '@/Pages/Tasks/item/Pages/Contain/Icons/SortIcon'
+import EditIcon from '@/Icons/editIcon'
+import ScrollBar from '@Components/Components/ScrollBar'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
@@ -149,50 +156,52 @@ const Remarks = (props) => {
               <SecondaryBlueButton className="ml-2">
                 Выгрузить свод замечаний
               </SecondaryBlueButton>
-              <ButtonForIcon
+              <OverlayIconButton
                 onClick={ChangeAllToggls}
                 className="ml-2 color-text-secondary"
-              >
-                <Icon icon={ExportIcon} />
-              </ButtonForIcon>
+                icon={SortIcon}
+                text={!open ? 'Свернуть все' : 'Развернуть все'}
+              />
             </div>
           </div>
-          <div className="flex flex-col">
-            <ToggleContext.Provider value={{ toggle, onToggle }}>
-              {remarks.map((val) => (
-                <WithToggle key={val.remarkId} id={val.remarkId}>
-                  {({ isDisplayed, toggleDisplayedFlag }) => {
-                    return (
-                      <RowComponent
-                        isDisplayed={isDisplayed}
-                        toggleDisplayedFlag={toggleDisplayedFlag}
-                        key={val.remarkId}
-                        selectState={selectState}
-                        setSelectState={setSelectState}
-                        {...val}
-                      >
-                        <div className="h-12 flex items-center">
-                          <div className="pl-2">
-                            <Icon
-                              icon={angleIcon}
-                              size={10}
-                              className={`color-text-secondary ${
-                                isDisplayed ? '' : 'rotate-180'
-                              }`}
-                            />
-                          </div>
+          <ScrollBar>
+            <div className="flex flex-col">
+              <ToggleContext.Provider value={{ toggle, onToggle }}>
+                {remarks.map((val) => (
+                  <WithToggle key={val.remarkId} id={val.remarkId}>
+                    {({ isDisplayed, toggleDisplayedFlag }) => {
+                      return (
+                        <RowComponent
+                          isDisplayed={isDisplayed}
+                          toggleDisplayedFlag={toggleDisplayedFlag}
+                          key={val.remarkId}
+                          selectState={selectState}
+                          setSelectState={setSelectState}
+                          {...val}
+                        >
+                          <div className="h-12 flex items-center">
+                            <div className="pl-2">
+                              <Icon
+                                icon={angleIcon}
+                                size={10}
+                                className={`color-text-secondary ${
+                                  isDisplayed ? '' : 'rotate-180'
+                                }`}
+                              />
+                            </div>
 
-                          <div className="ml-4 font-medium flex items-center ">
-                            {val?.stageName}
+                            <div className="ml-4 font-medium flex items-center ">
+                              {val?.stageName}
+                            </div>
                           </div>
-                        </div>
-                      </RowComponent>
-                    )
-                  }}
-                </WithToggle>
-              ))}
-            </ToggleContext.Provider>
-          </div>
+                        </RowComponent>
+                      )
+                    }}
+                  </WithToggle>
+                ))}
+              </ToggleContext.Provider>
+            </div>
+          </ScrollBar>
         </div>
       </ShowAnswerButtonContext.Provider>
     </UpdateContext.Provider>

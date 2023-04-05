@@ -7,18 +7,10 @@ import LoadableButton from '../../components_ocean/Components/Button/LoadableBut
 import PropTypes from 'prop-types'
 
 const OverlayButton = (ButtonComponent) => {
-  const OverlayButton = ({
-    text,
-    icon,
-    onClick,
-    className,
-    minSize,
-    maxSize,
-    size,
-  }) => (
+  const OverlayButton = ({ text, icon, minSize, maxSize, size, ...other }) => (
     <RenderOverlayMenu>
       {({ OverlayMenu, ...props }) => (
-        <ButtonComponent className={className} onClick={onClick} {...props}>
+        <ButtonComponent {...props} {...other}>
           <Icon icon={icon} size={size} />
           <OverlayMenu minSize={minSize} maxSize={maxSize}>
             {text}
@@ -35,6 +27,7 @@ const OverlayButton = (ButtonComponent) => {
     className: PropTypes.string,
     minSize: PropTypes.string,
     maxSize: PropTypes.string,
+    size: PropTypes.number,
   }
 
   OverlayButton.defaultProps = {

@@ -4,7 +4,6 @@ import {
   ApiContext,
   BASKET,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  PRESENT_DATE_FORMAT,
   TASK_LIST,
 } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -15,7 +14,6 @@ import {
   URL_BASKET_DELETED,
   URL_BASKET_LIST,
   URL_BASKET_RESTORE_DELETED,
-  URL_DOCUMENT_ITEM,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
@@ -27,12 +25,8 @@ import {
 } from '@/Pages/Basket/list/constans'
 import dayjs from 'dayjs'
 import Filter from '@/Pages/Tasks/list/Components/Filter'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
-import filterIcon from '@/Pages/Tasks/list/icons/filterIcon'
-import sortIcon from '@/Pages/Tasks/list/icons/sortIcon'
-import volumeIcon from '@/Pages/Tasks/list/icons/volumeIcon'
-import XlsIcon from '@/Icons/XlsIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -57,6 +51,7 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ExportIcon from '@/Icons/ExportIcon'
+import EditIcon from '@/Icons/editIcon'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -255,16 +250,19 @@ function BasketList(props) {
           {/*<ButtonForIcon className="mr-2">*/}
           {/*  <Icon icon={sortIcon} />*/}
           {/*</ButtonForIcon>*/}
-          <ButtonForIcon
+          <OverlayIconButton
             onClick={onRestore}
             disabled={!selectState.length}
             className="mr-2"
-          >
-            <Icon icon={ExportIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon onClick={onDelete} disabled={!selectState.length}>
-            <Icon icon={DeleteIcon} />
-          </ButtonForIcon>
+            icon={ExportIcon}
+            text="Убрать из удаленных"
+          />
+          <OverlayIconButton
+            onClick={onDelete}
+            disabled={!selectState.length}
+            icon={DeleteIcon}
+            text="Удалить"
+          />
         </div>
       </div>
       <ListTable

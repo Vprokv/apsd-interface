@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import Button, { LoadableBaseButton } from '@/Components/Button'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { CustomSizeModalWindow, FilterForm } from './styles'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -31,6 +31,7 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import NumericInput from '@Components/Components/Inputs/NumericInput'
 import ScrollBar from 'react-perfect-scrollbar'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -52,13 +53,16 @@ const NAME = 'Указать наименование этапа вручную'
 const CreateApprovalSheetWindow = ({ stageType }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
-  const loadData = useContext(LoadContext)
   const [open, setOpenState] = useState(false)
   const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
   const permit = useContext(PermitDisableContext)
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
 
   const initialFilterState = useMemo(() => {
     const state = (typicalStage || []).find(({ dsb_default }) => dsb_default)
@@ -175,7 +179,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   const onSave = useCallback(async () => {
     try {
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
-      loadData()
+      setTabState({ loading: false, fetched: false })
       changeModalState(false)()
       setFilterValue(initialFilterState)
       getNotification(customMessagesFuncMap[response.status]())
@@ -186,7 +190,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
   }, [
     api,
     stage,
-    loadData,
+    setTabState,
     changeModalState,
     initialFilterState,
     getNotification,

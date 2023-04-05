@@ -27,12 +27,13 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import log from 'tailwindcss/lib/util/log'
+import EditIcon from '@/Icons/editIcon'
 
 const columns = [
   {
@@ -219,9 +220,12 @@ const ArchiveList = () => {
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center color-text-secondary ml-auto">
-        <ButtonForIcon onClick={onExportToExcel} className="color-green">
-          <Icon icon={XlsIcon} />
-        </ButtonForIcon>
+        <OverlayIconButton
+          onClick={onExportToExcel}
+          className="color-green"
+          icon={XlsIcon}
+          text="Экспортировать в Excel"
+        />
       </div>
       <ListTable
         rowComponent={useMemo(

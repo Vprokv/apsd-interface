@@ -14,14 +14,20 @@ import {
   LoadContext,
   PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
-import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import {
+  CustomButtonForIcon,
+  OverlayCustomIconButton,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import dayjs from 'dayjs'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   PRESENT_DATE_FORMAT,
+  TASK_ITEM_APPROVAL_SHEET,
 } from '@/contants'
 import { URL_APPROVAL_SHEET_APPROVER_DELETE } from '@/ApiList'
+import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const Row = styled.div`
   height: 48px;
@@ -52,12 +58,16 @@ const StageRowComponent = ({ node }, props) => {
 
   const permit = useContext(PermitDisableContext)
 
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
+
   const onDelete = useCallback(async () => {
     await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
       performersIds: Object.keys(Object.fromEntries(selectedState.entries())),
     })
-    loadData()
-  }, [api, loadData, selectedState])
+    setTabState({ loading: false, fetched: false })
+  }, [api, selectedState, setTabState])
 
   const includeApprove = approvers.some(({ id }) => selectedState.has(id))
 
@@ -81,13 +91,13 @@ const StageRowComponent = ({ node }, props) => {
                 documentId={documentId}
                 stageType={stageType}
               />
-              <CustomButtonForIcon
+              <OverlayCustomIconButton
+                className="color-blue-1"
                 onClick={onDelete}
                 disabled={!permit && !includeApprove}
-                className="color-blue-1"
-              >
-                <Icon icon={DeleteUserIcon} />
-              </CustomButtonForIcon>
+                icon={DeleteUserIcon}
+                text="Удалить согласующего"
+              />
               <EditStageWindow {...node} />
             </>
           )}

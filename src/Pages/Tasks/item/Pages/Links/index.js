@@ -18,6 +18,7 @@ import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import {
   ButtonForIcon,
+  OverlayIconButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
@@ -140,7 +141,6 @@ const Links = () => {
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
-  const { token } = useContext(TokenContext)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
@@ -148,7 +148,7 @@ const Links = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, change },
+    tabState: { data: { content = [], total = 0 } = {} },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -176,7 +176,7 @@ const Links = () => {
     })
 
     return data
-  }, [api, id, type, change])
+  }, [paginationState, api, id, filter])
 
   useAutoReload(loadData, tabItemState)
 
@@ -264,18 +264,13 @@ const Links = () => {
   const onDelete = useCallback(async () => {
     try {
       const response = await api.post(URL_LINK_DELETE, { linkIds: selectState })
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, selectState])
-
-  const previewDocument = useCallback(async () => {
-    const { data } = await api.get(
-      `${URL_PREVIEW_DOCUMENT}:${selectState[0].contentId}:${token}`,
-    )
-  }, [api, selectState])
+  }, [api, getNotification, selectState, setTabState])
 
   return (
     <UpdateContext.Provider value={setChange}>
@@ -300,35 +295,32 @@ const Links = () => {
               </SecondaryGreyButton>
             </FormWindow>
             <LinksWindow />
-            <ButtonForIcon
+            <OverlayIconButton
               onClick={downLoadContent}
               disabled={disabled}
               className="mr-2 color-text-secondary"
-            >
-              <Icon icon={DownloadIcon} />
-            </ButtonForIcon>
-            <ButtonForIcon
-              className="mr-2 color-text-secondary"
-              disabled={!selectState[0]?.id}
+              icon={DownloadIcon}
+              text="Скачать файл"
+            />
+            <OverlayIconButton
               onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
-            >
-              <Icon icon={ViewIcon} size={20} />
-            </ButtonForIcon>
+              disabled={!selectState[0]?.id}
+              className="mr-2 color-text-secondary"
+              icon={ViewIcon}
+              size={20}
+              text="Посмотреть файл"
+            />
             <EditLinksWindow value={selectState} />
-            <ButtonForIcon
+            <OverlayIconButton
               onClick={onDelete}
               disabled={!selectState.length}
               className="color-text-secondary"
-            >
-              <Icon icon={DeleteIcon} />
-            </ButtonForIcon>
+              icon={DeleteIcon}
+              size={20}
+              text="Удалить файл"
+            />
           </div>
         </div>
-        {/* <div className="flex items-center py-4 form-element-sizes-32">*/}
-        {/*  <SecondaryBlueButton onClick={previewDocument}>*/}
-        {/*    Предпросмотр*/}
-        {/*  </SecondaryBlueButton>*/}
-        {/* </div>*/}
         <ListTable
           rowComponent={useMemo(
             () => (props) =>

@@ -16,11 +16,10 @@ import { useLocation, useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
 import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
-import { FilterForm, TableActionButton } from '../../styles'
+import { FilterForm } from '../../styles'
 import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
-import RowComponent from '../../../list/Components/RowComponent'
 import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
-import Button from '../../../../../Components/Button'
+import Button, { OverlayIconButton } from '../../../../../Components/Button'
 import Icon from '../../../../../components_ocean/Components/Icon'
 import filterIcon from '../../../list/icons/filterIcon'
 import editIcon from '../../../../../Icons/editIcon'
@@ -28,9 +27,9 @@ import CreateObjectsWindow from './Components/CreateObjectsWindow'
 import { ButtonForIcon } from '@/Components/Button'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
+import EditIcon from '../../../../../Icons/editIcon'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -147,7 +146,6 @@ const Objects = (props) => {
     loadDataHelper,
     shouldReloadDataFlag,
     setTabState,
-    // tabState: { data },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -213,12 +211,16 @@ const Objects = (props) => {
           >
             Добавить
           </Button>
-          <ButtonForIcon className="ml-2">
-            <Icon icon={filterIcon} />
-          </ButtonForIcon>
-          <ButtonForIcon className="ml-2">
-            <Icon icon={editIcon} />
-          </ButtonForIcon>
+          <OverlayIconButton
+            className="ml-2"
+            icon={filterIcon}
+            text="Фильтры"
+          />
+          <OverlayIconButton
+            className="ml-2"
+            icon={EditIcon}
+            text="Редактировать"
+          />
         </div>
         <CreateObjectsWindow
           loadDataFunction={loadData}

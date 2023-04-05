@@ -5,10 +5,13 @@ import {
   LoadContext,
   PermitDisableContext,
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
 import { URL_APPROVAL_CREATE } from '@/ApiList'
-import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import {
+  CustomButtonForIcon,
+  OverlayCustomIconButton,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -19,6 +22,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -54,9 +58,11 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
   const permit = useContext(PermitDisableContext)
-
   const api = useContext(ApiContext)
-  const loadData = useContext(LoadContext)
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -64,6 +70,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
     },
     [],
   )
+
   const onSave = useCallback(async () => {
     try {
       const response = await api.post(URL_APPROVAL_CREATE, {
@@ -74,7 +81,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
           return { dsidApproverEmpl: val }
         }),
       })
-      await loadData()
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
       changeModalState(false)()
     } catch (e) {
@@ -82,12 +89,12 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
-    filter,
     api,
     stageId,
     documentId,
     stageType,
-    loadData,
+    filter.user,
+    setTabState,
     getNotification,
     changeModalState,
   ])
@@ -98,13 +105,13 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
   }, [changeModalState])
   return (
     <div className="h-full">
-      <CustomButtonForIcon
+      <OverlayCustomIconButton
         className="color-blue-1"
         onClick={changeModalState(true)}
         disabled={permit}
-      >
-        <Icon icon={AddUserIcon} />
-      </CustomButtonForIcon>
+        icon={AddUserIcon}
+        text="Добавить согласующего"
+      />
       <StandardSizeModalWindow
         title="Добавить согласующего"
         open={open}

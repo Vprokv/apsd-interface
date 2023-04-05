@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Button, { SecondaryBlueButton } from '@/Components/Button'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import { CustomInput, FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -36,6 +36,7 @@ import {
   RowInputWrapperRefactor,
   ValidationProvider,
 } from '@/Components/InputWrapperRefactor'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -71,8 +72,11 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
-  const update = useContext(UpdateContext)
   const getNotification = useOpenNotification()
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_REMARKS,
+  })
 
   const {
     r_object_id,
@@ -145,7 +149,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         InputUiContext: NdtLinkWrapper,
       },
     ],
-    [api, initialUserValue],
+    [api, editAuthor, initialUserValue.member],
   )
 
   const changeModalState = useCallback(
@@ -158,14 +162,14 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   const onSave = useCallback(async () => {
     try {
       const { member, ...other } = filter
-      const { status } = api.post(URL_REMARK_CREATE, {
+      const { status } = await api.post(URL_REMARK_CREATE, {
         documentId: id,
         memberId: member.emplId,
         memberName: member.userName,
         ...other,
       })
       getNotification(customMessagesFuncMap[status]())
-      update()
+      setTabState({ loading: false, fetched: false })
       changeModalState(false)()
       setFilterValue(initialUserValue)
     } catch (e) {
@@ -179,7 +183,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
     getNotification,
     id,
     initialUserValue,
-    update,
+    setTabState,
   ])
 
   const onClose = useCallback(() => {

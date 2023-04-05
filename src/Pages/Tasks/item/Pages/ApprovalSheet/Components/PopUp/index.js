@@ -3,7 +3,7 @@ import { FormWindow } from '../../../../../../../Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import deleteIcon from '@/Icons/deleteIcon'
 import Icon from '@Components/Components/Icon'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { URL_APPROVAL_SHEET_DELETE } from '@/ApiList'
 import {
   LoadContext,
@@ -13,8 +13,13 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import {
+  CustomButtonForIcon,
+  OverlayCustomIconButton,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -29,10 +34,13 @@ const customMessagesFuncMap = {
 const PopUp = ({ node }) => {
   const { id, approvers } = node
   const api = useContext(ApiContext)
-  const loadData = useContext(LoadContext)
   const getNotification = useOpenNotification()
   const [open, setOpenState] = useState(false)
   const permit = useContext(PermitDisableContext)
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -46,27 +54,27 @@ const PopUp = ({ node }) => {
       const response = await api.post(URL_APPROVAL_SHEET_DELETE, {
         id,
       })
-      await loadData()
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
     changeModalState(false)()
-  }, [api, changeModalState, getNotification, id, loadData])
+  }, [api, changeModalState, getNotification, id, setTabState])
 
   const openModal = useCallback(() => {
     approvers && approvers.length > 0 ? onDelete() : changeModalState(true)()
   }, [approvers, changeModalState, onDelete])
   return (
     <>
-      <CustomButtonForIcon
+      <OverlayCustomIconButton
+        className="color-blue-1"
         onClick={openModal}
         disabled={permit}
-        className="color-blue-1"
-      >
-        <Icon icon={deleteIcon} />
-      </CustomButtonForIcon>
+        icon={deleteIcon}
+        text="Удалить этап"
+      />
       <FormWindow open={open} onClose={changeModalState(false)}>
         <div className="text-center mt-4 mb-12">
           Вы действительно хотите удалить этап?

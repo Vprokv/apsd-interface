@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import EditIcon from '@/Icons/editIcon'
 import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
@@ -16,13 +16,15 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import LinkDate from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/LinkDate'
 import LinkType from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/LinkType'
 import Comment from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/Comment'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import { URL_LINK_UPDATE, URL_SUBSCRIPTION_DELETE } from '@/ApiList'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import DeleteIcon from '@/Icons/deleteIcon'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -78,6 +80,10 @@ const EditLinksWindow = ({ value }) => {
   const [date, setDate] = useState(() => new Map())
   const getNotification = useOpenNotification()
 
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_LINK,
+  })
+
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
@@ -124,23 +130,34 @@ const EditLinksWindow = ({ value }) => {
         )
       })
       changeModalState(false)
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, changeModalState, comment, date, getNotification, link, value])
+  }, [
+    api,
+    changeModalState,
+    comment,
+    date,
+    getNotification,
+    link,
+    setTabState,
+    value,
+  ])
 
   return (
     <EditLinkContext.Provider value={context}>
       <div className="flex items-center ml-auto ">
-        <ButtonForIcon
+        <OverlayIconButton
           onClick={changeModalState(true)}
-          className="mr-2 color-text-secondary"
           disabled={!value.length}
-        >
-          <Icon icon={EditIcon} />
-        </ButtonForIcon>
+          className="mr-2 color-text-secondary"
+          icon={EditIcon}
+          size={20}
+          text="Обновить связи"
+        />
         <CreateLinkComponent
           title="Обновить связи"
           open={open}
