@@ -169,20 +169,26 @@ const ArchiveList = () => {
     defaultLimit: 10,
   })
 
-  const filter = { titleId: id, sectionId: sectionId || undefined }
+  const filter = useMemo(
+    () => ({
+      titleId: id,
+      sectionId: sectionId || undefined,
+    }),
+    [id, sectionId],
+  )
 
   const loadData = useCallback(async () => {
     const { limit, offset } = paginationState
     const {
       data: { content },
     } = await api.post(URL_STORAGE_DOCUMENT, {
-      filter: { titleId: id, sectionId: sectionId || undefined },
+      filter,
       limit,
       offset,
     })
 
     return content
-  }, [api, id, paginationState, sectionId])
+  }, [api, filter, paginationState])
 
   useAutoReload(loadData, tabItemState)
 
@@ -192,12 +198,11 @@ const ArchiveList = () => {
       data: { id },
     } = await api.post(URL_EXPORT, {
       url: `${API_URL}${URL_STORAGE_DOCUMENT}`,
-      label: `${parentName}/${name}`,
-      sheetName: `${parentName}/${name}`,
+      label: `${parentName}${name}`,
+      sheetName: `${parentName}${name}`,
       columns: columnMap,
       body: {
         filter,
-        // filter: { titleId: id, sectionId: sectionId || undefined },
         limit,
         offset,
         token,
