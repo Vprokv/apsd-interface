@@ -123,6 +123,15 @@ export const required_without = (...fieldsKeys) => ({
   args: { fieldsKeys },
 })
 
+export const defaultForJson = (values) => {
+  const { attribute, filter } = (values && JSON.parse(values)) || {}
+
+  return {
+    name: VALIDATION_RULE_REQUIRED_IF,
+    args: { fieldKey: attribute, fieldValue: filter },
+  }
+}
+
 export const validationRules = {
   accepted,
   size,
@@ -142,6 +151,7 @@ export const validationRules = {
   required_with_all,
   required_without_all,
   required_without,
+  defaultForJson,
 }
 
 const getLoadFunction = (accumulator) => {

@@ -144,8 +144,14 @@ export const Requisites = ({ type: documentType, documentState }) => {
               .map((rule) => {
                 const [ruleName, ...args] = rule.startsWith('regex')
                   ? rule.split(':')
+                  : rule.startsWith('{')
+                  ? rule.split()
                   : rule.split(/([,:])/gm)
-                return validationRules[ruleName](...args)
+
+                const {
+                  [ruleName]: validationRule = validationRules.defaultForJson,
+                } = validationRules
+                return validationRule(...args, ruleName)
               })
           }
 
@@ -212,6 +218,8 @@ export const Requisites = ({ type: documentType, documentState }) => {
       interceptors: interceptorsFunctions,
     }
   }, [values, parsedDesign])
+
+  // console.log(rules, 'rules')
 
   return (
     <ScrollBar className="w-full">
