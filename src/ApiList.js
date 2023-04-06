@@ -51,7 +51,8 @@ export const URL_APPROVAL_SHEET_CREATE_AND_START =
 export const URL_APPROVAL_CREATE = '/sedo/approve/approvers/create'
 export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT =
   '/apsd/business/start/additional'
-export const URL_APPROVAL_SHEET_APPROVER_DELETE = '/sedo/approver/delete'
+export const URL_APPROVAL_SHEET_APPROVER_DELETE =
+  '/sedo/approve/approver/delete'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'

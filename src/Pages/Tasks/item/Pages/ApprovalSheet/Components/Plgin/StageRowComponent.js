@@ -42,7 +42,6 @@ const Row = styled.div`
 
 const StageRowComponent = ({ node }, props) => {
   const api = useContext(ApiContext)
-  const loadData = useContext(LoadContext)
   const {
     term,
     id,
