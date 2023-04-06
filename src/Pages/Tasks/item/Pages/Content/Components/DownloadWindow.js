@@ -7,7 +7,11 @@ import DatePicker from '@/Components/Inputs/DatePicker'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import dayjs from 'dayjs'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { ApiContext, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
+import {
+  ApiContext,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  TASK_ITEM_CONTENT,
+} from '@/contants'
 import { URL_CREATE_VERSION, URL_ENTITY_LIST } from '@/ApiList'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
@@ -23,6 +27,7 @@ import {
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -50,6 +55,10 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
   const context = useContext(ContainerContext)
   const getNotification = useOpenNotification()
 
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_CONTENT,
+  })
+
   const onSave = useCallback(async () => {
     const { contentType, comment, regNumber, versionDate, files } = values
     const [{ dsc_content, dss_content_name }] = files
@@ -66,14 +75,14 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
           versionDate,
         },
       })
-      setChange()
+      setTabState({ loading: false, fetched: false })
       onClose()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, contentId, getNotification, id, onClose, setChange, values])
+  }, [api, contentId, getNotification, id, onClose, setTabState, values])
   const userObject = useRecoilValue(userAtom)
 
   useEffect(() => {
