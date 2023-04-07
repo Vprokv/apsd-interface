@@ -22,14 +22,12 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
 
   useEffect(() => {
     ;(async () => {
-      const [{ data: apsd }, { data: ts }, { data: sedo }, support] =
-        await Promise.all([
-          api.post(URL_REVISION_APSD),
-          api.post(URL_REVISION_CHAT),
-          api.post(URL_REVISION_SEDO),
-          axios.get('/settings.json'),
-        ])
-      setDirection({ apsd, ts, sedo, support })
+      const [{ data: apsd }, { data: ts }, { data: sedo }] = await Promise.all([
+        api.get(URL_REVISION_APSD),
+        api.get(URL_REVISION_CHAT),
+        api.get(URL_REVISION_SEDO),
+      ])
+      setDirection({ apsd, ts, sedo })
     })()
   }, [api])
 
@@ -49,17 +47,16 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
           <div className="font-bold mt-4">Сборка sedo:</div>
           <div>
             {direction.sedo &&
-              `${direction.sedo?.commit}/${direction.sedo?.branches}`}
+              `${direction.sedo?.commit}/ ${direction.sedo?.branch}`}
           </div>
           <div className="font-bold mt-4">Сборка apsd:</div>
           <div>
             {direction.apsd &&
-              `${direction.apsd?.commit}/${direction.apsd?.branches}`}
+              `${direction.apsd?.commit}/ ${direction.apsd?.branch}`}
           </div>
-          <div className="font-bold mt-4">Сборка apsd:</div>
+          <div className="font-bold mt-4">Сборка ts:</div>
           <div>
-            {direction.ts &&
-              `${direction.ts?.commit}/${direction.ts?.branches}`}
+            {direction.ts && `${direction.ts?.commit}/ ${direction.ts?.branch}`}
           </div>
         </div>
         <FormContainer className="p-5 flex flex-col">
