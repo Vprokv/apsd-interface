@@ -202,6 +202,7 @@ const EditStageWindow = (props) => {
   }, [
     filterValue,
     api,
+    id,
     visible,
     setTabState,
     changeModalState,
