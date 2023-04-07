@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import Icon from '@Components/Components/Icon'
@@ -62,11 +62,6 @@ const columnMap = [
     componentType: 'DescriptionTableColumn',
     header: 'Задание',
     path: '[documentStatus, creationDate, dueDate, taskType, read]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Том',
-    path: '[documentRegNumber, display, creationDate]',
   },
   {
     componentType: 'DescriptionTableColumn',
