@@ -6,31 +6,18 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import Icon from '@Components/Components/Icon'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import Form from '@Components/Components/Forms'
-import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
+import Button, { LoadableBaseButton } from '@/Components/Button'
 import editIcon from '@/Icons/editIcon'
-import InputComponent from '@Components/Components/Inputs/Input'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import {
-  LoadContext,
-  PermitDisableContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import {
-  URL_APPROVAL_SHEET_CREATE,
-  URL_APPROVAL_SHEET_UPDATE,
-  URL_ENTITY_LIST,
-} from '@/ApiList'
+import { URL_APPROVAL_SHEET_UPDATE, URL_ENTITY_LIST } from '@/ApiList'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import UserSelect from '@/Components/Inputs/UserSelect'
 import NumericInput from '@Components/Components/Inputs/NumericInput'
 import {
   CustomSizeModalWindow,
@@ -40,12 +27,8 @@ import {
   VALIDATION_RULE_INTEGER,
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
-import {
-  CustomButtonForIcon,
-  OverlayCustomIconButton,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import { OverlayCustomIconButton } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
@@ -66,9 +49,7 @@ const rules = {
 const NAME = 'Указать наименование этапа вручную'
 
 export const AddUserOptionsFullName = (v = {}) => ({
-  // ...v,
   emplId: v.dsidApproverEmpl,
-  // fullName: `${v.dssApproverFio}`,
   fullDescription: v.fullDescription
     ? v.fullDescription
     : `${v.dssApproverFio}, ${v.dssApproverDep}`,
@@ -76,7 +57,6 @@ export const AddUserOptionsFullName = (v = {}) => ({
 
 const EditStageWindow = (props) => {
   const api = useContext(ApiContext)
-  const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
   const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
@@ -139,11 +119,6 @@ const EditStageWindow = (props) => {
     [],
   )
 
-  const options = useMemo(
-    () => props?.approvers.map(AddUserOptionsFullName),
-    [props?.approvers],
-  )
-
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
   const fields = useMemo(
@@ -185,7 +160,7 @@ const EditStageWindow = (props) => {
   )
 
   const onSave = useCallback(async () => {
-    const { name, show, term } = filterValue
+    const { name, show, term, id } = filterValue
     try {
       const response = await api.post(URL_APPROVAL_SHEET_UPDATE, {
         id,
@@ -202,7 +177,6 @@ const EditStageWindow = (props) => {
   }, [
     filterValue,
     api,
-    id,
     visible,
     setTabState,
     changeModalState,

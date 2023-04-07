@@ -165,16 +165,16 @@ const columnsMap = [
     header: 'Дата создания',
     path: 'values.dsdt_creation_date',
   },
-  // {
-  //   componentType: 'DescriptionTableColumn',
-  //   header: 'Этап',
-  //   path: '',
-  // },
-  // {
-  //   componentType: 'DescriptionTableColumn',
-  //   header: 'Контрольный срок',
-  //   path: '',
-  // },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Этап',
+    path: 'a',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Контрольный срок',
+    path: 'a',
+  },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Автор',
