@@ -45,7 +45,7 @@ export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
 export const URL_APPROVAL_SHEET = '/sedo/approve/stage/get_all'
 export const URL_APPROVAL_SHEET_DELETE = '/sedo/approve/stage/delete'
 export const URL_APPROVAL_SHEET_CREATE = '/sedo/approve/stage/create'
-export const URL_APPROVAL_SHEET_UPDATE = '/sedo/approve/stage/update'
+export const URL_APPROVAL_SHEET_UPDATE = '/apsd/business/stage/update'
 export const URL_APPROVAL_SHEET_CREATE_AND_START =
   '/sedo/approve/additional/create_and_start'
 export const URL_APPROVAL_CREATE = '/sedo/approve/approvers/create'

@@ -13,7 +13,7 @@ import Form from '@Components/Components/Forms'
 import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import editIcon from '@/Icons/editIcon'
 import InputComponent from '@Components/Components/Inputs/Input'
-import {ApiContext, TASK_ITEM_APPROVAL_SHEET} from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   LoadContext,
@@ -46,7 +46,7 @@ import {
 } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
-import useTabItem from "@Components/Logic/Tab/TabItem";
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -175,40 +175,22 @@ const EditStageWindow = (props) => {
           label: 'Наименование этапа',
         },
         {
-          id: 'approvers',
-          component: UserSelect,
-          options: options,
-          multiple: true,
-          returnOption: false,
-          placeholder: 'Выберите участников',
-          label: 'Участники',
-        },
-        {
           id: 'term',
           component: NumericInput,
           placeholder: 'Срок в рабочих днях',
           label: 'Укажите в рабочих днях',
         },
       ].filter(({ visible }) => visible !== false),
-    [api, options, typicalStage, visible],
+    [api, typicalStage, visible],
   )
 
-  const stage = useMemo(() => {
-    const { approvers = [], name, show, ...other } = filterValue
-    return {
-      ...other,
-      name: visible ? show : name,
-      documentId: id,
-      autoApprove: false,
-      approvers: approvers?.map((val) => {
-        return { dsidApproverEmpl: val }
-      }),
-    }
-  }, [filterValue, id, visible])
-
   const onSave = useCallback(async () => {
+    const { name, show, term } = filterValue
     try {
-      const response = await api.post(URL_APPROVAL_SHEET_UPDATE, { stage })
+      const response = await api.post(URL_APPROVAL_SHEET_UPDATE, {
+        name: visible ? show : name,
+        term,
+      })
       setTabState({ loading: false, fetched: false })
       changeModalState(false)()
       getNotification(customMessagesFuncMap[response.status]())
@@ -216,7 +198,14 @@ const EditStageWindow = (props) => {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, stage, setTabState, changeModalState, getNotification])
+  }, [
+    filterValue,
+    api,
+    visible,
+    setTabState,
+    changeModalState,
+    getNotification,
+  ])
 
   const onClose = useCallback(() => {
     setFilterValue(initialFilterState)
