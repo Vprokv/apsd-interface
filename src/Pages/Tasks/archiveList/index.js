@@ -224,7 +224,7 @@ const ArchiveList = () => {
           onClick={onExportToExcel}
           className="color-green"
           icon={XlsIcon}
-          text="Экспортировать в Excel"
+          text="Выгрузить в Excel"
         />
       </div>
       <ListTable
