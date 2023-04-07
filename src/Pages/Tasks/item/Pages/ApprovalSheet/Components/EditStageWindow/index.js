@@ -188,6 +188,7 @@ const EditStageWindow = (props) => {
     const { name, show, term } = filterValue
     try {
       const response = await api.post(URL_APPROVAL_SHEET_UPDATE, {
+        id,
         name: visible ? show : name,
         term,
       })
