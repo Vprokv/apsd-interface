@@ -52,7 +52,7 @@ const rules = {
 const CreateAnswer = ({
   remarkText,
   remarkId,
-  permits: { edit, editAuthor },
+  permits: { createAnswer, editAuthor },
 }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
@@ -196,7 +196,10 @@ const CreateAnswer = ({
 
   return (
     <div>
-      <SecondaryBlueButton disabled={!edit} onClick={changeModalState(true)}>
+      <SecondaryBlueButton
+        disabled={!createAnswer}
+        onClick={changeModalState(true)}
+      >
         Ответить
       </SecondaryBlueButton>
       <StandardSizeModalWindow
