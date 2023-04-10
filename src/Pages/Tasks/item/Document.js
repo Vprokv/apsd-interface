@@ -17,7 +17,12 @@ import {
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import { ApiContext, ITEM_DOCUMENT, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import {
+  ApiContext,
+  ITEM_DOCUMENT,
+  TASK_ITEM_APPROVAL_SHEET,
+  TASK_LIST,
+} from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
@@ -45,6 +50,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
+import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -89,6 +95,7 @@ const Document = () => {
   }, [type, values])
 
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const remoteSideBarUpdater = useContext(LoadTasks)
 
@@ -191,10 +198,14 @@ const Document = () => {
               type,
               signal: name,
             })
-            remoteSideBarUpdater({ loading: false, fetched: false })
+            remoteSideBarUpdater()
             getNotification(customMessagesFuncMap[status]())
             setTabState({ loading: false, fetched: false })
             updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            updateTabStateUpdaterByName([TASK_LIST], {
               loading: false,
               fetched: false,
             })
@@ -214,6 +225,7 @@ const Document = () => {
       setTabState,
       type,
       updateCurrentTabChildrenStates,
+      updateTabStateUpdaterByName,
     ],
   )
 
