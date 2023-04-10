@@ -47,16 +47,16 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
           <div className="font-bold mt-4">Сборка sedo:</div>
           <div>
             {direction.sedo &&
-              `${direction.sedo?.commit}/ ${direction.sedo?.branch}`}
+              `${direction.sedo.commit}/ ${direction.sedo.branch} от ${direction.sedo.date}`}
           </div>
           <div className="font-bold mt-4">Сборка apsd:</div>
           <div>
             {direction.apsd &&
-              `${direction.apsd?.commit}/ ${direction.apsd?.branch}`}
+              `${direction.apsd?.commit}/ ${direction.apsd?.branch} от ${direction.apsd.date}`}
           </div>
           <div className="font-bold mt-4">Сборка ts:</div>
           <div>
-            {direction.ts && `${direction.ts?.commit}/ ${direction.ts?.branch}`}
+            {direction.ts && `${direction.ts?.commit}/ ${direction.ts?.branch} от ${direction.ts.date}`}
           </div>
         </div>
         <FormContainer className="p-5 flex flex-col">
