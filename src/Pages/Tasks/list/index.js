@@ -344,12 +344,12 @@ function TaskList({ loadFunctionRest }) {
   }, [loadData, shouldReloadDataFlag])
 
   return (
-    <div className="px-4 pb-4 overflow-hidden flex-container">
-      <div className="flex items-center">
+    <div className="flex-container p-4 w-full overflow-hidden">
+      <div className="flex items-center ">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
           <OverlayIconButton
-            className="mr-2"
+            className="mx-2"
             icon={filterIcon}
             text="Фильтры"
           />
