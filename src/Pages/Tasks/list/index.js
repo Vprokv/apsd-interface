@@ -344,7 +344,7 @@ function TaskList({ loadFunctionRest }) {
   }, [loadData, shouldReloadDataFlag])
 
   return (
-    <div className="flex-container p-4 w-full overflow-hidden">
+    <div className="flex-container px-4 w-full overflow-hidden">
       <div className="flex items-center ">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">

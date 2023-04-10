@@ -32,6 +32,8 @@ import NumericInput from '@Components/Components/Inputs/NumericInput'
 import ScrollBar from 'react-perfect-scrollbar'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import UnderButtons from '@/Components/Inputs/UnderButtons'
+import { WithValidationForm } from '@Components/Components/Forms'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -41,11 +43,6 @@ const customMessagesFuncMap = {
       message: 'Этап добавлен успешно',
     }
   },
-}
-
-const rules = {
-  name: [{ name: VALIDATION_RULE_REQUIRED }],
-  term: [{ name: VALIDATION_RULE_INTEGER }, { name: VALIDATION_RULE_REQUIRED }],
 }
 
 const NAME = 'Указать наименование этапа вручную'
@@ -113,6 +110,20 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
 
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
+  const rules = useMemo(() => {
+    const rules = {
+      name: [{ name: VALIDATION_RULE_REQUIRED }],
+      term: [
+        { name: VALIDATION_RULE_INTEGER },
+        { name: VALIDATION_RULE_REQUIRED },
+      ],
+    }
+    if (visible) {
+      rules['show'] = [{ name: VALIDATION_RULE_REQUIRED }]
+    }
+    return rules
+  }, [visible])
+
   const fields = useMemo(
     () =>
       [
@@ -120,6 +131,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
           id: 'name',
           label: 'Наименование',
           component: LoadableSelect,
+          required: true,
           placeholder: 'Наименование этапа',
           valueKey: 'dss_name',
           labelKey: 'dss_name',
@@ -218,36 +230,32 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
         <div className="flex flex-col overflow-hidden h-full">
           <ScrollBar>
             <div className="flex py-4">
-              <FilterForm
-                className="form-element-sizes-40"
+              <WithValidationForm
+                className="form-element-sizes-40 w-full "
                 fields={fields}
                 value={filterValue}
                 onInput={setFilterValue}
                 inputWrapper={InputWrapper}
                 rules={rules}
-              />
-            </div>
-            <div className="mt-2 font-size-12">
-              Контрольный срок согласования для томов ПД, РД:
-              <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
-              Согласование куратора филиала - 1 раб. дн. <br />* Согласование
-              куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
+                onSubmit={onSave}
+              >
+                <div className="mt-2 font-size-12">
+                  Контрольный срок согласования для томов ПД, РД:
+                  <br className="ml-6" />* Согласование служб - 3 раб. дн.{' '}
+                  <br />* Согласование куратора филиала - 1 раб. дн. <br />*
+                  Согласование куратора ИА - 1 раб. дн. <br />* Визирование - 10
+                  раб. дн
+                </div>
+                <div className="flex items-center justify-end mt-4">
+                  <UnderButtons
+                    leftLabel="Закрыть"
+                    leftFunc={onClose}
+                    rightLabel="Сохранить"
+                  />
+                </div>
+              </WithValidationForm>
             </div>
           </ScrollBar>
-        </div>
-        <div className="flex items-center justify-end mt-4">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-            onClick={onClose}
-          >
-            Закрыть
-          </Button>
-          <LoadableBaseButton
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-            onClick={onSave}
-          >
-            Сохранить
-          </LoadableBaseButton>
         </div>
       </CustomSizeModalWindow>
     </div>
