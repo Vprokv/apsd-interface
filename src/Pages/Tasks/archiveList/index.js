@@ -1,19 +1,8 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import {
-  ApiContext,
-  TASK_LIST,
-  TASK_LIST_ARCHIVE,
-  TokenContext,
-} from '@/contants'
+import { useCallback, useContext, useMemo, useState } from 'react'
+import { ApiContext, TASK_LIST_ARCHIVE, TokenContext } from '@/contants'
 import { useNavigate, useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  URL_EXPORT,
-  URL_EXPORT_FILE,
-  URL_STORAGE_DOCUMENT,
-  URL_TASK_LIST,
-  URL_TASK_LIST_V2,
-} from '@/ApiList'
+import { URL_EXPORT, URL_EXPORT_FILE, URL_STORAGE_DOCUMENT } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
@@ -27,13 +16,13 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import log from 'tailwindcss/lib/util/log'
 import EditIcon from '@/Icons/editIcon'
+import Tips from '@/Components/Tips'
 
 const columns = [
   {
@@ -220,12 +209,11 @@ const ArchiveList = () => {
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center color-text-secondary ml-auto">
-        <OverlayIconButton
-          onClick={onExportToExcel}
-          className="color-green"
-          icon={XlsIcon}
-          text="Выгрузить в Excel"
-        />
+        <Tips text="Выгрузить в Excel">
+          <ButtonForIcon className="color-green" onClick={onExportToExcel}>
+            <Icon icon={XlsIcon} />
+          </ButtonForIcon>
+        </Tips>
       </div>
       <ListTable
         rowComponent={useMemo(

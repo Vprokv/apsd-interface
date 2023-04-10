@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,30 +6,27 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
 import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
 import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import Select from '../../../../../Components/Inputs/Select'
-import { useLocation, useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
 import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
 import { FilterForm } from '../../styles'
 import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
 import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
-import Button, { OverlayIconButton } from '../../../../../Components/Button'
+import Button, { ButtonForIcon } from '../../../../../Components/Button'
 import Icon from '../../../../../components_ocean/Components/Icon'
 import filterIcon from '../../../list/icons/filterIcon'
-import editIcon from '../../../../../Icons/editIcon'
 import CreateObjectsWindow from './Components/CreateObjectsWindow'
-import { ButtonForIcon } from '@/Components/Button'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import EditIcon from '../../../../../Icons/editIcon'
+import Tips from '@/Components/Tips'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -119,7 +116,7 @@ const filterFormConfig = [
 
 const emptyWrapper = ({ children }) => children
 
-const Objects = (props) => {
+const Objects = () => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [selectState, setSelectState] = useState([])
@@ -211,16 +208,16 @@ const Objects = (props) => {
           >
             Добавить
           </Button>
-          <OverlayIconButton
-            className="ml-2"
-            icon={filterIcon}
-            text="Фильтры"
-          />
-          <OverlayIconButton
-            className="ml-2"
-            icon={EditIcon}
-            text="Редактировать"
-          />
+          <Tips text="Фильтры">
+            <ButtonForIcon className="mr-2">
+              <Icon icon={filterIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Редактировать">
+            <ButtonForIcon className="mr-2">
+              <Icon icon={EditIcon} />
+            </ButtonForIcon>
+          </Tips>
         </div>
         <CreateObjectsWindow
           loadDataFunction={loadData}

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { LoadableBaseButton } from '@/Components/Button'
-import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
 
 export const CustomButtonForIcon = styled(LoadableBaseButton)`
   display: flex;
@@ -15,5 +14,3 @@ export const CustomButtonForIcon = styled(LoadableBaseButton)`
     color: var(--text-secondary);
   }
 `
-
-export const OverlayCustomIconButton = OverlayButton(CustomButtonForIcon)

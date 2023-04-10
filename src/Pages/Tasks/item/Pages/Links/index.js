@@ -1,6 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
-import { useParams } from 'react-router-dom'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
@@ -8,7 +6,6 @@ import {
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
-  URL_PREVIEW_DOCUMENT,
   URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -16,12 +13,7 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import {
-  ButtonForIcon,
-  OverlayIconButton,
-  SecondaryBlueButton,
-  SecondaryGreyButton,
-} from '@/Components/Button'
+import { ButtonForIcon, SecondaryGreyButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -38,7 +30,6 @@ import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import { TokenContext } from '@/contants'
 import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import Pagination from '@/Components/Pagination'
@@ -48,6 +39,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import Tips from '@/Components/Tips'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -132,7 +124,6 @@ const columns = [
 ]
 
 const Links = () => {
-  const { type } = useParams()
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
@@ -295,30 +286,37 @@ const Links = () => {
               </SecondaryGreyButton>
             </FormWindow>
             <LinksWindow />
-            <OverlayIconButton
-              onClick={downLoadContent}
-              disabled={disabled}
-              className="mr-2 color-text-secondary"
-              icon={DownloadIcon}
-              text="Скачать файл"
-            />
-            <OverlayIconButton
-              onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
-              disabled={!selectState[0]?.id}
-              className="mr-2 color-text-secondary"
-              icon={ViewIcon}
-              size={20}
-              text="Посмотреть файл"
-            />
+            <Tips text="Скачать файл">
+              <ButtonForIcon
+                onClick={downLoadContent}
+                disabled={disabled}
+                className="mr-2 color-text-secondary"
+              >
+                <Icon icon={DownloadIcon} />
+              </ButtonForIcon>
+            </Tips>
+            <Tips text="Посмотреть файл">
+              <ButtonForIcon
+                onClick={useCallback(
+                  () => setRenderPreviewWindowState(true),
+                  [],
+                )}
+                disabled={!selectState[0]?.id}
+                className="mr-2 color-text-secondary"
+              >
+                <Icon size={20} icon={ViewIcon} />
+              </ButtonForIcon>
+            </Tips>
             <EditLinksWindow value={selectState} />
-            <OverlayIconButton
-              onClick={onDelete}
-              disabled={!selectState.length}
-              className="color-text-secondary"
-              icon={DeleteIcon}
-              size={20}
-              text="Удалить файл"
-            />
+            <Tips text="Удалить файл">
+              <ButtonForIcon
+                onClick={onDelete}
+                disabled={!selectState.length}
+                className="color-text-secondary"
+              >
+                <Icon size={20} icon={DeleteIcon} />
+              </ButtonForIcon>
+            </Tips>
           </div>
         </div>
         <ListTable

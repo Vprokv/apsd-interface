@@ -1,23 +1,13 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
-import Tree from '@Components/Components/Tree'
 import Icon from '@Components/Components/Icon'
-import angleIcon from '@/Icons/angleIcon'
-import log from 'tailwindcss/lib/util/log'
 import styled from 'styled-components'
-import { Button } from '@Components/Components/Button'
 import AddUserWindow from '../AddUserWindow/AddUserWindow'
 import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
 import EditStageWindow from '../EditStageWindow'
 import PopUp from '../PopUp'
-import {
-  LoadContext,
-  PermitDisableContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
-import {
-  CustomButtonForIcon,
-  OverlayCustomIconButton,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import dayjs from 'dayjs'
 import {
   ApiContext,
@@ -26,8 +16,8 @@ import {
   TASK_ITEM_APPROVAL_SHEET,
 } from '@/contants'
 import { URL_APPROVAL_SHEET_APPROVER_DELETE } from '@/ApiList'
-import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import Tips from '@/Components/Tips'
 
 const Row = styled.div`
   height: 48px;
@@ -90,13 +80,15 @@ const StageRowComponent = ({ node }, props) => {
                 documentId={documentId}
                 stageType={stageType}
               />
-              <OverlayCustomIconButton
-                className="color-blue-1"
-                onClick={onDelete}
-                disabled={!permit && !includeApprove}
-                icon={DeleteUserIcon}
-                text="Удалить согласующего"
-              />
+              <Tips text="Удалить согласующего">
+                <CustomButtonForIcon
+                  className="color-blue-1"
+                  onClick={onDelete}
+                  disabled={!permit && !includeApprove}
+                >
+                  <Icon icon={DeleteUserIcon} />
+                </CustomButtonForIcon>
+              </Tips>
               <EditStageWindow {...node} />
             </>
           )}

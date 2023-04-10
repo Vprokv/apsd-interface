@@ -1,17 +1,11 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
 import Icon from '@Components/Components/Icon'
-import {
-  LoadContext,
-  PermitDisableContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
 import { URL_APPROVAL_CREATE } from '@/ApiList'
-import {
-  CustomButtonForIcon,
-  OverlayCustomIconButton,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -23,6 +17,7 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import Tips from '@/Components/Tips'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -105,13 +100,15 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
   }, [changeModalState])
   return (
     <div className="h-full">
-      <OverlayCustomIconButton
-        className="color-blue-1"
-        onClick={changeModalState(true)}
-        disabled={permit}
-        icon={AddUserIcon}
-        text="Добавить согласующего"
-      />
+      <Tips text="Добавить согласующего">
+        <CustomButtonForIcon
+          className="color-blue-1"
+          onClick={changeModalState(true)}
+          disabled={permit}
+        >
+          <Icon icon={AddUserIcon} />
+        </CustomButtonForIcon>
+      </Tips>
       <StandardSizeModalWindow
         title="Добавить согласующего"
         open={open}

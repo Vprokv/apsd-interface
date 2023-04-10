@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import BaseButton, { LoadableButton } from '@Components/Components/Button'
-import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
 
 const button = styled(BaseButton)``
 
@@ -66,4 +65,3 @@ export const LoadableSecondaryOverBlueButton = LoadableButton(
   SecondaryOverBlueButton,
 )
 export const LoadableBaseButton = LoadableButton(button)
-export const OverlayIconButton = OverlayButton(ButtonForIcon)

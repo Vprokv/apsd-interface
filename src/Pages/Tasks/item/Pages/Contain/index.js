@@ -1,8 +1,7 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
-  URL_DOCUMENT_CREATE,
   URL_ENTITY_LIST,
   URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_DELETE,
@@ -16,17 +15,13 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  ButtonForIcon,
-  OverlayIconButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
 import { EmptyInputWrapper } from '@Components/Components/Forms/index'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import {
@@ -47,6 +42,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/TitleNameComponent'
 import EditIcon from '@/Icons/editIcon'
+import Tips from '@/Components/Tips'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -147,7 +143,6 @@ const columns = [
 const Contain = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
-  const navigate = useNavigate()
   const { id } = useParams()
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
@@ -166,8 +161,6 @@ const Contain = () => {
     setTabState,
     tabState: { data },
   } = tabItemState
-
-  console.log(data, 'data')
 
   const loadData = useCallback(
     async (partId = null) => {
@@ -344,32 +337,36 @@ const Contain = () => {
               Связь
             </SecondaryBlueButton>
             <div className="flex items-center color-text-secondary">
-              <OverlayIconButton
-                onClick={useCallback(
-                  () => setRenderPreviewWindowState(true),
-                  [],
-                )}
-                disabled={disabled}
-                className="mr-2"
-                icon={ViewIcon}
-                size={20}
-                text="Посмотреть файл"
-              />
+              <Tips text="Посмотреть файл">
+                <ButtonForIcon
+                  className="mr-2"
+                  onClick={useCallback(
+                    () => setRenderPreviewWindowState(true),
+                    [],
+                  )}
+                  disabled={disabled}
+                >
+                  <Icon size={20} icon={ViewIcon} />
+                </ButtonForIcon>
+              </Tips>
               <DeleteContain
                 selectState={selectState}
                 onDeleteData={deleteData}
               />
-              <OverlayIconButton
-                onClick={changeOpenState}
-                className="mr-2"
-                icon={SortIcon}
-                text="Свернуть"
-              />
-              <OverlayIconButton
-                onClick={changeOpenState}
-                icon={XlsIcon}
-                text="Выгрузить в Excel"
-              />
+              <Tips text="Свернуть">
+                <ButtonForIcon
+                  className="mr-2"
+                  onClick={changeOpenState}
+                  disabled={disabled}
+                >
+                  <Icon icon={SortIcon} />
+                </ButtonForIcon>
+              </Tips>
+              <Tips text="Выгрузить в Excel">
+                <ButtonForIcon onClick={changeOpenState}>
+                  <Icon icon={XlsIcon} />
+                </ButtonForIcon>
+              </Tips>
             </div>
           </div>
         </div>

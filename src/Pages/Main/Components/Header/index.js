@@ -19,10 +19,7 @@ import { TokenContext } from '@/contants'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
 import UserAvatar from '@/Pages/Main/Components/Header/Components/UserAvatar'
 import Reports from '@/Pages/Main/Components/Header/Components/Reports'
-import RenderOverlayMenu from '@/Components/OverlayMenu/RenderOverlayMenu'
-import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
-
-const OverlayIconButton = OverlayButton(ButtonForIcon)
+import Tips from '@/Components/Tips'
 
 const Header = () => {
   const { dss_first_name, dss_last_name } = useRecoilValue(userAtom)
@@ -34,38 +31,23 @@ const Header = () => {
   return (
     <div className="bg-blue-1 flex items-center py-2 pl-6 pr-5 text-white">
       <img src={MainLogo} className="mr-20" />
-      <RenderOverlayMenu>
-        {({ OverlayMenu, ...props }) => (
-          <button
-            type="button"
-            className="bg-blue-4 rounded-md h-8 pl-1 pr-1"
-            {...props}
-          >
-            <Icon icon={doubleShevronIcon} size="22" />
-            <OverlayMenu minSize={'200'} maxSize={'400'}>
-              Свернуть дерево навигации
-            </OverlayMenu>
-          </button>
-        )}
-      </RenderOverlayMenu>
+      <Tips text="Свернуть дерево навигаци">
+        <button type="button" className="bg-blue-4 rounded-md h-8 pl-1 pr-1">
+          <Icon icon={doubleShevronIcon} size="22" />
+        </button>
+      </Tips>
       <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2">
         <Search />
-        <OverlayIconButton
-          className="ml-2 mr-2"
-          icon={settingsIcon}
-          size="20"
-          minSize={'100'}
-          maxSize={'400'}
-          text="Настройки"
-        />
-        <OverlayIconButton
-          className="ml-2 mr-2"
-          icon={notificationIcon}
-          size="24"
-          minSize={'100'}
-          maxSize={'350'}
-          text="Уведомления"
-        />
+        <Tips text="Настройки">
+          <ButtonForIcon className="ml-2 mr-2">
+            <Icon icon={settingsIcon} size="20" />
+          </ButtonForIcon>
+        </Tips>
+        <Tips text="Уведомления">
+          <ButtonForIcon>
+            <Icon icon={notificationIcon} size="24" />
+          </ButtonForIcon>
+        </Tips>
         <Reports />
       </IconsGroup>
       <div className="pl-10 flex items-center">

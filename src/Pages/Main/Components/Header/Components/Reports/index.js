@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
@@ -7,7 +7,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import { useNavigate } from 'react-router-dom'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LeafContainer } from '@/Pages/Rporting/styled'
-import RenderOverlayMenu from '@/Components/OverlayMenu/RenderOverlayMenu'
+import Tips from '@/Components/Tips'
 
 const Reports = () => {
   const [open, setOpenState] = useState(false)
@@ -56,26 +56,21 @@ const Reports = () => {
 
   return (
     <LeafContainer>
-      <RenderOverlayMenu>
-        {({ OverlayMenu, ...props }) => (
-          <ButtonForIcon className="bg-blue-1" onClick={onOpen} {...props}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="1.5" y="1.5" width="3" height="13" rx="1" fill="white" />
-              <rect x="6.5" y="6.5" width="3" height="8" rx="1" fill="white" />
-              <rect x="11.5" y="8.5" width="3" height="6" rx="1" fill="white" />
-            </svg>
-            <OverlayMenu minSize={'80'} maxSize={'150'}>
-              Отчёты
-            </OverlayMenu>
-          </ButtonForIcon>
-        )}
-      </RenderOverlayMenu>
+      <Tips text="Отчёты">
+        <ButtonForIcon className="bg-blue-1" onClick={onOpen}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect x="1.5" y="1.5" width="3" height="13" rx="1" fill="white" />
+            <rect x="6.5" y="6.5" width="3" height="8" rx="1" fill="white" />
+            <rect x="11.5" y="8.5" width="3" height="6" rx="1" fill="white" />
+          </svg>
+        </ButtonForIcon>
+      </Tips>
       <StandardSizeModalWindow
         title="Выберите отчет"
         open={open}

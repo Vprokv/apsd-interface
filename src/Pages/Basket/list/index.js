@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   ApiContext,
   BASKET,
@@ -25,7 +24,7 @@ import {
 } from '@/Pages/Basket/list/constans'
 import dayjs from 'dayjs'
 import Filter from '@/Pages/Tasks/list/Components/Filter'
-import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
@@ -52,6 +51,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ExportIcon from '@/Icons/ExportIcon'
 import EditIcon from '@/Icons/editIcon'
+import Tips from '@/Components/Tips'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -174,7 +174,7 @@ const timesMap = {
   },
 }
 
-function BasketList(props) {
+function BasketList() {
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
     direction: 'DESC',
@@ -244,25 +244,26 @@ function BasketList(props) {
       <div className="flex items-center">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
-          {/*<ButtonForIcon className="mr-2">*/}
+          {/* <ButtonForIcon className="mr-2">*/}
           {/*  <Icon icon={filterIcon} />*/}
-          {/*</ButtonForIcon>*/}
-          {/*<ButtonForIcon className="mr-2">*/}
+          {/* </ButtonForIcon>*/}
+          {/* <ButtonForIcon className="mr-2">*/}
           {/*  <Icon icon={sortIcon} />*/}
-          {/*</ButtonForIcon>*/}
-          <OverlayIconButton
-            onClick={onRestore}
-            disabled={!selectState.length}
-            className="mr-2"
-            icon={ExportIcon}
-            text="Убрать из удаленных"
-          />
-          <OverlayIconButton
-            onClick={onDelete}
-            disabled={!selectState.length}
-            icon={DeleteIcon}
-            text="Удалить"
-          />
+          {/* </ButtonForIcon>*/}
+          <Tips text="Убрать из удаленных">
+            <ButtonForIcon
+              className="mr-2"
+              onClick={onRestore}
+              disabled={!selectState.length}
+            >
+              <Icon icon={ExportIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Удалить">
+            <ButtonForIcon onClick={onDelete} disabled={!selectState.length}>
+              <Icon icon={DeleteIcon} />
+            </ButtonForIcon>
+          </Tips>
         </div>
       </div>
       <ListTable
@@ -294,7 +295,5 @@ function BasketList(props) {
     </div>
   )
 }
-
-BasketList.propTypes = {}
 
 export default BasketList

@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -16,7 +9,7 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
-import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
@@ -35,6 +28,7 @@ import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
 import CreateTemplateWindow from './Components/CreateTemplateWindow'
 import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
 import EditIcon from '@/Icons/editIcon'
+import Tips from '@/Components/Tips'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -165,12 +159,15 @@ const ApprovalSheet = () => {
               >
                 <Icon icon={PostponeIcon} />
               </ButtonForIcon>
-              <OverlayIconButton
-                onClick={openAllStages}
-                className="color-text-secondary"
-                icon={OtherIcon}
-                text={!state ? 'Свернуть все' : 'Развернуть все'}
-              />
+              <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
+                <ButtonForIcon
+                  disabled={!permit}
+                  className="color-text-secondary"
+                  onClick={openAllStages}
+                >
+                  <Icon icon={OtherIcon} />
+                </ButtonForIcon>
+              </Tips>
             </div>
           </div>
           <ScrollBar>

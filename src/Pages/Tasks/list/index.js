@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -46,6 +46,7 @@ import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import Tips from '@/Components/Tips'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -348,27 +349,24 @@ function TaskList({ loadFunctionRest }) {
       <div className="flex items-center ">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
-          <OverlayIconButton
-            className="mx-2"
-            icon={filterIcon}
-            text="Фильтры"
-          />
-          <OverlayIconButton
-            className="mr-2"
-            icon={sortIcon}
-            text="Настройка колонок"
-            minSize="120"
-          />
+          <Tips text="Фильтры">
+            <ButtonForIcon className="mx-2">
+              <Icon icon={filterIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Настройка колонок">
+            <ButtonForIcon className="mr-2">
+              <Icon icon={sortIcon} />
+            </ButtonForIcon>
+          </Tips>
           <ButtonForIcon className="mr-2">
             <Icon icon={volumeIcon} />
           </ButtonForIcon>
-          <OverlayIconButton
-            onClick={onExportToExcel}
-            className="color-green"
-            icon={XlsIcon}
-            text="Выгрузить в Excel"
-            minSize="120"
-          />
+          <Tips text="Выгрузить в Excel">
+            <ButtonForIcon className="color-green" onClick={onExportToExcel}>
+              <Icon icon={XlsIcon} />
+            </ButtonForIcon>
+          </Tips>
         </div>
       </div>
       <ListTable

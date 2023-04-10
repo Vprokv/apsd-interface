@@ -1,9 +1,10 @@
-import React, { useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import DocumentShowIcon from '@/Icons/DocumentShowIcon'
 import styled from 'styled-components'
 import { TabStateManipulation } from '@Components/Logic/Tab'
-import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
+import Tips from '@/Components/Tips'
+import Icon from '@Components/Components/Icon'
 
 export const ShowDocumentButton = styled.button.attrs({ type: 'button' })`
   background-color: var(--light-blue);
@@ -21,7 +22,6 @@ export const ShowDocumentButton = styled.button.attrs({ type: 'button' })`
     color: var(--form-elements-border-color);
   }
 `
-const OverlayIconButton = OverlayButton(ShowDocumentButton)
 
 const ShowDocumentComponent = ({ selectedState }) => {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
@@ -35,12 +35,11 @@ const ShowDocumentComponent = ({ selectedState }) => {
   )
 
   return (
-    <OverlayIconButton
-      className="ml-1"
-      text="Перейти в документ"
-      onClick={handleClick}
-      icon={DocumentShowIcon}
-    />
+    <Tips text="Перейти в документ">
+      <ShowDocumentButton className="ml-1" onClick={handleClick}>
+        <Icon icon={DocumentShowIcon} />
+      </ShowDocumentButton>
+    </Tips>
   )
 }
 

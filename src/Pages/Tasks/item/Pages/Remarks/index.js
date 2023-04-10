@@ -1,12 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
-import { useParams } from 'react-router-dom'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_ENTITY_LIST, URL_REMARK_LIST } from '@/ApiList'
@@ -14,14 +6,9 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import {
-  ButtonForIcon,
-  OverlayIconButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
-import ExportIcon from '@/Icons/ExportIcon'
 import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
 import {
   ShowAnswerButtonContext,
@@ -35,8 +22,8 @@ import ToggleNavigationItemWrapper, {
   WithToggleNavigationItem,
 } from '@/Pages/Tasks/item/Pages/Remarks/Components/WithToggleNavigationItem'
 import SortIcon from '@/Pages/Tasks/item/Pages/Contain/Icons/SortIcon'
-import EditIcon from '@/Icons/editIcon'
 import ScrollBar from '@Components/Components/ScrollBar'
+import Tips from '@/Components/Tips'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
@@ -156,12 +143,14 @@ const Remarks = (props) => {
               <SecondaryBlueButton className="ml-2">
                 Выгрузить свод замечаний
               </SecondaryBlueButton>
-              <OverlayIconButton
-                onClick={ChangeAllToggls}
-                className="ml-2 color-text-secondary"
-                icon={SortIcon}
-                text={!open ? 'Свернуть все' : 'Развернуть все'}
-              />
+              <Tips text="!open ? 'Свернуть все' : 'Развернуть все'">
+                <ButtonForIcon
+                  onClick={ChangeAllToggls}
+                  className="mr-2 color-text-secondary"
+                >
+                  <Icon icon={SortIcon} />
+                </ButtonForIcon>
+              </Tips>
             </div>
           </div>
           <ScrollBar>

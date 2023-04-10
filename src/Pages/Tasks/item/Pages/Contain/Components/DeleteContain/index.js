@@ -1,12 +1,13 @@
-import Button, {ButtonForIcon, LoadableBaseButton, OverlayIconButton} from '@/Components/Button'
+import { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import DeleteIcon from '@/Icons/deleteIcon'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import SortIcon from "@/Pages/Tasks/item/Pages/Contain/Icons/SortIcon";
+import XlsIcon from '@/Icons/XlsIcon'
+import Tips from '@/Components/Tips'
 
 export const MiniModalWindow = styled(ModalWindow)`
   font-size: 14px;
@@ -39,12 +40,11 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
 
   return (
     <>
-      <OverlayIconButton
-        onClick={iconClick}
-        className="mr-2"
-        icon={DeleteIcon}
-        text="Удалить"
-      />
+      <Tips text="Удалить">
+        <ButtonForIcon onClick={iconClick} className="mr-2">
+          <Icon icon={DeleteIcon} />
+        </ButtonForIcon>
+      </Tips>
       <MiniModalWindow
         сlassName="font-size-14"
         open={open}

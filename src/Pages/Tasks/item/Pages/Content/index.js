@@ -1,8 +1,7 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
-  OverlayIconButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
@@ -26,7 +25,6 @@ import EmptyInputWrapper from '@Components/Components/Forms/EmptyInputWrapper'
 import ViewIcon from '@/Icons/ViewIcon'
 import WarningIcon from '@/Icons/warningIcon'
 import EditVersionWindow from './Components/EditVersionWindow'
-import { EditVersion } from './constants'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
@@ -42,6 +40,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
+import Tips from '@/Components/Tips'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -131,9 +130,8 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, change },
+    tabState: { data: { content = [], total = 0 } = {} },
     tabState,
-    loadDataHelper,
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -267,39 +265,46 @@ const Content = () => {
           >
             Добавить файл /версию
           </SecondaryBlueButton>
-          <OverlayIconButton
-            onClick={downLoadContent}
-            disabled={disabled}
-            className="ml-2"
-            icon={DownloadIcon}
-            text="Скачать контент"
-          />
-          <OverlayIconButton
-            onClick={editVersion}
-            disabled={disabled}
-            className="ml-2"
-            icon={EditIcon}
-            text="Редактировать"
-          />
+          <Tips text="Скачать контент">
+            <ButtonForIcon
+              onClick={downLoadContent}
+              disabled={disabled}
+              className="ml-2"
+            >
+              <Icon icon={DownloadIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Редактировать">
+            <ButtonForIcon
+              onClick={editVersion}
+              disabled={disabled}
+              className="ml-2"
+            >
+              <Icon icon={EditIcon} />
+            </ButtonForIcon>
+          </Tips>
           <ButtonForIcon className="ml-2">
             <Icon icon={WarningIcon} />
           </ButtonForIcon>
-          <OverlayIconButton
-            onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
-            disabled={!selectState[0]}
-            className="ml-2"
-            icon={ViewIcon}
-            text="Посмотреть файл"
-            size={20}
-          />
-          <OverlayIconButton
-            onClick={deleteVersion}
-            disabled={!selectState[0]}
-            className="ml-2"
-            icon={deleteIcon}
-            text="Удалить"
-            size={20}
-          />
+
+          <Tips text="Посмотреть файл">
+            <ButtonForIcon
+              onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
+              disabled={!selectState[0]}
+              className="ml-2"
+            >
+              <Icon size={20} icon={ViewIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Удалить">
+            <ButtonForIcon
+              onClick={deleteVersion}
+              disabled={!selectState[0]}
+              className="ml-2"
+            >
+              <Icon size={20} icon={deleteIcon} />
+            </ButtonForIcon>
+          </Tips>
         </div>
       </div>
       <FormWindow open={errorState} onClose={() => setErrorState('')}>

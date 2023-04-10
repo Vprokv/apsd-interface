@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import Icon from '@Components/Components/Icon'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Button, { LoadableBaseButton } from '@/Components/Button'
 import editIcon from '@/Icons/editIcon'
@@ -27,9 +28,10 @@ import {
   VALIDATION_RULE_INTEGER,
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
-import { OverlayCustomIconButton } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import Tips from '@/Components/Tips'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -190,13 +192,15 @@ const EditStageWindow = (props) => {
 
   return (
     <div className="flex items-center ml-auto">
-      <OverlayCustomIconButton
-        className="color-blue-1"
-        onClick={changeModalState(true)}
-        disabled={permit}
-        icon={editIcon}
-        text="Редактировать этап"
-      />
+      <Tips text="Редактировать этап">
+        <CustomButtonForIcon
+          className="color-blue-1"
+          onClick={changeModalState(true)}
+          disabled={permit}
+        >
+          <Icon icon={editIcon} />
+        </CustomButtonForIcon>
+      </Tips>
       <CustomSizeModalWindow
         title="Редактировать этап"
         open={open}

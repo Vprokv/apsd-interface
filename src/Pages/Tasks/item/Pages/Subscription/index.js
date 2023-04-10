@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -19,17 +19,15 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import { FlatSelect } from '@/components_ocean/Components/Tables/Plugins/selectable'
 import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
 import {
-  URL_EMPLOYEE_LIST,
   URL_SUBSCRIPTION_DELETE,
   URL_SUBSCRIPTION_EVENTS,
   URL_SUBSCRIPTION_LIST,
-  URL_TECHNICAL_OBJECTS_LIST,
 } from '@/ApiList'
 import { FilterForm } from '../../styles'
 import Icon from '@/components_ocean/Components/Icon'
 import ListTable from '@/components_ocean/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
-import Button, { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
+import Button, { ButtonForIcon } from '@/Components/Button'
 import filterIcon from '../../../list/icons/filterIcon'
 import deleteIcon from '@/Icons/deleteIcon'
 import UserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
@@ -40,9 +38,13 @@ import { EventsContext } from './Components/CreateSubscriptionWindow/constans'
 import Events from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/Events'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
-import { useOpenNotification } from '@/Components/Notificator'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
+import Tips from '@/Components/Tips'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -224,18 +226,18 @@ const Subscription = () => {
   // бывает что при удалении одного элемента, с бэка приходит не один ответ
   const onDelete = useCallback(async () => {
     try {
-      const res = await Promise.all([
+      await Promise.all([
         selectState.map((subscriptionId) => {
           return api.post(URL_SUBSCRIPTION_DELETE, { subscriptionId })
         }),
       ])
       getNotification(customMessagesFuncMap[200]())
-      loadDataFunction()
+      return loadDataFunction()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, selectState, loadDataFunction])
+  }, [selectState, getNotification, loadDataFunction, api])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -253,18 +255,16 @@ const Subscription = () => {
           >
             Добавить подписку
           </Button>
-          <OverlayIconButton
-            onClick={onDelete}
-            className="ml-2"
-            icon={filterIcon}
-            text="Фильтры"
-          />
-          <OverlayIconButton
-            onClick={onDelete}
-            className="ml-2"
-            icon={deleteIcon}
-            text="Удалить"
-          />
+          <Tips text="Фильтры">
+            <ButtonForIcon className="mr-2">
+              <Icon icon={filterIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Удалить">
+            <ButtonForIcon onClick={onDelete} className="mr-2">
+              <Icon icon={deleteIcon} />
+            </ButtonForIcon>
+          </Tips>
         </div>
       </div>
       <EventsContext.Provider value={events}>

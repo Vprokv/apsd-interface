@@ -1,12 +1,5 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Select from '../Select'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { SearchButton } from '../UserSelect'
@@ -15,23 +8,19 @@ import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
 import { SelectedItemsContainer } from '@/Components/Inputs/DocumentSelect/styles'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { URL_TYPE_CONFIG } from '@/ApiList'
-import { ApiContext } from '@/contants'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import Button, { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import Button, { SecondaryBlueButton } from '@/Components/Button'
 import closeIcon from '@/Icons/closeIcon'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import Input from '../../Fields/Input'
 import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
-import log from 'tailwindcss/lib/util/log'
-import OverlayButton from '@/Components/OverlayMenu/OverlayButton'
+import Tips from '@/Components/Tips'
 
 const changeInput = () => {}
-
-const OverlayIconButton = OverlayButton(SearchButton)
 
 const DocumentSelect = ({
   className,
@@ -165,12 +154,11 @@ const DocumentSelect = ({
         onInput={changeInput}
         onFocus={openModalWindow}
       />
-      <OverlayIconButton
-        onClick={openModalWindow}
-        className="ml-1"
-        icon={searchIcon}
-        text="Поиск по титулам"
-      />
+      <Tips text="Поиск по титулам">
+        <SearchButton onClick={openModalWindow} className="ml-1">
+          <Icon icon={searchIcon} />
+        </SearchButton>
+      </Tips>
       <ShowDocumentComponent className="ml-1" selectedState={selectedState} />
       <CreateLinkComponent
         open={open}

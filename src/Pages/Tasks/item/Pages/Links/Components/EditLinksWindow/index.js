@@ -1,12 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react'
-import PropTypes from 'prop-types'
-import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
+import { useCallback, useContext, useState } from 'react'
+import { ButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import EditIcon from '@/Icons/editIcon'
 import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import DatePicker from '@Components/Components/Inputs/DatePicker'
 import {
   EditLinkContext,
   useActions,
@@ -17,14 +15,15 @@ import LinkDate from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/
 import LinkType from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/LinkType'
 import Comment from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/Comment'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
-import { URL_LINK_UPDATE, URL_SUBSCRIPTION_DELETE } from '@/ApiList'
+import { URL_LINK_UPDATE } from '@/ApiList'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import DeleteIcon from '@/Icons/deleteIcon'
+import DownloadIcon from '@/Icons/DownloadIcon'
+import Tips from '@/Components/Tips'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -150,14 +149,15 @@ const EditLinksWindow = ({ value }) => {
   return (
     <EditLinkContext.Provider value={context}>
       <div className="flex items-center ml-auto ">
-        <OverlayIconButton
-          onClick={changeModalState(true)}
-          disabled={!value.length}
-          className="mr-2 color-text-secondary"
-          icon={EditIcon}
-          size={20}
-          text="Обновить связи"
-        />
+        <Tips text="Обновить связи">
+          <ButtonForIcon
+            onClick={changeModalState(true)}
+            disabled={!value.length}
+            className="mr-2 color-text-secondary"
+          >
+            <Icon size={20} icon={EditIcon} />
+          </ButtonForIcon>
+        </Tips>
         <CreateLinkComponent
           title="Обновить связи"
           open={open}
