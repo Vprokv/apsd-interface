@@ -60,7 +60,7 @@ const ApprovalSheet = () => {
   })
   const {
     setTabState,
-    tabState: { data = []},
+    tabState: { data = [] },
   } = tabItemState
 
   const setChange = useCallback(
@@ -130,11 +130,13 @@ const ApprovalSheet = () => {
 
   const openAllStages = useCallback(() => {
     for (let key in toggleNavigationData) {
-      let c = (toggleNavigationData[key] = state)
-      setToggleNavigationData((prevState) => ({ ...prevState, ...c }))
+      setToggleNavigationData(({ [key]: prevAmount, ...prevState }) => ({
+        ...prevState,
+        [key]: !prevAmount,
+      }))
     }
     setState((state) => !state)
-  }, [state, toggleNavigationData])
+  }, [toggleNavigationData])
 
   const toggleStage = useCallback((v) => {
     setToggleNavigationData(({ [v]: prevAmount, ...prevState }) => {
