@@ -73,7 +73,7 @@ const columns = [
     component: ({ ParentValue: { voltage } }) => (
       <BaseCell value={voltage} className="flex items-center font-size-12" />
     ),
-    sizes: 100,
+    sizes: 150,
   },
   {
     id: 'res',
