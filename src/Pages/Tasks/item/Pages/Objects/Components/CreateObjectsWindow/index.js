@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import Select from '@/Components/Inputs/Select'
 import { useParams } from 'react-router-dom'
-import { ApiContext, WINDOW_ADD_OBJECT } from '@/contants'
+import { ApiContext, TASK_ITEM_OBJECTS, WINDOW_ADD_OBJECT } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_CREATE } from '@/ApiList'
 import { CreateObjectsWindowComponent, FilterForm } from './styled'
@@ -57,41 +57,57 @@ const columns = [
     id: 'name',
     label: 'Наименование',
     component: ({ ParentValue: { dss_name } }) => (
-      <BaseCell value={dss_name} className="flex items-center h-10" />
+      <BaseCell value={dss_name} className="flex items-center font-size-12" />
     ),
-    sizes: 250,
+    sizes: 300,
   },
   {
     id: 'code',
     label: 'Код',
-    component: ({ ParentValue: { dss_voltage } }) => (
-      <BaseCell value={dss_voltage} className="flex items-center h-10" />
+    component: ({ ParentValue: { dss_code } }) => (
+      <BaseCell value={dss_code} className="flex items-center font-size-12" />
     ),
-    sizes: 180,
+    sizes: 100,
   },
   {
     id: 'type',
     label: 'Тип объекта',
     component: ({ ParentValue: { dss_type } }) => (
-      <BaseCell value={dss_type} className="flex items-center h-10" />
+      <BaseCell value={dss_type} className="flex items-center font-size-12" />
     ),
-    sizes: 230,
+    sizes: 150,
+  },
+  {
+    id: 'voltage',
+    label: 'Код',
+    component: ({ ParentValue: { dss_voltage } }) => (
+      <BaseCell value={dss_voltage} className="flex items-center font-size-12" />
+    ),
+    sizes: 100,
   },
   {
     id: 'res',
     label: 'РЭС',
     component: ({ ParentValue: { dss_res } }) => (
-      <BaseCell value={dss_res} className="flex items-center h-10" />
+      <BaseCell value={dss_res} className="flex items-center font-size-12" />
     ),
-    sizes: 220,
+    sizes: 200,
   },
   {
     id: 'address',
     label: 'Адрес',
     component: ({ ParentValue: { dss_addr } }) => (
-      <BaseCell value={dss_addr} className="flex items-center h-10" />
+      <BaseCell value={dss_addr} className="flex items-center font-size-12" />
     ),
-    sizes: 540,
+    sizes: 300,
+  },
+  {
+    id: 'keeper',
+    label: 'Балансодержатель',
+    component: ({ ParentValue: { dss_keeper } }) => (
+      <BaseCell value={dss_keeper} className="flex items-center font-size-12" />
+    ),
+    sizes: 300,
   },
 ]
 
@@ -150,13 +166,17 @@ const filterFormConfig = [
   },
 ]
 
-const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
+const CreateObjectsWindow = ({ onClose }) => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
   const [sortQuery, onSort] = useState({})
   const getNotification = useOpenNotification()
+
+  const { setTabState: setItemObjectState } = useTabItem({
+    stateId: TASK_ITEM_OBJECTS,
+  })
 
   const {
     tabState: { data = [] },
@@ -186,13 +206,13 @@ const CreateObjectsWindow = ({ onClose, loadDataFunction }) => {
         techObjectIds: selectState,
       })
       getNotification(customMessagesFuncMap[response.status]())
-      await loadDataFunction()
+      setItemObjectState({ loading: false, fetched: false })
       onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, id, selectState, onClose, loadDataFunction])
+  }, [api, id, selectState, getNotification, setItemObjectState, onClose])
 
   const onRemoveSelectedValue = useCallback(
     (id) => () =>

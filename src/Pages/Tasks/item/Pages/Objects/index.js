@@ -47,41 +47,57 @@ const columns = [
     id: 'name',
     label: 'Наименование',
     component: ({ ParentValue: { name } }) => (
-      <BaseCell value={name} className="flex items-center h-10" />
+      <BaseCell value={name} className="flex items-center font-size-12" />
     ),
-    sizes: 250,
+    sizes: 300,
   },
   {
     id: 'code',
     label: 'Код',
     component: ({ ParentValue: { code } }) => (
-      <BaseCell value={code} className="flex items-center h-10" />
+      <BaseCell value={code} className="flex items-center font-size-12" />
     ),
-    sizes: 180,
+    sizes: 100,
   },
   {
     id: 'type',
     label: 'Тип объекта',
     component: ({ ParentValue: { type } }) => (
-      <BaseCell value={type} className="flex items-center h-10" />
+      <BaseCell value={type} className="flex items-center font-size-12" />
     ),
-    sizes: 230,
+    sizes: 150,
+  },
+  {
+    id: 'voltage',
+    label: 'Класс напряжения',
+    component: ({ ParentValue: { voltage } }) => (
+      <BaseCell value={voltage} className="flex items-center font-size-12" />
+    ),
+    sizes: 100,
   },
   {
     id: 'res',
     label: 'РЭС',
     component: ({ ParentValue: { res } }) => (
-      <BaseCell value={res} className="flex items-center h-10" />
+      <BaseCell value={res} className="flex items-center font-size-12" />
     ),
-    sizes: 220,
+    sizes: 200,
   },
   {
     id: 'address',
     label: 'Адрес',
     component: ({ ParentValue: { address } }) => (
-      <BaseCell value={address} className="flex items-center h-10" />
+      <BaseCell value={address} className="flex items-center font-size-12" />
     ),
-    sizes: 540,
+    sizes: 300,
+  },
+  {
+    id: 'keeper',
+    label: 'Балансодержатель',
+    component: ({ ParentValue: { keeper } }) => (
+      <BaseCell value={keeper} className="flex items-center font-size-12" />
+    ),
+    sizes: 300,
   },
 ]
 
@@ -199,7 +215,8 @@ const Objects = () => {
 
   const onDelete = useCallback(async () => {
     await api.post(URL_TECHNICAL_OBJECTS_DELETE, { techObjectIds: selectState })
-  }, [api, selectState])
+    setTabState({ loading: false, fetched: false })
+  }, [api, selectState, setTabState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
@@ -222,11 +239,6 @@ const Objects = () => {
               <Icon icon={filterIcon} />
             </ButtonForIcon>
           </Tips>
-          <Tips text="Редактировать">
-            <ButtonForIcon className="mr-2">
-              <Icon icon={EditIcon} />
-            </ButtonForIcon>
-          </Tips>
           <Tips text="Удалить">
             <ButtonForIcon disabled={!selectState.length} onClick={onDelete}>
               <Icon icon={DeleteIcon} />
@@ -234,7 +246,6 @@ const Objects = () => {
           </Tips>
         </div>
         <CreateObjectsWindow
-          loadDataFunction={loadData}
           open={addCreateObjectsWindow}
           onClose={closeCreateObjectsWindow}
         />
