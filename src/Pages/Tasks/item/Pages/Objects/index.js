@@ -13,7 +13,10 @@ import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import Select from '../../../../../Components/Inputs/Select'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
-import { URL_TECHNICAL_OBJECTS_LIST } from '@/ApiList'
+import {
+  URL_TECHNICAL_OBJECTS_DELETE,
+  URL_TECHNICAL_OBJECTS_LIST,
+} from '@/ApiList'
 import { FilterForm } from '../../styles'
 import ListTable from '../../../../../components_ocean/Components/Tables/ListTable'
 import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
@@ -27,6 +30,7 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import EditIcon from '../../../../../Icons/editIcon'
 import Tips from '@/Components/Tips'
+import DeleteIcon from '@/Icons/deleteIcon'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -192,6 +196,11 @@ const Objects = () => {
     }
     refLoadDataFunction.current = loadData
   }, [loadData, shouldReloadDataFlag])
+
+  const onDelete = useCallback(async () => {
+    await api.post(URL_TECHNICAL_OBJECTS_DELETE, { techObjectIds: selectState })
+  }, [api, selectState])
+
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
       <div className="flex items-center py-4">
@@ -209,13 +218,18 @@ const Objects = () => {
             Добавить
           </Button>
           <Tips text="Фильтры">
-            <ButtonForIcon className="mr-2">
+            <ButtonForIcon className="mx-2">
               <Icon icon={filterIcon} />
             </ButtonForIcon>
           </Tips>
           <Tips text="Редактировать">
             <ButtonForIcon className="mr-2">
               <Icon icon={EditIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Удалить">
+            <ButtonForIcon disabled={!selectState.length} onClick={onDelete}>
+              <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
         </div>
