@@ -10,14 +10,7 @@ import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_CREATE } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import InputWrapper, {
-  InputLabel,
-  InputLabelStart,
-} from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import {
-  ShowAnswerButtonContext,
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -91,6 +84,11 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   const initialUserValue = useMemo(() => {
     return {
       member: {
+        firstName: dss_first_name,
+        lastName: dss_last_name,
+        middleName: dss_middle_name,
+        position: position_name,
+        department: department_name,
         emplId: r_object_id,
         fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
         userName: dss_user_name,

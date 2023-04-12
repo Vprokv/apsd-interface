@@ -257,20 +257,26 @@ const OrgStructureWindow = (props) => {
   const withOptions = useCallback(
     (obj) =>
       setSelectState((selectState) => {
-        const nextValue = selectState ? [...selectState] : []
-        const valIncl = nextValue.find(
-          ({ [valueKey]: key }) => key === obj[valueKey],
-        )
-        if (valIncl) {
-          nextValue.splice(
-            nextValue.findIndex(({ [valueKey]: key }) => key === obj[valueKey]),
-            1,
+        if (multiple) {
+          const nextValue = selectState ? [...selectState] : []
+          const valIncl = nextValue.find(
+            ({ [valueKey]: key }) => key === obj[valueKey],
           )
+          if (valIncl) {
+            nextValue.splice(
+              nextValue.findIndex(
+                ({ [valueKey]: key }) => key === obj[valueKey],
+              ),
+              1,
+            )
+          } else {
+            nextValue.push(obj)
+          }
         } else {
-          nextValue.push(obj)
+          return obj
         }
       }),
-    [valueKey],
+    [multiple, valueKey],
   )
 
   const withoutOptions = useCallback(

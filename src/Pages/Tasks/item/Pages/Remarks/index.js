@@ -40,7 +40,7 @@ const Remarks = (props) => {
   })
   const {
     setTabState,
-    tabState: { data: { remarks = [], tabPermit } = {}, change },
+    tabState: { data: { remarks = [], tabPermit } = {} },
   } = tabItemState
 
   const setChange = useCallback(
@@ -69,7 +69,7 @@ const Remarks = (props) => {
     })
 
     return data
-  }, [api, id, filter, change])
+  }, [api, id, filter])
 
   useAutoReload(loadData, tabItemState)
 
@@ -143,10 +143,10 @@ const Remarks = (props) => {
               <SecondaryBlueButton className="ml-2">
                 Выгрузить свод замечаний
               </SecondaryBlueButton>
-              <Tips text="!open ? 'Свернуть все' : 'Развернуть все'">
+              <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
                 <ButtonForIcon
                   onClick={ChangeAllToggls}
-                  className="mr-2 color-text-secondary"
+                  className="ml-2 color-text-secondary"
                 >
                   <Icon icon={SortIcon} />
                 </ButtonForIcon>

@@ -10,11 +10,8 @@ import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper, {
-  InputLabel,
-  InputLabelStart,
 } from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import {
-  ShowAnswerButtonContext,
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -74,8 +71,6 @@ const EditRemark = ({
       fullDescription: `${memberFullName}, ${memberPosition}`,
     },
   })
-
-  console.log(filter, 'filter')
 
   const fields = [
     {

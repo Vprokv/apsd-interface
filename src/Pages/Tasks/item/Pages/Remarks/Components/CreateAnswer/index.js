@@ -79,6 +79,11 @@ const CreateAnswer = ({
     return {
       remarkText,
       member: {
+        firstName: dss_first_name,
+        lastName: dss_last_name,
+        middleName: dss_middle_name,
+        position: position_name,
+        department: department_name,
         emplId: r_object_id,
         fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
         userName: dss_user_name,

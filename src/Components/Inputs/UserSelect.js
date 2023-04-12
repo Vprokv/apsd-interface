@@ -36,10 +36,14 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
   height: var(--form--elements_height);
   width: var(--form--elements_height);
   min-width: var(--form--elements_height);
+
+  &:disabled {
+    background: var(--separator);
+  }
 `
 
 const UserSelect = (props) => {
-  const { loadFunction, docId, filter: baseFilter } = props
+  const { loadFunction, filter: baseFilter, disabled } = props
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter })
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
@@ -68,7 +72,11 @@ const UserSelect = (props) => {
         className="mr-0"
       />
       <>
-        <SearchButton className="ml-1" onClick={openEmployeeWindow}>
+        <SearchButton
+          disabled={disabled}
+          className="ml-1"
+          onClick={openEmployeeWindow}
+        >
           <Icon icon={searchIcon} />
         </SearchButton>
         <AddEmployee
@@ -84,7 +92,7 @@ const UserSelect = (props) => {
 UserSelect.propTypes = {
   loadFunction: PropTypes.func,
   source: PropTypes.string.isRequired,
-  docId: PropTypes.string,
+  disabled: PropTypes.bool,
 }
 UserSelect.defaultProps = {
   loadFunction: (api) => (filter) => (search) =>
@@ -92,6 +100,6 @@ UserSelect.defaultProps = {
   valueKey: 'emplId',
   labelKey: 'fullDescription',
   options: [],
-  docId: undefined,
+  disabled: false,
 }
 export default UserSelect
