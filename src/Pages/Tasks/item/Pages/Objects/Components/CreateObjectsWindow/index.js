@@ -81,7 +81,10 @@ const columns = [
     id: 'voltage',
     label: 'Код',
     component: ({ ParentValue: { dss_voltage } }) => (
-      <BaseCell value={dss_voltage} className="flex items-center font-size-12" />
+      <BaseCell
+        value={dss_voltage}
+        className="flex items-center font-size-12"
+      />
     ),
     sizes: 100,
   },
@@ -166,6 +169,8 @@ const filterFormConfig = [
   },
 ]
 
+export const emptyWrapper = ({ children }) => children
+
 const CreateObjectsWindow = ({ onClose }) => {
   const { id } = useParams()
   const api = useContext(ApiContext)
@@ -196,8 +201,6 @@ const CreateObjectsWindow = ({ onClose }) => {
 
     fetchData()
   }, [id, setTabState, api])
-
-  const emptyWrapper = ({ children }) => children
 
   const onSave = useCallback(async () => {
     try {

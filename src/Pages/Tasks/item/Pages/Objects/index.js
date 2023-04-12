@@ -10,10 +10,10 @@ import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
 import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
-import Select from '../../../../../Components/Inputs/Select'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
 import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
 import {
+  URL_ENTITY_LIST,
   URL_TECHNICAL_OBJECTS_DELETE,
   URL_TECHNICAL_OBJECTS_LIST,
 } from '@/ApiList'
@@ -28,9 +28,12 @@ import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
-import EditIcon from '../../../../../Icons/editIcon'
 import Tips from '@/Components/Tips'
 import DeleteIcon from '@/Icons/deleteIcon'
+import { SearchInput } from '@/Pages/Tasks/list/styles'
+import searchIcon from '@/Icons/searchIcon'
+import LoadableSelect from '../../../../../Components/Inputs/Select'
+import FilterWindowWrapper from '@/Pages/Tasks/item/Pages/Objects/Components/FilterWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -101,39 +104,6 @@ const columns = [
   },
 ]
 
-const filterFormConfig = [
-  {
-    id: 'type',
-    component: Select,
-    placeholder: 'Тип объекта',
-    options: [
-      {
-        ID: 'ASD',
-        SYS_NAME: 'TT',
-      },
-      {
-        ID: 'ASD1',
-        SYS_NAME: 'TT2',
-      },
-    ],
-  },
-  {
-    id: 'code',
-    component: Select,
-    placeholder: 'Код',
-    options: [
-      {
-        ID: 'ASD',
-        SYS_NAME: 'TT',
-      },
-      {
-        ID: 'ASD1',
-        SYS_NAME: 'TT2',
-      },
-    ],
-  },
-]
-
 const emptyWrapper = ({ children }) => children
 
 const Objects = () => {
@@ -142,14 +112,18 @@ const Objects = () => {
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
+  const [filterWindowOpen, setFilterWindow] = useState(false)
   const [filter, setFilterValue] = useState({})
+  const ref = useRef()
+  const [width, setWidth] = useState(ref.current?.clientWidth)
 
-  const openCreateObjectsWindow = useCallback(
-    () => setCreateObjectsWindow(true),
+  const changeObjectsWindow = useCallback(
+    (state) => () => setCreateObjectsWindow(state),
     [],
   )
-  const closeCreateObjectsWindow = useCallback(
-    () => setCreateObjectsWindow(false),
+
+  const changeFilterWindowState = useCallback(
+    (state) => () => setFilterWindow(state),
     [],
   )
 
@@ -218,36 +192,135 @@ const Objects = () => {
     setTabState({ loading: false, fetched: false })
   }, [api, selectState, setTabState])
 
+  const filterFormConfig = [
+    {
+      id: 'name',
+      component: SearchInput,
+      placeholder: 'Наименование',
+      children: (
+        <Icon
+          icon={searchIcon}
+          size={10}
+          className="color-text-secondary mr-2.5"
+        />
+      ),
+    },
+    {
+      id: 'typeId',
+      component: LoadableSelect,
+      placeholder: 'Тип объекта',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_tech_obj_type_catalog',
+          query,
+        })
+        return data
+      },
+    },
+    {
+      id: 'voltageId',
+      component: LoadableSelect,
+      placeholder: 'Класс напряжения',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_voltage',
+          query,
+        })
+        return data
+      },
+    },
+    {
+      id: 'resId',
+      component: LoadableSelect,
+      placeholder: 'РЭС',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_res',
+          query,
+        })
+        return data
+      },
+    },
+    {
+      id: 'branchId',
+      component: LoadableSelect,
+      placeholder: 'Балансодержатель',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_branch',
+          query,
+        })
+        return data
+      },
+    },
+  ]
+
+  const resizeSlider = useCallback(() => setWidth(ref.current.offsetWidth), [])
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeSlider)
+    resizeSlider()
+    return () => {
+      window.removeEventListener('resize', resizeSlider)
+    }
+  }, [resizeSlider])
+
+  const show = useMemo(() => width > 1200, [width])
+
+  console.log(filterWindowOpen, 'filterWindowOpen')
+
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
-      <div className="flex items-center py-4">
-        <FilterForm
-          fields={filterFormConfig}
-          inputWrapper={emptyWrapper}
-          value={filter}
-          onInput={setFilterValue}
-        />
+      <div ref={ref} className="flex items-center py-4">
+        {show && (
+          <FilterForm
+            fields={filterFormConfig}
+            inputWrapper={emptyWrapper}
+            value={filter}
+            onInput={setFilterValue}
+          />
+        )}
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
-            onClick={openCreateObjectsWindow}
+            onClick={changeObjectsWindow(true)}
             className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
           >
             Добавить
           </Button>
-          <Tips text="Фильтры">
-            <ButtonForIcon className="mx-2">
-              <Icon icon={filterIcon} />
-            </ButtonForIcon>
-          </Tips>
           <Tips text="Удалить">
-            <ButtonForIcon disabled={!selectState.length} onClick={onDelete}>
+            <ButtonForIcon
+              className="mx-2"
+              disabled={!selectState.length}
+              onClick={onDelete}
+            >
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
+          {!show && (
+            <Tips text=" Фильтры">
+              <ButtonForIcon onClick={changeFilterWindowState(true)}>
+                <Icon icon={filterIcon} />
+              </ButtonForIcon>
+            </Tips>
+          )}
         </div>
         <CreateObjectsWindow
           open={addCreateObjectsWindow}
-          onClose={closeCreateObjectsWindow}
+          onClose={changeObjectsWindow(false)}
+        />
+        <FilterWindowWrapper
+          filter={filter}
+          setFilterValue={setFilterValue}
+          open={filterWindowOpen}
+          onClose={changeFilterWindowState(false)}
         />
       </div>
       <ListTable

@@ -4,7 +4,7 @@ import Form from '@Components/Components/Forms'
 export const FilterForm = styled(Form)`
   --form--elements_height: 32px;
   display: grid;
-  grid-template-columns: 200px 200px 200px;
+  grid-template-columns: 200px 200px 200px 200px 200px;
   grid-column-gap: 0.5rem;
 `
 
