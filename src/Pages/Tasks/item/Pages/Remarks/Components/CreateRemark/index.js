@@ -13,7 +13,10 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import {
+  VALIDATION_RULE_MAX,
+  VALIDATION_RULE_REQUIRED,
+} from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
 import {
@@ -38,7 +41,10 @@ const ScrollBar = styled(SimpleBar)`
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
-  text: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [
+    { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
+    { name: VALIDATION_RULE_REQUIRED },
+  ],
   'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
   ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }

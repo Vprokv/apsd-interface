@@ -9,15 +9,15 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
-import InputWrapper, {
-} from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import {
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import {
+  VALIDATION_RULE_MAX,
+  VALIDATION_RULE_REQUIRED,
+} from '@Components/Logic/Validator/constants'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
@@ -29,7 +29,10 @@ import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/Crea
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
-  text: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [
+    { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
+    { name: VALIDATION_RULE_REQUIRED },
+  ],
   'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
   ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }

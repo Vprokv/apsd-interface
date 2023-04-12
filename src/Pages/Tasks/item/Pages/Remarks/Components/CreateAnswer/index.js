@@ -10,27 +10,17 @@ import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect from '@/Components/Inputs/Select'
-import Input from '@/Components/Fields/Input'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
-import {
-  URL_ENTITY_LIST,
-  URL_REMARK_ANSWER,
-  URL_REMARK_CREATE,
-} from '@/ApiList'
+import { URL_ENTITY_LIST, URL_REMARK_ANSWER } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import { useParams } from 'react-router-dom'
-import InputWrapper, {
-  InputLabel,
-  InputLabelStart,
-} from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import { TextArea } from '@Components/Components/Inputs/TextArea'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import {
-  ShowAnswerButtonContext,
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+  VALIDATION_RULE_MAX,
+  VALIDATION_RULE_REQUIRED,
+} from '@Components/Logic/Validator/constants'
+import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
@@ -43,7 +33,10 @@ import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/Crea
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
-  text: [{ name: VALIDATION_RULE_REQUIRED }],
+  text: [
+    { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
+    { name: VALIDATION_RULE_REQUIRED },
+  ],
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
   ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -141,6 +134,7 @@ const CreateAnswer = ({
       isRequired: true,
       className: '',
       component: CustomInput,
+      max: 100,
       placeholder: 'Введите текст ответа',
     },
     {
