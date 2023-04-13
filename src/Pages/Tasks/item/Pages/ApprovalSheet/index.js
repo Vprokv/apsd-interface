@@ -161,7 +161,6 @@ const ApprovalSheet = () => {
               </ButtonForIcon>
               <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
                 <ButtonForIcon
-                  disabled={!permit}
                   className="color-text-secondary"
                   onClick={openAllStages}
                 >
