@@ -4,7 +4,7 @@ export const URL_USER_OBJECT = '/sedo/employee/bylogin' // {token <String>}
 export const URL_USER_CHANGE_PASSWORD = '/sedo/user/password'
 export const URL_USER_PASSWORD_RULES = '/sedo/user/password_policy'
 
-//setting
+// setting
 export const URL_SYSTEM_META = '/settings.json'
 export const URL_REVISION_APSD = '/apsd/revision'
 export const URL_REVISION_CHAT = '/ts/revision'
@@ -136,7 +136,7 @@ export const URL_TEMPLATE = '/sedo/template/get'
 export const URL_CREATE_STAGE = '/sedo/approve/template'
 export const URL_CREATE_TEMPLATE = '/sedo/template/create'
 
-//REPORT
+// REPORT
 export const URL_REPORTS_LIST = '/apsd/reporting/list'
 export const URL_REPORTS_ITEM = '/apsd/reporting/get'
 export const URL_REPORTS_BUILD = '/apsd/reporting/build'
@@ -144,7 +144,7 @@ export const URL_REPORTS_GET = '/sedo/reporting/content/'
 export const URL_REPORTS_BRUNCH = '/sedo/os/branch/list?limit=100&offset=0'
 export const URL_REPORTS_DEPARTMENT = '/sedo/os/branch/list?limit=100&offset=0'
 
-//BASKET
+// BASKET
 export const URL_BASKET_LIST = '/apsd/basket/list'
 export const URL_BASKET_DELETED = '/apsd/basket/deleteDocument'
 export const URL_BASKET_RESTORE_DELETED = '/apsd/basket/delete'
@@ -152,3 +152,5 @@ export const URL_BASKET_ADD = '/apsd/basket/add'
 
 export const URL_EXPORT = '/export/'
 export const URL_EXPORT_FILE = '/export/file/'
+// Kerberos
+export const URL_KERBEROS_LOGIN = '/ts/kerberos/login'

@@ -10,16 +10,11 @@ import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
 import createAxiosInstance from './api'
 import Main from './Pages/Main'
-import {
-  URL_LOGIN,
-  URL_SYSTEM_META,
-  URL_USER_CHANGE_PASSWORD,
-  URL_USER_OBJECT,
-} from './ApiList'
+import { URL_KERBEROS_LOGIN, URL_LOGIN, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT } from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import { CREATE_PASSWORD_PAGE_PATH, DELETED_LIST_PATH } from './routePaths'
+import { CREATE_PASSWORD_PAGE_PATH } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'
@@ -67,6 +62,7 @@ function App() {
         (token) => updateAxiosInstanceParams({ token }),
         [],
       ),
+      kerberosUrl: URL_KERBEROS_LOGIN
     })
 
   const changePasswordRequest = useCallback(
@@ -145,7 +141,7 @@ function App() {
                   )}
                 </>
               ) : (
-                <Route element={<Main />}>
+                <Route element={<Main initUrl={routePath.TASK_LIST_PATH} />}>
                   <Route
                     path={routePath.DOCUMENT_ITEM_PATH}
                     element={<DocumentItem />}

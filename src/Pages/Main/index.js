@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Outlet } from 'react-router-dom'
 import Tab from '@Components/Logic/Tab'
 import Header from './Components/Header'
@@ -8,10 +9,10 @@ import { useRecoilValue } from 'recoil'
 import CloseAllTabButton from '@/Pages/Main/Components/CloseAllTabsButton'
 import TabsContainer from '@/Pages/Main/Components/Tab/TabsContainer'
 
-const Main = () => {
+const Main = ({ initUrl }) => {
   const { r_object_id } = useRecoilValue(userAtom)
   return (
-    <Tab userId={r_object_id}>
+    <Tab userId={r_object_id} initUrl={initUrl}>
       {({
         tabState: { tabs, currentTabIndex },
         openTabOrCreateNewTab,
@@ -49,6 +50,8 @@ const Main = () => {
   )
 }
 
-Main.propTypes = {}
+Main.propTypes = {
+  initUrl: PropTypes.string,
+}
 
 export default Main
