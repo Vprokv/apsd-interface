@@ -52,14 +52,14 @@ export const tableConfig = [
     }) => <BaseCell value={dss_type_label} />,
   },
   {
-    id: 'dss_status',
+    id: 'dss_status_display',
     label: 'Статус',
     sizes: 200,
     component: ({
       ParentValue: {
-        values: { dss_status = '' },
+        values: { dss_status_display = '' },
       },
-    }) => <BaseCell value={dss_status} />,
+    }) => <BaseCell value={dss_status_display} />,
   },
   {
     id: 'dsid_startup_complex',
