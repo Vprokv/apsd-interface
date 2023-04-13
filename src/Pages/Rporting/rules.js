@@ -12,7 +12,7 @@ import refsTransmission from '@/RefsTransmission'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import CustomValuesPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/CustomValues'
 import FiltersPipe from './Filters/index'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
   const [filter, setFilter] = useState()
@@ -44,15 +44,19 @@ const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
 
 const CustomDatePicker = ({ onInput, value, ...props }) => {
   const [filter, setFilter] = useState()
+  const filterRef = useRef(filter)
 
   useEffect(() => {
-    onInput(
-      filter && {
-        r_creation_dateFirst: filter[0],
-        r_creation_dateSecond: filter[1],
-      },
-      props.id,
-    )
+    if (filter !== filterRef.current) {
+      onInput(
+        {
+          r_creation_dateFirst: filter[0],
+          r_creation_dateSecond: filter[1],
+        },
+        props.id,
+      )
+      filterRef.current = filter
+    }
   }, [filter, onInput, props.id, value])
 
   return (
