@@ -29,8 +29,10 @@ const Tips = ({ children, text }) => {
     childRef.current.addEventListener('mouseover', mouseOver)
     childRef.current.addEventListener('mouseleave', mouseLeave)
     return () => {
-      childRef.current.removeEventListener('mouseover', mouseOver)
-      childRef.current.removeEventListener('mouseleave', mouseLeave)
+      if (childRef.current) {
+        childRef.current.removeEventListener('mouseover', mouseOver)
+        childRef.current.removeEventListener('mouseleave', mouseLeave)
+      }
     }
   }, [closeTips, openTips])
 
