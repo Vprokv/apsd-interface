@@ -33,6 +33,7 @@ const Tips = ({ children, text }) => {
         childRef.current.removeEventListener('mouseover', mouseOver)
         childRef.current.removeEventListener('mouseleave', mouseLeave)
       }
+      clearTimeout(timeout)
     }
   }, [closeTips, openTips])
 
