@@ -15,7 +15,7 @@ import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
@@ -41,8 +41,8 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/TitleNameComponent'
-import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
+import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -51,23 +51,6 @@ const customMessagesFuncMap = {
       type: NOTIFICATION_TYPE_SUCCESS,
       message: 'Удаление выполнено успешно',
     }
-  },
-}
-
-const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
-  treePlugin: {
-    valueKey: 'id',
-    nestedDataKey: 'childs',
-    defaultOpen: false,
-    component: LeafTableComponent,
-  },
-  selectPlugin: {
-    driver: FlatSelect,
-    component: CheckBox,
-    style: { margin: 'auto 0' },
-    valueKey: 'id',
-    returnObjects: true,
   },
 }
 
@@ -149,6 +132,7 @@ const Contain = () => {
   const [selectState, setSelectState] = useState([])
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
+  const [addLinkState, setAddLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const [showContentByTypeButton, setShowContentByTypeButton] = useState()
   const getNotification = useOpenNotification()
@@ -254,6 +238,20 @@ const Contain = () => {
             row,
           })
         }),
+      addLink: (id) =>
+        new Promise((resolve, reject) => {
+          setAddLinkState({
+            onCreate: () => {
+              resolve()
+              setAddLinkState({})
+            },
+            onCancel: () => {
+              reject()
+              setAddLinkState({})
+            },
+            id,
+          })
+        }),
       loadData,
     }),
     [loadData],
@@ -333,9 +331,7 @@ const Contain = () => {
               className="mr-2 font-size-12"
               addVolumeState={addVolumeState}
             />
-            <SecondaryBlueButton className="mr-2 font-size-12" disabled>
-              Связь
-            </SecondaryBlueButton>
+            <CreateLink addLinkState={addLinkState} />
             <div className="flex items-center color-text-secondary">
               <Tips text="Посмотреть файл">
                 <ButtonForIcon

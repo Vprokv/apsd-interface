@@ -27,6 +27,7 @@ export const URL_TITLE_CONTAIN_DEPARTMENT = '/apsd/structure/default'
 export const URL_TITLE_CONTAIN_SAVE = '/apsd/structure/save'
 export const URL_TITLE_CONTAIN_CREATE = '/apsd/structure/create'
 export const URL_TITLE_CONTAIN_DELETE = '/apsd/structure/delete'
+export const URL_TITLE_CONTAIN_CREATE_LINK = '/apsd/structure/link'
 // SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
 export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'

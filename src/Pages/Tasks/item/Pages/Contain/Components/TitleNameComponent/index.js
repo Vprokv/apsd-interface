@@ -7,7 +7,7 @@ import {
 import { ApiContext } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
-import { URL_ORGSTURCTURE_SEND } from '@/ApiList'
+import { URL_ORGSTURCTURE_SEND, URL_TITLE_CONTAIN } from '@/ApiList'
 import Icon from '@Components/Components/Icon'
 import sortIcons from '@/Icons/sortIcons'
 import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
@@ -20,9 +20,10 @@ import {
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
+import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
+import { useParams } from 'react-router-dom'
 
 const TitleNameComponent = ({
-  className,
   onInput,
   ParentValue: { tomId, type, expand, send, name },
   ParentValue,
@@ -37,7 +38,7 @@ const TitleNameComponent = ({
 
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
-  const { loadData, addDepartment, addVolume } = useContext(
+  const { loadData, addDepartment, addVolume, addLink } = useContext(
     LoadContainChildrenContext,
   )
 
@@ -118,6 +119,17 @@ const TitleNameComponent = ({
     [openTabOrCreateNewTab, tomId, type],
   )
 
+  const addLinkWindow = useCallback(async () => {
+    try {
+      const { [valueKey]: id } = ParentValue
+      closeContextMenu()
+      setLoading(true)
+      await addLink(id)
+    } finally {
+      setLoading(false)
+    }
+  }, [ParentValue, addLink, closeContextMenu, valueKey])
+
   return (
     <LeafContainer className="flex items-center">
       {send && (
@@ -170,6 +182,12 @@ const TitleNameComponent = ({
                   <StyledItem className="mb-3 font-size-12" onClick={edit}>
                     Редактировать
                   </StyledItem>
+                  <StyledItem
+                    className="mb-3 font-size-12"
+                    onClick={addLinkWindow}
+                  >
+                    Связать
+                  </StyledItem>
                 </>
               )}
             </StyledContextMenu>
@@ -180,6 +198,9 @@ const TitleNameComponent = ({
   )
 }
 
-TitleNameComponent.propTypes = {}
+TitleNameComponent.propTypes = {
+  onInput: PropTypes.func.isRequired,
+  ParentValue: PropTypes.object.isRequired,
+}
 
 export default TitleNameComponent

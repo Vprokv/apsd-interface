@@ -10,7 +10,7 @@ export const defaultFunctionsMap = {
     }
   },
   500: () => {
-    return { type: NOTIFICATION_TYPE_ERROR, message: 'Запрос не отправлен' }
+    return { type: NOTIFICATION_TYPE_ERROR, message: 'Не удалось отправить запрос' }
   },
   404: () => {
     return {
