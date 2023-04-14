@@ -16,7 +16,7 @@ const DocumentState = ({
     [dueDate],
   )
   return (
-    <div className="flex h-full">
+    <div className="flex items-center h-full">
       <div
         className={`h-full mr-2  ${
           read ? 'color-white' : ' bg-blue-1 color-blue-1'
