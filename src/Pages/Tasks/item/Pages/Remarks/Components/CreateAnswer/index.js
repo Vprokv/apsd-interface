@@ -39,6 +39,7 @@ const rules = {
   ],
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
   ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
