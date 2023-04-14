@@ -58,7 +58,7 @@ const columns = [
   {
     id: 'remarkText',
     label: 'Значение / Ответ',
-    className: 'h-10 flex items-center',
+    className: 'flex items-center break-all',
     component: ({
       ParentValue: {
         itsRemark,
