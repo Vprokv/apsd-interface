@@ -8,9 +8,14 @@ import ArchiveList from './Pages/Tasks/archiveList'
 import VolumeItem from './Pages/Volume'
 import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
-import createAxiosInstance from './api'
+import createAxiosInstance, { API_URL } from './api'
 import Main from './Pages/Main'
-import { URL_KERBEROS_LOGIN, URL_LOGIN, URL_USER_CHANGE_PASSWORD, URL_USER_OBJECT } from './ApiList'
+import {
+  URL_KERBEROS_LOGIN,
+  URL_LOGIN,
+  URL_USER_CHANGE_PASSWORD,
+  URL_USER_OBJECT,
+} from './ApiList'
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
@@ -62,7 +67,7 @@ function App() {
         (token) => updateAxiosInstanceParams({ token }),
         [],
       ),
-      kerberosUrl: URL_KERBEROS_LOGIN
+      kerberosUrl: `${API_URL}${URL_KERBEROS_LOGIN}`,
     })
 
   const changePasswordRequest = useCallback(

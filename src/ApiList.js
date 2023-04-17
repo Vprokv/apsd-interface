@@ -153,4 +153,4 @@ export const URL_BASKET_ADD = '/apsd/basket/add'
 export const URL_EXPORT = '/export/'
 export const URL_EXPORT_FILE = '/export/file/'
 // Kerberos
-export const URL_KERBEROS_LOGIN = '/ts/kerberos/login'
+export const URL_KERBEROS_LOGIN = 'ts/kerberos/login'
