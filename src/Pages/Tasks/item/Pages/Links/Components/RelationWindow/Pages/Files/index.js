@@ -13,7 +13,7 @@ import Input from '@/Components/Fields/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_ENTITY_LIST, URL_LINK_CREATE } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import ScrollBar from 'react-perfect-scrollbar'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
@@ -37,6 +37,7 @@ import RowComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWind
 import SelectWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/SelectWrapper'
 import { get } from '@Components/Utils/ObjectPath'
 import { FieldValidationStateContext } from '@/Components/InputWrapperRefactor/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -57,7 +58,6 @@ const Files = (props) => {
   const userObject = useRecoilValue(userAtom)
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
-  const update = useContext(UpdateContext)
   const parentId = useContext(DocumentIdContext)
   const context = useContext(ContainerContext)
   const [files, setFiles] = useState([])
@@ -68,9 +68,10 @@ const Files = (props) => {
     },
     [files],
   )
-  // const ref = useRef(validationErrors)
 
-  // const changeRef = useMemo(() => ref !== validationErrors, [validationErrors])
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_LINK,
+  })
 
   const onDeleteFile = useCallback(
     (id) => () => {
@@ -111,7 +112,7 @@ const Files = (props) => {
           }),
         ),
       })
-      update()
+      setTabState({ loading: false, fetched: false })
       close()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
@@ -123,7 +124,7 @@ const Files = (props) => {
     files,
     getNotification,
     api,
-    update,
+    setTabState,
     close,
     parentId,
     userObject.r_object_id,
@@ -131,12 +132,6 @@ const Files = (props) => {
   ])
   const columns = useMemo(
     () => [
-      // {
-      //   id: 'file',
-      //   label: 'Файл',
-      //   component: Option,
-      //   sizes: 270,
-      // },
       {
         id: 'dss_content_name',
         label: 'Наименование',

@@ -8,7 +8,7 @@ import React, {
 import PropTypes from 'prop-types'
 import EmptyInput from '../../../Input/style'
 import { SecondaryBlueButton } from '@/Components/Button'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import { useParams } from 'react-router-dom'
 import {
   URL_CONTENT_SEARCH,
@@ -29,6 +29,7 @@ import {
 } from '@/Pages/Tasks/item/Pages/Links/constans'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const fields = [
   {
@@ -70,6 +71,10 @@ const DocumentEAXD = (props) => {
     })
     setFilter(data)
   }, [search, id, api])
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_LINK,
+  })
 
   const formFields = useMemo(
     () => [
@@ -211,9 +216,18 @@ const DocumentEAXD = (props) => {
         },
       ],
     })
-    update()
+    setTabState({ loading: false, fetched: false })
     close()
-  }, [api, filter, id, type, r_object_id, dss_user_name])
+  }, [
+    filter,
+    api,
+    parentId,
+    type,
+    r_object_id,
+    dss_user_name,
+    setTabState,
+    close,
+  ])
 
   return (
     <>

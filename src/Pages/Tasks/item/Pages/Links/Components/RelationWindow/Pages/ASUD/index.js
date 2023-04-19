@@ -9,6 +9,7 @@ import {
   ApiContext,
   ASUD_DOCUMENT_WINDOW,
   INSIDE_DOCUMENT_WINDOW,
+  TASK_ITEM_LINK,
 } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -41,6 +42,10 @@ const DocumentASUD = (props) => {
 
   const tabItemState = useTabItem({
     stateId: ASUD_DOCUMENT_WINDOW,
+  })
+
+  const { setTabState: setPageTabState } = useTabItem({
+    stateId: TASK_ITEM_LINK,
   })
 
   const {
@@ -77,9 +82,9 @@ const DocumentASUD = (props) => {
 
   const onCreate = useCallback(async () => {
     await api.post(URL_LINK_CREATE, { linkObjects })
-    update()
+    setPageTabState({ loading: false, fetched: false })
     close()
-  }, [api, linkObjects])
+  }, [api, close, linkObjects, setPageTabState])
 
   const onSelect = useCallback(
     () => updateTabState('value')(selected),

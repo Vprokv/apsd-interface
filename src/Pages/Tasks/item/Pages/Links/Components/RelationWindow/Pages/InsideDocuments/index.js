@@ -16,6 +16,7 @@ import {
   INSIDE_DOCUMENT_WINDOW,
   PRESENT_DATE_FORMAT,
   SEARCH_PAGE,
+  TASK_ITEM_LINK,
 } from '@/contants'
 import { URL_LINK_CREATE } from '@/ApiList'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/SearchComponent'
@@ -46,10 +47,13 @@ const InsideDocument = () => {
   const api = useContext(ApiContext)
   const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
-  const update = useContext(UpdateContext)
 
   const tabItemState = useTabItem({
     stateId: INSIDE_DOCUMENT_WINDOW,
+  })
+
+  const { setTabState: setPageTabState } = useTabItem({
+    stateId: TASK_ITEM_LINK,
   })
 
   const {
@@ -91,11 +95,11 @@ const InsideDocument = () => {
 
   const onCreate = useCallback(async () => {
     await api.post(URL_LINK_CREATE, { linkObjects })
-    update()
+    setPageTabState({ loading: false, fetched: false })
     close()
     updateTabState('value')([])
     updateTabState('filter')({ type: 'ddt_project_calc_type_doc' })
-  }, [api, close, linkObjects, update, updateTabState])
+  }, [api, close, linkObjects, setPageTabState, updateTabState])
 
   const onSelect = useCallback(
     () => updateTabState('value')(selected),
