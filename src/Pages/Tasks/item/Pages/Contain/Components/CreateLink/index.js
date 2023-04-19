@@ -83,7 +83,7 @@ const CreateLink = ({ addLinkState }) => {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, changeOpenState, getNotification, id, selected, setTabState])
+  }, [api, getNotification, id, onClose, selected, setTabState])
 
   useEffect(() => {
     if (addLinkState.id) {

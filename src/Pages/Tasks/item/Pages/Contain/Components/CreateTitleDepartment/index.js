@@ -7,7 +7,7 @@ import Button, {
 } from '@/Components/Button'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import {
   URL_TITLE_CONTAIN_CREATE,
   URL_TITLE_CONTAIN_DEPARTMENT,
@@ -22,6 +22,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -48,6 +49,10 @@ const CreateTitleDepartment = ({
   const changeModalState = useCallback((nextState) => {
     setOpenState(nextState)
   }, [])
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_STRUCTURE,
+  })
 
   const handleCancel = useCallback(() => {
     addDepartmentState.onCancel()
@@ -95,12 +100,22 @@ const CreateTitleDepartment = ({
       })
       setSelected(null)
       getNotification(customMessagesFuncMap[response.status]())
-      handleClose()
+      changeModalState(false)
+      setTabState({ loading: false, fetched: false })
+      // handleClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, id, selected, addDepartmentState.id, getNotification, handleClose])
+  }, [
+    api,
+    id,
+    selected,
+    addDepartmentState.id,
+    getNotification,
+    changeModalState,
+    setTabState,
+  ])
 
   const renderEntities = useCallback(
     (level = 1) =>
