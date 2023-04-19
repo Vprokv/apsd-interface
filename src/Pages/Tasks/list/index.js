@@ -241,36 +241,29 @@ function TaskList({ loadFunctionRest }) {
   const loadData = useMemo(() => {
     const { limit, offset } = paginationState
     return loadDataHelper(async () => {
-      const { data } = await api.post(
-        loadFunctionRest,
-        {
-          filter: {
-            ...(search
-              ? search
-                  .replace('?', '')
-                  .split('&')
-                  .reduce((acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc[key] = JSON.parse(value)
-                    return acc
-                  }, {})
-              : {}),
-            ...filter,
-          },
-          sort: [
-            {
-              direction: sortQuery.direction,
-              property: sortQuery.key,
-            },
-          ],
+      const { data } = await api.post(loadFunctionRest, {
+        filter: {
+          ...(search
+            ? search
+                .replace('?', '')
+                .split('&')
+                .reduce((acc, p) => {
+                  const [key, value] = p.split('=')
+                  acc[key] = JSON.parse(value)
+                  return acc
+                }, {})
+            : {}),
+          ...filter,
         },
-        {
-          params: {
-            limit,
-            offset,
+        sort: [
+          {
+            direction: sortQuery.direction,
+            property: sortQuery.key,
           },
-        },
-      )
+        ],
+        limit,
+        offset,
+      })
       return data
     })
   }, [

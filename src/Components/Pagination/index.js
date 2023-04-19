@@ -23,7 +23,7 @@ const Pagination = ({
 
   const goToPage = useCallback(
     (nextPage) => () => {
-      if (page * limit >= total) {
+      if (nextPage > 0 ? page * limit >= total : page * limit > total) {
         return
       }
       let result = page + nextPage
@@ -101,6 +101,7 @@ Pagination.propTypes = {
   ]),
   limit: PropTypes.number,
   page: PropTypes.number,
+  total: PropTypes.number,
 }
 
 Pagination.defaultProps = {
