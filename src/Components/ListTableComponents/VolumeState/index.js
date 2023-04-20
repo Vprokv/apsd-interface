@@ -26,7 +26,7 @@ const VolumeState = ({
   return (
     <div className="flex flex-col w-full h-full items-start ">
       <VolumeStatus
-        className="font-size-14 mb-1 font-medium px-1 py-0.5 rounded-md w-fit"
+        className="font-size-12 mb-1 font-medium px-1 py-0.5 rounded-md w-fit"
         color={color}
         bg={bg}
         dangerouslySetInnerHTML={{

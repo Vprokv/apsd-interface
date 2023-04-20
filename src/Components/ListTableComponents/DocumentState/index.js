@@ -25,7 +25,7 @@ const DocumentState = ({
         .
       </div>
       <div>
-        <div className="font-size-14 mb-1 font-medium">{taskType}</div>
+        <div className="font-size-12 mb-1 font-medium">{taskType}</div>
         <div className="flex items-center font-size-12">
           <div className="flex items-center justify-center mr-2">
             <Icon

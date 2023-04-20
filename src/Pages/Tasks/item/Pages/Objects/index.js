@@ -275,8 +275,6 @@ const Objects = () => {
 
   const show = useMemo(() => width > 1200, [width])
 
-  console.log(filterWindowOpen, 'filterWindowOpen')
-
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
       <div ref={ref} className="flex items-center py-4">

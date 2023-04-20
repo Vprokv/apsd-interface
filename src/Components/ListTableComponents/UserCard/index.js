@@ -29,7 +29,7 @@ const UserCard = ({
       {/*  </UserCircle>*/}
       {/*)}*/}
       <div>
-        <div className="font-size-14">{fio}.</div>
+        <div className="font-size-12">{fio}.</div>
         <div className="font-size-12 color-text-secondary">{position}</div>
       </div>
     </div>
