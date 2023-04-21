@@ -33,7 +33,6 @@ import {
   ValidationProvider,
 } from '@/Components/InputWrapperRefactor'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { TextArea } from '@Components/Components/Inputs/TextArea'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -144,9 +143,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
       {
         id: 'text',
         label: 'Текст замечания',
-        className: 'break-all',
-        textAreaHeight: '80px',
-        component: TextArea,
+        component: CustomInput,
         placeholder: 'Введите текст замечания',
       },
       {
