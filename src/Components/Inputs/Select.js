@@ -16,6 +16,11 @@ const StyledSelect = styled(SelectComponent)`
   --padding-input: 5px 10px 5px 16px;
 
   ${Input} {
+    text-overflow: ellipsis;
+
+    overflow: hidden;
+    white-space: nowrap;
+    
     &::placeholder {
       font-size: 14px;
       font-weight: 400;
