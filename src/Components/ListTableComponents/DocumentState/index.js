@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
 
 const DocumentState = ({
-  ParentValue: { documentStatus, creationDate, dueDate = dayjs(), taskType, read },
+  ParentValue: { creationDate, dueDate, taskType, read },
 }) => {
   const formatDueTo = useMemo(
     () =>
