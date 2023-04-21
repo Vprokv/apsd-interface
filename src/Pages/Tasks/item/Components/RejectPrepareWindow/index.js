@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
-import {ApiContext, TASK_ITEM_APPROVAL_SHEET} from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -91,8 +91,6 @@ const RejectPrepareWindow = ({ open, onClose }) => {
     [context],
   )
 
-  console.log(selected, 'selected')
-
   return (
     <StandardSizeModalWindow
       open={open}
@@ -120,6 +118,9 @@ const RejectPrepareWindow = ({ open, onClose }) => {
   )
 }
 
-RejectPrepareWindow.propTypes = {}
+RejectPrepareWindow.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+}
 
 export default RejectPrepareWindow
