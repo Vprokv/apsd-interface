@@ -28,6 +28,9 @@ export const URL_TITLE_CONTAIN_SAVE = '/apsd/structure/save'
 export const URL_TITLE_CONTAIN_CREATE = '/apsd/structure/create'
 export const URL_TITLE_CONTAIN_DELETE = '/apsd/structure/delete'
 export const URL_TITLE_CONTAIN_CREATE_LINK = '/apsd/structure/link'
+export const URL_ORGSTURCTURE_SEND = '/apsd/structure/send'
+export const URL_TITLE_CONTAIN_CREATE_APPROVE = '/apsd/structure/approve'
+
 // SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
 export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'
@@ -91,7 +94,6 @@ export const URL_EMPLOYEE_LIST = '/sedo/employee/query'
 export const URL_ORGSTURCTURE_ORGANIZATIONS = '/sedo/orgstructure/organizations'
 export const URL_ORGSTURCTURE_BRANCHES = '/sedo/orgstructure/branches'
 export const URL_ORGSTURCTURE_DEPARTMENTS = '/sedo/orgstructure/departments'
-export const URL_ORGSTURCTURE_SEND = '/apsd/structure/send'
 
 // STORAGE
 export const URL_STORAGE_BRANCH = 'apsd/archive/branch'

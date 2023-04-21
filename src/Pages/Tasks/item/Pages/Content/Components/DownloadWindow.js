@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
+import ModalWindowWrapper from '@/Components/ModalWindow'
 import PropTypes from 'prop-types'
 import InputComponent from '@Components/Components/Inputs/Input'
 import { WithValidationForm } from '@Components/Components/Forms'
@@ -28,6 +28,18 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import styled from 'styled-components'
+
+export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
+  width: 40%;
+  height: 45%;
+  margin: auto;
+`
+
+export const FilterForm = styled(WithValidationForm)`
+  display: grid;
+  --form-elements-indent: 10px;
+`
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -160,8 +172,7 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <ScrollBar>
-        <WithValidationForm
-          className="mb-10"
+        <FilterForm
           inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
@@ -174,7 +185,7 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
             rightLabel={'Сохранить'}
             leftLabel={'Закрыть'}
           />
-        </WithValidationForm>
+        </FilterForm>
       </ScrollBar>
     </div>
   )

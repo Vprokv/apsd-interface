@@ -21,7 +21,6 @@ import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
 
 const columns = [

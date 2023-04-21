@@ -5,7 +5,7 @@ import { StatusDot } from './styles'
 const VolumeStatus = ({ value, className }) => {
   return (
     <div
-      className={`${className} word-wrap-anywhere font-size-14 flex h-full items-center justify-center`}
+      className={`${className} word-wrap-anywhere font-size-12 flex h-full items-center justify-center`}
     >
       {value}
     </div>

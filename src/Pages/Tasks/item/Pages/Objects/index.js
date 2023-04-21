@@ -50,7 +50,7 @@ const columns = [
     id: 'name',
     label: 'Наименование',
     component: ({ ParentValue: { name } }) => (
-      <BaseCell value={name} className="flex items-center font-size-12" />
+      <BaseCell value={name} className="flex items-center" />
     ),
     sizes: 300,
   },
@@ -58,7 +58,7 @@ const columns = [
     id: 'code',
     label: 'Код',
     component: ({ ParentValue: { code } }) => (
-      <BaseCell value={code} className="flex items-center font-size-12" />
+      <BaseCell value={code} className="flex items-center" />
     ),
     sizes: 100,
   },
@@ -66,7 +66,7 @@ const columns = [
     id: 'type',
     label: 'Тип объекта',
     component: ({ ParentValue: { type } }) => (
-      <BaseCell value={type} className="flex items-center font-size-12" />
+      <BaseCell value={type} className="flex items-center" />
     ),
     sizes: 150,
   },
@@ -74,7 +74,7 @@ const columns = [
     id: 'voltage',
     label: 'Класс напряжения',
     component: ({ ParentValue: { voltage } }) => (
-      <BaseCell value={voltage} className="flex items-center font-size-12" />
+      <BaseCell value={voltage} className="flex items-center" />
     ),
     sizes: 150,
   },
@@ -82,7 +82,7 @@ const columns = [
     id: 'res',
     label: 'РЭС',
     component: ({ ParentValue: { res } }) => (
-      <BaseCell value={res} className="flex items-center font-size-12" />
+      <BaseCell value={res} className="flex items-center" />
     ),
     sizes: 200,
   },
@@ -90,7 +90,7 @@ const columns = [
     id: 'address',
     label: 'Адрес',
     component: ({ ParentValue: { address } }) => (
-      <BaseCell value={address} className="flex items-center font-size-12" />
+      <BaseCell value={address} className="flex items-center" />
     ),
     sizes: 300,
   },
@@ -98,7 +98,7 @@ const columns = [
     id: 'keeper',
     label: 'Балансодержатель',
     component: ({ ParentValue: { keeper } }) => (
-      <BaseCell value={keeper} className="flex items-center font-size-12" />
+      <BaseCell value={keeper} className="flex items-center" />
     ),
     sizes: 300,
   },
@@ -274,8 +274,6 @@ const Objects = () => {
   }, [resizeSlider])
 
   const show = useMemo(() => width > 1200, [width])
-
-  console.log(filterWindowOpen, 'filterWindowOpen')
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">

@@ -43,9 +43,7 @@ const columns = [
   {
     id: 'position',
     label: 'ФИО, Должность',
-    component: ({ ParentValue = {} } = {}) => {
-      return UserCard(ParentValue)
-    },
+    component: ({ ParentValue = {} } = {}) => UserCard(ParentValue),
     sizes: 250,
   },
   {

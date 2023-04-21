@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
 
 const DocumentState = ({
-  ParentValue: { documentStatus, creationDate, dueDate, taskType, read },
+  ParentValue: { creationDate, dueDate, taskType, read },
 }) => {
   const formatDueTo = useMemo(
     () =>
@@ -25,7 +25,7 @@ const DocumentState = ({
         .
       </div>
       <div>
-        <div className="font-size-14 mb-1 font-medium">{taskType}</div>
+        <div className="font-size-12 mb-1 font-medium">{taskType}</div>
         <div className="flex items-center font-size-12">
           <div className="flex items-center justify-center mr-2">
             <Icon
@@ -45,7 +45,9 @@ const DocumentState = ({
             <div className="flex items-center justify-center ">
               <Icon
                 icon={clockIcon}
-                className="mr-1 color-text-secondary"
+                className={`mr-1 ${
+                  dueDate < dayjs() ? 'color-red' : 'color-text-secondary'
+                }`}
                 size={14}
               />
               {formatDueTo}

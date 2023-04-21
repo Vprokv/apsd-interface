@@ -61,7 +61,7 @@ const columns = [
     id: 'subscriber',
     label: 'Получатель',
     component: ({ ParentValue: { subscriber } }) => (
-      <BaseCell value={subscriber} className="flex items-center h-10" />
+      <BaseCell value={subscriber} className="flex items-center" />
     ),
     sizes: 150,
   },
@@ -69,7 +69,7 @@ const columns = [
     id: 'events',
     label: 'Подписка на событие',
     component: ({ ParentValue: { events = '' } }) => (
-      <Events events={events} className="flex items-center h-10 w-full" />
+      <Events events={events} className="flex items-center w-full" />
     ),
     sizes: 450,
   },
@@ -77,7 +77,7 @@ const columns = [
     id: 'author',
     label: 'Автор подписки',
     component: ({ ParentValue: { author } }) => (
-      <BaseCell value={author} className="flex items-center h-10" />
+      <BaseCell value={author} className="flex items-center" />
     ),
     sizes: 170,
   },
@@ -90,7 +90,7 @@ const columns = [
           startDate &&
           dayjs(startDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT)
         }
-        className="flex items-center h-10"
+        className="flex items-center"
       />
     ),
     sizes: 190,
@@ -104,7 +104,7 @@ const columns = [
           endDate &&
           dayjs(endDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT)
         }
-        className="flex items-center h-10"
+        className="flex items-center"
       />
     ),
     sizes: 450,

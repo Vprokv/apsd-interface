@@ -26,17 +26,8 @@ const UserCard = ({
 
   return (
     <div className="flex items-center justify-center">
-      {/*{avatarId ? (*/}
-      {/*  <img className="w-10 h-10 rounded-full" src={avatarId} />*/}
-      {/*) : (*/}
-      {/*  <UserCircle bg={bg} className="mr-2">*/}
-      {/*    {`${lastName?.length && lastName[0]} ${*/}
-      {/*      (firstName?.length && firstName[0]) || ''*/}
-      {/*    }`}*/}
-      {/*  </UserCircle>*/}
-      {/*)}*/}
       <div>
-        <div className="font-size-14 mb-2">{fio}</div>
+        <div className="font-size-12 mb-2">{fio}</div>
         <div className="font-size-12 color-text-secondary mb-1">{position}</div>
         {widthDepartment && (
           <div className="font-size-12 color-text-secondary">{department}</div>

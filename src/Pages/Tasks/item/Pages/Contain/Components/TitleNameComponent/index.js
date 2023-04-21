@@ -7,7 +7,11 @@ import {
 import { ApiContext } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
-import { URL_ORGSTURCTURE_SEND, URL_TITLE_CONTAIN } from '@/ApiList'
+import {
+  URL_ORGSTURCTURE_SEND,
+  URL_TITLE_CONTAIN,
+  URL_TITLE_CONTAIN_CREATE_APPROVE,
+} from '@/ApiList'
 import Icon from '@Components/Components/Icon'
 import sortIcons from '@/Icons/sortIcons'
 import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
@@ -50,7 +54,22 @@ const TitleNameComponent = ({
     try {
       await api.post(URL_ORGSTURCTURE_SEND, { partId: ParentValue.id })
       const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      if (!children || children.length === 0) {
+      if (children) {
+        onInput(await loadData(id), nestedDataKey)
+      }
+      setLoading(true)
+    } catch (e) {
+      setLoading(false)
+    }
+  }, [ParentValue, api, loadData, nestedDataKey, onInput, valueKey])
+
+  const onApprove = useCallback(async () => {
+    try {
+      await api.post(URL_TITLE_CONTAIN_CREATE_APPROVE, {
+        partId: ParentValue.id,
+      })
+      const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+      if (children) {
         onInput(await loadData(id), nestedDataKey)
       }
       setLoading(true)
@@ -162,7 +181,7 @@ const TitleNameComponent = ({
               <StyledItem className="mb-3 font-size-12" onClick={onSend}>
                 Передать состав титула
               </StyledItem>
-              <StyledItem className="mb-3 font-size-12 opacity-50">
+              <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
                 Утвердить состав титула
               </StyledItem>
               <StyledItem className="mb-3 font-size-12">
