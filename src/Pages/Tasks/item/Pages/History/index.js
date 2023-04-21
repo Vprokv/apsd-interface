@@ -30,7 +30,7 @@ const columns = [
     id: 'eventLabel',
     label: 'Событие',
     component: ({ ParentValue: { eventLabel } }) => (
-      <BaseCell value={eventLabel} className="flex items-center h-10" />
+      <BaseCell value={eventLabel} className="flex items-center" />
     ),
     sizes: 250,
   },
@@ -45,7 +45,7 @@ const columns = [
       const fio = `${lastName} ${(firstName && `${firstName[0]}.`) || ''} ${
         (middleName && `${middleName[0]}.`) || ''
       }`
-      return <BaseCell value={fio} className="flex items-center h-full" />
+      return <BaseCell value={fio} className="flex items-center" />
     },
     sizes: 250,
   },
@@ -53,7 +53,7 @@ const columns = [
     id: 'fromDate',
     label: 'Дата получения',
     component: ({ ParentValue: { eventDate } }) => (
-      <BaseCell value={eventDate} className="flex items-center h-full" />
+      <BaseCell value={eventDate} className="flex items-center" />
     ),
     sizes: 250,
   },
@@ -61,7 +61,7 @@ const columns = [
     id: 'description',
     label: 'Описание',
     component: ({ ParentValue: { description } }) => (
-      <BaseCell value={description} className="flex items-center h-full" />
+      <BaseCell value={description} className="flex items-center" />
     ),
     sizes: 361,
   },

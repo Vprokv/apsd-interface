@@ -89,7 +89,7 @@ export const tableConfig = [
         values: { dsdt_creation_date = '' },
       },
     }) => (
-      <BaseCell className="h-10 flex " value={dsdt_creation_date} /> // items-center
+      <BaseCell className="flex" value={dsdt_creation_date} /> // items-center
     ),
   },
   {

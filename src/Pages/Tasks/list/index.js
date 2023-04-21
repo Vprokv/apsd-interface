@@ -40,7 +40,7 @@ import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import Filter from './Components/Filter'
-import { ButtonForIcon, OverlayIconButton } from '@/Components/Button'
+import { ButtonForIcon} from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -62,7 +62,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Задание',
-    path: '[documentStatus, creationDate, dueDate, taskType, read]',
+    path: '[documentStatus, creationDate, dueDate, taskType, read, dueDate]',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -93,11 +93,6 @@ const columnMap = [
     componentType: 'DescriptionTableColumn',
     header: 'От кого',
     path: '[fromWhomEmployee.firstName,fromWhomEmployee.lastName,fromWhomEmployee.position,fromWhomEmployee.middleName]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Назначенный исполнитель',
-    path: '[appointedExecutors.firstName,appointedExecutors.lastName,appointedExecutors.position,appointedExecutors.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -136,6 +131,12 @@ const columns = [
     sizes: baseCellSize,
   },
   {
+    id: 'titleDescription',
+    label: 'Титул',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
     id: 'stageName',
     label: 'Этап',
     component: BaseCell,
@@ -163,20 +164,6 @@ const columns = [
     sizes: useCardSizes,
   },
   {
-    id: 'maintainer',
-    label: 'Назначенный исполнитель',
-    component: ({ ParentValue: { appointedExecutors } = {} }) =>
-      appointedExecutors &&
-      UserCard({
-        name: appointedExecutors?.firstName,
-        lastName: appointedExecutors?.lastName,
-        middleName: appointedExecutors?.middleName,
-        position: appointedExecutors?.position,
-        avatar: appointedExecutors?.avatartId,
-      }),
-    sizes: useCardSizes,
-  },
-  {
     id: 'author',
     label: 'Автор',
     component: ({
@@ -198,10 +185,6 @@ const columns = [
         avatar: avatartId,
       }),
     sizes: useCardSizes,
-  },
-  {
-    id: 'dueDate',
-    label: 'Контрольный срок',
   },
 ]
 
@@ -282,7 +265,7 @@ function TaskList({ loadFunctionRest }) {
     const {
       data: { id },
     } = await api.post(URL_EXPORT, {
-      url: `${API_URL}${URL_TASK_LIST_V2}?limit=${limit}&offset=${offset}`,
+      url: `${API_URL}${URL_TASK_LIST_V2}`,
       label: 'Все задания',
       sheetName: 'Все задания',
       columns: columnMap,
@@ -306,6 +289,8 @@ function TaskList({ loadFunctionRest }) {
             property: sortQuery.key,
           },
         ],
+        limit,
+        offset,
         token,
       },
     })

@@ -57,7 +57,7 @@ const columns = [
     id: 'name',
     label: 'Наименование',
     component: ({ ParentValue: { dss_name } }) => (
-      <BaseCell value={dss_name} className="flex items-center font-size-12" />
+      <BaseCell value={dss_name} className="flex items-center" />
     ),
     sizes: 300,
   },
@@ -65,7 +65,7 @@ const columns = [
     id: 'code',
     label: 'Код',
     component: ({ ParentValue: { dss_code } }) => (
-      <BaseCell value={dss_code} className="flex items-center font-size-12" />
+      <BaseCell value={dss_code} className="flex items-center" />
     ),
     sizes: 100,
   },
@@ -73,7 +73,7 @@ const columns = [
     id: 'type',
     label: 'Тип объекта',
     component: ({ ParentValue: { dss_type } }) => (
-      <BaseCell value={dss_type} className="flex items-center font-size-12" />
+      <BaseCell value={dss_type} className="flex items-center" />
     ),
     sizes: 150,
   },
@@ -83,7 +83,7 @@ const columns = [
     component: ({ ParentValue: { dss_voltage } }) => (
       <BaseCell
         value={dss_voltage}
-        className="flex items-center font-size-12"
+        className="flex items-center"
       />
     ),
     sizes: 100,
@@ -92,7 +92,7 @@ const columns = [
     id: 'res',
     label: 'РЭС',
     component: ({ ParentValue: { dss_res } }) => (
-      <BaseCell value={dss_res} className="flex items-center font-size-12" />
+      <BaseCell value={dss_res} className="flex items-center" />
     ),
     sizes: 200,
   },
@@ -100,7 +100,7 @@ const columns = [
     id: 'address',
     label: 'Адрес',
     component: ({ ParentValue: { dss_addr } }) => (
-      <BaseCell value={dss_addr} className="flex items-center font-size-12" />
+      <BaseCell value={dss_addr} className="flex items-center" />
     ),
     sizes: 300,
   },
@@ -108,7 +108,7 @@ const columns = [
     id: 'keeper',
     label: 'Балансодержатель',
     component: ({ ParentValue: { dss_keeper } }) => (
-      <BaseCell value={dss_keeper} className="flex items-center font-size-12" />
+      <BaseCell value={dss_keeper} className="flex items-center" />
     ),
     sizes: 300,
   },

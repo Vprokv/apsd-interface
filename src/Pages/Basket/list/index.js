@@ -81,7 +81,7 @@ const columns = [
     label: 'Наименование тома',
     component: (props) => (
       <BaseCell
-        className="flex items-center break-words break-all min-h-10"
+        className="flex items-center break-words break-all"
         {...props}
       />
     ),

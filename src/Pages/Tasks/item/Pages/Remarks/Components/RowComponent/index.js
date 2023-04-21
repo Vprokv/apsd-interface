@@ -70,7 +70,7 @@ const columns = [
   {
     id: 'status',
     label: 'Статус',
-    className: 'h-10 flex items-center',
+    className: 'flex items-center',
     component: ({
       ParentValue: {
         itsRemark,
@@ -82,7 +82,6 @@ const columns = [
   {
     id: 'remarkType',
     label: 'Тип замечания',
-    className: 'h-10 flex items-center',
     component: ({
       ParentValue: {
         itsRemark,
@@ -94,7 +93,6 @@ const columns = [
   {
     id: 'setRemark',
     label: 'Свод замечаний',
-    className: 'h-10 flex items-center',
     component: ({ ParentValue: { setRemark, itsRemark } }) => (
       <BaseCell
         value={
@@ -111,7 +109,6 @@ const columns = [
   {
     id: 'more',
     label: '',
-    className: 'h-10 flex items-center',
     component: ({ ParentValue: { props, itsRemark } }) =>
       itsRemark ? <MoreActionComponent {...props} /> : <div />,
     sizes: 50,
