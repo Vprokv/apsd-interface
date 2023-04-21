@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import {ApiContext, TASK_ITEM_APPROVAL_SHEET} from '@/contants'
 import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -44,12 +44,16 @@ const RejectPrepareWindow = ({ open, onClose }) => {
         signal: 'reject_prepare',
         reportText: selected.reportText,
         reportContentFilekey: selected.files?.map(
-          ({ dss_content_name }) => dss_content_name,
+          ({ dsc_content }) => dsc_content,
         ),
       })
       onClose()
       closeCurrenTab()
       reloadSidebarTaskCounters()
+      // updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+      //   loading: false,
+      //   fetched: false,
+      // }) //TODO на случай если потребуется не закрывать окно, а перезагрузить таб
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
