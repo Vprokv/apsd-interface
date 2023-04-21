@@ -353,7 +353,6 @@ const Contain = () => {
                 <ButtonForIcon
                   className="mr-2"
                   onClick={changeOpenState}
-                  disabled={disabled}
                 >
                   <Icon icon={SortIcon} />
                 </ButtonForIcon>
