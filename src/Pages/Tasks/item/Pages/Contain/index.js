@@ -147,9 +147,9 @@ const Contain = () => {
   } = tabItemState
 
   const loadData = useCallback(
-    async (partId = null) => {
+    async (partId = null, expand = true) => {
       const { data } = await api.post(URL_TITLE_CONTAIN, {
-        expand: true,
+        expand,
         titleId: id,
         partId,
       })
@@ -350,10 +350,7 @@ const Contain = () => {
                 onDeleteData={deleteData}
               />
               <Tips text="Свернуть">
-                <ButtonForIcon
-                  className="mr-2"
-                  onClick={changeOpenState}
-                >
+                <ButtonForIcon className="mr-2" onClick={changeOpenState}>
                   <Icon icon={SortIcon} />
                 </ButtonForIcon>
               </Tips>
