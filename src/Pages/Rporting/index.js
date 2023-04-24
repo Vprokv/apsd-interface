@@ -33,7 +33,7 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { API_URL } from '@/api'
-import downloadFileWithReload from "@/Utils/DownloadFileWithReload";
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 
 export const UserContext = createContext({})
 

@@ -1,6 +1,7 @@
 import CheckBox from '../../../../../../../../../Components/Inputs/CheckBox'
 import React, { useContext } from 'react'
 import { EmailContext } from '../../constans'
+import PropTypes from 'prop-types'
 
 const SendSystem = ({ ParentValue: { emplId, ...item } = {} }) => {
   const { value, onInput } = useContext(EmailContext)
@@ -18,6 +19,9 @@ const SendSystem = ({ ParentValue: { emplId, ...item } = {} }) => {
 
 export default SendSystem
 
+SendSystem.propTypes = {
+  ParentValue: PropTypes.object,
+}
 SendSystem.defaultProps = {
   emplId: '',
 }

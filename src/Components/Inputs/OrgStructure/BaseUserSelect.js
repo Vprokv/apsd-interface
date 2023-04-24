@@ -14,7 +14,6 @@ export const AddUserOptionsFullName = (v = {}) => ({
     : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`,
 })
 
-
 const UserSelect = ({ loadFunction, filter, ...props }) => {
   const api = useContext(ApiContext)
   const {

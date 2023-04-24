@@ -13,6 +13,7 @@ import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import CustomValuesPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/CustomValues'
 import FiltersPipe from './Filters/index'
 import { useEffect, useRef, useState } from 'react'
+import PropTypes from 'prop-types'
 
 const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
   const [filter, setFilter] = useState()
@@ -42,6 +43,12 @@ const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
   )
 }
 
+CustomOrgstructure.propTypes = {
+  onInput: PropTypes.func,
+  res_author: PropTypes.bool,
+  id: PropTypes.string,
+}
+
 const CustomDatePicker = ({ onInput, value, ...props }) => {
   const [filter, setFilter] = useState()
   const filterRef = useRef(filter)
@@ -64,6 +71,12 @@ const CustomDatePicker = ({ onInput, value, ...props }) => {
   )
 }
 
+CustomDatePicker.propTypes = {
+  onInput: PropTypes.func,
+  value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  id: PropTypes.string,
+}
+
 const CustomCheckBox = ({ onInput, value, ...props }) => {
   const [filter, setFilter] = useState(false)
 
@@ -72,6 +85,16 @@ const CustomCheckBox = ({ onInput, value, ...props }) => {
   }, [props.id, onInput, value, filter])
 
   return <CheckBox {...props} value={filter} onInput={setFilter} />
+}
+
+CustomCheckBox.propTypes = {
+  onInput: PropTypes.func,
+  value: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.bool,
+    PropTypes.object,
+  ]),
+  id: PropTypes.string,
 }
 
 const loadFunctions = {

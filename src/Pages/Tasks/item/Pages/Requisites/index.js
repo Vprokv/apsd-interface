@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react'
+import PropTypes from 'prop-types'
 import ScrollBar from '@Components/Components/ScrollBar'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { RequisitesForm } from './styles'
@@ -246,8 +247,13 @@ export const Requisites = ({ type: documentType, documentState }) => {
   )
 }
 
-Requisites.defaultProps = {}
-Requisites.propTypes = {}
+Requisites.defaultProps = {
+  documentState: {},
+}
+Requisites.propTypes = {
+  documentState: PropTypes.object,
+  type: PropTypes.string,
+}
 
 const RequisitesWrapper = () => {
   const { type } = useParams()

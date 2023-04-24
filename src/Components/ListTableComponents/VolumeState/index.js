@@ -49,7 +49,9 @@ const VolumeState = ({
   )
 }
 
-VolumeState.propTypes = {}
+VolumeState.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default VolumeState
 // Компонент сдизайнен для компонента ListTable и это его пропорции

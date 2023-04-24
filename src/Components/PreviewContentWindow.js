@@ -25,4 +25,9 @@ PreviewContentWindow.propTypes = {
   type: PropTypes.string.isRequired,
 }
 
+PreviewContentWindow.defaultProps = {
+  id: '',
+  type: '',
+}
+
 export default PreviewContentWindow

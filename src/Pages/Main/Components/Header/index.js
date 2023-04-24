@@ -31,7 +31,7 @@ const Header = () => {
   return (
     <div className="bg-blue-1 flex items-center py-2 pl-6 pr-5 text-white">
       <img src={MainLogo} className="mr-20" />
-      <Tips text="Свернуть дерево навигаци">
+      <Tips text="Свернуть дерево навигации">
         <button type="button" className="bg-blue-4 rounded-md h-8 pl-1 pr-1">
           <Icon icon={doubleShevronIcon} size="22" />
         </button>

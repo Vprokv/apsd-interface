@@ -270,6 +270,7 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
 
 CreateSubscriptionWindow.propTypes = {
   onClose: PropTypes.func,
+  loadDataFunction: PropTypes.func,
 }
 CreateSubscriptionWindow.defaultProps = {
   onClose: () => null,

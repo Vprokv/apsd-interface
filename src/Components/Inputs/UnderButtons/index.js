@@ -48,6 +48,12 @@ UnderButtons.propTypes = {
   leftLabel: PropTypes.string,
   rightFunc: PropTypes.func,
   rightLabel: PropTypes.string,
+  leftStyle: PropTypes.string,
+  rightStyle: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 }
 
 export default UnderButtons

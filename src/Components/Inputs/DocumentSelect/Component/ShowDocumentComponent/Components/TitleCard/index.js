@@ -11,6 +11,8 @@ const TitleCard = ({ documentId, documentState }) => {
   )
 }
 
-TitleCard.propTypes = {}
+TitleCard.propTypes = {
+  documentState: PropTypes.object,
+}
 
 export default TitleCard

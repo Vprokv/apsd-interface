@@ -25,9 +25,24 @@ const FirstLevelHeaderComponent = ({ children, selected }) => (
   </div>
 )
 
+FirstLevelHeaderComponent.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  selected: PropTypes.bool,
+}
+
 const DefaultHeaderComponent = ({ children }) => (
   <div className="font-size-12">{children}</div>
 )
+
+DefaultHeaderComponent.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+}
 
 const CreateDocumentWindow = ({ onClose }) => {
   const api = useContext(ApiContext)

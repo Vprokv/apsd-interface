@@ -59,7 +59,9 @@ const DocumentState = ({
   )
 }
 
-DocumentState.propTypes = {}
+DocumentState.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default DocumentState
 

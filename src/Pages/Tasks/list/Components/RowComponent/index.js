@@ -21,6 +21,7 @@ RowComponent.propTypes = {
     PropTypes.node,
   ]),
   style: PropTypes.object,
+  value: PropTypes.object,
 }
 
 export default RowComponent

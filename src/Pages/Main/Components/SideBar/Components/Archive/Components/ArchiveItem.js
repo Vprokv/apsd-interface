@@ -50,7 +50,6 @@ const ArchiveItem = ({
   const api = useContext(ApiContext)
   useEffect(() => {
     ;(async () => {
-      console.log()
       const { [level]: req = apisMap.defaultRequest } = apisMap
       setItems(await req({ api, id, sectionId, query }))
     })()
