@@ -1,15 +1,11 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import {
-  TreeStateContext,
-  TreeStateLevelContext,
-} from '@Components/Components/Tables/Plugins/constants'
+import { TreeStateContext } from '@Components/Components/Tables/Plugins/constants'
 import { ApiContext } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 import {
   URL_ORGSTURCTURE_SEND,
-  URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_CREATE_APPROVE,
 } from '@/ApiList'
 import Icon from '@Components/Components/Icon'
@@ -24,8 +20,6 @@ import {
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
-import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
-import { useParams } from 'react-router-dom'
 
 const TitleNameComponent = ({
   onInput,
@@ -54,8 +48,8 @@ const TitleNameComponent = ({
     try {
       await api.post(URL_ORGSTURCTURE_SEND, { partId: ParentValue.id })
       const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      if (children) {
-        onInput(await loadData(id), nestedDataKey)
+      if (!children || children.length === 0) {
+        onInput(await loadData(id, false), nestedDataKey)
       }
       setLoading(true)
     } catch (e) {
@@ -69,8 +63,8 @@ const TitleNameComponent = ({
         partId: ParentValue.id,
       })
       const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      if (children) {
-        onInput(await loadData(id), nestedDataKey)
+      if (!children || children.length === 0) {
+        onInput(await loadData(id, false), nestedDataKey)
       }
       setLoading(true)
     } catch (e) {
@@ -81,7 +75,7 @@ const TitleNameComponent = ({
   const onOpenNestedTable = useCallback(async () => {
     const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
     if (!children || children.length === 0) {
-      onInput(await loadData(id), nestedDataKey)
+      onInput(await loadData(id, false), nestedDataKey)
     }
     onChange(id)()
   }, [ParentValue, loadData, nestedDataKey, onChange, onInput, valueKey])
@@ -102,7 +96,7 @@ const TitleNameComponent = ({
       setLoading(true)
       await addDepartment(id)
       onInput(
-        (await loadData(id)).map((row) => {
+        (await loadData(id, false)).map((row) => {
           const oldRow = children.find((r) => r.id === row.id)
           return oldRow || row
         }),
