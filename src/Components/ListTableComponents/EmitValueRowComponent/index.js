@@ -1,11 +1,9 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import { GridContainer } from './styles'
 
 const RowComponent = ({ className, children, style, onClick, value }) => (
-  <GridContainer onClick={onClick(value)} className={className} style={style}>
+  <div onClick={onClick(value)} className={className} style={style}>
     {children}
-  </GridContainer>
+  </div>
 )
 
 RowComponent.propTypes = {
