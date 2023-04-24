@@ -93,6 +93,8 @@ UserSelect.propTypes = {
   loadFunction: PropTypes.func,
   source: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
+  valueKey: PropTypes.string,
+  labelKey: PropTypes.string,
 }
 UserSelect.defaultProps = {
   loadFunction: (api) => (filter) => (search) =>
@@ -101,5 +103,6 @@ UserSelect.defaultProps = {
   labelKey: 'fullDescription',
   options: [],
   disabled: false,
+  source: '',
 }
 export default UserSelect

@@ -13,6 +13,14 @@ const DropDownComponent = ({ isOpen, children, ...props }) =>
     </ContextMenu>
   )
 
+DropDownComponent.propTypes = {
+  isOpen: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+}
+
 const DatePicker = ({
   onInput,
   id,
@@ -65,10 +73,18 @@ const DatePicker = ({
 
 DatePicker.propTypes = {
   value: PropTypes.array,
+  onInput: PropTypes.func,
+  id: PropTypes.string,
+  startPlaceHolder: PropTypes.string,
+  endPlaceHolder: PropTypes.string,
 }
 
 DatePicker.defaultProps = {
   value: [],
+  startPlaceHolder: 'От',
+  endPlaceHolder: 'До',
+  id: '',
+  onInput: () => null,
 }
 
 export default ({ range, ...props }) =>

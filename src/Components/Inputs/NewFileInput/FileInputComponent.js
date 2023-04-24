@@ -96,11 +96,17 @@ BaseFileInputComponent.propTypes = {
   rejectedFiles: PropTypes.array,
   setRejectedFiles: PropTypes.func.isRequired,
   value: PropTypes.array,
+  onDeleteAll: PropTypes.func,
 }
 
 BaseFileInputComponent.defaultProps = {
   value: [],
   rejectedFiles: [],
+  onDeleteAll: () => null,
+  onDelete: () => null,
+  onReUpload: () => null,
+  openFileInput: () => null,
+  setRejectedFiles: () => null,
 }
 
 export default BaseFileInputComponent

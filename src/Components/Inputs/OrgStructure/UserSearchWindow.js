@@ -404,12 +404,23 @@ OrgStructureWindow.propTypes = {
   multiple: PropTypes.bool,
   returnOption: PropTypes.bool,
   id: PropTypes.string.isRequired,
+  filterOptions: PropTypes.object,
 }
 
 OrgStructureWindow.defaultProps = {
   onInput: () => null,
   onClose: () => null,
   sendValue: () => null,
+  loadFunction: () => null,
+  setFilter: () => null,
+  onSort: () => null,
+  filterOptions: {},
+  filter: {},
+  sortQuery: {},
+  pagination: {},
+  options: [],
+  valueKey: '',
+  id: '',
 }
 
 const OrgStructureWindowWrapper = ({

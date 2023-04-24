@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import ModalWindowComponent from '@Components/Components/ModalWindow'
 import Icon from '@Components/Components/Icon'
@@ -33,6 +34,14 @@ const ModalWindowWrapper = ({ title, ...props }) => (
   />
 )
 
+ModalWindowWrapper.propTypes = {
+  title: PropTypes.string,
+}
+
+ModalWindowWrapper.defaultProps = {
+  title: '',
+}
+
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;
   height: 72.65%;
@@ -43,5 +52,4 @@ export const FormWindow = styled(ModalWindow)`
   width: 30%;
   margin: auto;
 `
-
 export default ModalWindowWrapper

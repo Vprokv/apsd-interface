@@ -7,6 +7,12 @@ const Classification = (props) => {
   return <div>{options[0]?.r_object_id}</div>
 }
 
-Classification.propTypes = {}
+Classification.propTypes = {
+  options: PropTypes.array,
+}
+
+Classification.defaultProps = {
+  options: [],
+}
 
 export default Classification

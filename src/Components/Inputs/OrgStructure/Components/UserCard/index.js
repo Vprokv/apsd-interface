@@ -44,8 +44,29 @@ UserCard.propTypes = {
     secondName: PropTypes.string,
     position: PropTypes.string,
   }),
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  middleName: PropTypes.string,
+  widthDepartment: PropTypes.bool,
+  position: PropTypes.string,
+  department: PropTypes.string,
+  avatarId: PropTypes.string,
 }
 
-UserCard.defaultProps = {}
+UserCard.defaultProps = {
+  firstName: '',
+  lastName: '',
+  middleName: '',
+  widthDepartment: false,
+  position: '',
+  department: '',
+  avatarId: '',
+  value: {
+    name: '',
+    surname: '',
+    secondName: '',
+    position: '',
+  },
+}
 
 export default UserCard

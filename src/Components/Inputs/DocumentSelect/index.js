@@ -247,11 +247,26 @@ const DocumentSelect = ({
   )
 }
 
-DocumentSelect.propTypes = {}
+DocumentSelect.propTypes = {
+  className: PropTypes.string,
+  filters: PropTypes.object,
+  displayName: PropTypes.string,
+  onInput: PropTypes.func,
+  id: PropTypes.string,
+  multiple: PropTypes.bool,
+  returnOption: PropTypes.bool,
+  valueKey: PropTypes.string,
+  options: PropTypes.array,
+}
 
 DocumentSelect.defaultProps = {
   className: '',
   filters: { type: 'ddt_startup_complex_type_doc' },
+  onInput: () => null,
+  displayName: '',
+  valueKey: '',
+  id: '',
+  options: [],
 }
 
 export default DocumentSelect

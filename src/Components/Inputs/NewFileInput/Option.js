@@ -57,6 +57,7 @@ UploadingOption.propTypes = {
     name: PropTypes.string.isRequired,
     progress: PropTypes.number.isRequired,
     fail: PropTypes.bool,
+    dss_content_name: PropTypes.string,
   }).isRequired,
   onReUpload: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -74,6 +75,11 @@ const UploadedOption = ({ value, onDelete }) => (
 UploadedOption.propTypes = {
   value: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
+}
+
+UploadingOption.defaultProps = {
+  value: '',
+  onDelete: () => null,
 }
 
 const Option = ({ value, ...props }) => {
