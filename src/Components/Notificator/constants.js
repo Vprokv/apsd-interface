@@ -10,12 +10,21 @@ export const defaultFunctionsMap = {
     }
   },
   500: () => {
-    return { type: NOTIFICATION_TYPE_ERROR, message: 'Не удалось отправить запрос' }
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Не удалось отправить запрос',
+    }
   },
   404: () => {
     return {
       type: NOTIFICATION_TYPE_ERROR,
       message: 'Ошибка выполнения запроса',
+    }
+  },
+  406: () => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Отсутсвуют права на действие',
     }
   },
   412: (message) => {

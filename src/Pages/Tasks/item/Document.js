@@ -68,14 +68,18 @@ const Document = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [message, setMessage] = useState('')
-  const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_DOCUMENT_ITEM, {
-      id,
-      type,
-    })
-    return data
-  }, [api, id, type])
   const getNotification = useOpenNotification()
+  const loadData = useCallback(async () => {
+    try {
+      const { data } = await api.post(URL_DOCUMENT_ITEM, {
+        id,
+        type,
+      })
+      return data
+    } catch (e) {
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, getNotification, id, type])
 
   const tabItemState = useTabItem({
     stateId: ITEM_DOCUMENT,
@@ -244,7 +248,7 @@ const Document = () => {
         ? documentTabs
         : [
             ...documentTabs,
-            { caption: 'Реквизиты NEW', name: 'requisites_new' },
+            // { caption: 'Реквизиты NEW', name: 'requisites_new' },
           ],
     [documentTabs],
   )
