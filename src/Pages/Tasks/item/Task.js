@@ -169,15 +169,6 @@ const Task = () => {
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
-      reject_approve: {
-        handler: () =>
-          setComponent({
-            Component: (props) => (
-              <RejectPrepareWindow signal={'reject_approve'} {...props} />
-            ),
-          }),
-        icon: defaultTaskIcon['reject_approve'],
-      },
       reject_consider: {
         handler: () =>
           setComponent({
@@ -197,9 +188,18 @@ const Task = () => {
         icon: defaultTaskIcon['apsd_prepare_reject'],
       },
       reject_prepare: {
-        handler: () => setComponent({ Component: RejectPrepareWindow }),
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RejectPrepareWindow signal={'reject_prepare'} {...props} />
+            ),
+          }),
         icon: defaultTaskIcon['reject_prepare'],
       },
+      // reject_approve: {
+      //   handler: () => setComponent({ Component: RejectApproveWindow }),
+      //   icon: defaultTaskIcon['reject_approve'],
+      // },
     }),
     [
       api,
