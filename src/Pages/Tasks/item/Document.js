@@ -80,8 +80,9 @@ const Document = () => {
   const tabItemState = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
+
   const {
-    tabState: { data: { documentActions, documentTabs, values } = {} },
+    tabState: { data: { documentActions, documentTabs = [], values } = {} },
     setTabState,
   } = tabItemState
 
@@ -236,10 +237,24 @@ const Document = () => {
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
 
+  //TODO не трогать, пока идет разработка нового парсера
+  const customDocumentsTab = useMemo(
+    () =>
+      process.env.NODE_ENV === 'production'
+        ? documentTabs
+        : [
+            ...documentTabs,
+            { caption: 'Реквизиты NEW', name: 'requisites_new' },
+          ],
+    [documentTabs],
+  )
+
   return (
     <DocumentTypeContext.Provider value={ITEM_DOCUMENT}>
       <DocumentIdContext.Provider value={id}>
-        <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
+        <Layout
+          documentTabs={useDocumentTabs(customDocumentsTab, defaultPages)}
+        >
           <SidebarContainer>
             <DocumentActions documentActions={wrappedDocumentActions} />
           </SidebarContainer>

@@ -23,7 +23,7 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const RejectPrepareWindow = ({ open, onClose }) => {
+const RejectPrepareWindow = ({ open, onClose, signal }) => {
   const api = useContext(ApiContext)
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
@@ -41,7 +41,7 @@ const RejectPrepareWindow = ({ open, onClose }) => {
     try {
       const { status } = await api.post(URL_TASK_COMPLETE, {
         taskId: id,
-        signal: 'reject_prepare',
+        signal,
         reportText: selected.reportText,
         reportContentFilekey: selected.files?.map(
           ({ dsc_content }) => dsc_content,
@@ -66,7 +66,9 @@ const RejectPrepareWindow = ({ open, onClose }) => {
     id,
     onClose,
     reloadSidebarTaskCounters,
-    selected,
+    selected.files,
+    selected.reportText,
+    signal,
   ])
 
   const rules = {
@@ -121,6 +123,7 @@ const RejectPrepareWindow = ({ open, onClose }) => {
 RejectPrepareWindow.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  signal: PropTypes.string.isRequired,
 }
 
 export default RejectPrepareWindow
