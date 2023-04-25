@@ -5,7 +5,7 @@ import Button, {
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -30,6 +30,7 @@ import {
 import { useOpenNotification } from '@/Components/Notificator'
 import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -59,6 +60,10 @@ const CreateAnswer = ({
     },
     [],
   )
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_REMARKS,
+  })
+
   const {
     r_object_id,
     dss_user_name,
@@ -169,8 +174,8 @@ const CreateAnswer = ({
         remarkId,
         ...other,
       })
-      update()
       getNotification(customMessagesFuncMap[status]())
+      setTabState({ loading: false, fetched: false })
       changeModalState(false)()
       setFilterValue(initialUserValue)
     } catch (e) {
