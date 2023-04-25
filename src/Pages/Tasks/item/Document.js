@@ -77,6 +77,7 @@ const Document = () => {
       })
       return data
     } catch (e) {
+      const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
   }, [api, getNotification, id, type])
