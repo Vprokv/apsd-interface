@@ -4,6 +4,7 @@ import { PaginationButton } from './styles'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '../../Icons/angleIcon'
 import doubleAngleIcon from '../../Icons/doubleAngleIcon'
+import log from 'tailwindcss/lib/util/log'
 
 const Pagination = ({
   children,
@@ -23,11 +24,13 @@ const Pagination = ({
 
   const goToPage = useCallback(
     (nextPage) => () => {
-      if (nextPage > 0 ? page * limit >= total : page * limit > total) {
-        return
-      }
       let result = page + nextPage
       result = result > 1 ? result : 1
+
+      if (result * limit >= total) {
+        result = Math.round(total / limit)
+      }
+
       if (result !== page) {
         setPage(result > 1 ? result : 1)
       }

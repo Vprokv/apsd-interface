@@ -16,6 +16,7 @@ import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
 import AnnulIcon from './Icons/AnnulIcon.svg'
 import StrelkaRight from './Icons/StrelkaRight.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
+import Requisites_New from "@/Parser/Requisites_New";
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
@@ -72,6 +73,11 @@ export const defaultPages = {
     key: 'remarks',
     Component: Remarks,
   },
+  requisites_new: {
+    path: 'requisites_new',
+    key: 'requisites_new',
+    Component: Requisites_New,
+  },
 }
 
 export const defaultDocumentHandlers = {
@@ -89,6 +95,8 @@ export const defaultTaskIcon = {
   finish_approve: FinishApproveIcon,
   on_approved: FinishApproveIcon,
   finish_prepare: FinishApproveIcon,
+  reject_consider: FinishApproveIcon,
+  apsd_prepare_reject: FinishApproveIcon,
   finish_approval: FinishApproveIcon,
   revision_finish: FinishApproveIcon,
   reject_approve: RejectApproveIcon,

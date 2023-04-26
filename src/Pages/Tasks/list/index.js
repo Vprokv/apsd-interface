@@ -40,7 +40,7 @@ import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import Filter from './Components/Filter'
-import { ButtonForIcon} from '@/Components/Button'
+import { ButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -48,12 +48,13 @@ import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
 
+const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
+
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
-    component: CheckBox,
-    style: { margin: 'auto 0' },
+    component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,
     valueKey: 'id',
   },
 }
@@ -323,9 +324,9 @@ function TaskList({ loadFunctionRest }) {
   }, [loadData, shouldReloadDataFlag])
 
   return (
-    <div className="flex-container px-4 w-full overflow-hidden">
+    <div className="flex-container pr-4 w-full overflow-hidden">
       <div className="flex items-center ">
-        <Filter value={filter} onInput={setFilter} />
+        <Filter value={filter} onInput={setFilter} className="pl-4" />
         <div className="flex items-center color-text-secondary ml-auto">
           <Tips text="Фильтры">
             <ButtonForIcon className="mx-2">

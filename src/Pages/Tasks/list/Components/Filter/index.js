@@ -11,7 +11,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 
 const emptyWrapper = ({ children }) => children
 
-function Filter({ value, onInput }) {
+function Filter({ value, onInput, className }) {
   const api = useContext(ApiContext)
 
   const fields = useMemo(
@@ -114,6 +114,7 @@ function Filter({ value, onInput }) {
 
   return (
     <FilterForm
+      className={className}
       fields={fields}
       inputWrapper={emptyWrapper}
       value={value}
@@ -125,6 +126,7 @@ function Filter({ value, onInput }) {
 Filter.propTypes = {
   value: PropTypes.object.isRequired,
   onInput: PropTypes.func.isRequired,
+  className: PropTypes.string,
 }
 
 export default Filter
