@@ -36,6 +36,7 @@ export const WINDOW_SHOW_TITLE = 'WINDOW_SHOW_TITLE'
 export const DEFAULT_DATE_FORMAT = 'DD.MM.YYYY HH:mm'
 export const DEFAULT_DATE_FORMAT_OTHER = 'HH:mm DD.MM.YYYY'
 export const PRESENT_DATE_FORMAT = 'DD.MM.YYYY'
+export const PRESENT_DATE_FORMAT_2 = 'YYYY-MM-DD'
 
 export const DATE_FORMAT_DD_MM_YYYY_HH_mm_ss = 'DD.MM.YYYY HH:mm:ss'
 
