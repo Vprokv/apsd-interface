@@ -4,7 +4,11 @@ import Icon from '@Components/Components/Icon'
 import calendarIcon from '../../../Icons/calendarIcon'
 import clockIcon from '../../../Icons/clockIcon'
 import dayjs from 'dayjs'
-import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
+import {
+  DEFAULT_DATE_FORMAT,
+  PRESENT_DATE_FORMAT,
+  PRESENT_DATE_FORMAT_2,
+} from '@/contants'
 
 const DocumentState = ({
   ParentValue: { creationDate, dueDate, taskType, read },
@@ -15,6 +19,7 @@ const DocumentState = ({
       dayjs(dueDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
     [dueDate],
   )
+
   return (
     <div className="flex items-center h-full">
       <div
@@ -46,7 +51,15 @@ const DocumentState = ({
               <Icon
                 icon={clockIcon}
                 className={`mr-1 ${
-                  dueDate < dayjs() ? 'color-red' : 'color-text-secondary'
+                  dayjs()
+                    .subtract(1, 'day')
+                    .isAfter(
+                      dayjs(dueDate, DEFAULT_DATE_FORMAT).format(
+                        PRESENT_DATE_FORMAT_2,
+                      ),
+                    )
+                    ? 'color-red'
+                    : 'color-text-secondary'
                 }`}
                 size={14}
               />
