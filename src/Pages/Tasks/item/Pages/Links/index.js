@@ -171,36 +171,33 @@ const Links = () => {
     let errorString = ''
 
     const res = await Promise.all(
-      selectState.reduce((acc, { contentId, documentTypeLabel }) => {
-        if (documentTypeLabel) {
-          acc.push(
-            new Promise((res) => {
-              api
-                .post(
-                  URL_DOWNLOAD_FILE,
-                  {
-                    type: 'ddt_document_content',
-                    column: 'dsc_content',
-                    id: contentId,
-                  },
-                  { responseType: 'blob' },
-                )
-                .then((response) => {
-                  res(response.data)
-                })
-                .catch(() => res(new Error('Документ не найден')))
-            }),
-          )
-        }
+      selectState.reduce((acc, { contentId }) => {
+        acc.push(
+          new Promise((res) => {
+            api
+              .post(
+                URL_DOWNLOAD_FILE,
+                {
+                  type: 'ddt_document_content',
+                  column: 'dsc_content',
+                  id: contentId,
+                },
+                { responseType: 'blob' },
+              )
+              .then((response) => {
+                res(response)
+              })
+              .catch(() => res(new Error('Документ не найден')))
+          }),
+        )
         return acc
       }, []),
     )
-
-    res.forEach((val, i) => {
-      if (val instanceof Error) {
-        errorString = `${errorString}, Документ ${selectState[i]?.documentTypeLabel} не найден`
+    res.forEach((val) => {
+      if (val.data instanceof Error) {
+        errorString = `${errorString}, Документ не найден`
       } else {
-        downloadFile(val, selectState[i]?.documentTypeLabel)
+        downloadFile(val)
       }
     })
 
@@ -340,7 +337,7 @@ const Links = () => {
       <PreviewContentWindow
         open={renderPreviewWindow}
         onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-        id={selectState[0]?.id}
+        id={selectState[0]?.contentId}
         type="ddt_document_content"
       />
     </div>

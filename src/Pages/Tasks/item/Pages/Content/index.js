@@ -232,7 +232,7 @@ const Content = () => {
                 { responseType: 'blob' },
               )
               .then((response) => {
-                res(response.data)
+                res(response)
               })
               .catch(() => res(new Error('Документ не найден')))
           }),
@@ -243,7 +243,7 @@ const Content = () => {
       if (val instanceof Error) {
         errorString = `${errorString}, Документ ${selectState[i]?.contentName} не найден`
       } else {
-        downloadFile(val, selectState[i]?.contentName)
+        downloadFile(val)
       }
     })
 

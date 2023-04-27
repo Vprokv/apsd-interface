@@ -52,8 +52,8 @@ import DeleteIcon from '@/Icons/deleteIcon'
 import ExportIcon from '@/Icons/ExportIcon'
 import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
-import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -61,103 +61,46 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'id',
+    valueKey: 'docType',
   },
 }
 
 const columns = [
   {
-    id: 'task',
-    label: 'Задание',
-    component: DocumentState,
-    sizes: DocumentStateSizes,
-  },
-  {
-    id: 'volume',
-    label: 'Том',
-    component: VolumeState,
-    sizes: volumeStateSize,
-  },
-  {
-    id: 'documentDescription',
-    label: 'Наименование тома',
-    component: (props) => (
-      <BaseCell
-        className="flex items-center break-words break-all"
-        {...props}
-      />
-    ),
-    sizes: baseCellSize,
-  },
-  {
-    id: 'stageName',
-    label: 'Этап',
+    id: 'docRegNum',
+    label: 'Наименование',
     component: BaseCell,
     sizes: baseCellSize,
   },
   {
-    id: 'documentStatus',
-    label: 'Статус тома',
-    className: 'flex items-center',
-    component: VolumeStatus,
-    sizes: volumeStatusSize,
+    id: 'docRegDate',
+    label: 'Дата создания',
+    component: BaseCell,
+    sizes: baseCellSize,
   },
   {
-    id: 'fromAuthor',
-    label: 'От кого',
-    component: ({ ParentValue: { fromWhomEmployee } = {} }) =>
-      fromWhomEmployee &&
-      UserCard({
-        name: fromWhomEmployee?.firstName,
-        lastName: fromWhomEmployee?.lastName,
-        middleName: fromWhomEmployee?.middleName,
-        position: fromWhomEmployee?.position,
-        avatar: fromWhomEmployee?.avatartId,
-      }),
-    sizes: useCardSizes,
+    id: 'docStatus',
+    label: 'Статус',
+    component: BaseCell,
+    sizes: baseCellSize,
   },
   {
-    id: 'maintainer',
-    label: 'Назначенный исполнитель',
-    component: ({ ParentValue: { appointedExecutors } = {} }) =>
-      appointedExecutors &&
-      UserCard({
-        name: appointedExecutors?.firstName,
-        lastName: appointedExecutors?.lastName,
-        middleName: appointedExecutors?.middleName,
-        position: appointedExecutors?.position,
-        avatar: appointedExecutors?.avatartId,
-      }),
-    sizes: useCardSizes,
-  },
-  {
-    id: 'author',
+    id: 'docAuthorName',
     label: 'Автор',
-    component: ({
-      ParentValue: {
-        creatorEmployee: {
-          firstName = '',
-          position = '',
-          avatartId,
-          lastName,
-          middleName,
-        },
-      },
-    }) =>
-      UserCard({
-        name: firstName,
-        lastName: lastName,
-        middleName: middleName,
-        position: position,
-        avatar: avatartId,
-      }),
-    sizes: useCardSizes,
+    component: BaseCell,
+    sizes: baseCellSize,
   },
   {
-    id: 'dueDate',
-    label: 'Контрольный срок',
-    // component: BaseCell,
-    // sizes: baseCellSize,
+    id: 'removerFullName',
+    label: 'Удалил',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
+    id: 'removeDate',
+    label: 'Дата удаления',
+    component: BaseCell,
+    sizes: baseCellSize,
   },
 ]
 
@@ -184,14 +127,13 @@ function BasketList() {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
-  const getNotification = useOpenNotification()
 
   const tabBasketState = useTabItem({ stateId: BASKET })
 
   const {
     tabState,
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {} },
+    tabState: { data },
   } = tabBasketState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -200,8 +142,8 @@ function BasketList() {
     setState: setTabState,
     defaultLimit: 10,
   })
-
-  const [filter, setFilter] = useState({ readTask: false })
+  const getNotification = useOpenNotification()
+  const [filter, setFilter] = useState()
   const [selectState, setSelectState] = useState([])
   const handleDoubleClick = useCallback(
     ({ taskId, type }) =>
@@ -228,11 +170,10 @@ function BasketList() {
           movedDate: timesMap[search],
         },
       })
-
       return data
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
     }
   }, [
     api,
@@ -246,34 +187,18 @@ function BasketList() {
   useAutoReload(loadData, tabBasketState)
 
   const onDelete = useCallback(async () => {
-    try {
-      await api.post(URL_BASKET_DELETED, { documentIds: selectState })
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
-  }, [api, getNotification, selectState])
+    await api.post(URL_BASKET_DELETED, { documentIds: selectState })
+  }, [api, selectState])
 
   const onRestore = useCallback(async () => {
-    try {
-      await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
-  }, [api, getNotification, selectState])
+    await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
+  }, [api, selectState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center">
         <Filter value={filter} onInput={setFilter} />
         <div className="flex items-center color-text-secondary ml-auto">
-          {/* <ButtonForIcon className="mr-2">*/}
-          {/*  <Icon icon={filterIcon} />*/}
-          {/* </ButtonForIcon>*/}
-          {/* <ButtonForIcon className="mr-2">*/}
-          {/*  <Icon icon={sortIcon} />*/}
-          {/* </ButtonForIcon>*/}
           <Tips text="Убрать из удаленных">
             <ButtonForIcon
               className="mr-2"
@@ -297,7 +222,7 @@ function BasketList() {
             <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
           [handleDoubleClick],
         )}
-        value={content}
+        value={data}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
@@ -312,9 +237,11 @@ function BasketList() {
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
-        total={total}
+        total={0}
       >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
+        {`Отображаются записи с ${paginationState.startItemValue} по ${
+          paginationState.endItemValue
+        }, всего ${0}`}
       </Pagination>
     </div>
   )
