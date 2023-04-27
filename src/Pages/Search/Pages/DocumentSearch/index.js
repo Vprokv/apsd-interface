@@ -410,19 +410,13 @@ DocumentSearch.propTypes = {
 
 DocumentSearch.defaultProps = {
   documentTypeLoadFunction: (api) => async () => {
-    const getNotification = useOpenNotification()
-    try {
-      const { data } = await api.post(`${URL_TYPE_CONFIG}?limit=100&offset=0`, {
-        type: 'documentType',
-        id: 'types',
-        filters: {},
-        sortType: null,
-      })
-      return data
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
+    const { data } = await api.post(`${URL_TYPE_CONFIG}?limit=100&offset=0`, {
+      type: 'documentType',
+      id: 'types',
+      filters: {},
+      sortType: null,
+    })
+    return data
   },
   options: [
     {

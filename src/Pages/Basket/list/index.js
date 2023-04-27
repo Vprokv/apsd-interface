@@ -187,12 +187,22 @@ function BasketList() {
   useAutoReload(loadData, tabBasketState)
 
   const onDelete = useCallback(async () => {
-    await api.post(URL_BASKET_DELETED, { documentIds: selectState })
-  }, [api, selectState])
+    try {
+      await api.post(URL_BASKET_DELETED, { documentIds: selectState })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, getNotification, selectState])
 
   const onRestore = useCallback(async () => {
-    await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
-  }, [api, selectState])
+    try {
+      await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, getNotification, selectState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">

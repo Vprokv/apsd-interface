@@ -1,8 +1,6 @@
 import { useCallback, useContext, useMemo } from 'react'
-import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import { ApiContext } from '@/contants'
 import { URL_SEARCH_LIST } from '@/ApiList'
-import log from 'tailwindcss/lib/util/log'
 
 const useButtonFunc = ({
   tabState: { filter = {}, value },
@@ -10,8 +8,6 @@ const useButtonFunc = ({
   operator,
 }) => {
   const api = useContext(ApiContext)
-
-
 
   const searchData = useMemo(() => {
     const queryItems =
