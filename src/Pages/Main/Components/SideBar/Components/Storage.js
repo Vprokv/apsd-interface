@@ -21,7 +21,6 @@ const Storage = () => {
               className={`ml-1 ${isDisplayed ? '' : 'rotate-180'}`}
             />
           </button>
-          //TODO раздел в разработке
           {/*{isDisplayed && (*/}
           {/*  <>*/}
           {/*    <WithToggleNavigationItem id='Хранилище_Строительство ПС "Красково"'>*/}
