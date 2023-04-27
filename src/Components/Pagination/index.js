@@ -26,11 +26,9 @@ const Pagination = ({
     (nextPage) => () => {
       let result = page + nextPage
       result = result > 1 ? result : 1
-
       if (result * limit >= total) {
-        result = Math.round(total / limit)
+        result = Math.round(total / limit) + 1
       }
-
       if (result !== page) {
         setPage(result > 1 ? result : 1)
       }
