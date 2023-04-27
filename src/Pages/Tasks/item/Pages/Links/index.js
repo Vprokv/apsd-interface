@@ -26,7 +26,6 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
 import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
 import DownloadIcon from '@/Icons/DownloadIcon'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
@@ -149,25 +148,22 @@ const Links = () => {
     defaultLimit: 10,
   })
 
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
-
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
-    const { data } = await api.post(URL_LINK_LIST, {
-      parentId: id,
-      filter,
-      limit,
-      offset,
-    })
+    try {
+      const { limit, offset } = paginationState
+      const { data } = await api.post(URL_LINK_LIST, {
+        parentId: id,
+        filter,
+        limit,
+        offset,
+      })
 
-    return data
-  }, [paginationState, api, id, filter])
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [paginationState, api, id, filter, getNotification])
 
   useAutoReload(loadData, tabItemState)
 
@@ -175,36 +171,33 @@ const Links = () => {
     let errorString = ''
 
     const res = await Promise.all(
-      selectState.reduce((acc, { contentId, documentTypeLabel }) => {
-        if (documentTypeLabel) {
-          acc.push(
-            new Promise((res) => {
-              api
-                .post(
-                  URL_DOWNLOAD_FILE,
-                  {
-                    type: 'ddt_document_content',
-                    column: 'dsc_content',
-                    id: contentId,
-                  },
-                  { responseType: 'blob' },
-                )
-                .then((response) => {
-                  res(response.data)
-                })
-                .catch(() => res(new Error('Документ не найден')))
-            }),
-          )
-        }
+      selectState.reduce((acc, { contentId }) => {
+        acc.push(
+          new Promise((res) => {
+            api
+              .post(
+                URL_DOWNLOAD_FILE,
+                {
+                  type: 'ddt_document_content',
+                  column: 'dsc_content',
+                  id: contentId,
+                },
+                { responseType: 'blob' },
+              )
+              .then((response) => {
+                res(response)
+              })
+              .catch(() => res(new Error('Документ не найден')))
+          }),
+        )
         return acc
       }, []),
     )
-
-    res.forEach((val, i) => {
-      if (val instanceof Error) {
-        errorString = `${errorString}, Документ ${selectState[i]?.documentTypeLabel} не найден`
+    res.forEach((val) => {
+      if (val.data instanceof Error) {
+        errorString = `${errorString}, Документ не найден`
       } else {
-        downloadFile(val, selectState[i]?.documentTypeLabel)
+        downloadFile(val)
       }
     })
 
@@ -264,95 +257,90 @@ const Links = () => {
   }, [api, getNotification, selectState, setTabState])
 
   return (
-    <UpdateContext.Provider value={setChange}>
-      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-        <div className="flex items-center py-4 form-element-sizes-32">
-          <FilterForm
-            className="mr-2"
-            value={filter}
-            onInput={setFilterValue}
-            fields={fields}
-            inputWrapper={EmptyInputWrapper}
-          />
-          <div className="flex items-center ml-auto">
-            <FormWindow open={errorState} onClose={() => setErrorState('')}>
-              <div className="text-center mt-4 mb-12">{errorState}</div>
-              <SecondaryGreyButton
-                type="button"
-                className="w-40 m-auto"
-                onClick={() => setErrorState('')}
-              >
-                Закрыть
-              </SecondaryGreyButton>
-            </FormWindow>
-            <LinksWindow />
-            <Tips text="Скачать файл">
-              <ButtonForIcon
-                onClick={downLoadContent}
-                disabled={disabled}
-                className="mr-2 color-text-secondary"
-              >
-                <Icon icon={DownloadIcon} />
-              </ButtonForIcon>
-            </Tips>
-            <Tips text="Посмотреть файл">
-              <ButtonForIcon
-                onClick={useCallback(
-                  () => setRenderPreviewWindowState(true),
-                  [],
-                )}
-                disabled={!selectState[0]?.id}
-                className="mr-2 color-text-secondary"
-              >
-                <Icon size={20} icon={ViewIcon} />
-              </ButtonForIcon>
-            </Tips>
-            <EditLinksWindow value={selectState} />
-            <Tips text="Удалить файл">
-              <ButtonForIcon
-                onClick={onDelete}
-                disabled={!selectState.length}
-                className="color-text-secondary"
-              >
-                <Icon size={20} icon={DeleteIcon} />
-              </ButtonForIcon>
-            </Tips>
-          </div>
+    <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+      <div className="flex items-center py-4 form-element-sizes-32">
+        <FilterForm
+          className="mr-2"
+          value={filter}
+          onInput={setFilterValue}
+          fields={fields}
+          inputWrapper={EmptyInputWrapper}
+        />
+        <div className="flex items-center ml-auto">
+          <FormWindow open={errorState} onClose={() => setErrorState('')}>
+            <div className="text-center mt-4 mb-12">{errorState}</div>
+            <SecondaryGreyButton
+              type="button"
+              className="w-40 m-auto"
+              onClick={() => setErrorState('')}
+            >
+              Закрыть
+            </SecondaryGreyButton>
+          </FormWindow>
+          <LinksWindow />
+          <Tips text="Скачать файл">
+            <ButtonForIcon
+              onClick={downLoadContent}
+              disabled={disabled}
+              className="mr-2 color-text-secondary"
+            >
+              <Icon icon={DownloadIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <Tips text="Посмотреть файл">
+            <ButtonForIcon
+              onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
+              disabled={disabled}
+              className="mr-2 color-text-secondary"
+            >
+              <Icon size={20} icon={ViewIcon} />
+            </ButtonForIcon>
+          </Tips>
+          <EditLinksWindow value={selectState} />
+          <Tips text="Удалить файл">
+            <ButtonForIcon
+              onClick={onDelete}
+              disabled={!selectState.length}
+              className="color-text-secondary"
+            >
+              <Icon size={20} icon={DeleteIcon} />
+            </ButtonForIcon>
+          </Tips>
         </div>
-        <ListTable
-          rowComponent={useMemo(
-            () => (props) =>
-              <RowComponent onDoubleClick={() => null} {...props} />,
-            [],
-          )}
-          value={content}
-          columns={columns}
-          plugins={plugins}
-          headerCellComponent={HeaderCell}
-          selectState={selectState}
-          onSelect={setSelectState}
-          sortQuery={sortQuery}
-          onSort={onSort}
-          valueKey="id"
-        />
-        <Pagination
-          total={total}
-          className="mt-2"
-          limit={paginationState.limit}
-          page={paginationState.page}
-          setLimit={setLimit}
-          setPage={setPage}
-        >
-          {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
-        </Pagination>
-        <PreviewContentWindow
-          open={renderPreviewWindow}
-          onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-          id={selectState[0]?.id}
-          type="ddt_document_content"
-        />
       </div>
-    </UpdateContext.Provider>
+      <ListTable
+        rowComponent={useMemo(
+          () => (props) =>
+            <RowComponent onDoubleClick={() => null} {...props} />,
+          [],
+        )}
+        value={content}
+        columns={columns}
+        plugins={plugins}
+        headerCellComponent={HeaderCell}
+        selectState={selectState}
+        onSelect={setSelectState}
+        sortQuery={sortQuery}
+        onSort={onSort}
+        valueKey="id"
+      />
+      <Pagination
+        total={total}
+        className="mt-2"
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      >
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
+      </Pagination>
+      <PreviewContentWindow
+        open={renderPreviewWindow}
+        onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
+        id={selectState[0]?.contentId}
+        type="ddt_document_content"
+      />
+    </div>
   )
 }
 
