@@ -30,7 +30,7 @@ const useButtonFunc = ({
       inVersions: false,
       queryItems,
     }
-  }, [filter, value])
+  }, [filter, operator])
 
   const onSearch = useCallback(async () => {
     const {

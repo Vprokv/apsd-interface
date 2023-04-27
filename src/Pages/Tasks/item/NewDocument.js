@@ -63,16 +63,21 @@ export const NewTaskItem = ({ classificationId, type }) => {
   }, [values])
 
   const loadData = useCallback(async () => {
-    const { valuesCustom, values } = initialState || {}
-    const { data } = await api.post(URL_DOCUMENT_CLASSIFICATION, {
-      classificationId,
-    })
-    return {
-      ...data,
-      values: { ...data.values, ...values },
-      valuesCustom: { ...data.valuesCustom, ...valuesCustom },
+    try {
+      const { valuesCustom, values } = initialState || {}
+      const { data } = await api.post(URL_DOCUMENT_CLASSIFICATION, {
+        classificationId,
+      })
+      return {
+        ...data,
+        values: { ...data.values, ...values },
+        valuesCustom: { ...data.valuesCustom, ...valuesCustom },
+      }
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, classificationId, initialState])
+  }, [api, classificationId, getNotification, initialState])
 
   useAutoReload(loadData, tabItemState)
 

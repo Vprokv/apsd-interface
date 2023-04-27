@@ -148,14 +148,19 @@ const Contain = () => {
 
   const loadData = useCallback(
     async (partId = null, expand = true) => {
-      const { data } = await api.post(URL_TITLE_CONTAIN, {
-        expand,
-        titleId: id,
-        partId,
-      })
-      return data
+      try {
+        const { data } = await api.post(URL_TITLE_CONTAIN, {
+          expand,
+          titleId: id,
+          partId,
+        })
+        return data
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
     },
-    [api, id],
+    [api, getNotification, id],
   )
 
   const deleteData = useCallback(async () => {

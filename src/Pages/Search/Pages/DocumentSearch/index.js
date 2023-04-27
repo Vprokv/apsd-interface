@@ -29,6 +29,8 @@ import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import { ExportContext } from '../constans'
 import ScrollBar from '@Components/Components/ScrollBar'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 export const tableConfig = [
   {
@@ -193,6 +195,7 @@ const DocumentSearch = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
+  const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
   const fields = useMemo(
     () => [
@@ -267,12 +270,17 @@ const DocumentSearch = ({
     [fields],
   )
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
-      type: filter.type,
-    })
+    try {
+      const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
+        type: filter.type,
+      })
 
-    setAttributes(data)
-  }, [api, filter.type])
+      setAttributes(data)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, filter.type, getNotification])
 
   const onSearch = useCallback(async () => {
     const { type, ...filters } = filter
@@ -288,14 +296,19 @@ const DocumentSearch = ({
       [],
     )
 
-    const { data } = await api.post(URL_SEARCH_LIST, {
-      types: [type],
-      inVersions: false,
-      queryItems,
-    })
-    setSearchState(data)
-    setRenderTable(true)
-  }, [api, defaultOperators, filter, setSearchState])
+    try {
+      const { data } = await api.post(URL_SEARCH_LIST, {
+        types: [type],
+        inVersions: false,
+        queryItems,
+      })
+      setSearchState(data)
+      setRenderTable(true)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, defaultOperators, filter, getNotification, setSearchState])
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
@@ -311,27 +324,32 @@ const DocumentSearch = ({
       [],
     )
 
-    const {
-      data: { id },
-    } = await api.post(URL_EXPORT, {
-      url: `${API_URL}${URL_SEARCH_LIST}`,
-      label: 'Поиск по документам',
-      sheetName: 'Поиск по документам',
-      columns: columnsMap,
-      body: {
-        types: [type],
-        inVersions: false,
-        queryItems,
-        token,
-      },
-    })
+    try {
+      const {
+        data: { id },
+      } = await api.post(URL_EXPORT, {
+        url: `${API_URL}${URL_SEARCH_LIST}`,
+        label: 'Поиск по документам',
+        sheetName: 'Поиск по документам',
+        columns: columnsMap,
+        body: {
+          types: [type],
+          inVersions: false,
+          queryItems,
+          token,
+        },
+      })
 
-    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
-      responseType: 'blob',
-    })
+      const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+        responseType: 'blob',
+      })
 
-    downloadFileWithReload(data, 'Поиск по документам.xlsx')
-  }, [api, defaultOperators, filter, token])
+      downloadFileWithReload(data, 'Поиск по документам.xlsx')
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, defaultOperators, filter, getNotification, token])
 
   const onRemove = useCallback(() => setFilter({}), [setFilter])
 
@@ -392,13 +410,19 @@ DocumentSearch.propTypes = {
 
 DocumentSearch.defaultProps = {
   documentTypeLoadFunction: (api) => async () => {
-    const { data } = await api.post(`${URL_TYPE_CONFIG}?limit=100&offset=0`, {
-      type: 'documentType',
-      id: 'types',
-      filters: {},
-      sortType: null,
-    })
-    return data
+    const getNotification = useOpenNotification()
+    try {
+      const { data } = await api.post(`${URL_TYPE_CONFIG}?limit=100&offset=0`, {
+        type: 'documentType',
+        id: 'types',
+        filters: {},
+        sortType: null,
+      })
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
   },
   options: [
     {

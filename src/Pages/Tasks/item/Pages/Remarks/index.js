@@ -24,32 +24,26 @@ import ToggleNavigationItemWrapper, {
 import SortIcon from '@/Pages/Tasks/item/Pages/Contain/Icons/SortIcon'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Tips from '@/Components/Tips'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import {useOpenNotification} from "@/Components/Notificator";
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
-const Remarks = (props) => {
+const Remarks = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState()
   const [toggle, onToggle] = useState({})
   const [open, setOpen] = useState(false)
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
   const {
-    setTabState,
     tabState: { data: { remarks = [], tabPermit } = {} },
   } = tabItemState
-
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
 
   useEffect(() => {
     return (
@@ -63,13 +57,18 @@ const Remarks = (props) => {
   }, [remarks, toggle.size])
 
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_REMARK_LIST, {
-      documentId: id,
-      filter,
-    })
+    try {
+      const { data } = await api.post(URL_REMARK_LIST, {
+        documentId: id,
+        filter,
+      })
 
-    return data
-  }, [api, id, filter])
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, id, filter, getNotification])
 
   useAutoReload(loadData, tabItemState)
 
@@ -127,73 +126,70 @@ const Remarks = (props) => {
   }, [open])
 
   return (
-    <UpdateContext.Provider value={setChange}>
-      <ShowAnswerButtonContext.Provider value={{}}>
-        <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-          <div className="flex items-center py-4 form-element-sizes-32">
-            <FilterForm
-              className="mr-2"
-              value={filter}
-              onInput={setFilterValue}
-              fields={fields}
-              inputWrapper={EmptyInputWrapper}
-            />
-            <div className="flex items-center ml-auto">
-              <CreateRemark tabPermit={tabPermit} />
-              <SecondaryBlueButton className="ml-2">
-                Выгрузить свод замечаний
-              </SecondaryBlueButton>
-              <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
-                <ButtonForIcon
-                  onClick={ChangeAllToggls}
-                  className="ml-2 color-text-secondary"
-                >
-                  <Icon icon={SortIcon} />
-                </ButtonForIcon>
-              </Tips>
-            </div>
+    <ShowAnswerButtonContext.Provider value={{}}>
+      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+        <div className="flex items-center py-4 form-element-sizes-32">
+          <FilterForm
+            className="mr-2"
+            value={filter}
+            onInput={setFilterValue}
+            fields={fields}
+            inputWrapper={EmptyInputWrapper}
+          />
+          <div className="flex items-center ml-auto">
+            <CreateRemark tabPermit={tabPermit} />
+            <SecondaryBlueButton className="ml-2">
+              Выгрузить свод замечаний
+            </SecondaryBlueButton>
+            <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
+              <ButtonForIcon
+                onClick={ChangeAllToggls}
+                className="ml-2 color-text-secondary"
+              >
+                <Icon icon={SortIcon} />
+              </ButtonForIcon>
+            </Tips>
           </div>
-          <ScrollBar>
-            <div className="flex flex-col">
-              <ToggleContext.Provider value={{ toggle, onToggle }}>
-                {remarks.map((val) => (
-                  <WithToggle key={val.remarkId} id={val.remarkId}>
-                    {({ isDisplayed, toggleDisplayedFlag }) => {
-                      return (
-                        <RowComponent
-                          isDisplayed={isDisplayed}
-                          toggleDisplayedFlag={toggleDisplayedFlag}
-                          key={val.remarkId}
-                          selectState={selectState}
-                          setSelectState={setSelectState}
-                          {...val}
-                        >
-                          <div className="h-12 flex items-center">
-                            <div className="pl-2">
-                              <Icon
-                                icon={angleIcon}
-                                size={10}
-                                className={`color-text-secondary ${
-                                  isDisplayed ? '' : 'rotate-180'
-                                }`}
-                              />
-                            </div>
-
-                            <div className="ml-4 font-medium flex items-center ">
-                              {val?.stageName}
-                            </div>
-                          </div>
-                        </RowComponent>
-                      )
-                    }}
-                  </WithToggle>
-                ))}
-              </ToggleContext.Provider>
-            </div>
-          </ScrollBar>
         </div>
-      </ShowAnswerButtonContext.Provider>
-    </UpdateContext.Provider>
+        <ScrollBar>
+          <div className="flex flex-col">
+            <ToggleContext.Provider value={{ toggle, onToggle }}>
+              {remarks.map((val) => (
+                <WithToggle key={val.remarkId} id={val.remarkId}>
+                  {({ isDisplayed, toggleDisplayedFlag }) => {
+                    return (
+                      <RowComponent
+                        isDisplayed={isDisplayed}
+                        toggleDisplayedFlag={toggleDisplayedFlag}
+                        key={val.remarkId}
+                        selectState={selectState}
+                        setSelectState={setSelectState}
+                        {...val}
+                      >
+                        <div className="h-12 flex items-center">
+                          <div className="pl-2">
+                            <Icon
+                              icon={angleIcon}
+                              size={10}
+                              className={`color-text-secondary ${
+                                isDisplayed ? '' : 'rotate-180'
+                              }`}
+                            />
+                          </div>
+                          <div className="ml-4 font-medium flex items-center ">
+                            {val?.stageName}
+                          </div>
+                        </div>
+                      </RowComponent>
+                    )
+                  }}
+                </WithToggle>
+              ))}
+            </ToggleContext.Provider>
+          </div>
+        </ScrollBar>
+      </div>
+    </ShowAnswerButtonContext.Provider>
   )
 }
 

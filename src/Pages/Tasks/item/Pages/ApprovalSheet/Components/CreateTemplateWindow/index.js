@@ -1,5 +1,9 @@
 import React, { useCallback, useContext, useState } from 'react'
-import { ApiContext, DocumentTypeContext } from '@/contants'
+import {
+  ApiContext,
+  DocumentTypeContext,
+  TASK_ITEM_APPROVAL_SHEET,
+} from '@/contants'
 import Button, { SecondaryBlueButton } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { URL_CREATE_TEMPLATE } from '@/ApiList'
@@ -14,6 +18,7 @@ import {
 } from '@/Components/Notificator'
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -55,6 +60,11 @@ const CreateTemplateWindow = ({ jsonData }) => {
   const api = useContext(ApiContext)
   const permit = useContext(PermitDisableContext)
   const getNotification = useOpenNotification()
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
+
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
@@ -71,13 +81,22 @@ const CreateTemplateWindow = ({ jsonData }) => {
           ...values,
         },
       })
+      setTabState({ loading: false, fetched: false })
       changeModalState(true)()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, changeModalState, documentType, getNotification, jsonData, values])
+  }, [
+    api,
+    changeModalState,
+    documentType,
+    getNotification,
+    jsonData,
+    setTabState,
+    values,
+  ])
   return (
     <>
       <SecondaryBlueButton

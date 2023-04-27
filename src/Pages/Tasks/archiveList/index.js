@@ -22,6 +22,8 @@ import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const columns = [
   {
@@ -135,6 +137,7 @@ const ArchiveList = () => {
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const { token } = useContext(TokenContext)
+  const getNotification = useOpenNotification()
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
       () =>
@@ -167,16 +170,21 @@ const ArchiveList = () => {
   )
 
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
-    const {
-      data: { content },
-    } = await api.post(URL_STORAGE_DOCUMENT, {
-      filter,
-      limit,
-      offset,
-    })
+    try {
+      const { limit, offset } = paginationState
+      const {
+        data: { content },
+      } = await api.post(URL_STORAGE_DOCUMENT, {
+        filter,
+        limit,
+        offset,
+      })
 
-    return content
+      return content
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
   }, [api, filter, paginationState])
 
   useAutoReload(loadData, tabItemState)

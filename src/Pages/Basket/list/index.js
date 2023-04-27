@@ -52,6 +52,8 @@ import DeleteIcon from '@/Icons/deleteIcon'
 import ExportIcon from '@/Icons/ExportIcon'
 import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -182,6 +184,7 @@ function BasketList() {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
+  const getNotification = useOpenNotification()
 
   const tabBasketState = useTabItem({ stateId: BASKET })
 
@@ -210,34 +213,55 @@ function BasketList() {
   useSetTabName(useCallback(() => TabNames[search] || 'Удаленные', [search]))
 
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
-
-    const { data } = await api.post(URL_BASKET_LIST, {
-      limit,
-      offset,
-      sort: [
-        {
-          direction: sortQuery.direction,
-          property: sortQuery.key,
+    try {
+      const { limit, offset } = paginationState
+      const { data } = await api.post(URL_BASKET_LIST, {
+        limit,
+        offset,
+        sort: [
+          {
+            direction: sortQuery.direction,
+            property: sortQuery.key,
+          },
+        ],
+        filter: {
+          movedDate: timesMap[search],
         },
-      ],
-      filter: {
-        movedDate: timesMap[search],
-      },
-    })
+      })
 
-    return data
-  }, [api, paginationState, search, sortQuery.direction, sortQuery.key])
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [
+    api,
+    getNotification,
+    paginationState,
+    search,
+    sortQuery.direction,
+    sortQuery.key,
+  ])
 
   useAutoReload(loadData, tabBasketState)
 
   const onDelete = useCallback(async () => {
-    await api.post(URL_BASKET_DELETED, { documentIds: selectState })
-  }, [api, selectState])
+    try {
+      await api.post(URL_BASKET_DELETED, { documentIds: selectState })
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, getNotification, selectState])
 
   const onRestore = useCallback(async () => {
-    await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
-  }, [api, selectState])
+    try {
+      await api.post(URL_BASKET_RESTORE_DELETED, { documentIds: selectState })
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, getNotification, selectState])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
