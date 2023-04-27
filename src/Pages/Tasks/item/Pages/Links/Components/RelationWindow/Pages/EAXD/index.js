@@ -30,6 +30,8 @@ import {
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const fields = [
   {
@@ -54,7 +56,7 @@ const fields = [
   },
 ]
 
-const DocumentEAXD = (props) => {
+const DocumentEAXD = () => {
   const api = useContext(ApiContext)
   const { id, type } = useParams()
   const parentId = useContext(DocumentIdContext)
@@ -62,15 +64,20 @@ const DocumentEAXD = (props) => {
   const [search, setSearch] = useState('')
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
   const close = useContext(StateContext)
-  const update = useContext(UpdateContext)
+  const getNotification = useOpenNotification()
 
   const onClick = useCallback(async () => {
-    const { data } = await api.post(URL_CONTENT_SEARCH, {
-      eehdBarcode: search,
-      documentId: id,
-    })
-    setFilter(data)
-  }, [search, id, api])
+    try {
+      const { data } = await api.post(URL_CONTENT_SEARCH, {
+        eehdBarcode: search,
+        documentId: id,
+      })
+      setFilter(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, search, id, getNotification])
 
   const { setTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,

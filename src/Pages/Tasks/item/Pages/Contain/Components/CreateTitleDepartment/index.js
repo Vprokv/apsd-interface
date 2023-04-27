@@ -75,10 +75,15 @@ const CreateTitleDepartment = ({
   )
 
   const openModalWindow = useCallback(async () => {
-    const { data } = await api.post(URL_TITLE_CONTAIN_DEPARTMENT)
-    setEntities(data)
-    changeModalState(true)
-  }, [api, changeModalState])
+    try {
+      const { data } = await api.post(URL_TITLE_CONTAIN_DEPARTMENT)
+      setEntities(data)
+      changeModalState(true)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, changeModalState, getNotification])
 
   const handleAddDepartment = useCallback(() => {
     onAddDepartment()
