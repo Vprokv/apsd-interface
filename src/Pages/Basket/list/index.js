@@ -39,18 +39,12 @@ import VolumeState, {
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
-import VolumeStatus, {
-  sizes as volumeStatusSize,
-} from '@/Components/ListTableComponents/VolumeStatus'
-import UserCard, {
-  sizes as useCardSizes,
-} from '@/Components/ListTableComponents/UserCard'
+
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import DeleteIcon from '@/Icons/deleteIcon'
 import ExportIcon from '@/Icons/ExportIcon'
-import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
