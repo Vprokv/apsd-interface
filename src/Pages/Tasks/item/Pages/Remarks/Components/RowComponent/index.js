@@ -7,14 +7,7 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import UserComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent/Components/UserComponent'
 import MoreActionComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/MoreActionComponent'
 import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
-
-const Row = styled.div`
-  background-color: var(--notifications);
-  font-size: 12px;
-  border-bottom: 1px solid var(--separator);
-  align-content: center;
-  justify-content: center;
-`
+import PropTypes from 'prop-types'
 
 export const RowTableComponent = styled.div`
   &:hover {
@@ -115,29 +108,22 @@ const columns = [
   },
 ]
 
-const RowComponent = ({
-  children,
-  setSelectState,
-  selectState,
-  toggleDisplayedFlag,
-  isDisplayed,
-  ...props
-}) => {
-  const data = useMemo(() => {
-    const { remarkCreationDate } = props
-
-    if (!remarkCreationDate) {
-      return []
-    }
-
-    return [
-      {
-        itsRemark: true,
-        props,
-      },
-      { itsRemark: false, props },
-    ]
-  }, [props])
+const IterationRemarks = ({ remarks }) => {
+  const data = useMemo(
+    () =>
+      remarks.reduce((acc, { remarkCreationDate, ...props }) => {
+        acc.push({
+          itsRemark: true,
+          props,
+        })
+        acc.push({
+          itsRemark: false,
+          props,
+        })
+        return acc
+      }, []),
+    [remarks],
+  )
 
   const rowComponent = useMemo(
     () => (props) => <RowTableComponent {...props} />,
@@ -145,27 +131,18 @@ const RowComponent = ({
   )
 
   return (
-    data && (
-      <div className="flex flex-col">
-        <button type={'button'} onClick={toggleDisplayedFlag}>
-          <Row>{children}</Row>
-        </button>
-        {isDisplayed && (
-          <ListTable
-            rowComponent={rowComponent}
-            value={data}
-            columns={columns}
-            headerCellComponent={HeaderCell}
-            selectState={selectState}
-            onSelect={setSelectState}
-            valueKey="id"
-          />
-        )}
-      </div>
-    )
+    <ListTable
+      rowComponent={rowComponent}
+      value={data}
+      columns={columns}
+      headerCellComponent={HeaderCell}
+      valueKey="id"
+    />
   )
 }
 
-RowComponent.propTypes = {}
+IterationRemarks.propTypes = {
+  remarks: PropTypes.array,
+}
 
-export default RowComponent
+export default IterationRemarks

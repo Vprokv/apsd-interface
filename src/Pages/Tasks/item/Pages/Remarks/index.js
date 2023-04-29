@@ -9,15 +9,12 @@ import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
-import RowComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
 import {
   ShowAnswerButtonContext,
   ToggleContext,
-  UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import angleIcon from '@/Icons/angleIcon'
 import ToggleNavigationItemWrapper, {
   WithToggleNavigationItem,
 } from '@/Pages/Tasks/item/Pages/Remarks/Components/WithToggleNavigationItem'
@@ -25,36 +22,36 @@ import SortIcon from '@/Pages/Tasks/item/Pages/Contain/Icons/SortIcon'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import {useOpenNotification} from "@/Components/Notificator";
+import { useOpenNotification } from '@/Components/Notificator'
+import IterationComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/Iteration'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
 const Remarks = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
-  const [filter, setFilterValue] = useState({})
-  const [selectState, setSelectState] = useState()
+  const [filter, setFilterValue] = useState({ allStages: true })
   const [toggle, onToggle] = useState({})
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
   const {
-    tabState: { data: { remarks = [], tabPermit } = {} },
+    tabState: { data: { stages = [], tabPermit } = {} },
   } = tabItemState
 
   useEffect(() => {
     return (
       !toggle.size &&
-      remarks.forEach(({ remarkId }) => {
+      stages.forEach(({ stageName }) => {
         onToggle((map) => {
-          return { ...map, [remarkId]: true }
+          return { ...map, [stageName]: false }
         })
       })
     )
-  }, [remarks, toggle.size])
+  }, [stages, toggle.size])
 
   const loadData = useCallback(async () => {
     try {
@@ -107,6 +104,11 @@ const Remarks = () => {
         component: CheckBox,
         text: 'Все итерации',
       },
+      {
+        id: 'allStages',
+        component: CheckBox,
+        text: 'Все этапы',
+      },
     ],
     [api],
   )
@@ -154,33 +156,15 @@ const Remarks = () => {
         <ScrollBar>
           <div className="flex flex-col">
             <ToggleContext.Provider value={{ toggle, onToggle }}>
-              {remarks.map((val) => (
-                <WithToggle key={val.remarkId} id={val.remarkId}>
+              {stages.map((val) => (
+                <WithToggle key={val.stageName} id={val.stageName}>
                   {({ isDisplayed, toggleDisplayedFlag }) => {
                     return (
-                      <RowComponent
+                      <IterationComponent
                         isDisplayed={isDisplayed}
                         toggleDisplayedFlag={toggleDisplayedFlag}
-                        key={val.remarkId}
-                        selectState={selectState}
-                        setSelectState={setSelectState}
                         {...val}
-                      >
-                        <div className="h-12 flex items-center">
-                          <div className="pl-2">
-                            <Icon
-                              icon={angleIcon}
-                              size={10}
-                              className={`color-text-secondary ${
-                                isDisplayed ? '' : 'rotate-180'
-                              }`}
-                            />
-                          </div>
-                          <div className="ml-4 font-medium flex items-center ">
-                            {val?.stageName}
-                          </div>
-                        </div>
-                      </RowComponent>
+                      />
                     )
                   }}
                 </WithToggle>
