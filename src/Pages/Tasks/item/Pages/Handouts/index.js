@@ -17,7 +17,6 @@ import CreateHandoutsWindow from '@/Pages/Tasks/item/Pages/Handouts/Components/C
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 
 const plugins = {
@@ -121,7 +120,6 @@ const Handouts = (props) => {
     paginationState,
     sortQuery.direction,
     sortQuery.key,
-    change,
   ])
 
   useAutoReload(loadData, tabItemState)
@@ -177,7 +175,6 @@ const Handouts = (props) => {
         <CreateHandoutsWindow setChange={setChange} />
       </div>
       <ListTable
-        // key={change}
         rowComponent={useMemo(
           () => (props) => <ShowLineRowComponent {...props} />,
           [],

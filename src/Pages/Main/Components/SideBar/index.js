@@ -13,7 +13,7 @@ import Archive from './Components/Archive'
 import Basket from './Components/Basket'
 import CreateDocumentWindow from './Components/CreateDocumentWindow'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { TASK_VIEWED_LIST_PATH } from '@/routePaths'
+import { NOTIFICATION_PATH, TASK_VIEWED_LIST_PATH } from '@/routePaths'
 import { useRecoilState } from 'recoil'
 import { tasksAtom } from '@/Pages/Main/store'
 import { URL_TASK_STATISTIC } from '@/ApiList'
@@ -24,6 +24,8 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
+import notificationIcon from '@/Icons/notificationIcon'
+import Notification from '@/Pages/Main/Components/SideBar/Components/Notification'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -93,6 +95,7 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
             <span className="mr-auto font-size-12">Создать</span>
           </Button>
           <ScrollBar className="flex-container">
+            <Notification onOpenNewTab={onOpenNewTab} />
             <MyTasks
               task={task}
               onOpenNewTab={onOpenNewTab}

@@ -25,6 +25,8 @@ import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'
 import Reporting from '@/Pages/Rporting'
 import ViewedTask from '@/Pages/Tasks/viewed'
+import Settings from '@/Pages/Settings'
+import Notification from '@/Pages/Notification'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -190,6 +192,14 @@ function App() {
                   <Route
                     path={routePath.TASK_VIEWED_LIST_PATH}
                     element={<ViewedTask />}
+                  />
+                  <Route
+                    path={routePath.SETTINGS_PATH}
+                    element={<Settings />}
+                  />
+                  <Route
+                    path={routePath.NOTIFICATION_PATH}
+                    element={<Notification />}
                   />
                 </Route>
               )}

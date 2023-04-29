@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { NavigationContainer } from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-function TaskItem({
+export function TaskItem({
   documentTabs: { routes, headers, defaultPath },
   children,
 }) {

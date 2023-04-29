@@ -16,7 +16,7 @@ import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
 import AnnulIcon from './Icons/AnnulIcon.svg'
 import StrelkaRight from './Icons/StrelkaRight.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
-import Requisites_New from "@/Parser/Requisites_New";
+import Requisites_New from '@/Parser/Requisites_New'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
