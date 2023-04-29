@@ -13,6 +13,8 @@ import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { fieldMap } from '@/Pages/CreatePassword'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 export const MiniModalWindow = styled(ModalWindow)`
   width: 28.22%;
@@ -44,17 +46,23 @@ const NewTitle = ({ onClose, parentId, closeParent, open }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [value, onInput] = useState({})
+  const getNotification = useOpenNotification()
 
   const handleClick = useCallback(async () => {
-    const { data } = await api.post(URL_TITLE_CONTAIN_SAVE, {
-      titleId: id,
-      parentId,
-      ...value,
-    })
-    onInput('')
-    onClose()
-    closeParent(data)
-  }, [api, id, parentId, value, onClose, closeParent])
+    try {
+      const { data } = await api.post(URL_TITLE_CONTAIN_SAVE, {
+        titleId: id,
+        parentId,
+        ...value,
+      })
+      onInput('')
+      onClose()
+      closeParent(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, id, parentId, value, onClose, closeParent, getNotification])
 
   return (
     <MiniModalWindow

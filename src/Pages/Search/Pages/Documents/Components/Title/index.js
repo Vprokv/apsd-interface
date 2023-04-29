@@ -39,10 +39,6 @@ const Title = ({ value, onInput }) => {
       ],
       loadFunction: async () => {
         const { data } = await api.post(URL_TYPE_CONFIG, {
-          // type: 'documentType',
-          // id: 'types',
-          // filters: {},
-          // sortType: null,
           typeConfig: 'ddt_startup_complex_type_doc',
         })
         return data

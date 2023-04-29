@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -30,15 +24,21 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 const RejectApproveWindow = ({ open, onClose, documentId }) => {
   const [options, setOptions] = useState([])
   const api = useContext(ApiContext)
+  const getNotification = useOpenNotification()
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
-        documentId,
-      })
-      setOptions(data)
+      try {
+        const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
+          documentId,
+        })
+        setOptions(data)
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
     })()
-  }, [api, documentId])
+  }, [api, documentId, getNotification])
 
   const initialValue = useMemo(
     () => options?.find(({ status }) => status === 'on_work'),
@@ -57,7 +57,6 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
 
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
-  const getNotification = useOpenNotification()
 
   const reloadSidebarTaskCounters = useContext(LoadTasks)
 

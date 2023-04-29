@@ -8,6 +8,8 @@ import {
 import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import { URL_SEARCH_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const Index = ({ setTabState }) => {
   const api = useContext(ApiContext)
@@ -15,7 +17,7 @@ const Index = ({ setTabState }) => {
     tabState: { filter = {}, value },
     operator,
   } = useContext(TabStateContext)
-
+  const getNotification = useOpenNotification()
   const { getButtonFunc } = useContext(TabStateContext)
 
   const searchData = useMemo(() => {
@@ -35,16 +37,20 @@ const Index = ({ setTabState }) => {
       inVersions: false,
       queryItems,
     }
-  }, [filter, value])
+  }, [filter, operator])
 
   const onRemove = useCallback(() => setTabState({ filter: {} }), [setTabState])
   const onSearch = useCallback(async () => {
-    const {
-      data: { results },
-    } = await api.post(URL_SEARCH_LIST, searchData)
-    setTabState({ searchValues: results })
-    // setTabState({ searchValues })
-  }, [api, searchData, setTabState])
+    try {
+      const {
+        data: { results },
+      } = await api.post(URL_SEARCH_LIST, searchData)
+      setTabState({ searchValues: results })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, getNotification, searchData, setTabState])
 
   const types = useMemo(
     () => [
@@ -95,7 +101,7 @@ const Index = ({ setTabState }) => {
           {label}
         </Component>
       )),
-    [getButtonFunc, types],
+    [types],
   )
 
   return <div className="flex flex-col ml-auto"> {buttons}</div>
