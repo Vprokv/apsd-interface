@@ -51,9 +51,9 @@ const rules = {
     { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
     { name: VALIDATION_RULE_REQUIRED },
   ],
-  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
-  'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
-  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  // 'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  // 'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
+  // ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
