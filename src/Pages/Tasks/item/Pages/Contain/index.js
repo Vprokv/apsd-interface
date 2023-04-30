@@ -89,7 +89,7 @@ const columns = [
     className: 'flex font-size-12',
   },
   {
-    id: 'stage',
+    id: 'tomStage',
     label: 'Стадия',
     className: 'flex font-size-12',
   },
