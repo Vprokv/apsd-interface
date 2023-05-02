@@ -150,17 +150,22 @@ const Content = () => {
   )
 
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
+    try {
+      const { limit, offset } = paginationState
 
-    const { data } = await api.post(URL_CONTENT_LIST, {
-      documentId: id,
-      currentVersion: !filterValue.isFullVersion,
-      limit,
-      offset,
-    })
+      const { data } = await api.post(URL_CONTENT_LIST, {
+        documentId: id,
+        currentVersion: !filterValue.isFullVersion,
+        limit,
+        offset,
+      })
 
-    return data
-  }, [api, paginationState, filterValue, id])
+      return data
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [paginationState, api, id, filterValue.isFullVersion, getNotification])
 
   useAutoReload(loadData, tabItemState)
 

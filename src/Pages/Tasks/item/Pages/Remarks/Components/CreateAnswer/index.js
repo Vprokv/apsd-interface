@@ -39,9 +39,9 @@ const rules = {
     { name: VALIDATION_RULE_REQUIRED },
   ],
   member: [{ name: VALIDATION_RULE_REQUIRED }],
-  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
-  'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
-  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  // 'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  // 'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
+  // ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const CreateAnswer = ({
@@ -52,7 +52,6 @@ const CreateAnswer = ({
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
-  const update = useContext(UpdateContext)
   const getNotification = useOpenNotification()
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -164,8 +163,8 @@ const CreateAnswer = ({
   }
 
   const onSave = useCallback(async () => {
-    // eslint-disable-next-line no-unused-vars
     try {
+      // eslint-disable-next-line no-unused-vars
       const { remarkText, member, ...other } = filter
       const { status } = await api.post(URL_REMARK_ANSWER, {
         documentId: id,
@@ -191,7 +190,7 @@ const CreateAnswer = ({
     id,
     initialUserValue,
     remarkId,
-    update,
+    setTabState,
   ])
 
   const onClose = useCallback(() => {

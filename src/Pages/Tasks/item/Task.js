@@ -81,22 +81,30 @@ const Task = () => {
   )
 
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_TASK_ITEM, {
-      taskId: id,
-    })
-    setIdDocument(data?.id)
-    if (!data.read) {
-      // теперь авейтим, чтобы получить корректную статистику
-      try {
-        await api.post(URL_TASK_MARK_READ, {
-          tasksIds: [id],
-        })
-      } finally {
-        reloadSidebarTaskCounters()
+    try {
+      const { data } = await api.post(URL_TASK_ITEM, {
+        taskId: id,
+      })
+      setIdDocument(data?.id)
+      if (!data.read) {
+        // теперь авейтим, чтобы получить корректную статистику
+        try {
+          await api.post(URL_TASK_MARK_READ, {
+            tasksIds: [id],
+          })
+        } catch (e) {
+          const { response: { status } = {} } = e
+          getNotification(defaultFunctionsMap[status]())
+        } finally {
+          reloadSidebarTaskCounters()
+        }
       }
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
     }
-    return data
-  }, [api, id, reloadSidebarTaskCounters])
+  }, [api, getNotification, id, reloadSidebarTaskCounters])
 
   const tabItemState = useTabItem({
     stateId: ITEM_TASK,

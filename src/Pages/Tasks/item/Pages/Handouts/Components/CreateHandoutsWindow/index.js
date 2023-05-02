@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
 import Button, {
   LoadableBaseButton,
   SecondaryBlueButton,
@@ -15,13 +14,10 @@ import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   PRESENT_DATE_FORMAT,
+  TASK_ITEM_HANDOUTS,
 } from '@/contants'
 import { useParams } from 'react-router-dom'
-import { FilterForm, TitlesContainer } from './styles'
-import {
-  EmptyInputWrapper,
-  WithValidationForm,
-} from '@Components/Components/Forms'
+import { WithValidationForm } from '@Components/Components/Forms'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -29,13 +25,13 @@ import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_ENTITY_LIST, URL_HANDOUTS_CREATE } from '@/ApiList'
 import dayjs from 'dayjs'
-import EmptyInput from '@/Pages/Tasks/item/Pages/Links/Components/Input/style'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -47,12 +43,16 @@ const customMessagesFuncMap = {
   },
 }
 
-const CreateHandoutsWindow = ({ setChange }) => {
+const CreateHandoutsWindow = () => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [open, setOpenState] = useState(false)
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_HANDOUTS,
+  })
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -144,14 +144,14 @@ const CreateHandoutsWindow = ({ setChange }) => {
   const onSave = useCallback(async () => {
     try {
       const response = await api.post(URL_HANDOUTS_CREATE, createDate)
-      setChange()
+      setTabState({ loading: false, fetched: false })
       changeModalState(false)()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, createDate, setChange, changeModalState, getNotification])
+  }, [api, createDate, setTabState, changeModalState, getNotification])
 
   const onClose = useCallback(() => {
     setFilterValue({})
@@ -194,10 +194,6 @@ const CreateHandoutsWindow = ({ setChange }) => {
       </StandardSizeModalWindow>
     </div>
   )
-}
-
-CreateHandoutsWindow.propTypes = {
-  setChange: PropTypes.func.isRequired,
 }
 
 export default CreateHandoutsWindow

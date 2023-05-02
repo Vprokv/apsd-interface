@@ -10,6 +10,8 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import { OthersLevelsArchiveButton, SecondArchiveButton } from './ArchiveButton'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/Archive/Components/WithToggleNavigationItem'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const apisMap = {
   0: async ({ api, query }) => {
@@ -47,13 +49,19 @@ const ArchiveItem = ({
   childrenComponent: ChildrenComponent,
 }) => {
   const [items, setItems] = useState([])
+  const getNotification = useOpenNotification()
   const api = useContext(ApiContext)
   useEffect(() => {
     ;(async () => {
-      const { [level]: req = apisMap.defaultRequest } = apisMap
-      setItems(await req({ api, id, sectionId, query }))
+      try {
+        const { [level]: req = apisMap.defaultRequest } = apisMap
+        setItems(await req({ api, id, sectionId, query }))
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
     })()
-  }, [api, level, id, sectionId, setItems, query])
+  }, [api, level, id, sectionId, setItems, query, getNotification])
 
   return items.map(({ id: levelId, name, expand }) => (
     <WithToggleNavigationItem id={levelId} key={levelId}>

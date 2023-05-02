@@ -85,26 +85,36 @@ const ApplyTemplateWindow = () => {
     [],
   )
   const getTemplates = useCallback(async () => {
-    const { data } = await api.post(URL_TEMPLATE_LIST, {
-      type: 'ddt_approve_template',
-      documentSubtype: documentType,
-      isPrivate: true,
-    })
-    changeModalState(true)()
-    setListTemplates(data)
-  }, [changeModalState, api, listTemplates])
+    try {
+      const { data } = await api.post(URL_TEMPLATE_LIST, {
+        type: 'ddt_approve_template',
+        documentSubtype: documentType,
+        isPrivate: true,
+      })
+      changeModalState(true)()
+      setListTemplates(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, documentType, changeModalState, getNotification])
 
   const createStage = useCallback(
     async (v) => {
-      await api.post(URL_CREATE_STAGE, {
-        key: 'approval-sheet',
-        documentId,
-        stages: v,
-      })
-      await loadData()
-      changeModalState(false)()
+      try {
+        await api.post(URL_CREATE_STAGE, {
+          key: 'approval-sheet',
+          documentId,
+          stages: v,
+        })
+        await loadData()
+        changeModalState(false)()
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
     },
-    [api, changeModalState, documentId, loadData],
+    [api, changeModalState, documentId, getNotification, loadData],
   )
 
   const applyTemplate = useCallback(

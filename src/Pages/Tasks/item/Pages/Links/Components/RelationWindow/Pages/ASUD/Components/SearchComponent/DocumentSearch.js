@@ -28,6 +28,8 @@ import {
 } from '@/Pages/Search/constans'
 import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 export const tableConfig = [
   {
@@ -144,6 +146,7 @@ const DocumentSearch = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
+  const getNotification = useOpenNotification()
 
   const fields = useMemo(
     () => [
@@ -218,42 +221,54 @@ const DocumentSearch = ({
     [fields],
   )
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
-      type: filter.type,
-    })
+    try {
+      const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
+        type: filter.type,
+      })
 
-    setAttributes(data)
-  }, [api, filter.type])
+      setAttributes(data)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, filter.type, getNotification])
 
   const onSearch = useCallback(async () => {
-    const { type, ...filters } = filter
-    const queryItems = Object.entries(filters).reduce(
-      (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
-        return acc
-      },
-      [],
-    )
+    try {
+      // eslint-disable-next-line react/prop-types
+      const { type, ...filters } = filter
+      const queryItems = Object.entries(filters).reduce(
+        (acc, [key, { value, operator }]) => {
+          acc.push({
+            attr: key,
+            operator: operator || defaultOperators[key],
+            arguments: [value],
+          })
+          return acc
+        },
+        [],
+      )
 
-    const { data } = await api.post(URL_SEARCH_LIST, {
-      types: [type],
-      sedoSearch: true,
-      inVersions: false,
-      queryItems,
-    })
-    setSearchState(data)
-    setRenderTable(true)
-  }, [api, defaultOperators, filter, setSearchState])
+      const { data } = await api.post(URL_SEARCH_LIST, {
+        types: [type],
+        sedoSearch: true,
+        inVersions: false,
+        queryItems,
+      })
+      setSearchState(data)
+      setRenderTable(true)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, defaultOperators, filter, getNotification, setSearchState])
 
-  const onRemove = useCallback(() => setFilter({}), [])
+  const onRemove = useCallback(() => setFilter({}), [setFilter])
 
   useEffect(loadData, [loadData])
 
   const isSearchDisabled = useMemo(() => {
+    // eslint-disable-next-line no-unused-vars
     const { type, ...keys } = filter
     return Object.keys(keys).length === 0
   }, [filter])

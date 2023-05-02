@@ -34,16 +34,19 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 export const UserContext = createContext({})
 
-const Reporting = (props) => {
+const Reporting = () => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const tabItemState = useTabItem({ stateId: REPORTING })
   const [filter, setFilter] = useState({})
   const { token } = useContext(TokenContext)
   const user = useRecoilValue(userAtom)
+  const getNotification = useOpenNotification()
 
   const {
     tabState: {
@@ -52,11 +55,16 @@ const Reporting = (props) => {
   } = tabItemState
 
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_REPORTS_ITEM, {
-      id,
-    })
-    return data
-  }, [api, id])
+    try {
+      const { data } = await api.post(URL_REPORTS_ITEM, {
+        id,
+      })
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, getNotification, id])
 
   useSetTabName(useCallback(() => name, [name]))
   useAutoReload(loadData, tabItemState)
@@ -93,22 +101,27 @@ const Reporting = (props) => {
   )
 
   const onBuild = useCallback(async () => {
-    const {
-      data: { fileKey },
-    } = await api.post(URL_REPORTS_BUILD, {
-      id: reportId,
-      reportParameters: {
-        ...filter,
-        format: dss_def_format,
-      },
-    })
+    try {
+      const {
+        data: { fileKey },
+      } = await api.post(URL_REPORTS_BUILD, {
+        id: reportId,
+        reportParameters: {
+          ...filter,
+          format: dss_def_format,
+        },
+      })
 
-    const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
-      responseType: 'blob',
-    })
+      const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
+        responseType: 'blob',
+      })
 
-    downloadFileWithReload(data, `${name}.${dss_def_format}`)
-  }, [api, dss_def_format, filter, name, reportId, token])
+      downloadFileWithReload(data, `${name}.${dss_def_format}`)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, dss_def_format, filter, getNotification, name, reportId, token])
 
   return (
     <>

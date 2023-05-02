@@ -29,6 +29,8 @@ import CreateTemplateWindow from './Components/CreateTemplateWindow'
 import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
 import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 import PropTypes from 'prop-types'
 
 const DotIcon = ({ className, onClick }) => (
@@ -54,30 +56,27 @@ const ApprovalSheet = () => {
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
   const [state, setState] = useState(false)
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const {
-    setTabState,
     tabState: { data = [] },
   } = tabItemState
 
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
-
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_APPROVAL_SHEET, {
-      id: documentId,
-      type,
-    })
-    return data
-  }, [api, documentId, type])
+    try {
+      const { data } = await api.post(URL_APPROVAL_SHEET, {
+        id: documentId,
+        type,
+      })
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, documentId, getNotification, type])
 
   useEffect(() => {
     setToggleNavigationData(
@@ -92,13 +91,18 @@ const ApprovalSheet = () => {
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await api.post(URL_BUSINESS_PERMIT, {
-        documentType: type,
-        documentId,
-      })
-      setPermit(data)
+      try {
+        const { data } = await api.post(URL_BUSINESS_PERMIT, {
+          documentType: type,
+          documentId,
+        })
+        setPermit(data)
+      } catch (e) {
+        const { response: { status } = {} } = e
+        getNotification(defaultFunctionsMap[status]())
+      }
     })()
-  }, [api, documentId, documentType, type])
+  }, [api, documentId, documentType, getNotification, type])
 
   useAutoReload(loadData, tabItemState)
 
@@ -146,88 +150,81 @@ const ApprovalSheet = () => {
 
   return (
     <PermitDisableContext.Provider value={!permit}>
-      <LoadContext.Provider value={setChange}>
-        <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-          <div className="flex items-center py-4 form-element-sizes-32">
-            <FilterForm
-              className="mr-2"
-              value={filterValue}
-              onInput={setFilterValue}
-              fields={fields}
-              inputWrapper={EmptyInputWrapper}
-            />
-            <div className="flex items-center ml-auto">
-              <CreateTemplateWindow jsonData={data} />
-              <ApplyTemplateWindow />
+      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+        <div className="flex items-center py-4 form-element-sizes-32">
+          <FilterForm
+            className="mr-2"
+            value={filterValue}
+            onInput={setFilterValue}
+            fields={fields}
+            inputWrapper={EmptyInputWrapper}
+          />
+          <div className="flex items-center ml-auto">
+            <CreateTemplateWindow jsonData={data} />
+            <ApplyTemplateWindow />
+            <ButtonForIcon
+              disabled={!permit}
+              className="mx-2 color-text-secondary"
+            >
+              <Icon icon={PostponeIcon} />
+            </ButtonForIcon>
+            <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
-                disabled={!permit}
-                className="mx-2 color-text-secondary"
+                className="color-text-secondary"
+                onClick={openAllStages}
               >
-                <Icon icon={PostponeIcon} />
+                <Icon icon={OtherIcon} />
               </ButtonForIcon>
-              <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
-                <ButtonForIcon
-                  className="color-text-secondary"
-                  onClick={openAllStages}
-                >
-                  <Icon icon={OtherIcon} />
-                </ButtonForIcon>
-              </Tips>
-            </div>
+            </Tips>
           </div>
-          <ScrollBar>
-            {data.map(({ stages, type, name, canAdd }, key) => (
-              <div className="flex flex-col" key={type}>
-                <LevelStage onClick={() => toggleStage(type)}>
-                  {!!stages?.length && (
-                    <button
-                      className="pl-2"
-                      type="button"
-                      onClick={() => toggleStage(type)}
-                    >
-                      <Icon
-                        icon={angleIcon}
-                        size={10}
-                        className={`color-text-secondary ${
-                          toggleNavigationData[type] ? '' : 'rotate-180'
-                        }`}
-                      />
-                    </button>
-                  )}
-                  <div
-                    className={`${
-                      !stages?.length ? 'ml-6' : 'ml-2'
-                    } my-4 flex bold`}
-                  >
-                    {name}
-                  </div>
-                  {canAdd && (
-                    <CreateApprovalSheetWindow
-                      loadData={setChange}
-                      stageType={type}
-                    />
-                  )}
-                </LevelStage>
-                {toggleNavigationData[type] && (
-                  <Tree
-                    childrenLessIcon={DotIcon}
-                    DefaultChildrenIcon={DotIcon}
-                    key={key}
-                    defaultExpandAll={true}
-                    valueKey="id"
-                    options={stages}
-                    rowComponent={RowSelector}
-                    onUpdateOptions={() => null}
-                    childrenKey="approvers"
-                    onInput={handleInput}
-                    LeafComponent={LeafComponent}
-                  />
-                )}
-              </div>
-            ))}
-          </ScrollBar>
         </div>
-      </LoadContext.Provider>
+        <ScrollBar>
+          {data.map(({ stages, type, name, canAdd }, key) => (
+            <div className="flex flex-col" key={type}>
+              <LevelStage onClick={() => toggleStage(type)}>
+                {!!stages?.length && (
+                  <button
+                    className="pl-2"
+                    type="button"
+                    onClick={() => toggleStage(type)}
+                  >
+                    <Icon
+                      icon={angleIcon}
+                      size={10}
+                      className={`color-text-secondary ${
+                        toggleNavigationData[type] ? '' : 'rotate-180'
+                      }`}
+                    />
+                  </button>
+                )}
+                <div
+                  className={`${
+                    !stages?.length ? 'ml-6' : 'ml-2'
+                  } my-4 flex bold`}
+                >
+                  {name}
+                </div>
+                {canAdd && <CreateApprovalSheetWindow stageType={type} />}
+              </LevelStage>
+              {toggleNavigationData[type] && (
+                <Tree
+                  childrenLessIcon={DotIcon}
+                  DefaultChildrenIcon={DotIcon}
+                  key={key}
+                  defaultExpandAll={true}
+                  valueKey="id"
+                  options={stages}
+                  rowComponent={RowSelector}
+                  onUpdateOptions={() => null}
+                  childrenKey="approvers"
+                  onInput={handleInput}
+                  LeafComponent={LeafComponent}
+                />
+              )}
+            </div>
+          ))}
+        </ScrollBar>
+      </div>
     </PermitDisableContext.Provider>
   )
 }

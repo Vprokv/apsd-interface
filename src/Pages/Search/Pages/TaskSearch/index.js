@@ -29,6 +29,8 @@ import {
 } from '@/Components/Button'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const columnsMap = [
   {
@@ -83,13 +85,19 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
   const { token } = useContext(TokenContext)
+  const getNotification = useOpenNotification()
   const loadData = useCallback(async () => {
-    const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
-      type: filter.type,
-    })
+    try {
+      const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
+        type: filter.type,
+      })
 
-    setAttributes(data)
-  }, [api, filter.type])
+      setAttributes(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter.type, getNotification])
 
   useEffect(loadData, [loadData])
 
@@ -169,15 +177,19 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
       },
       [],
     )
-
-    const { data } = await api.post(URL_SEARCH_LIST, {
-      types: [type],
-      inVersions: false,
-      queryItems,
-    })
-    setSearchState(data)
-    setRenderTable(true)
-  }, [api, defaultOperators, filter, setSearchState])
+    try {
+      const { data } = await api.post(URL_SEARCH_LIST, {
+        types: [type],
+        inVersions: false,
+        queryItems,
+      })
+      setSearchState(data)
+      setRenderTable(true)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, defaultOperators, filter, getNotification, setSearchState])
 
   const onRemove = useCallback(
     () => setFilter({ type: filter.type }),
@@ -203,27 +215,32 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
       [],
     )
 
-    const {
-      data: { id },
-    } = await api.post(URL_EXPORT, {
-      url: `${API_URL}${URL_SEARCH_LIST}`,
-      label: 'Поиск по задания',
-      sheetName: 'Поиск по задания',
-      columns: columnsMap,
-      body: {
-        types: [type],
-        inVersions: false,
-        queryItems,
-        token,
-      },
-    })
+    try {
+      const {
+        data: { id },
+      } = await api.post(URL_EXPORT, {
+        url: `${API_URL}${URL_SEARCH_LIST}`,
+        label: 'Поиск по задания',
+        sheetName: 'Поиск по задания',
+        columns: columnsMap,
+        body: {
+          types: [type],
+          inVersions: false,
+          queryItems,
+          token,
+        },
+      })
 
-    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
-      responseType: 'blob',
-    })
+      const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+        responseType: 'blob',
+      })
 
-    downloadFileWithReload(data, 'Поиск по заданиям.xlsx')
-  }, [api, defaultOperators, filter, token])
+      downloadFileWithReload(data, 'Поиск по заданиям.xlsx')
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, defaultOperators, filter, getNotification, token])
 
   return (
     <div className="flex  w-full p-6 overflow-hidden">

@@ -90,6 +90,10 @@
     background-color: var(--red);
 }
 
+.bg-full-red-red {
+    background-color: var(--full-red);
+}
+
 .bg-color-yellow {
     background-color: var(--yellow);
 }

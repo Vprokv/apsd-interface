@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LeafContainer } from '@/Pages/Rporting/styled'
 import Tips from '@/Components/Tips'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const Reports = () => {
   const [open, setOpenState] = useState(false)
@@ -16,6 +18,7 @@ const Reports = () => {
   const navigate = useNavigate()
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const api = useContext(ApiContext)
+  const getNotification = useOpenNotification()
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
@@ -24,10 +27,15 @@ const Reports = () => {
   )
 
   const onOpen = useCallback(async () => {
-    const { data } = await api.post(URL_REPORTS_LIST)
-    setReports(data)
-    changeModalState(true)()
-  }, [api, changeModalState])
+    try {
+      const { data } = await api.post(URL_REPORTS_LIST)
+      setReports(data)
+      changeModalState(true)()
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, changeModalState, getNotification])
 
   const onClick = useCallback(
     (id) => {

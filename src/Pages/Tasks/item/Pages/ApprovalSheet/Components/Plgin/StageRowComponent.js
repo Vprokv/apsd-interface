@@ -18,6 +18,8 @@ import {
 import { URL_APPROVAL_SHEET_APPROVER_DELETE } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const Row = styled.div`
   height: 48px;
@@ -46,17 +48,22 @@ const StageRowComponent = ({ node }, props) => {
   } = node
 
   const permit = useContext(PermitDisableContext)
-
+  const getNotification = useOpenNotification()
   const { setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
 
   const onDelete = useCallback(async () => {
-    await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
-      performersIds: Object.keys(Object.fromEntries(selectedState.entries())),
-    })
-    setTabState({ loading: false, fetched: false })
-  }, [api, selectedState, setTabState])
+    try {
+      await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
+        performersIds: Object.keys(Object.fromEntries(selectedState.entries())),
+      })
+      setTabState({ loading: false, fetched: false })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, getNotification, selectedState, setTabState])
 
   const includeApprove = approvers.some(({ id }) => selectedState.has(id))
 

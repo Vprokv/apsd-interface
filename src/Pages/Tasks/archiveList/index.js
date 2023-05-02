@@ -22,6 +22,8 @@ import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const columns = [
   {
@@ -135,6 +137,7 @@ const ArchiveList = () => {
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const { token } = useContext(TokenContext)
+  const getNotification = useOpenNotification()
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
       () =>
@@ -148,7 +151,7 @@ const ArchiveList = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data },
+    tabState: { data: { content, total = 0 } = {} },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -167,17 +170,20 @@ const ArchiveList = () => {
   )
 
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
-    const {
-      data: { content },
-    } = await api.post(URL_STORAGE_DOCUMENT, {
-      filter,
-      limit,
-      offset,
-    })
+    try {
+      const { limit, offset } = paginationState
+      const { data } = await api.post(URL_STORAGE_DOCUMENT, {
+        filter,
+        limit,
+        offset,
+      })
 
-    return content
-  }, [api, filter, paginationState])
+      return data
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter, getNotification, paginationState])
 
   useAutoReload(loadData, tabItemState)
 
@@ -220,7 +226,7 @@ const ArchiveList = () => {
             <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
           [handleDoubleClick],
         )}
-        value={data}
+        value={content}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
@@ -235,8 +241,9 @@ const ArchiveList = () => {
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
+        total={total}
       >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
     </div>
   )
