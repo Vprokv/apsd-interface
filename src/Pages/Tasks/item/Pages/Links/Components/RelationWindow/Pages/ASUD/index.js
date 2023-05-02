@@ -18,6 +18,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/ASUD/Components/SearchComponent'
 
+// todo есть дубликат этого компонента в InsideDocument
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
   value ? (
     <UnderButtons

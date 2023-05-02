@@ -24,7 +24,7 @@ export const FilterWindowForm = styled(Form)`
 `
 
 export const FilterObjectsWindowComponent = styled(ModalWindow)`
-  width: 650px;
+  //width: 650px;
   height: 100%;
   margin-left: auto;
   margin-bottom: auto;

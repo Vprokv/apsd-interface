@@ -29,6 +29,7 @@ import CreateTemplateWindow from './Components/CreateTemplateWindow'
 import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
 import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
+import PropTypes from 'prop-types'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -38,6 +39,11 @@ const DotIcon = ({ className, onClick }) => (
     className={className}
   />
 )
+
+DotIcon.propTypes = {
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+}
 
 const ApprovalSheet = () => {
   const { type } = useParams()

@@ -8,7 +8,7 @@ import ContextMenu from '@Components/Components/ContextMenu'
 
 const DropDownComponent = ({ isOpen, children, ...props }) =>
   isOpen && (
-    <ContextMenu {...props} width="300">
+    <ContextMenu {...props} width={300}>
       {children}
     </ContextMenu>
   )

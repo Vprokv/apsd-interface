@@ -123,6 +123,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
           rules={rules}
         />
         <UnderButtons
+          className="mt-auto"
           leftFunc={onClose}
           rightFunc={onSave}
           leftLabel="Закрыть"

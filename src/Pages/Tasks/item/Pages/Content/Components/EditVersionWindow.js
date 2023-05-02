@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import PropTypes from 'prop-types'
-import Button from '@/Components/Button'
 import InputComponent from '@Components/Components/Inputs/Input'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DatePicker from '@/Components/Inputs/DatePicker'
@@ -11,7 +10,7 @@ import { URL_ENTITY_LIST, URL_UPDATE_VERSION } from '@/ApiList'
 import ScrollBar from '@Components/Components/ScrollBar'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import UnderButtons from "@/Components/Inputs/UnderButtons";
+import UnderButtons from '@/Components/Inputs/UnderButtons'
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -96,7 +95,7 @@ const EditVersionWindow = ({ onClose, formData, setChange }) => {
     <div className="flex flex-col overflow-hidden h-full">
       <ScrollBar className="flex flex-col">
         <WithValidationForm
-          className="mb-10"
+          className="mb-10 flex flex-col h-full"
           inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
@@ -105,6 +104,7 @@ const EditVersionWindow = ({ onClose, formData, setChange }) => {
           onSubmit={onSave}
         >
           <UnderButtons
+            className="mt-auto"
             leftFunc={onClose}
             rightLabel={'Сохранить'}
             leftLabel={'Закрыть'}
@@ -117,6 +117,8 @@ const EditVersionWindow = ({ onClose, formData, setChange }) => {
 
 EditVersionWindow.propTypes = {
   onClose: PropTypes.func,
+  formData: PropTypes.object,
+  setChange: PropTypes.func,
 }
 EditVersionWindow.defaultProps = {
   onClose: () => null,

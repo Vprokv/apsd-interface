@@ -91,6 +91,19 @@ const Field = ({
     </LinkContainer>
   )
 }
+
+Field.propTypes = {
+  onInput: PropTypes.func,
+  className: PropTypes.string,
+  options: PropTypes.array,
+  value: PropTypes.object,
+  index: PropTypes.string,
+  valueIndex: PropTypes.object,
+  deleteLink: PropTypes.func,
+}
+Field.defaultProps = {
+  value: {},
+}
 const baseValue = []
 const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
   const { onInput, value = baseValue, id, options } = props
@@ -212,6 +225,11 @@ LinkNdt.propTypes = {
   value: PropTypes.array,
   onInput: PropTypes.func.isRequired,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  options: PropTypes.array,
+  InputUiContext: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 }
 LinkNdt.defaultProps = {
   label: 'Ссылка на НДТ',

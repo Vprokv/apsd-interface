@@ -10,7 +10,7 @@ import { StyledContextMenu, TextContainer } from './styles'
 
 const Tips = ({ children, text }) => {
   const [renderTips, setRenderTipsState] = useState(false)
-  const [textSize, setTextSize] = useState(false)
+  const [textSize, setTextSize] = useState(0)
   const childRef = useRef()
   const textRef = useRef()
   const closeTips = useCallback(() => setRenderTipsState(false), [])

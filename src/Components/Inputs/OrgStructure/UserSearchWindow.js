@@ -94,8 +94,6 @@ const OrgStructureWindow = (props) => {
     filterOptions,
   } = props
 
-  console.log(value)
-
   const { setLimit, setPage, paginationState } = pagination
 
   const api = useContext(ApiContext)

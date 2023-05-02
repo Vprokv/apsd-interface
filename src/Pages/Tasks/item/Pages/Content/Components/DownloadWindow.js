@@ -39,6 +39,7 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 export const FilterForm = styled(WithValidationForm)`
   display: grid;
   --form-elements-indent: 10px;
+  height: 100%;
 `
 
 const rules = {
@@ -181,6 +182,7 @@ const DownloadWindow = ({ onClose, contentId, setChange }) => {
           onSubmit={onSave}
         >
           <UnderButtons
+            className="mt-auto"
             leftFunc={onClose}
             rightLabel={'Сохранить'}
             leftLabel={'Закрыть'}

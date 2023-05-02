@@ -31,6 +31,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import PropTypes from 'prop-types'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -81,10 +82,7 @@ const columns = [
     id: 'voltage',
     label: 'Код',
     component: ({ ParentValue: { dss_voltage } }) => (
-      <BaseCell
-        value={dss_voltage}
-        className="flex items-center"
-      />
+      <BaseCell value={dss_voltage} className="flex items-center" />
     ),
     sizes: 100,
   },
@@ -297,6 +295,10 @@ const CreateObjectsWindow = ({ onClose }) => {
       </div>
     </div>
   )
+}
+
+CreateObjectsWindow.propTypes = {
+  onClose: PropTypes.func,
 }
 
 const CreateObjectsWindowWindowWrapper = (props) => (

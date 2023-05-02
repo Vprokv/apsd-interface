@@ -20,7 +20,7 @@ const StyledSelect = styled(SelectComponent)`
 
     overflow: hidden;
     white-space: nowrap;
-    
+
     &::placeholder {
       font-size: 14px;
       font-weight: 400;

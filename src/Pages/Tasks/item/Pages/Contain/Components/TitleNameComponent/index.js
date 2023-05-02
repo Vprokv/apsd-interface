@@ -160,7 +160,7 @@ const TitleNameComponent = ({
           </div>
         </button>
         <ContHover>
-          <ThreeDotButton loading={loading} disabled={loading}>
+          <ThreeDotButton>
             <Icon
               icon={ThreeDotIcon}
               size={14}

@@ -15,10 +15,11 @@ const UnderButtons = ({
   rightLabel,
   leftStyle,
   rightStyle,
+  className,
   children,
 }) => {
   return (
-    <div className="flex items-center justify-end">
+    <div className={`flex items-center justify-end ${className}`}>
       {children}
       <SecondaryGreyButton className={leftStyle} onClick={leftFunc}>
         {leftLabel}
@@ -41,6 +42,7 @@ UnderButtons.defaultProps = {
   leftLabel: 'Закрыть',
   rightFunc: () => null,
   rightLabel: 'Сохранить',
+  className: PropTypes.string,
 }
 
 UnderButtons.propTypes = {
@@ -50,6 +52,7 @@ UnderButtons.propTypes = {
   rightLabel: PropTypes.string,
   leftStyle: PropTypes.string,
   rightStyle: PropTypes.string,
+  className: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
