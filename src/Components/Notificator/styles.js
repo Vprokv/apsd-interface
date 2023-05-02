@@ -12,7 +12,6 @@ export const NotificationItem = styled.div`
   position: relative;
   overflow: hidden;
   width: 390px;
-  height: 85px;
   padding: 24px 22px 28px 16px;
   margin-bottom: 1.25rem;
   border-radius: 8px;
@@ -20,6 +19,7 @@ export const NotificationItem = styled.div`
   //right: 16px;
   &.info {
     background: rgba(212, 247, 255);
+    height: 70px;
 
     ${Line} {
       background-color: var(--light-blue);
@@ -28,6 +28,7 @@ export const NotificationItem = styled.div`
 
   &.success {
     background-color: #d2f7c5;
+    height: 70px;
 
     ${Line} {
       background-color: var(--green);
@@ -36,6 +37,7 @@ export const NotificationItem = styled.div`
 
   &.error {
     background: #ffe3e4;
+    height: 85px;
 
     ${Line} {
       background: var(--red);

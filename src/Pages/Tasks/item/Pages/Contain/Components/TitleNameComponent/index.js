@@ -45,13 +45,13 @@ const customMessagesApproveFuncMap = {
   200: () => {
     return {
       type: NOTIFICATION_TYPE_SUCCESS,
-      message: 'Состав титула передан',
+      message: 'Состав титула утвержден',
     }
   },
   500: (trace) => {
     return {
       type: NOTIFICATION_TYPE_ERROR,
-      message: 'Ошибка при передаче состава титула',
+      message: 'Ошибка при утверждении состава титула',
       trace,
     }
   },
@@ -119,8 +119,8 @@ const TitleNameComponent = ({
       }
       setLoading(true)
     } catch (e) {
-      const { response: { status, data: { trace } } = {} } = e
-      getNotification(customMessagesApproveFuncMap[status](trace))
+      const { response: { status, data: { trace }, data } = {} } = e
+      getNotification(customMessagesApproveFuncMap[status](trace ?? data))
       setLoading(false)
     }
   }, [
