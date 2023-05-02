@@ -93,9 +93,9 @@ const TitleNameComponent = ({
       }
       setLoading(true)
     } catch (e) {
-      setLoading(false)
       const { response: { status, data: { trace } } = {} } = e
       getNotification(customMessagesSendFuncMap[status](trace))
+      setLoading(false)
     }
   }, [
     ParentValue,
