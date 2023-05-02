@@ -39,6 +39,7 @@ body {
     --base: #232832;
     --secondary: #B8C7E4;
     --red: #F0565A;
+    --full-red: rgba(232, 112, 115, 0.6);
     --light-gray: #F7F8FC;
     --separator: #E6EBF4;
     --text-secondary: #98A5BC;

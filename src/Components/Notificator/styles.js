@@ -12,7 +12,7 @@ export const NotificationItem = styled.div`
   position: relative;
   overflow: hidden;
   width: 390px;
-  height: 70px;
+  height: 85px;
   padding: 24px 22px 28px 16px;
   margin-bottom: 1.25rem;
   border-radius: 8px;

@@ -4,10 +4,7 @@ import { TreeStateContext } from '@Components/Components/Tables/Plugins/constant
 import { ApiContext } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
-import {
-  URL_ORGSTURCTURE_SEND,
-  URL_TITLE_CONTAIN_CREATE_APPROVE,
-} from '@/ApiList'
+import { URL_STURCTURE_SEND, URL_TITLE_CONTAIN_CREATE_APPROVE } from '@/ApiList'
 import Icon from '@Components/Components/Icon'
 import sortIcons from '@/Icons/sortIcons'
 import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
@@ -20,6 +17,45 @@ import {
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
+import {
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+
+const customMessagesSendFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Состав титула передан',
+    }
+  },
+  500: (trace) => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Ошибка при передаче состава титула',
+      trace,
+    }
+  },
+}
+const customMessagesApproveFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Состав титула передан',
+    }
+  },
+  500: (trace) => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Ошибка при передаче состава титула',
+      trace,
+    }
+  },
+}
 
 const TitleNameComponent = ({
   onInput,
@@ -39,6 +75,7 @@ const TitleNameComponent = ({
   const { loadData, addDepartment, addVolume, addLink } = useContext(
     LoadContainChildrenContext,
   )
+  const getNotification = useOpenNotification()
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -46,7 +83,10 @@ const TitleNameComponent = ({
 
   const onSend = useCallback(async () => {
     try {
-      await api.post(URL_ORGSTURCTURE_SEND, { partId: ParentValue.id })
+      const { status } = await api.post(URL_STURCTURE_SEND, {
+        partId: ParentValue.id,
+      })
+      getNotification(customMessagesSendFuncMap[status]())
       const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
       if (!children || children.length === 0) {
         onInput(await loadData(id, false), nestedDataKey)
@@ -54,23 +94,44 @@ const TitleNameComponent = ({
       setLoading(true)
     } catch (e) {
       setLoading(false)
+      const { response: { status, data: { trace } } = {} } = e
+      getNotification(customMessagesSendFuncMap[status](trace))
     }
-  }, [ParentValue, api, loadData, nestedDataKey, onInput, valueKey])
+  }, [
+    ParentValue,
+    api,
+    getNotification,
+    loadData,
+    nestedDataKey,
+    onInput,
+    valueKey,
+  ])
 
   const onApprove = useCallback(async () => {
     try {
-      await api.post(URL_TITLE_CONTAIN_CREATE_APPROVE, {
+      const { status } = await api.post(URL_TITLE_CONTAIN_CREATE_APPROVE, {
         partId: ParentValue.id,
       })
+      getNotification(customMessagesApproveFuncMap[status]())
       const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
       if (!children || children.length === 0) {
         onInput(await loadData(id, false), nestedDataKey)
       }
       setLoading(true)
     } catch (e) {
+      const { response: { status, data: { trace } } = {} } = e
+      getNotification(customMessagesApproveFuncMap[status](trace))
       setLoading(false)
     }
-  }, [ParentValue, api, loadData, nestedDataKey, onInput, valueKey])
+  }, [
+    ParentValue,
+    api,
+    getNotification,
+    loadData,
+    nestedDataKey,
+    onInput,
+    valueKey,
+  ])
 
   const onOpenNestedTable = useCallback(async () => {
     const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
