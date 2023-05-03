@@ -1,6 +1,12 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
-import Button, { SecondaryBlueButton } from '@/Components/Button'
+import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import { CustomInput, FilterForm } from './styles'
@@ -45,9 +51,9 @@ const rules = {
     { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
     { name: VALIDATION_RULE_REQUIRED },
   ],
-  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
-  'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
-  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  // 'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  // 'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
+  // ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
@@ -73,7 +79,17 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
+  const [options, setOptions] = useState([])
   const getNotification = useOpenNotification()
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_ENTITY_LIST, {
+        type: 'ddt_dict_type_remark',
+      })
+      setOptions(data)
+    })()
+  }, [api])
 
   const { setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
@@ -88,6 +104,11 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
     department_name,
     position_name,
   } = useRecoilValue(userAtom)
+
+  const remarkType = useMemo(
+    () => options.find(({ dss_name }) => dss_name === 'Внутреннее'),
+    [options],
+  )
 
   const initialUserValue = useMemo(() => {
     return {
@@ -114,6 +135,15 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
 
   const [filter, setFilterValue] = useState(initialUserValue)
 
+  useEffect(() => {
+    if (!filter.remarkTypeId && remarkType) {
+      setFilterValue((prev) => ({
+        ...prev,
+        remarkTypeId: remarkType.r_object_id,
+      }))
+    }
+  }, [filter.remarkTypeId, remarkType])
+
   const fields = useMemo(
     () => [
       {
@@ -132,6 +162,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         label: 'Тип замечания',
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
+        options,
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
             type: 'ddt_dict_type_remark',
@@ -155,7 +186,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         InputUiContext: NdtLinkWrapper,
       },
     ],
-    [api, editAuthor, initialUserValue.member],
+    [api, editAuthor, initialUserValue.member, options],
   )
 
   const changeModalState = useCallback(

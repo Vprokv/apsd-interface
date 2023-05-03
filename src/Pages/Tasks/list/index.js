@@ -47,6 +47,8 @@ import { TabStateManipulation } from '@Components/Logic/Tab'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -215,6 +217,7 @@ function TaskList({ loadFunctionRest }) {
 
   const [filter, setFilter] = useState({ readTask: false })
   const [selectState, setSelectState] = useState([])
+  const getNotification = useOpenNotification()
   const handleDoubleClick = useCallback(
     ({ taskId, type }) =>
       () =>
@@ -223,33 +226,38 @@ function TaskList({ loadFunctionRest }) {
   )
 
   const loadData = useMemo(() => {
-    const { limit, offset } = paginationState
-    return loadDataHelper(async () => {
-      const { data } = await api.post(loadFunctionRest, {
-        filter: {
-          ...(search
-            ? search
-                .replace('?', '')
-                .split('&')
-                .reduce((acc, p) => {
-                  const [key, value] = p.split('=')
-                  acc[key] = JSON.parse(value)
-                  return acc
-                }, {})
-            : {}),
-          ...filter,
-        },
-        sort: [
-          {
-            direction: sortQuery.direction,
-            property: sortQuery.key,
+    try {
+      const { limit, offset } = paginationState
+      return loadDataHelper(async () => {
+        const { data } = await api.post(loadFunctionRest, {
+          filter: {
+            ...(search
+              ? search
+                  .replace('?', '')
+                  .split('&')
+                  .reduce((acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc[key] = JSON.parse(value)
+                    return acc
+                  }, {})
+              : {}),
+            ...filter,
           },
-        ],
-        limit,
-        offset,
+          sort: [
+            {
+              direction: sortQuery.direction,
+              property: sortQuery.key,
+            },
+          ],
+          limit,
+          offset,
+        })
+        return data
       })
-      return data
-    })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
   }, [
     paginationState,
     loadDataHelper,
@@ -259,51 +267,58 @@ function TaskList({ loadFunctionRest }) {
     filter,
     sortQuery.direction,
     sortQuery.key,
+    getNotification,
   ])
 
   const onExportToExcel = useCallback(async () => {
-    const { limit, offset } = paginationState
-    const {
-      data: { id },
-    } = await api.post(URL_EXPORT, {
-      url: `${API_URL}${URL_TASK_LIST_V2}`,
-      label: 'Все задания',
-      sheetName: 'Все задания',
-      columns: columnMap,
-      body: {
-        filter: {
-          ...(search
-            ? search
-                .replace('?', '')
-                .split('&')
-                .reduce((acc, p) => {
-                  const [key, value] = p.split('=')
-                  acc[key] = JSON.parse(value)
-                  return acc
-                }, {})
-            : {}),
-          ...filter,
-        },
-        sort: [
-          {
-            direction: sortQuery.direction,
-            property: sortQuery.key,
+    try {
+      const { limit, offset } = paginationState
+      const {
+        data: { id },
+      } = await api.post(URL_EXPORT, {
+        url: `${API_URL}${URL_TASK_LIST_V2}`,
+        label: 'Все задания',
+        sheetName: 'Все задания',
+        columns: columnMap,
+        body: {
+          filter: {
+            ...(search
+              ? search
+                  .replace('?', '')
+                  .split('&')
+                  .reduce((acc, p) => {
+                    const [key, value] = p.split('=')
+                    acc[key] = JSON.parse(value)
+                    return acc
+                  }, {})
+              : {}),
+            ...filter,
           },
-        ],
-        limit,
-        offset,
-        token,
-      },
-    })
+          sort: [
+            {
+              direction: sortQuery.direction,
+              property: sortQuery.key,
+            },
+          ],
+          limit,
+          offset,
+          token,
+        },
+      })
 
-    const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
-      responseType: 'blob',
-    })
+      const { data } = await api.get(`${URL_EXPORT_FILE}${id}:${token}`, {
+        responseType: 'blob',
+      })
 
-    downloadFileWithReload(data, 'Все задания.xlsx')
+      downloadFileWithReload(data, 'Все задания.xlsx')
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
   }, [
     api,
     filter,
+    getNotification,
     paginationState,
     search,
     sortQuery.direction,

@@ -38,6 +38,8 @@ import { AddUserOptionsFullName } from '../UserSelect'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import useDefaultFilter from './useDefaultFilter'
 import PropTypes from 'prop-types'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const columns = [
   {
@@ -426,6 +428,7 @@ const OrgStructureWindowWrapper = ({
   const defaultFilter = useDefaultFilter({ baseFilter })
   const [filter, setFilter] = useState({})
   const [sortQuery, onSort] = useState({})
+  const getNotification = useOpenNotification()
 
   useEffect(
     () =>
@@ -461,20 +464,25 @@ const OrgStructureWindowWrapper = ({
   }, [sortQuery])
 
   const loadRef = useCallback(async () => {
-    const { limit, offset } = pagination.paginationState
-    const {
-      data: { content },
-    } = await api.post(URL_EMPLOYEE_LIST, {
-      filter,
-      limit,
-      offset,
-      sort,
-    })
+    try {
+      const { limit, offset } = pagination.paginationState
+      const {
+        data: { content },
+      } = await api.post(URL_EMPLOYEE_LIST, {
+        filter,
+        limit,
+        offset,
+        sort,
+      })
 
-    const data = content.map(AddUserOptionsFullName)
+      const data = content.map(AddUserOptionsFullName)
 
-    setModalWindowOptions(data)
-  }, [api, filter, pagination.paginationState, sort])
+      setModalWindowOptions(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter, getNotification, pagination.paginationState, sort])
 
   const closeFunc = useCallback(() => {
     onClose()

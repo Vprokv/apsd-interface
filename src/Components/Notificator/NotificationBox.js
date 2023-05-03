@@ -3,6 +3,7 @@ import { notificationAtom } from './state'
 import { NotificationContainer } from './styles'
 import { useCallback } from 'react'
 import NotificationItem from './NotificationItem'
+
 const NotificationBox = () => {
   const [notifications, setNotifications] = useRecoilState(notificationAtom)
   const destroyNotification = useCallback(
@@ -14,8 +15,9 @@ const NotificationBox = () => {
 
   return (
     <NotificationContainer>
-      {notifications.map(({ id, message, type }) => (
+      {notifications.map(({ id, message, type, trace }) => (
         <NotificationItem
+          trace={trace}
           key={id}
           destroyNotification={destroyNotification(id)}
           message={message}

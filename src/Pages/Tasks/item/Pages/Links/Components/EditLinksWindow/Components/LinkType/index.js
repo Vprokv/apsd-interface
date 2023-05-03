@@ -4,17 +4,25 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import { EditLinkContext } from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/constans'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const LinkType = ({ ParentValue: { contentId, linkType } }) => {
   const api = useContext(ApiContext)
   const { link, onLink } = useContext(EditLinkContext)
+  const getNotification = useOpenNotification()
 
   const loadFunction = async (query) => {
-    const { data } = await api.post(URL_ENTITY_LIST, {
-      type: 'ddt_dict_link_type',
-      query,
-    })
-    return data
+    try {
+      const { data } = await api.post(URL_ENTITY_LIST, {
+        type: 'ddt_dict_link_type',
+        query,
+      })
+      return data
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
   }
 
   const value = useMemo(

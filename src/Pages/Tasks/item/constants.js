@@ -85,10 +85,6 @@ export const defaultDocumentHandlers = {
     icon: PrintIcon,
     handler: () => alert('Функционал не реализован'),
   },
-  export_doc: {
-    icon: UploadDoc,
-    handler: () => alert('Функционал не реализован'),
-  },
 }
 
 export const defaultTaskIcon = {

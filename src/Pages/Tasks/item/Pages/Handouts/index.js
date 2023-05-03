@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
 import { ApiContext, TASK_ITEM_HANDOUTS } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -18,6 +17,8 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -62,12 +63,13 @@ const columns = [
   },
 ]
 
-const Handouts = (props) => {
+const Handouts = () => {
   const api = useContext(ApiContext)
   const { id } = useParams()
   const [filterValue, setFilterValue] = useState({})
   const [sortQuery, onSort] = useState({})
   const [selectState, setSelectState] = useState([])
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_HANDOUTS,
@@ -75,7 +77,7 @@ const Handouts = (props) => {
   const {
     tabState,
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, change },
+    tabState: { data: { content = [], total = 0 } = {} },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -85,37 +87,35 @@ const Handouts = (props) => {
     defaultLimit: 10,
   })
 
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
-
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
-    const { data } = await api.post(
-      URL_HANDOUTS_LIST,
-      {
-        documentId: id,
-        filter: filterValue,
-      },
-      {
-        params: {
-          limit,
-          offset,
-          sort: {
-            property: sortQuery.key,
-            direction: sortQuery.direction,
+    try {
+      const { limit, offset } = paginationState
+      const { data } = await api.post(
+        URL_HANDOUTS_LIST,
+        {
+          documentId: id,
+          filter: filterValue,
+        },
+        {
+          params: {
+            limit,
+            offset,
+            sort: {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            },
           },
         },
-      },
-    )
-    return data
+      )
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
   }, [
     api,
     filterValue,
+    getNotification,
     id,
     paginationState,
     sortQuery.direction,
@@ -172,7 +172,7 @@ const Handouts = (props) => {
           fields={fields}
           inputWrapper={EmptyInputWrapper}
         />
-        <CreateHandoutsWindow setChange={setChange} />
+        <CreateHandoutsWindow />
       </div>
       <ListTable
         rowComponent={useMemo(

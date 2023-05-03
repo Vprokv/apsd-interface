@@ -15,10 +15,10 @@ const filterPrepMap = {
     return acc
   },
   [BRANCH_FIELD]: ({ value, acc, defaultParams, key, defaultParam }) => {
-    if (acc.organization !== defaultParams.organization) {
-      if (value) {
-        acc[key] = value
-      }
+    // if (acc.organization !== defaultParams.organization) {
+    if (value) {
+      acc[key] = value
+      // }
       return acc
     } else {
       acc[key] = defaultParam

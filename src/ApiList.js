@@ -28,7 +28,7 @@ export const URL_TITLE_CONTAIN_SAVE = '/apsd/structure/save'
 export const URL_TITLE_CONTAIN_CREATE = '/apsd/structure/create'
 export const URL_TITLE_CONTAIN_DELETE = '/apsd/structure/delete'
 export const URL_TITLE_CONTAIN_CREATE_LINK = '/apsd/structure/link'
-export const URL_ORGSTURCTURE_SEND = '/apsd/structure/send'
+export const URL_STURCTURE_SEND = '/apsd/structure/send'
 export const URL_TITLE_CONTAIN_CREATE_APPROVE = '/apsd/structure/approve'
 
 // SUBSCRIPTION
