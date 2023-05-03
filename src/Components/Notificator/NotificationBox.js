@@ -15,8 +15,9 @@ const NotificationBox = () => {
 
   return (
     <NotificationContainer>
-      {notifications.map(({ id, message, type, trace }) => (
+      {notifications.map(({ id, message, type, gap, trace }) => (
         <NotificationItem
+          gap={gap}
           trace={trace}
           key={id}
           destroyNotification={destroyNotification(id)}

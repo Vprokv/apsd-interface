@@ -61,7 +61,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'contentId',
+    valueKey: 'linkId',
     returnObjects: true,
   },
 }
@@ -181,24 +181,25 @@ const Links = () => {
 
     const res = await Promise.all(
       selectState.reduce((acc, { contentId }) => {
-        acc.push(
-          new Promise((res) => {
-            api
-              .post(
-                URL_DOWNLOAD_FILE,
-                {
-                  type: 'ddt_document_content',
-                  column: 'dsc_content',
-                  id: contentId,
-                },
-                { responseType: 'blob' },
-              )
-              .then((response) => {
-                res(response)
-              })
-              .catch(() => res(new Error('Документ не найден')))
-          }),
-        )
+        contentId &&
+          acc.push(
+            new Promise((res) => {
+              api
+                .post(
+                  URL_DOWNLOAD_FILE,
+                  {
+                    type: 'ddt_document_content',
+                    column: 'dsc_content',
+                    id: contentId,
+                  },
+                  { responseType: 'blob' },
+                )
+                .then((response) => {
+                  res(response)
+                })
+                .catch(() => res(new Error('Документ не найден')))
+            }),
+          )
         return acc
       }, []),
     )
@@ -256,7 +257,9 @@ const Links = () => {
 
   const onDelete = useCallback(async () => {
     try {
-      const response = await api.post(URL_LINK_DELETE, { linkIds: selectState })
+      const response = await api.post(URL_LINK_DELETE, {
+        linkIds: selectState.map(({ linkId }) => linkId),
+      })
       setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
