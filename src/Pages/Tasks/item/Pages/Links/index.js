@@ -132,8 +132,6 @@ const Links = () => {
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
 
-  console.log(selectState, 'selectState')
-
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
   })

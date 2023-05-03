@@ -5,9 +5,8 @@ import Icon from '@Components/Components/Icon'
 import closeIcon from '@/Icons/closeIcon'
 import pinIcon from '@/Icons/pinIcon'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import { Button } from '@Components/Components/Button'
 
-const Notificator = ({ type, message, trace, destroyNotification }) => {
+const Notificator = ({ type, message, trace, destroyNotification, gap }) => {
   const [pinned, setPinned] = useState(false)
   const [barWidth, setBarWidth] = useState(100)
   const togglePin = useCallback(() => {
@@ -24,7 +23,7 @@ const Notificator = ({ type, message, trace, destroyNotification }) => {
     if (!pinned) {
       const interval = setInterval(() => {
         setBarWidth((width) => {
-          const nextBarWidth = width - 0.25
+          const nextBarWidth = width - gap
           if (nextBarWidth < 0) {
             destroyNotification()
             return 0
@@ -36,7 +35,7 @@ const Notificator = ({ type, message, trace, destroyNotification }) => {
 
       return () => clearInterval(interval)
     }
-  }, [destroyNotification, pinned])
+  }, [destroyNotification, gap, pinned])
 
   return (
     <NotificationItem className={`${type} `}>
@@ -58,10 +57,15 @@ const Notificator = ({ type, message, trace, destroyNotification }) => {
   )
 }
 
+Notificator.defaultProps = {
+  gap: 0.25,
+}
+
 Notificator.propTypes = {
   message: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   trace: PropTypes.string,
+  gap: PropTypes.number,
   destroyNotification: PropTypes.func.isRequired,
 }
 
