@@ -1,17 +1,44 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow/styled'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_TYPE_CONFIG } from '@/ApiList'
+import {
+  URL_SUBSCRIPTION_CHANNELS,
+  URL_SUBSCRIPTION_USER_CHANNELS,
+  URL_TYPE_CONFIG,
+} from '@/ApiList'
 import { ApiContext } from '@/contants'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { FilterForm } from '@/Pages/Search/Pages/Components/SearchFields/styles'
+import axios from 'axios'
 
 const NotificationItem = (props) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
+  const [channels, setChannels] = useState([])
+  const [userChannels, setUserChannels] = useState([])
+  console.log(channels, 'channels')
+  console.log(userChannels, 'userChannels')
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS)
+      setChannels(data)
+    })()
+  }, [api])
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await api.post(URL_SUBSCRIPTION_USER_CHANNELS, {
+        channel: channels[1]?.id,
+        typeDocument: filter?.typeDocument,
+      })
+      setUserChannels(data)
+    })()
+  }, [api, channels, filter?.typeDocument])
+
   const fields = [
     {
-      id: 1,
+      id: 'typeDocument',
       label: 'Тип документа',
       component: LoadableSelect,
       valueKey: 'typeName',
@@ -35,7 +62,7 @@ const NotificationItem = (props) => {
     <div className="m-4">
       <FilterForm
         fields={fields}
-        inputWrapper={emptyWrapper}
+        inputWrapper={InputWrapper}
         value={filter}
         onInput={setFilter}
       />
