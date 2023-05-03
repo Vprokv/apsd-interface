@@ -111,7 +111,7 @@ const columns = [
 const IterationRemarks = ({ remarks }) => {
   const data = useMemo(
     () =>
-      remarks.reduce((acc, { remarkCreationDate, ...props }) => {
+      remarks.reduce((acc, props) => {
         acc.push({
           itsRemark: true,
           props,
