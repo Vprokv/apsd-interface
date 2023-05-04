@@ -120,7 +120,7 @@ const columnMap = [
 ]
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -130,7 +130,10 @@ const plugins = {
 }
 
 const ArchiveList = () => {
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'creationDate',
+    direction: 'DESC',
+  })
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
@@ -176,6 +179,12 @@ const ArchiveList = () => {
         filter,
         limit,
         offset,
+        sort: [
+          {
+            property: sortQuery.key,
+            direction: sortQuery.direction,
+          },
+        ],
       })
 
       return data
@@ -183,7 +192,7 @@ const ArchiveList = () => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter, getNotification, paginationState])
+  }, [api, filter, getNotification, paginationState, sortQuery])
 
   useAutoReload(loadData, tabItemState)
 

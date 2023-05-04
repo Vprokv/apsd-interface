@@ -50,7 +50,7 @@ const columns = [
     sizes: 250,
   },
   {
-    id: 'fromDate',
+    id: 'eventDate',
     label: 'Дата получения',
     component: ({ ParentValue: { eventDate } }) => (
       <BaseCell value={eventDate} className="flex items-center" />
@@ -71,7 +71,10 @@ const History = () => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'eventDate',
+    direction: 'DESC',
+  })
   const documentId = useContext(DocumentIdContext)
   const [filter, b] = useState({}) // fromDate: '2022-09-01T06:10:44.395Z'
   const {
