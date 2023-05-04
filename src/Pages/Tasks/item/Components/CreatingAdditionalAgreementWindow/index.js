@@ -1,22 +1,22 @@
-import React, {useCallback, useContext, useMemo, useState} from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import {StandardSizeModalWindow} from '@/Components/ModalWindow'
-import Button, from '@/Components/Button'
+import { StandardSizeModalWindow } from '@/Components/ModalWindow'
+import Button from '@/Components/Button'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
-import {ApiContext, ITEM_TASK} from '@/contants'
+import { ApiContext, ITEM_TASK } from '@/contants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import {URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT} from '../../../../../ApiList'
-import {DocumentIdContext} from '@/Pages/Tasks/item/constants'
-import {useParams} from 'react-router-dom'
+import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '../../../../../ApiList'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {CurrentTabContext, TabStateManipulation} from '@Components/Logic/Tab'
+import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import {defaultFunctionsMap} from '@/Components/Notificator/constants'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const rules = {}
 
@@ -30,13 +30,13 @@ const customMessagesFuncMap = {
   },
 }
 
-const CreatingAdditionalAgreementWindow = ({onClose}) => {
+const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   const api = useContext(ApiContext)
   const documentId = useContext(DocumentIdContext)
-  const {type: documentType} = useParams()
+  const { type: documentType } = useParams()
   const [values, setValues] = useState({})
-  const {onCloseTab} = useContext(TabStateManipulation)
-  const {currentTabIndex} = useContext(CurrentTabContext)
+  const { onCloseTab } = useContext(TabStateManipulation)
+  const { currentTabIndex } = useContext(CurrentTabContext)
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
     [onCloseTab, currentTabIndex],
@@ -47,7 +47,7 @@ const CreatingAdditionalAgreementWindow = ({onClose}) => {
     stateId: ITEM_TASK,
   })
   const {
-    tabState: {data: {approverId} = {}},
+    tabState: { data: { approverId } = {} },
   } = tabItemState
 
   const fieldMap = useMemo(() => {
@@ -80,7 +80,7 @@ const CreatingAdditionalAgreementWindow = ({onClose}) => {
       onClose()
       closeCurrenTab()
     } catch (e) {
-      const {response: {status, data} = {}} = e
+      const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
