@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_CHANNELS,
   URL_SUBSCRIPTION_USER_CHANNELS,
+  URL_SUBSCRIPTION_USER_CREATE, URL_SUBSCRIPTION_USER_DELETE,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { FilterForm } from '@/Pages/Search/Pages/Components/SearchFields/styles'
-import axios from 'axios'
 
 const NotificationItem = (props) => {
   const api = useContext(ApiContext)
@@ -35,6 +35,20 @@ const NotificationItem = (props) => {
       setUserChannels(data)
     })()
   }, [api, channels, filter?.typeDocument])
+
+  const onCreate = useCallback(
+    async (body) => {
+      await api.post(URL_SUBSCRIPTION_USER_CREATE, body)
+    },
+    [api],
+  )
+
+  const onDelete = useCallback(
+    async (eventId) => {
+      await api.post(URL_SUBSCRIPTION_USER_DELETE, { eventId })
+    },
+    [api],
+  )
 
   const fields = [
     {

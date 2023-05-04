@@ -37,7 +37,10 @@ export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'
 export const URL_SUBSCRIPTION_CREATE = '/apsd/subscription/create'
 export const URL_SUBSCRIPTION_DELETE = '/apsd/subscription/deleted'
 export const URL_SUBSCRIPTION_CHANNELS = '/apsd/subscription/channels'
+// SUBSCRIPTION USER
 export const URL_SUBSCRIPTION_USER_CHANNELS = '/apsd/subscription/user/list'
+export const URL_SUBSCRIPTION_USER_CREATE = '/apsd/subscription/user/create'
+export const URL_SUBSCRIPTION_USER_DELETE = '/apsd/subscription/event/delete'
 // OBJECTS
 export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
 export const URL_TECHNICAL_OBJECTS_CREATE = '/apsd/title/technical_objects/add'
