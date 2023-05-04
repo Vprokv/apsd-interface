@@ -1,5 +1,8 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { ApiContext, TASK_ITEM_LINK } from '@/contants'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  ApiContext,
+  TASK_ITEM_LINK,
+} from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_DOWNLOAD_FILE,
@@ -51,12 +54,12 @@ const customMessagesFuncMap = {
 }
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'contentId',
+    valueKey: 'linkId',
     returnObjects: true,
   },
 }
@@ -127,9 +130,13 @@ const Links = () => {
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'linkDate',
+    direction: 'DESC',
+  })
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+
   const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
@@ -153,6 +160,12 @@ const Links = () => {
       const { limit, offset } = paginationState
       const { data } = await api.post(URL_LINK_LIST, {
         parentId: id,
+        sort: [
+          {
+            property: sortQuery.key,
+            direction: sortQuery.direction,
+          },
+        ],
         filter,
         limit,
         offset,
@@ -163,7 +176,7 @@ const Links = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [paginationState, api, id, filter, getNotification])
+  }, [paginationState, api, id, filter, getNotification, sortQuery])
 
   useAutoReload(loadData, tabItemState)
 
@@ -172,24 +185,25 @@ const Links = () => {
 
     const res = await Promise.all(
       selectState.reduce((acc, { contentId }) => {
-        acc.push(
-          new Promise((res) => {
-            api
-              .post(
-                URL_DOWNLOAD_FILE,
-                {
-                  type: 'ddt_document_content',
-                  column: 'dsc_content',
-                  id: contentId,
-                },
-                { responseType: 'blob' },
-              )
-              .then((response) => {
-                res(response)
-              })
-              .catch(() => res(new Error('Документ не найден')))
-          }),
-        )
+        contentId &&
+          acc.push(
+            new Promise((res) => {
+              api
+                .post(
+                  URL_DOWNLOAD_FILE,
+                  {
+                    type: 'ddt_document_content',
+                    column: 'dsc_content',
+                    id: contentId,
+                  },
+                  { responseType: 'blob' },
+                )
+                .then((response) => {
+                  res(response)
+                })
+                .catch(() => res(new Error('Документ не найден')))
+            }),
+          )
         return acc
       }, []),
     )
@@ -247,7 +261,9 @@ const Links = () => {
 
   const onDelete = useCallback(async () => {
     try {
-      const response = await api.post(URL_LINK_DELETE, { linkIds: selectState })
+      const response = await api.post(URL_LINK_DELETE, {
+        linkIds: selectState.map(({ linkId }) => linkId),
+      })
       setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {

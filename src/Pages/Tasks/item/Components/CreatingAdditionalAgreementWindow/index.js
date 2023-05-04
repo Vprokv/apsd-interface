@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import Button, { SecondaryBlueButton } from '@/Components/Button'
+import Button from '@/Components/Button'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
@@ -12,8 +12,23 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const rules = {}
+
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Дополнительное согласование создано успешно',
+    }
+  },
+}
 
 const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   const api = useContext(ApiContext)
@@ -26,6 +41,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
     () => onCloseTab(currentTabIndex),
     [onCloseTab, currentTabIndex],
   )
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: ITEM_TASK,
@@ -60,15 +76,20 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         documentType,
         documentId,
       })
+      getNotification(customMessagesFuncMap[status]())
       onClose()
       closeCurrenTab()
-    } catch (_) {}
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
   }, [
     api,
     values,
     approverId,
     documentType,
     documentId,
+    getNotification,
     onClose,
     closeCurrenTab,
   ])

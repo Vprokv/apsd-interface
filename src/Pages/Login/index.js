@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
@@ -9,6 +9,10 @@ import { LoginInput } from './styles'
 
 import { RESET_PASSWORD_PAGE_PATH } from '@/routePaths'
 import LoginTemplate from './LoginTemplate'
+import {
+  NOTIFICATION_TYPE_ERROR,
+  useOpenNotification,
+} from '@/Components/Notificator'
 
 export const fieldMap = [
   {
@@ -33,6 +37,15 @@ const rules = {
 
 function Login({ loginRequest }) {
   const [state, setState] = useState({})
+  const getNotification = useOpenNotification()
+
+  useEffect(() => {
+    getNotification({
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Система АПСД (и ЛКП) работает в тестовом режиме',
+      gap: 0.1,
+    })
+  }, [getNotification])
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">

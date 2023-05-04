@@ -505,6 +505,7 @@ const OrgStructureWindowWrapper = ({
       onClose={closeFunc}
       open={open}
       title="Добавление сотрудника"
+      index={1001}
     >
       <OrgStructureWindow
         {...props}

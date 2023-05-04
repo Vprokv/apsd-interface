@@ -118,8 +118,8 @@ const Reporting = () => {
 
       downloadFileWithReload(data, `${name}.${dss_def_format}`)
     } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
     }
   }, [api, dss_def_format, filter, getNotification, name, reportId, token])
 

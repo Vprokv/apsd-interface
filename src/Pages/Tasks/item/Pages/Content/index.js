@@ -12,7 +12,10 @@ import {
   URL_DOWNLOAD_FILE,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
+import {
+  ApiContext,
+  TASK_ITEM_CONTENT,
+} from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -43,7 +46,7 @@ import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -119,7 +122,10 @@ const Content = () => {
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'versionDate',
+    direction: 'DESC',
+  })
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
