@@ -33,12 +33,9 @@ const RowComponent = ({ node, RowC }) => {
 
   const toggleDisplayedFlag = useCallback(() => setShow((s) => !s), [])
 
-  // console.log(props, 'props')
-
   const renderedEntities = useMemo(
     () =>
       approvers?.map((approver, i) => {
-        // console.log(RowComponent, 'RowComponent')
         return <RowC key={i} node={approver} RowC={RowC} />
       }),
     [RowC, approvers],
@@ -95,7 +92,10 @@ const RowComponent = ({ node, RowC }) => {
   )
 }
 
-RowComponent.propTypes = {}
+RowComponent.propTypes = {
+  node: PropTypes.object,
+  LeafComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+}
 
 RowComponent.defaultProps = {
   RowC: RowComponent,

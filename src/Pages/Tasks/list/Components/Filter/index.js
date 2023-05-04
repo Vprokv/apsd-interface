@@ -124,6 +124,7 @@ function Filter({ value, onInput, className }) {
 }
 
 Filter.propTypes = {
+  // todo value действительно должен быть обязательным?
   value: PropTypes.object.isRequired,
   onInput: PropTypes.func.isRequired,
   className: PropTypes.string,

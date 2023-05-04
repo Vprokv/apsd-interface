@@ -72,7 +72,6 @@ const NewTitle = ({ onClose, parentId, closeParent, open }) => {
     >
       <>
         <WithValidationForm
-          className="mb-8"
           value={value}
           onInput={onInput}
           fields={fields}
@@ -80,13 +79,14 @@ const NewTitle = ({ onClose, parentId, closeParent, open }) => {
           rules={rules}
           onSubmit={handleClick}
         >
-          <div className="flex items-center justify-end mt-8">
-            <UnderButtons
-              leftFunc={onClose}
-              leftLabel="Отменить"
-              rightLabel="Сохранить"
-            />
-          </div>
+          <UnderButtons
+            className="justify-around w-full"
+            leftStyle="width-min"
+            rightStyle="width-min"
+            leftFunc={onClose}
+            leftLabel="Отменить"
+            rightLabel="Сохранить"
+          />
         </WithValidationForm>
       </>
     </MiniModalWindow>

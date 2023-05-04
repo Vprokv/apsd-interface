@@ -162,6 +162,7 @@ function BasketList() {
         ],
         filter: {
           movedDate: timesMap[search],
+          ...filter,
         },
       })
       return data
@@ -176,6 +177,7 @@ function BasketList() {
     search,
     sortQuery.direction,
     sortQuery.key,
+    filter,
   ])
 
   useAutoReload(loadData, tabBasketState)

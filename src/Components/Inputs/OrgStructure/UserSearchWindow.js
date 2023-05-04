@@ -393,6 +393,7 @@ const OrgStructureWindow = (props) => {
 OrgStructureWindow.propTypes = {
   onClose: PropTypes.func,
   sendValue: PropTypes.func,
+  // todo
   value: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onInput: PropTypes.func.isRequired,
   loadFunction: PropTypes.func.isRequired,

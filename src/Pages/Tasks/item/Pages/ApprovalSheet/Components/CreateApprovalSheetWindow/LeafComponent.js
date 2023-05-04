@@ -20,6 +20,11 @@ const CirclePlusIcon = ({ className, onClick }) => (
   />
 )
 
+CirclePlusIcon.propTypes = {
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+}
+
 const CircleMinusIcon = ({ className, onClick }) => (
   <Icon
     icon={angleIcon}
@@ -28,6 +33,11 @@ const CircleMinusIcon = ({ className, onClick }) => (
     className={'color-text-secondary m-2 '}
   />
 )
+
+CircleMinusIcon.propTypes = {
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+}
 
 // const DotIcon = ({ className, onClick }) => (
 //   <Icon icon={Dot} onClick={onClick} size={4} className={className} />
@@ -261,6 +271,29 @@ Leaf.propTypes = {
   CloseIcon: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   ChildrenLessIcon: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   className: PropTypes.string,
+  onInput: PropTypes.func,
+  onSelect: PropTypes.func,
+  getLeafSelectedStatus: PropTypes.func,
+  getSequence: PropTypes.func,
+  dropRule: PropTypes.func,
+  setDropState: PropTypes.func,
+  onUpdateOptions: PropTypes.func,
+  onDeleteLeafOption: PropTypes.func,
+  childrenKey: PropTypes.string,
+  valueKey: PropTypes.string,
+  selectedNode: PropTypes.string,
+  options: PropTypes.object,
+  selectedState: PropTypes.object,
+  level: PropTypes.number,
+  index: PropTypes.number,
+  defaultExpandAll: PropTypes.bool,
+  draggable: PropTypes.bool,
+  checkAble: PropTypes.bool,
+  dropState: PropTypes.bool,
+  returnObjects: PropTypes.bool,
+  rowComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  LeafComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  parent: PropTypes.object,
 }
 
 Leaf.defaultProps = {

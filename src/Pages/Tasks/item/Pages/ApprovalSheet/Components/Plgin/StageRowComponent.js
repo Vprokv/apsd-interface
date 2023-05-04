@@ -106,6 +106,8 @@ const StageRowComponent = ({ node }, props) => {
   )
 }
 
-StageRowComponent.propTypes = {}
+StageRowComponent.propTypes = {
+  node: PropTypes.object,
+}
 
 export default StageRowComponent
