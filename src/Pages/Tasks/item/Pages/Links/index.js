@@ -1,5 +1,9 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { ApiContext, TASK_ITEM_LINK } from '@/contants'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  ApiContext,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  TASK_ITEM_LINK,
+} from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_DOWNLOAD_FILE,
@@ -39,6 +43,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Tips from '@/Components/Tips'
+import dayjs from 'dayjs'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -51,7 +56,7 @@ const customMessagesFuncMap = {
 }
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -127,12 +132,14 @@ const Links = () => {
   const api = useContext(ApiContext)
   const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'linkDate',
+    direction: 'DESC',
+  })
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
-  const getNotification = useOpenNotification()
 
-  console.log(selectState, 'selectState')
+  const getNotification = useOpenNotification()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_LINK,
@@ -260,6 +267,44 @@ const Links = () => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, getNotification, selectState, setTabState])
+  const sortContent = useMemo(() => {
+    const { key, direction } = sortQuery
+    let sortedProducts = [...content]
+    if (direction !== undefined) {
+      if (key === 'linkDate') {
+        sortedProducts.sort((a, b) => {
+          let date1 = dayjs(
+            a.linkDate,
+            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+          ).valueOf()
+          let date2 = dayjs(
+            b.linkDate,
+            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+          ).valueOf()
+          if (date2 - date1) {
+            return direction === 'DESC' ? -1 : 1
+          }
+          if (date1 - date2) {
+            return direction === 'DESC' ? 1 : -1
+          }
+          return 0
+        })
+      } else {
+        sortedProducts.sort((a, b) => {
+          if ((a[key] && b[key]) !== null) {
+            if (a[key].toLowerCase() > b[key].toLowerCase()) {
+              return direction === 'DESC' ? -1 : 1
+            }
+            if (a[key].toLowerCase() < b[key].toLowerCase()) {
+              return direction === 'DESC' ? 1 : -1
+            }
+          }
+          return 0
+        })
+      }
+    }
+    return sortedProducts
+  }, [sortQuery, content])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -319,7 +364,7 @@ const Links = () => {
             <RowComponent onDoubleClick={() => null} {...props} />,
           [],
         )}
-        value={content}
+        value={sortContent}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}

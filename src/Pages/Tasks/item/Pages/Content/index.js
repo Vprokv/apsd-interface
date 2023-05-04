@@ -12,7 +12,11 @@ import {
   URL_DOWNLOAD_FILE,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
+import {
+  ApiContext,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  TASK_ITEM_CONTENT,
+} from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -41,9 +45,10 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
+import dayjs from 'dayjs'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -119,7 +124,10 @@ const Content = () => {
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
-  const [sortQuery, onSort] = useState({})
+  const [sortQuery, onSort] = useState({
+    key: 'versionDate',
+    direction: 'DESC',
+  })
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
@@ -253,6 +261,44 @@ const Content = () => {
   }, [api, selectState])
 
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
+  const sortContent = useMemo(() => {
+    const { key, direction } = sortQuery
+    let sortedProducts = [...content]
+    if (direction !== undefined) {
+      if (key === 'versionDate') {
+        sortedProducts.sort((a, b) => {
+          let date1 = dayjs(
+            a.versionDate,
+            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+          ).valueOf()
+          let date2 = dayjs(
+            b.versionDate,
+            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+          ).valueOf()
+          if (date2 - date1) {
+            return direction === 'DESC' ? -1 : 1
+          }
+          if (date1 - date2) {
+            return direction === 'DESC' ? 1 : -1
+          }
+          return 0
+        })
+      } else {
+        sortedProducts.sort((a, b) => {
+          if ((a[key] && b[key]) !== null) {
+            if (a[key].toLowerCase() > b[key].toLowerCase()) {
+              return direction === 'DESC' ? -1 : 1
+            }
+            if (a[key].toLowerCase() < b[key].toLowerCase()) {
+              return direction === 'DESC' ? 1 : -1
+            }
+          }
+          return 0
+        })
+      }
+    }
+    return sortedProducts
+  }, [sortQuery, content])
 
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
@@ -327,7 +373,7 @@ const Content = () => {
           () => (props) => <ShowLineRowComponent {...props} />,
           [],
         )}
-        value={content || []}
+        value={sortContent || []}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
