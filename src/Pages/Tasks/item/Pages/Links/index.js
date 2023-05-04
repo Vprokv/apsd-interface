@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import {
   ApiContext,
-  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   TASK_ITEM_LINK,
 } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -43,7 +42,6 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Tips from '@/Components/Tips'
-import dayjs from 'dayjs'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -162,6 +160,12 @@ const Links = () => {
       const { limit, offset } = paginationState
       const { data } = await api.post(URL_LINK_LIST, {
         parentId: id,
+        sort: [
+          {
+            property: sortQuery.key,
+            direction: sortQuery.direction,
+          },
+        ],
         filter,
         limit,
         offset,
@@ -172,7 +176,7 @@ const Links = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [paginationState, api, id, filter, getNotification])
+  }, [paginationState, api, id, filter, getNotification, sortQuery])
 
   useAutoReload(loadData, tabItemState)
 
@@ -267,44 +271,6 @@ const Links = () => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, getNotification, selectState, setTabState])
-  const sortContent = useMemo(() => {
-    const { key, direction } = sortQuery
-    let sortedProducts = [...content]
-    if (direction !== undefined) {
-      if (key === 'linkDate') {
-        sortedProducts.sort((a, b) => {
-          let date1 = dayjs(
-            a.linkDate,
-            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-          ).valueOf()
-          let date2 = dayjs(
-            b.linkDate,
-            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-          ).valueOf()
-          if (date2 - date1) {
-            return direction === 'DESC' ? -1 : 1
-          }
-          if (date1 - date2) {
-            return direction === 'DESC' ? 1 : -1
-          }
-          return 0
-        })
-      } else {
-        sortedProducts.sort((a, b) => {
-          if ((a[key] && b[key]) !== null) {
-            if (a[key].toLowerCase() > b[key].toLowerCase()) {
-              return direction === 'DESC' ? -1 : 1
-            }
-            if (a[key].toLowerCase() < b[key].toLowerCase()) {
-              return direction === 'DESC' ? 1 : -1
-            }
-          }
-          return 0
-        })
-      }
-    }
-    return sortedProducts
-  }, [sortQuery, content])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -364,7 +330,7 @@ const Links = () => {
             <RowComponent onDoubleClick={() => null} {...props} />,
           [],
         )}
-        value={sortContent}
+        value={content}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
