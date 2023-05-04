@@ -6,5 +6,8 @@ export const GridForm = styled(Form)`
   display: grid;
   grid-template-columns: 600px 300px 300px;
   grid-column-gap: 0.5rem;
-  margin-top: 20px;
+  //margin-top: 20px;
+  align-items: center;
+  justify-self: center;
+  grid-template-rows: 40px;
 `

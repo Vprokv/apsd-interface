@@ -10,14 +10,13 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_CHANNELS,
   URL_SUBSCRIPTION_USER_CHANNELS,
-  URL_SUBSCRIPTION_USER_CREATE,
-  URL_SUBSCRIPTION_USER_DELETE,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { GridForm } from '@/Pages/Settings/Components/Notification/styles'
 import ChannelItemComponent from '@/Pages/Settings/Components/Notification/Components/ChannelItemComponent'
+import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
 
 const response = [
   {
@@ -29,7 +28,7 @@ const response = [
         eventId: '1', //- id события (по нему потом отправляем запрос отписки)
         eventName: 'string12', // - системное наименование события подписки
         channelName: 'string', //- системное имя канала
-        channelId: 'string', //- id канала
+        channelId: '000000030001q56t', //- id канала
       },
       {
         eventId: 'string', //- id события (по нему потом отправляем запрос отписки)
@@ -62,7 +61,9 @@ const response = [
 
 const NotificationItem = (props) => {
   const api = useContext(ApiContext)
-  const [filter, setFilter] = useState({})
+  const [filter, setFilter] = useState({
+    typeDocument: 'ddt_project_calc_type_doc',
+  })
   const [channels, setChannels] = useState([])
   const [userChannels, setUserChannels] = useState([])
   console.log(channels, 'channels')
@@ -75,30 +76,18 @@ const NotificationItem = (props) => {
     })()
   }, [api])
 
+  const loadFunction = useCallback(async () => {
+    const { data } = await api.post(URL_SUBSCRIPTION_USER_CHANNELS, {
+      typeDocument: filter?.typeDocument,
+    })
+    setUserChannels(data)
+  }, [api, filter?.typeDocument])
+
   useEffect(() => {
     if (filter?.typeDocument) {
-      ;(async () => {
-        // const { data } = await api.post(URL_SUBSCRIPTION_USER_CHANNELS, {
-        //   typeDocument: filter?.typeDocument,
-        // })
-        setUserChannels(response)
-      })()
+      loadFunction()
     }
-  }, [api, channels, filter?.typeDocument])
-
-  const onCreate = useCallback(
-    async (body) => {
-      await api.post(URL_SUBSCRIPTION_USER_CREATE, body)
-    },
-    [api],
-  )
-
-  const onDelete = useCallback(
-    async (eventId) => {
-      await api.post(URL_SUBSCRIPTION_USER_DELETE, { eventId })
-    },
-    [api],
-  )
+  }, [api, channels, filter?.typeDocument, loadFunction])
 
   const openChannels = useMemo(
     () => (
@@ -125,9 +114,7 @@ const NotificationItem = (props) => {
         },
       ],
       loadFunction: async () => {
-        const { data } = await api.post(URL_TYPE_CONFIG, {
-          // typeConfig: 'ddt_startup_complex_type_doc',
-        })
+        const { data } = await api.post(URL_TYPE_CONFIG, {})
         return data
       },
     },
@@ -142,11 +129,15 @@ const NotificationItem = (props) => {
         onInput={setFilter}
       />
       {openChannels}
-      <GridForm>
-        {userChannels.map((props) => (
-          <ChannelItemComponent key={props.name} {...props} />
-        ))}
-      </GridForm>
+      <ChannelContext.Provider
+        value={{ channels, loadFunction, typeDocument: filter?.typeDocument }}
+      >
+        <GridForm>
+          {userChannels.map((props) => (
+            <ChannelItemComponent key={props.name} {...props} />
+          ))}
+        </GridForm>
+      </ChannelContext.Provider>
     </div>
   )
 }
