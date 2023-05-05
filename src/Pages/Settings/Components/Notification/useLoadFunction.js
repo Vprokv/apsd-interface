@@ -4,7 +4,6 @@ import {
   URL_SUBSCRIPTION_USER_DELETE,
 } from '@/ApiList'
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
-import log from 'tailwindcss/lib/util/log'
 
 const checkboxFunctions = {
   false:
