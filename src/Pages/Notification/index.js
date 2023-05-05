@@ -23,6 +23,8 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import DocumentTypeComponent from '@/Pages/Notification/Components/DocumentTypeComponent'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -91,6 +93,7 @@ const Notification = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
+  const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
     direction: 'DESC',
@@ -112,20 +115,32 @@ const Notification = () => {
   })
 
   const loadData = useCallback(async () => {
-    const { limit, offset } = paginationState
-    const { data } = await api.post(URL_SUBSCRIPTION_NOTIFICATION_LIST, {
-      filter,
-      sort: [
-        {
-          property: sortQuery.key,
-          direction: sortQuery.direction,
-        },
-      ],
-      limit,
-      offset,
-    })
-    return data
-  }, [api, filter, paginationState, sortQuery.direction, sortQuery.key])
+    try {
+      const { limit, offset } = paginationState
+      const { data } = await api.post(URL_SUBSCRIPTION_NOTIFICATION_LIST, {
+        filter,
+        sort: [
+          {
+            property: sortQuery.key,
+            direction: sortQuery.direction,
+          },
+        ],
+        limit,
+        offset,
+      })
+      return data
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [
+    api,
+    filter,
+    getNotification,
+    paginationState,
+    sortQuery.direction,
+    sortQuery.key,
+  ])
 
   useSetTabName(useCallback(() => 'Уведомления', []))
   useAutoReload(loadData, tabItemState)

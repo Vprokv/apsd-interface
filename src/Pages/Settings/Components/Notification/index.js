@@ -17,6 +17,8 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import { GridForm } from '@/Pages/Settings/Components/Notification/styles'
 import ChannelItemComponent from '@/Pages/Settings/Components/Notification/Components/ChannelItemComponent'
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useOpenNotification } from '@/Components/Notificator'
 
 const NotificationItem = (props) => {
   const api = useContext(ApiContext)
@@ -25,20 +27,31 @@ const NotificationItem = (props) => {
   })
   const [channels, setChannels] = useState([])
   const [userChannels, setUserChannels] = useState([])
+  const getNotification = useOpenNotification()
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS)
-      setChannels(data)
+      try {
+        const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS)
+        setChannels(data)
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
     })()
-  }, [api])
+  }, [api, getNotification])
 
   const loadFunction = useCallback(async () => {
-    const { data } = await api.post(URL_SUBSCRIPTION_USER_CHANNELS, {
-      typeDocument: filter?.typeDocument,
-    })
-    setUserChannels(data)
-  }, [api, filter?.typeDocument])
+    try {
+      const { data } = await api.post(URL_SUBSCRIPTION_USER_CHANNELS, {
+        typeDocument: filter?.typeDocument,
+      })
+      setUserChannels(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter?.typeDocument, getNotification])
 
   useEffect(() => {
     if (filter?.typeDocument) {
@@ -51,7 +64,9 @@ const NotificationItem = (props) => {
       <GridForm>
         <div>Выберите из какого перечня хотите получать:</div>
         {channels.map(({ label }) => (
-          <div className={' flex items-center justify-center'} key={label}>{label}</div>
+          <div className={' flex items-center justify-center'} key={label}>
+            {label}
+          </div>
         ))}
       </GridForm>
     ),
