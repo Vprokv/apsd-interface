@@ -18,47 +18,6 @@ import { GridForm } from '@/Pages/Settings/Components/Notification/styles'
 import ChannelItemComponent from '@/Pages/Settings/Components/Notification/Components/ChannelItemComponent'
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
 
-const response = [
-  {
-    name: 'string12', // - системное наименование события подписки
-    label: 'Событие 1', //- наименование для пользователя
-    events: [
-      // - список подписанных событий и каналов
-      {
-        eventId: '1', //- id события (по нему потом отправляем запрос отписки)
-        eventName: 'string12', // - системное наименование события подписки
-        channelName: 'string', //- системное имя канала
-        channelId: '000000030001q56t', //- id канала
-      },
-      {
-        eventId: 'string', //- id события (по нему потом отправляем запрос отписки)
-        eventName: 'string12', // - системное наименование события подписки
-        channelName: 'email', //- системное имя канала
-        channelId: '000000030001q56u', //- id канала
-      },
-    ],
-  },
-  {
-    name: 'string13', // - системное наименование события подписки
-    label: 'обытие 2', //- наименование для пользователя
-    events: [
-      // - список подписачнных событий и каналов
-      {
-        eventId: 'string', //- id события (по нему потом отправляем запрос отписки)
-        eventName: 'string13', // - системное наименование события подписки
-        channelName: 'apsd', //- системное имя канала
-        channelId: '000000030001q56t', //- id канала
-      },
-      {
-        eventId: 'string', //- id события (по нему потом отправляем запрос отписки)
-        eventName: 'string13', // - системное наименование события подписки
-        channelName: 'email', //- системное имя канала
-        channelId: '000000030001q56u', //- id канала
-      },
-    ],
-  },
-]
-
 const NotificationItem = (props) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({
@@ -66,8 +25,6 @@ const NotificationItem = (props) => {
   })
   const [channels, setChannels] = useState([])
   const [userChannels, setUserChannels] = useState([])
-  console.log(channels, 'channels')
-  console.log(userChannels, 'userChannels')
 
   useEffect(() => {
     ;(async () => {

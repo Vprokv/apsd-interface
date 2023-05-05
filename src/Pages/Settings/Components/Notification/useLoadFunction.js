@@ -4,9 +4,10 @@ import {
   URL_SUBSCRIPTION_USER_DELETE,
 } from '@/ApiList'
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
+import log from 'tailwindcss/lib/util/log'
 
 const checkboxFunctions = {
-  true:
+  false:
     (api) =>
     (loadData) =>
     ({ documentType, channelId, name }) =>
@@ -17,7 +18,7 @@ const checkboxFunctions = {
       })
       loadData()
     },
-  false:
+  true:
     (api) =>
     (loadData) =>
     ({ eventId }) =>
@@ -28,7 +29,7 @@ const checkboxFunctions = {
   default: () => () => () => () => 'null',
 }
 export const useLoadFunction = ({ api, name, channelId, events }) => {
-  const { loadData } = useContext(ChannelContext)
+  const { loadFunction } = useContext(ChannelContext)
   const currentCheckBoxValue = useMemo(
     () =>
       events?.some(
@@ -36,7 +37,6 @@ export const useLoadFunction = ({ api, name, channelId, events }) => {
       ),
     [channelId, events],
   )
-
 
   const { eventId } = useMemo(
     () =>
@@ -48,12 +48,12 @@ export const useLoadFunction = ({ api, name, channelId, events }) => {
     [channelId, currentCheckBoxValue, events],
   )
 
-  const loadFunction = useMemo(() => {
+  const CheckBoxFunction = useMemo(() => {
     const { [currentCheckBoxValue]: func = checkboxFunctions.default } =
       checkboxFunctions
 
-    return func(api)(loadData)({ name, channelId, eventId })
-  }, [api, channelId, currentCheckBoxValue, eventId, loadData, name])
+    return func(api)(loadFunction)({ name, channelId, eventId })
+  }, [api, channelId, currentCheckBoxValue, eventId, loadFunction, name])
 
-  return [currentCheckBoxValue, loadFunction]
+  return [currentCheckBoxValue, CheckBoxFunction]
 }
