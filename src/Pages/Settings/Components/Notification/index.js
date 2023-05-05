@@ -51,7 +51,7 @@ const NotificationItem = (props) => {
       <GridForm>
         <div>Выберите из какого перечня хотите получать:</div>
         {channels.map(({ label }) => (
-          <div key={label}>{label}</div>
+          <div className={' flex items-center justify-center'} key={label}>{label}</div>
         ))}
       </GridForm>
     ),

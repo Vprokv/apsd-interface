@@ -1,18 +1,13 @@
 import React, { useMemo } from 'react'
 import dayjs from 'dayjs'
 import {
-  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
-  PRESENT_DATE_FORMAT_2,
 } from '@/contants'
 import Icon from '@Components/Components/Icon'
-import calendarIcon from '@/Icons/calendarIcon'
-import clockIcon from '@/Icons/clockIcon'
 import colorFromString from '@Components/Utils/colorFromString'
 import { VolumeStatus } from '@/Components/ListTableComponents/VolumeState/styles'
 import documentIcon from '@/Icons/documentIcon'
-import log from 'tailwindcss/lib/util/log'
 
 const DocumentTypeComponent = ({
   ParentValue: { documentRegNumber, documentTypeLabel, documentRegDate },
@@ -25,7 +20,6 @@ const DocumentTypeComponent = ({
     return `${color.slice(0, 3)}a${color.slice(3, -1)}, 0.1)`
   }, [color])
 
-  console.log(documentRegDate, 'documentRegDate')
   const date = useMemo(
     () =>
       dayjs(documentRegDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),

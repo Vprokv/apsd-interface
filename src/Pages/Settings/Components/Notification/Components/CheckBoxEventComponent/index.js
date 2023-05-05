@@ -7,7 +7,11 @@ const CheckBoxEventComponent = (props) => {
   const api = useContext(ApiContext)
   const [value, onInput] = useLoadFunction({ api, ...props })
 
-  return <CheckBox value={value} onInput={onInput} />
+  return (
+    <div className={' flex items-center justify-center'}>
+      <CheckBox value={value} onInput={onInput} />
+    </div>
+  )
 }
 
 export default CheckBoxEventComponent
