@@ -14,7 +14,6 @@ import {
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   ApiContext,
-  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   TASK_ITEM_CONTENT,
 } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -45,7 +44,6 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
-import dayjs from 'dayjs'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -261,44 +259,6 @@ const Content = () => {
   }, [api, selectState])
 
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
-  const sortContent = useMemo(() => {
-    const { key, direction } = sortQuery
-    let sortedProducts = [...content]
-    if (direction !== undefined) {
-      if (key === 'versionDate') {
-        sortedProducts.sort((a, b) => {
-          let date1 = dayjs(
-            a.versionDate,
-            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-          ).valueOf()
-          let date2 = dayjs(
-            b.versionDate,
-            DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-          ).valueOf()
-          if (date2 - date1) {
-            return direction === 'DESC' ? -1 : 1
-          }
-          if (date1 - date2) {
-            return direction === 'DESC' ? 1 : -1
-          }
-          return 0
-        })
-      } else {
-        sortedProducts.sort((a, b) => {
-          if ((a[key] && b[key]) !== null) {
-            if (a[key].toLowerCase() > b[key].toLowerCase()) {
-              return direction === 'DESC' ? -1 : 1
-            }
-            if (a[key].toLowerCase() < b[key].toLowerCase()) {
-              return direction === 'DESC' ? 1 : -1
-            }
-          }
-          return 0
-        })
-      }
-    }
-    return sortedProducts
-  }, [sortQuery, content])
 
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
@@ -373,7 +333,7 @@ const Content = () => {
           () => (props) => <ShowLineRowComponent {...props} />,
           [],
         )}
-        value={sortContent || []}
+        value={content || []}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
