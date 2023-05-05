@@ -54,12 +54,6 @@ const columns = [
     sizes: baseCellSize,
   },
   {
-    id: 'titleDescription',
-    label: 'Титул',
-    component: BaseCell,
-    sizes: baseCellSize,
-  },
-  {
     id: 'documentStatus',
     label: 'Статус документа',
     component: BaseCell,
