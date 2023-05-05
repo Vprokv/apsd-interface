@@ -9,7 +9,7 @@ import BaseCell, {
 } from '@/Components/ListTableComponents/BaseCell'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_ENTITY_LIST } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_SUBSCRIPTION_NOTIFICATION_LIST } from '@/ApiList'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
@@ -21,6 +21,8 @@ import SortCellComponent from '@/Components/ListTableComponents/SortCellComponen
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
+import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
+import DocumentTypeComponent from '@/Pages/Notification/Components/DocumentTypeComponent'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -34,45 +36,59 @@ const plugins = {
 
 const columns = [
   {
-    id: 'Уведомление',
+    id: 'eventName',
     label: 'Уведомление',
     component: BaseCell,
     sizes: baseCellSize,
   },
   {
-    id: 'Документ',
+    id: 'documentType',
     label: 'Документ',
-    component: BaseCell,
-    sizes: baseCellSize,
+    component: DocumentTypeComponent,
+    sizes: 300,
   },
   {
-    id: 'Краткое содержание',
+    id: 'documentDescription',
     label: 'Краткое содержание',
     component: BaseCell,
     sizes: baseCellSize,
   },
   {
-    id: 'Статус документа',
+    id: 'titleDescription',
+    label: 'Титул',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
+    id: 'documentStatus',
     label: 'Статус документа',
     component: BaseCell,
     sizes: baseCellSize,
   },
   {
-    id: 'Дата поступления',
+    id: 'creationDate',
     label: 'Дата поступления',
     component: BaseCell,
     sizes: baseCellSize,
   },
   {
-    id: 'Автор документа',
+    id: 'documentAuthor',
     label: 'Автор документа',
-    component: BaseCell,
+    component: ({
+      ParentValue: {
+        initiatorEvent: { fio, position },
+      },
+    }) => <BaseSubCell value={fio} subValue={position} />,
     sizes: baseCellSize,
   },
   {
-    id: 'Инициатор события',
+    id: 'initiatorEvent',
     label: 'Инициатор события',
-    component: BaseCell,
+    component: ({
+      ParentValue: {
+        documentAuthor: { fio, position },
+      },
+    }) => <BaseSubCell value={fio} subValue={position} />,
     sizes: baseCellSize,
   },
 ]
@@ -89,7 +105,7 @@ const Notification = () => {
   const tabItemState = useTabItem({ stateId: NOTIFICATION })
 
   const {
-    tabState: { data = [] },
+    tabState: { data: { content = [], total = 0 } = {} },
     tabState,
     setTabState,
   } = tabItemState
@@ -102,19 +118,27 @@ const Notification = () => {
   })
 
   const loadData = useCallback(async () => {
-    // const { data } = await api.post(URL_REPORTS_ITEM, {
-    //   id,
-    // })
-    return []
-  }, [])
+    const { limit, offset } = paginationState
+    const { data } = await api.post(URL_SUBSCRIPTION_NOTIFICATION_LIST, {
+      filter,
+      sort: [
+        {
+          property: sortQuery.key,
+          direction: sortQuery.direction,
+        },
+      ],
+      limit,
+      offset,
+    })
+    return data
+  }, [api, filter, paginationState, sortQuery.direction, sortQuery.key])
 
   useSetTabName(useCallback(() => 'Уведомления', []))
   useAutoReload(loadData, tabItemState)
 
-
   const filterFields = [
     {
-      id: 'notShow',
+      id: 'unread',
       component: CheckBox,
       text: 'Непросмотренные',
     },
@@ -134,7 +158,7 @@ const Notification = () => {
       },
     },
     {
-      id: 'notificationType',
+      id: 'eventName',
       component: LoadableSelect,
       multiple: true,
       placeholder: 'Тип задания',
@@ -149,7 +173,7 @@ const Notification = () => {
       },
     },
     {
-      id: 'searchQuery',
+      id: 'query',
       component: SearchInput,
       placeholder: 'Поиск',
       children: (
@@ -174,7 +198,7 @@ const Notification = () => {
       </div>
       <ListTable
         className="mt-2"
-        value={data}
+        value={content}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
@@ -189,11 +213,9 @@ const Notification = () => {
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
-        total={0}
+        total={total}
       >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${
-          paginationState.endItemValue
-        }, всего ${0}`}
+        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
     </div>
   )
