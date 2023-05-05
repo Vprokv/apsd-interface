@@ -87,7 +87,7 @@ const NotificationItem = (props) => {
       />
       {openChannels}
       <ChannelContext.Provider
-        value={{ channels, loadFunction, typeDocument: filter?.typeDocument }}
+        value={{ channels, loadFunction, documentType: filter?.typeDocument }}
       >
         <GridForm>
           {userChannels.map((props) => (

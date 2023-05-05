@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
 import CheckBoxEventComponent from '@/Pages/Settings/Components/Notification/Components/CheckBoxEventComponent'
-import { ApiContext } from '@/contants'
 
 const ChannelItemComponent = ({ name, label, events }) => {
   const { channels } = useContext(ChannelContext)
@@ -21,6 +20,10 @@ const ChannelItemComponent = ({ name, label, events }) => {
   )
 }
 
-ChannelItemComponent.propTypes = {}
+ChannelItemComponent.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+  events: PropTypes.array,
+}
 
 export default ChannelItemComponent

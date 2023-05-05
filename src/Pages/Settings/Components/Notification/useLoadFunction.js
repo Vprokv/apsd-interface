@@ -11,6 +11,7 @@ const checkboxFunctions = {
     (loadData) =>
     ({ documentType, channelId, name }) =>
     async () => {
+      console.log(documentType, 'documentType')
       await api.post(URL_SUBSCRIPTION_USER_CREATE, {
         documentType,
         event: { channelId, name },
@@ -28,7 +29,7 @@ const checkboxFunctions = {
   default: () => () => () => () => 'null',
 }
 export const useLoadFunction = ({ api, name, channelId, events }) => {
-  const { loadFunction } = useContext(ChannelContext)
+  const { loadFunction, documentType } = useContext(ChannelContext)
   const currentCheckBoxValue = useMemo(
     () =>
       events?.some(
@@ -51,8 +52,16 @@ export const useLoadFunction = ({ api, name, channelId, events }) => {
     const { [currentCheckBoxValue]: func = checkboxFunctions.default } =
       checkboxFunctions
 
-    return func(api)(loadFunction)({ name, channelId, eventId })
-  }, [api, channelId, currentCheckBoxValue, eventId, loadFunction, name])
+    return func(api)(loadFunction)({ name, channelId, eventId, documentType })
+  }, [
+    api,
+    channelId,
+    currentCheckBoxValue,
+    documentType,
+    eventId,
+    loadFunction,
+    name,
+  ])
 
   return [currentCheckBoxValue, CheckBoxFunction]
 }
