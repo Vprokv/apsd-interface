@@ -6,33 +6,21 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, REPORTING, TASK_LIST, TokenContext } from '@/contants'
+import { ApiContext, REPORTING, TokenContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  URL_DOWNLOAD_FILE,
-  URL_PREVIEW_DOCUMENT,
-  URL_REPORTS_BUILD,
-  URL_REPORTS_GET,
-  URL_REPORTS_ITEM,
-} from '@/ApiList'
+import { URL_REPORTS_BUILD, URL_REPORTS_GET, URL_REPORTS_ITEM } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
-import InputWrapper from '@Components/Components/Forms/InputWrapper'
 import { propsTransmission } from '@/Pages/Rporting/rules'
-import downloadFile, { downloadFileXslx } from '@/Utils/DownloadFile'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
-import {
-  SecondaryBlueButton,
-  SecondaryOverBlueButton,
-} from '@/Components/Button'
+import { SecondaryOverBlueButton } from '@/Components/Button'
 import NoFieldType from '@/Components/NoFieldType'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'

@@ -7,8 +7,8 @@ const useOpenNotification = () => {
   const setNotifications = useSetRecoilState(notificationsSelector)
 
   return useCallback(
-    ({ message, type, trace }) =>
-      setNotifications({ message, type, trace, id: uniqueId() }),
+    ({ message, type, trace, gap }) =>
+      setNotifications({ message, type, trace, gap, id: uniqueId() }),
     [setNotifications],
   )
 }
