@@ -171,7 +171,7 @@ const Notification = () => {
       component: LoadableSelect,
       multiple: false,
       placeholder: 'Вид уведомления',
-      valueKey: 'id',
+      valueKey: 'name',
       labelKey: 'label',
       loadFunction: async (query) => {
         const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, { query })
