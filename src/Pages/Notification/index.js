@@ -9,7 +9,13 @@ import BaseCell, {
 } from '@/Components/ListTableComponents/BaseCell'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_ENTITY_LIST, URL_SUBSCRIPTION_NOTIFICATION_LIST } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_SUBSCRIPTION_CHANNELS,
+  URL_SUBSCRIPTION_EVENTS,
+  URL_SUBSCRIPTION_NOTIFICATION_LIST,
+  URL_TYPE_CONFIG,
+} from '@/ApiList'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
@@ -154,30 +160,24 @@ const Notification = () => {
     {
       id: 'documentType',
       component: LoadableSelect,
-      multiple: true,
-      placeholder: 'Тип задания',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_branch',
-          query,
-        })
+      multiple: false,
+      placeholder: 'Тип документа',
+      valueKey: 'typeName',
+      labelKey: 'typeLabel',
+      loadFunction: async () => {
+        const { data } = await api.post(URL_TYPE_CONFIG, {})
         return data
       },
     },
     {
       id: 'eventName',
       component: LoadableSelect,
-      multiple: true,
-      placeholder: 'Тип задания',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
+      multiple: false,
+      placeholder: 'Вид уведомления',
+      valueKey: 'id',
+      labelKey: 'label',
       loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_branch',
-          query,
-        })
+        const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, { query })
         return data
       },
     },
