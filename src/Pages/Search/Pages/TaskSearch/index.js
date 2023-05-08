@@ -282,7 +282,17 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
   )
 }
 
-TaskSearch.propTypes = {}
+TaskSearch.propTypes = {
+  documentTypeLoadFunction: PropTypes.func,
+  options: PropTypes.array,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  filter: PropTypes.object,
+  setSearchState: PropTypes.func,
+  setFilter: PropTypes.func,
+}
 
 TaskSearch.defaultProps = {}
 

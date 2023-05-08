@@ -257,6 +257,7 @@ DocumentSelect.propTypes = {
   returnOption: PropTypes.bool,
   valueKey: PropTypes.string,
   options: PropTypes.array,
+  value: PropTypes.string,
 }
 
 DocumentSelect.defaultProps = {

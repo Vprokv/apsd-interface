@@ -9,7 +9,7 @@ import {
   URL_TASK_LIST_V2,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
-import { ApiContext, TokenContext } from '@/contants'
+import { ApiContext, SEARCH_PAGE, TokenContext } from '@/contants'
 import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import {
   LoadableSecondaryOverBlueButton,
@@ -31,6 +31,8 @@ import { ExportContext } from '../constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import Pagination from '@/Components/Pagination'
+import usePagination from '@Components/Logic/usePagination'
 
 export const tableConfig = [
   {
@@ -282,33 +284,54 @@ const DocumentSearch = ({
     }
   }, [api, filter.type, getNotification])
 
-  const onSearch = useCallback(async () => {
-    const { type, ...filters } = filter
-    const queryItems = Object.entries(filters).reduce(
-      (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
-        return acc
-      },
-      [],
-    )
+  // const onSearch = useCallback(async () => {
+  //   const { type, ...filters } = filter
+  //   const { limit, offset } = paginationState
+  //   const queryItems = Object.entries(filters).reduce(
+  //     (acc, [key, { value, operator }]) => {
+  //       acc.push({
+  //         attr: key,
+  //         operator: operator || defaultOperators[key],
+  //         arguments: [value],
+  //       })
+  //       return acc
+  //     },
+  //     [],
+  //   )
+  //
+  //   try {
+  //     const { data } = await api.post(
+  //       `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
+  //       {
+  //         types: [type],
+  //         inVersions: false,
+  //         queryItems,
+  //       },
+  //     )
+  //     setSearchState(data)
+  //     setRenderTable(true)
+  //   } catch (e) {
+  //     const { response: { status } = {} } = e
+  //     getNotification(defaultFunctionsMap[status]())
+  //   }
+  // }, [
+  //   api,
+  //   defaultOperators,
+  //   filter,
+  //   getNotification,
+  //   setSearchState,
+  //   paginationState,
+  // ])
 
-    try {
-      const { data } = await api.post(URL_SEARCH_LIST, {
-        types: [type],
-        inVersions: false,
-        queryItems,
-      })
-      setSearchState(data)
-      setRenderTable(true)
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
-  }, [api, defaultOperators, filter, getNotification, setSearchState])
+  const onSearch = useCallback(async () => {
+    setRenderTable(true)
+  }, [
+    api,
+    defaultOperators,
+    filter,
+    getNotification,
+    setSearchState,
+  ])
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
@@ -364,8 +387,25 @@ const DocumentSearch = ({
     <ExportContext.Provider value={'asas'}>
       <div className="flex flex-col w-full p-6 overflow-hidden">
         {renderTable ? (
-          children(() => setRenderTable(false), onExportToExcel)
+          <TableSearch
+            defaultOperators={defaultOperators}
+            setSearchState={setSearchState}
+            filter={filter}
+            onExportToExcel={onExportToExcel}
+          >
+            {children(() => setRenderTable(false), onExportToExcel)}
+          </TableSearch>
         ) : (
+          // <>
+          //   {children(() => setRenderTable(false), onExportToExcel)}
+          //   <Pagination
+          //     className="mt-2 w-full "
+          //     limit={paginationState.limit}
+          //     page={paginationState.page}
+          //     setLimit={setLimit}
+          //     setPage={setPage}
+          //   />
+          // </>
           <div className="flex overflow-hidden">
             <ScrollBar className="w-full">
               <Form
@@ -406,6 +446,14 @@ const DocumentSearch = ({
 
 DocumentSearch.propTypes = {
   documentTypeLoadFunction: PropTypes.func,
+  options: PropTypes.array,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  filter: PropTypes.object,
+  setSearchState: PropTypes.func,
+  setFilter: PropTypes.func,
 }
 
 DocumentSearch.defaultProps = {
@@ -427,3 +475,72 @@ DocumentSearch.defaultProps = {
 }
 
 export default DocumentSearch
+
+const TableSearch = ({
+  children,
+  defaultOperators,
+  setSearchState,
+  filter,
+}) => {
+  const api = useContext(ApiContext)
+  const getNotification = useOpenNotification()
+  const [paginationStateComp, setPaginationStateComp] = useState({})
+
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: SEARCH_PAGE,
+    state: paginationStateComp,
+    setState: setPaginationStateComp,
+    defaultLimit: 10,
+  })
+  const loadSearch = useCallback(async () => {
+    const { type, ...filters } = filter
+    const { limit, offset } = paginationState
+    const queryItems = Object.entries(filters).reduce(
+      (acc, [key, { value, operator }]) => {
+        acc.push({
+          attr: key,
+          operator: operator || defaultOperators[key],
+          arguments: [value],
+        })
+        return acc
+      },
+      [],
+    )
+
+    try {
+      const { data } = await api.post(
+        `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
+        {
+          types: [type],
+          inVersions: false,
+          queryItems,
+        },
+      )
+      setSearchState(data)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [
+    api,
+    defaultOperators,
+    filter,
+    getNotification,
+    setSearchState,
+    paginationState,
+  ])
+  useEffect(loadSearch, [paginationState])
+  return (
+    <>
+      {children}
+      <Pagination
+        className="mt-2 w-full "
+        limit={paginationState.limit}
+        page={paginationState.page}
+        setLimit={setLimit}
+        setPage={setPage}
+      />
+    </>
+  )
+}
+

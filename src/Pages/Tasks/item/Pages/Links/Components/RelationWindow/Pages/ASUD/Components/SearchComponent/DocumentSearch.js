@@ -315,6 +315,14 @@ const DocumentSearch = ({
 
 DocumentSearch.propTypes = {
   documentTypeLoadFunction: PropTypes.func,
+  options: PropTypes.array,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  filter: PropTypes.object,
+  setSearchState: PropTypes.func,
+  setFilter: PropTypes.func,
 }
 
 DocumentSearch.defaultProps = {
