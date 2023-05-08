@@ -10,8 +10,6 @@ import BaseCell, {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
-  URL_ENTITY_LIST,
-  URL_SUBSCRIPTION_CHANNELS,
   URL_SUBSCRIPTION_EVENTS,
   URL_SUBSCRIPTION_NOTIFICATION_LIST,
   URL_TYPE_CONFIG,
@@ -21,7 +19,6 @@ import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
-import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -164,8 +161,8 @@ const Notification = () => {
       placeholder: 'Тип документа',
       valueKey: 'typeName',
       labelKey: 'typeLabel',
-      loadFunction: async () => {
-        const { data } = await api.post(URL_TYPE_CONFIG, {})
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_TYPE_CONFIG, { query })
         return data
       },
     },
