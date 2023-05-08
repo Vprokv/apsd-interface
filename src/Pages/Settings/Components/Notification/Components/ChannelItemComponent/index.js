@@ -7,7 +7,7 @@ const ChannelItemComponent = ({ name, label, events }) => {
   const { channels } = useContext(ChannelContext)
   return (
     <>
-      <div>{label}</div>
+      <div className="w-32 m-4">{label}</div>
       {channels.map(({ id: channelId }) => (
         <CheckBoxEventComponent
           name={name}

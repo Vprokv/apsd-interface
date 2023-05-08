@@ -8,7 +8,7 @@ const CheckBoxEventComponent = (props) => {
   const [value, onInput] = useLoadFunction({ api, ...props })
 
   return (
-    <div className={' flex items-center justify-center'}>
+    <div className={'m-4 flex items-center justify-center'}>
       <CheckBox value={value} onInput={onInput} />
     </div>
   )
