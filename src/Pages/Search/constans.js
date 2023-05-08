@@ -12,6 +12,8 @@ const OPERATOR_NOT_EQ = 'dsb_not_equal_search_operator'
 const OPERATOR_CONTAINS = 'dsb_contains_search_operator'
 const OPERATOR_AND = 'dsb_and_search_operator'
 const OPERATOR_STARTS_WITH = 'dsb_starts_with_search_operator'
+const OPERATOR_HIDE_LIST_ON_SEARCH = 'dsb_hide_list_on_search'
+const OPERATOR_HIGHLIGHT = 'dsb_highlight_on_form'
 
 export const keyOperators = [
   OPERATOR_EQ,
