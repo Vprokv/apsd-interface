@@ -168,11 +168,12 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
     const { type, ...filters } = filter
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
+        value.length &&
+          acc.push({
+            attr: key,
+            operator: operator || defaultOperators[key],
+            arguments: [value],
+          })
         return acc
       },
       [],
@@ -208,7 +209,8 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
         acc.push({
           attr: key,
           operator: operator || defaultOperators[key],
-          arguments: [value],
+          // arguments: [value],
+          arguments: value.length ? [value] : [],
         })
         return acc
       },

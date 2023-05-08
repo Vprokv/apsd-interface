@@ -286,11 +286,12 @@ const DocumentSearch = ({
     const { type, ...filters } = filter
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
+        value.length &&
+          acc.push({
+            attr: key,
+            operator: operator || defaultOperators[key],
+            arguments: [value],
+          })
         return acc
       },
       [],
