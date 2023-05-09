@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import ScrollBar from '@Components/Components/ScrollBar'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable'
 import {
@@ -112,12 +111,10 @@ const InsideDocument = () => {
     <>
       <div className="flex flex-col overflow-hidden h-full">
         {!value.length && (
-          <ScrollBar className="my-4">
-            <SearchComponent
-              tabItemState={tabItemState}
-              updateTabState={updateTabState}
-            />
-          </ScrollBar>
+          <SearchComponent
+            tabItemState={tabItemState}
+            updateTabState={updateTabState}
+          />
         )}
         <CreateRelationTable
           selected={selected}

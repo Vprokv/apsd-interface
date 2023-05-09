@@ -29,7 +29,7 @@ const Pagination = ({
       // todo из-за этого кода пагинация в Поиск по документам не работает
       // а в списке задач со 2 страницы сразу перескакивает на 4
       if (result * limit >= total) {
-        result = Math.round(total / limit) + 1
+        result = Math.round(total / limit)
       }
       if (result !== page) {
         setPage(result > 1 ? result : 1)

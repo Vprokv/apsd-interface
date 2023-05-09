@@ -69,7 +69,7 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
         <>
           <SecondaryBlueButton
             onClick={closeTable}
-            className="ml-auto form-element-sizes-32"
+            className="ml-auto form-element-sizes-32 mb-6"
           >
             Изменить условие
           </SecondaryBlueButton>
@@ -90,6 +90,9 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
   )
 }
 
-SearchComponent.propTypes = {}
+SearchComponent.propTypes = {
+  tabItemState: PropTypes.object,
+  updateTabState: PropTypes.func,
+}
 
 export default SearchComponent

@@ -67,7 +67,7 @@ const PageDocumentSelect = ({ props }) => {
           <div className="flex ml-auto">
             <SecondaryBlueButton
               onClick={closeTable}
-              className="form-element-sizes-32"
+              className="form-element-sizes-32 mb-6"
             >
               Изменить условие
             </SecondaryBlueButton>
