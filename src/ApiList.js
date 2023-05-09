@@ -42,6 +42,8 @@ export const URL_SUBSCRIPTION_NOTIFICATION_LIST =
   '/apsd/subscription/user/notifications'
 export const URL_SUBSCRIPTION_USER_CHANNELS = '/apsd/subscription/user/list'
 export const URL_SUBSCRIPTION_USER_CREATE = '/apsd/subscription/user/create'
+export const URL_SUBSCRIPTION_USER_TOTAL =
+  'apsd/subscription/user/notifications/total'
 export const URL_SUBSCRIPTION_USER_DELETE =
   '/apsd/subscription/user/event/delete'
 // OBJECTS

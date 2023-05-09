@@ -18,17 +18,17 @@ const Index = ({ setTabState }) => {
     operator,
   } = useContext(TabStateContext)
   const getNotification = useOpenNotification()
-  const { getButtonFunc } = useContext(TabStateContext)
 
   const searchData = useMemo(() => {
     const queryItems =
       !!Object.keys(filter)?.length &&
       Object.keys(filter).reduce((acc, val) => {
-        acc.push({
-          attr: val,
-          operator: operator.get(val)?.ID || 'CONTAINS',
-          arguments: [filter[val]],
-        })
+        filter[val].length &&
+          acc.push({
+            attr: val,
+            operator: operator.get(val)?.ID || 'CONTAINS',
+            arguments: [filter[val]],
+          })
         return acc
       }, [])
 

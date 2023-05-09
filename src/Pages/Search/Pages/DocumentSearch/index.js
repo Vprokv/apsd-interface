@@ -544,3 +544,31 @@ const TableSearch = ({
   )
 }
 
+// const onSearch = useCallback(async () => {
+//   const { type, ...filters } = filter
+//   const queryItems = Object.entries(filters).reduce(
+//     (acc, [key, { value, operator }]) => {
+//       value.length &&
+//       acc.push({
+//         attr: key,
+//         operator: operator || defaultOperators[key],
+//         arguments: [value],
+//       })
+//       return acc
+//     },
+//     [],
+//   )
+//
+//   try {
+//     const { data } = await api.post(URL_SEARCH_LIST, {
+//       types: [type],
+//       inVersions: false,
+//       queryItems,
+//     })
+//     setSearchState(data)
+//     setRenderTable(true)
+//   } catch (e) {
+//     const { response: { status } = {} } = e
+//     getNotification(defaultFunctionsMap[status]())
+//   }
+// }, [api, defaultOperators, filter, getNotification, setSearchState])

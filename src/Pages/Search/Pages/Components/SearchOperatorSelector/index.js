@@ -1,9 +1,9 @@
 import { forwardRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import memoize from 'lodash/memoize'
-import Select from '@/Components/Inputs/Select'
 import { OperatorContainer } from './styles'
 import { operatorsComponent } from '@/Pages/Search/Pages/constans'
+import { Select } from '@/Components/Inputs/Select'
 
 const SearchOperatorSelector = (type) =>
   memoize((Component) => {
