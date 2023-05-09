@@ -128,12 +128,7 @@ export const tableConfig = [
         },
       },
     }) => (
-      <BaseCell
-        value={useMemo(
-          () => `${lastName} ${firstName}.  ${middleName}. `,
-          [lastName, middleName, firstName],
-        )}
-      />
+      <BaseCell value={() => `${lastName} ${firstName}.  ${middleName}. `} />
     ),
   },
 ]
@@ -286,7 +281,6 @@ const DocumentSearch = ({
 
   // const onSearch = useCallback(async () => {
   //   const { type, ...filters } = filter
-  //   const { limit, offset } = paginationState
   //   const queryItems = Object.entries(filters).reduce(
   //     (acc, [key, { value, operator }]) => {
   //       acc.push({
@@ -301,7 +295,7 @@ const DocumentSearch = ({
   //
   //   try {
   //     const { data } = await api.post(
-  //       `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
+  //       `${URL_SEARCH_LIST}?limit=101&offset=0`,
   //       {
   //         types: [type],
   //         inVersions: false,
@@ -320,18 +314,11 @@ const DocumentSearch = ({
   //   filter,
   //   getNotification,
   //   setSearchState,
-  //   paginationState,
   // ])
 
   const onSearch = useCallback(async () => {
     setRenderTable(true)
-  }, [
-    api,
-    defaultOperators,
-    filter,
-    getNotification,
-    setSearchState,
-  ])
+  }, [api, defaultOperators, filter, getNotification, setSearchState])
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
@@ -396,16 +383,7 @@ const DocumentSearch = ({
             {children(() => setRenderTable(false), onExportToExcel)}
           </TableSearch>
         ) : (
-          // <>
-          //   {children(() => setRenderTable(false), onExportToExcel)}
-          //   <Pagination
-          //     className="mt-2 w-full "
-          //     limit={paginationState.limit}
-          //     page={paginationState.page}
-          //     setLimit={setLimit}
-          //     setPage={setPage}
-          //   />
-          // </>
+          // children(() => setRenderTable(false), onExportToExcel)
           <div className="flex overflow-hidden">
             <ScrollBar className="w-full">
               <Form
@@ -492,21 +470,22 @@ const TableSearch = ({
     setState: setPaginationStateComp,
     defaultLimit: 10,
   })
+
   const loadSearch = useCallback(async () => {
     const { type, ...filters } = filter
     const { limit, offset } = paginationState
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
+        value.length &&
+          acc.push({
+            attr: key,
+            operator: operator || defaultOperators[key],
+            arguments: [value],
+          })
         return acc
       },
       [],
     )
-
     try {
       const { data } = await api.post(
         `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
@@ -529,7 +508,9 @@ const TableSearch = ({
     setSearchState,
     paginationState,
   ])
+
   useEffect(loadSearch, [paginationState])
+
   return (
     <>
       {children}
@@ -544,31 +525,12 @@ const TableSearch = ({
   )
 }
 
-// const onSearch = useCallback(async () => {
-//   const { type, ...filters } = filter
-//   const queryItems = Object.entries(filters).reduce(
-//     (acc, [key, { value, operator }]) => {
-//       value.length &&
-//       acc.push({
-//         attr: key,
-//         operator: operator || defaultOperators[key],
-//         arguments: [value],
-//       })
-//       return acc
-//     },
-//     [],
-//   )
-//
-//   try {
-//     const { data } = await api.post(URL_SEARCH_LIST, {
-//       types: [type],
-//       inVersions: false,
-//       queryItems,
-//     })
-//     setSearchState(data)
-//     setRenderTable(true)
-//   } catch (e) {
-//     const { response: { status } = {} } = e
-//     getNotification(defaultFunctionsMap[status]())
-//   }
-// }, [api, defaultOperators, filter, getNotification, setSearchState])
+TableSearch.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  filter: PropTypes.object,
+  setSearchState: PropTypes.func,
+  defaultOperators: PropTypes.object,
+}
