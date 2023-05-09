@@ -520,6 +520,7 @@ const TableSearch = ({
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
+        total="10000"
       />
     </>
   )
