@@ -279,43 +279,6 @@ const DocumentSearch = ({
     }
   }, [api, filter.type, getNotification])
 
-  // const onSearch = useCallback(async () => {
-  //   const { type, ...filters } = filter
-  //   const queryItems = Object.entries(filters).reduce(
-  //     (acc, [key, { value, operator }]) => {
-  //       acc.push({
-  //         attr: key,
-  //         operator: operator || defaultOperators[key],
-  //         arguments: [value],
-  //       })
-  //       return acc
-  //     },
-  //     [],
-  //   )
-  //
-  //   try {
-  //     const { data } = await api.post(
-  //       `${URL_SEARCH_LIST}?limit=101&offset=0`,
-  //       {
-  //         types: [type],
-  //         inVersions: false,
-  //         queryItems,
-  //       },
-  //     )
-  //     setSearchState(data)
-  //     setRenderTable(true)
-  //   } catch (e) {
-  //     const { response: { status } = {} } = e
-  //     getNotification(defaultFunctionsMap[status]())
-  //   }
-  // }, [
-  //   api,
-  //   defaultOperators,
-  //   filter,
-  //   getNotification,
-  //   setSearchState,
-  // ])
-
   const onSearch = useCallback(async () => {
     setRenderTable(true)
   }, [api, defaultOperators, filter, getNotification, setSearchState])
@@ -383,7 +346,6 @@ const DocumentSearch = ({
             {children(() => setRenderTable(false), onExportToExcel)}
           </TableSearch>
         ) : (
-          // children(() => setRenderTable(false), onExportToExcel)
           <div className="flex overflow-hidden">
             <ScrollBar className="w-full">
               <Form

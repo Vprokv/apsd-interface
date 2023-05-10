@@ -97,12 +97,10 @@ const DocumentASUD = (props) => {
     <>
       <div className="flex flex-col overflow-hidden h-full">
         {!value.length && (
-          <ScrollBar className="my-4">
-            <SearchComponent
-              tabItemState={tabItemState}
-              updateTabState={updateTabState}
-            />
-          </ScrollBar>
+          <SearchComponent
+            tabItemState={tabItemState}
+            updateTabState={updateTabState}
+          />
         )}
         <CreateRelationTable
           selected={selected}
