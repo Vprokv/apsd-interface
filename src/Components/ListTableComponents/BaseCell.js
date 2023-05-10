@@ -12,6 +12,7 @@ const BaseCell = ({ value, className }) => {
 }
 
 BaseCell.propTypes = {
+  // todo есть ошибка в консоли что value string
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
 }

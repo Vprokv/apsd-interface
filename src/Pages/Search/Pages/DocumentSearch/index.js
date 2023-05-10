@@ -387,10 +387,7 @@ const DocumentSearch = ({
 DocumentSearch.propTypes = {
   documentTypeLoadFunction: PropTypes.func,
   options: PropTypes.array,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.func,
   filter: PropTypes.object,
   setSearchState: PropTypes.func,
   setFilter: PropTypes.func,
@@ -482,7 +479,7 @@ const TableSearch = ({
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
-        total="10000"
+        total={10000}
       />
     </>
   )

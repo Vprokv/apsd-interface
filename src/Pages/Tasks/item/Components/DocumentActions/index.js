@@ -23,13 +23,15 @@ const DocumentActions = ({ documentActions }) => (
   </>
 )
 
+const props = PropTypes.shape({
+  key: PropTypes.string.isRequired,
+  captions: PropTypes.string.isRequired,
+  handler: PropTypes.func.isRequired,
+  icon: PropTypes.string.isRequired,
+})
+
 DocumentActions.propTypes = {
-  documentActions: PropTypes.arrayOf({
-    key: PropTypes.string.isRequired,
-    captions: PropTypes.string.isRequired,
-    handler: PropTypes.func.isRequired,
-    icon: PropTypes.string.isRequired,
-  }),
+  documentActions: PropTypes.arrayOf(props),
 }
 
 DocumentActions.defaultProps = {
