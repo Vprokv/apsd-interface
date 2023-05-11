@@ -98,7 +98,7 @@ const MoreActionComponent = (props) => {
 
   const onSetRemark = useCallback(async () => {
     try {
-      await api.post(URL_REMARK_EDIT_SET_REMARK, {
+      const { status } = await api.post(URL_REMARK_EDIT_SET_REMARK, {
         documentId,
         remarkId,
         vault: !setRemark,
