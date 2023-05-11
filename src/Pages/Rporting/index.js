@@ -16,7 +16,7 @@ import { ReportsForm } from '@/Pages/Rporting/styled'
 import { propsTransmission } from '@/Pages/Rporting/rules'
 import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { SecondaryOverBlueButton } from '@/Components/Button'
+import { LoadableSecondaryOverBlueButton } from '@/Components/Button'
 import NoFieldType from '@/Components/NoFieldType'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -24,6 +24,7 @@ import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import { Validation } from '@Components/Logic/Validator'
 
 export const UserContext = createContext({})
 
@@ -117,20 +118,27 @@ const Reporting = () => {
         <span className="text-2xl font-medium">{name}</span>
       </div>
       <ScrollBar className="m-4">
-        <ReportsForm
+        <Validation
           fields={fields}
           value={filter}
           onInput={setFilter}
-          inputWrapper={DefaultWrapper}
           rules={rules}
           onSubmit={onBuild}
+          inputWrapper={DefaultWrapper}
         >
-          <div className="flex items-center justify-end my-4 col-span-1 col-span-2">
-            <SecondaryOverBlueButton type="submit">
-              Сформировать
-            </SecondaryOverBlueButton>
-          </div>
-        </ReportsForm>
+          {(validationProps) => (
+            <>
+              <ReportsForm {...validationProps} />
+              <div className="flex items-center justify-end my-4 col-span-1 col-span-2">
+                <LoadableSecondaryOverBlueButton
+                  onClick={validationProps.onSubmit}
+                >
+                  Сформировать
+                </LoadableSecondaryOverBlueButton>
+              </div>
+            </>
+          )}
+        </Validation>
       </ScrollBar>
     </>
   )
