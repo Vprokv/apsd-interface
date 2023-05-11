@@ -57,9 +57,12 @@ const MoreActionComponent = (props) => {
   const documentId = useContext(DocumentIdContext)
   const [open, setOpen] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
-  const update = useContext(UpdateContext)
   const [target, setTarget] = useState({})
   const getNotification = useOpenNotification()
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_REMARKS,
+  })
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -87,13 +90,13 @@ const MoreActionComponent = (props) => {
         getNotification(
           customMessagesFuncMap[status]('Удаление выполнено успешно'),
         )
-        update()
+        setTabState({ loading: false, fetched: false })
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
       }
     },
-    [api, getNotification, remarkId, update],
+    [api, getNotification, remarkId, setTabState],
   )
 
   const onSetRemark = useCallback(async () => {
@@ -106,12 +109,12 @@ const MoreActionComponent = (props) => {
       getNotification(
         customMessagesFuncMap[status]('Изменение выполнено успешно'),
       )
-      update()
+      setTabState({ loading: false, fetched: false })
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, documentId, getNotification, remarkId, setRemark, update])
+  }, [api, documentId, getNotification, remarkId, setRemark, setTabState])
 
   return (
     <div className="flex items-center w-full justify-center">
