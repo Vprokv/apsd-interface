@@ -90,6 +90,7 @@ export const defaultDocumentHandlers = {
 export const defaultTaskIcon = {
   finish_approve: FinishApproveIcon,
   on_approved: FinishApproveIcon,
+  finish_simple_approve: FinishApproveIcon,
   finish_prepare: FinishApproveIcon,
   reject_consider: FinishApproveIcon,
   apsd_prepare_reject: FinishApproveIcon,

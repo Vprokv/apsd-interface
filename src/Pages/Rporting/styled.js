@@ -33,7 +33,7 @@ export const Message = styled.div`
   border-radius: 5px;
 `
 
-export const ReportsForm = styled(WithValidationForm)`
+export const ReportsForm = styled(Form)`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;

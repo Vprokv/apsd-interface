@@ -53,6 +53,7 @@ import { LoadTasks } from '@/Pages/Main/constants'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import RejectPrepareWindow from '@/Pages/Tasks/item/Components/RejectPrepareWindow'
+import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -202,6 +203,43 @@ const Task = () => {
             ),
           }),
         icon: defaultTaskIcon['reject_prepare'],
+      },
+      finish_simple_approve: {
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_TASK_COMPLETE, {
+              taskId: id,
+              signal: 'finish_simple_approve',
+            })
+            closeCurrenTab()
+            getNotification(customMessagesFuncMap[status]())
+            setTabState({ loading: false, fetched: false })
+            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+              loading: false,
+              fetched: false,
+            })
+            updateTabStateUpdaterByName([TASK_LIST], {
+              loading: false,
+              fetched: false,
+            })
+            reloadSidebarTaskCounters()
+            // setTabState({ data: await loadData() })
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            if (status === 412 && data === 'finish_without_remarks') {
+              return setComponent({
+                Component: (props) => (
+                  <AboutRemarkWindow
+                    signal={'finish_without_remark'}
+                    {...props}
+                  />
+                ),
+              })
+            }
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
+        icon: defaultTaskIcon['finish_simple_approve'] || DefaultIcon,
       },
       // reject_approve: {
       //   handler: () => setComponent({ Component: RejectApproveWindow }),

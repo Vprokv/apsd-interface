@@ -32,6 +32,7 @@ import styled from 'styled-components'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
+  min-height: 400px;
   height: 45%;
   margin: auto;
 `

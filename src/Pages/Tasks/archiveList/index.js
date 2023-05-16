@@ -24,6 +24,9 @@ import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import MoreActionComponent from '@/Pages/Tasks/archiveList/Components/MoreActionComponent'
+import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
+import ExportDocumentWindowWrapper from '@/Pages/Tasks/archiveList/Components/ExportDocumentWindow'
 
 const columns = [
   {
@@ -31,28 +34,28 @@ const columns = [
     label: 'Раздел/том',
     className: 'flex items-center',
     component: (props) => <BaseCell {...props} className="" />,
-    sizes: 300,
+    sizes: 200,
   },
   {
     id: 'kind',
     label: 'Вид/Тип',
     className: 'flex items-center h-full',
     component: BaseCell,
-    sizes: 200,
+    sizes: 180,
   },
   {
     id: 'code',
     label: 'Код/Рег. номер',
     className: 'flex items-center h-full',
     component: BaseCell,
-    sizes: 200,
+    sizes: 100,
   },
   {
     id: 'creationDate',
     className: 'flex items-center h-full',
     component: BaseCell,
     label: 'Дата создания',
-    sizes: 250,
+    sizes: 180,
   },
   {
     id: 'authorName',
@@ -77,7 +80,12 @@ const columns = [
     label: 'Статус',
     className: 'flex items-center h-full',
     component: BaseCell,
-    sizes: 200,
+    sizes: 120,
+  },
+  {
+    id: 'more',
+    component: MoreActionComponent,
+    sizes: 50,
   },
 ]
 
@@ -147,7 +155,19 @@ const ArchiveList = () => {
         openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openTabOrCreateNewTab],
   )
+
+  const [open, setOpen] = useState(false)
+  const [activeDocumentState, setActiveDocumentState] = useState({})
   const tabItemState = useTabItem({ stateId: TASK_LIST_ARCHIVE })
+
+  const changeModalState = useCallback(
+    ({ nextState, documentState }) =>
+      () => {
+        setOpen(nextState)
+        setActiveDocumentState(documentState)
+      },
+    [],
+  )
 
   useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
 
@@ -221,40 +241,47 @@ const ArchiveList = () => {
   }, [api, filter, name, paginationState, parentName, token])
 
   return (
-    <div className="px-4 pb-4 overflow-hidden flex-container">
-      <div className="flex items-center color-text-secondary ml-auto">
-        <Tips text="Выгрузить в Excel">
-          <ButtonForIcon className="color-green" onClick={onExportToExcel}>
-            <Icon icon={XlsIcon} />
-          </ButtonForIcon>
-        </Tips>
+    <OpenWindowContext.Provider value={{ open, setOpen: changeModalState }}>
+      <div className="px-4 pb-4 overflow-hidden flex-container">
+        <div className="flex items-center color-text-secondary ml-auto">
+          <Tips text="Выгрузить в Excel">
+            <ButtonForIcon className="color-green" onClick={onExportToExcel}>
+              <Icon icon={XlsIcon} />
+            </ButtonForIcon>
+          </Tips>
+        </div>
+        <ListTable
+          rowComponent={useMemo(
+            () => (props) =>
+              <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
+            [handleDoubleClick],
+          )}
+          value={content}
+          columns={columns}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          selectState={selectState}
+          onSelect={setSelectState}
+          sortQuery={sortQuery}
+          onSort={onSort}
+        />
+        <Pagination
+          className="mt-2"
+          limit={paginationState.limit}
+          page={paginationState.page}
+          setLimit={setLimit}
+          setPage={setPage}
+          total={total}
+        >
+          {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
+        </Pagination>
+        <ExportDocumentWindowWrapper
+          open={open}
+          onClose={changeModalState(false)}
+          {...activeDocumentState}
+        />
       </div>
-      <ListTable
-        rowComponent={useMemo(
-          () => (props) =>
-            <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
-          [handleDoubleClick],
-        )}
-        value={content}
-        columns={columns}
-        plugins={plugins}
-        headerCellComponent={HeaderCell}
-        selectState={selectState}
-        onSelect={setSelectState}
-        sortQuery={sortQuery}
-        onSort={onSort}
-      />
-      <Pagination
-        className="mt-2"
-        limit={paginationState.limit}
-        page={paginationState.page}
-        setLimit={setLimit}
-        setPage={setPage}
-        total={total}
-      >
-        {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
-      </Pagination>
-    </div>
+    </OpenWindowContext.Provider>
   )
 }
 export default ArchiveList

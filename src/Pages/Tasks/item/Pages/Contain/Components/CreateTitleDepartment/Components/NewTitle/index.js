@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 import ModalWindow from '@/Components/ModalWindow'
 import { useCallback, useContext, useState } from 'react'
-import Button from '@/Components/Button'
-import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { ApiContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import { URL_TITLE_CONTAIN_SAVE } from '@/ApiList'
@@ -11,10 +9,10 @@ import Input from '@/Components/Fields/Input'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { fieldMap } from '@/Pages/CreatePassword'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import CheckBox from '@/Components/Inputs/CheckBox'
 
 export const MiniModalWindow = styled(ModalWindow)`
   width: 28.22%;
@@ -34,6 +32,12 @@ const fields = [
     label: 'Код',
     placeholder: 'Введите код',
     component: Input,
+  },
+  {
+    id: 'availableProjector',
+    component: CheckBox,
+    className: 'font-size-12',
+    text: 'Доступно проектировщику',
   },
 ]
 
@@ -80,8 +84,8 @@ const NewTitle = ({ onClose, parentId, closeParent, open }) => {
           onSubmit={handleClick}
         >
           <UnderButtons
-            className="justify-around w-full"
-            leftStyle="width-min"
+            // className="justify-around w-full"
+            leftStyle="width-min mr-2"
             rightStyle="width-min"
             leftFunc={onClose}
             leftLabel="Отменить"
