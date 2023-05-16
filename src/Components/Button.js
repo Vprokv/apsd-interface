@@ -43,7 +43,7 @@ export const SecondaryGreyButton = styled(BaseButton)`
     color: var(--text-secondary);
   }
 `
-export const ButtonForIcon = styled.button`
+export const ButtonForIcon = styled(BaseButton)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,6 +61,7 @@ export const ButtonForIcon = styled.button`
 `
 
 export const LoadableSecondaryBlueButton = LoadableButton(SecondaryBlueButton)
+export const LoadableButtonForIcon = LoadableButton(ButtonForIcon)
 export const LoadableSecondaryOverBlueButton = LoadableButton(
   SecondaryOverBlueButton,
 )

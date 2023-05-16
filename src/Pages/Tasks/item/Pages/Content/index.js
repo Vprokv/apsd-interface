@@ -2,6 +2,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
+  LoadableButtonForIcon,
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
@@ -12,10 +13,7 @@ import {
   URL_DOWNLOAD_FILE,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {
-  ApiContext,
-  TASK_ITEM_CONTENT,
-} from '@/contants'
+import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -277,13 +275,13 @@ const Content = () => {
             Добавить файл /версию
           </SecondaryBlueButton>
           <Tips text="Скачать контент">
-            <ButtonForIcon
+            <LoadableButtonForIcon
               onClick={downLoadContent}
               disabled={disabled}
               className="ml-2"
             >
               <Icon icon={DownloadIcon} />
-            </ButtonForIcon>
+            </LoadableButtonForIcon>
           </Tips>
           <Tips text="Редактировать">
             <ButtonForIcon
