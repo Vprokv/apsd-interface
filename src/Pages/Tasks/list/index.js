@@ -380,7 +380,7 @@ function TaskList({ loadFunctionRest }) {
         onSort={onSort}
       />
       <Pagination
-        className="mt-2"
+        className="mt-2 ml-4 mb-4"
         limit={paginationState.limit}
         page={paginationState.page}
         setLimit={setLimit}

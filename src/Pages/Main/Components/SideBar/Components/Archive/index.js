@@ -11,6 +11,7 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { useState } from 'react'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
+import searchIcon from '@/Icons/searchIcon'
 
 const ScrollBar = styled(SimpleBar)`
   max-height: 300px;
@@ -42,7 +43,13 @@ const Archive = ({ onOpenNewTab }) => {
                 onInput={setQuery}
                 className="my-4 form-element-sizes-32 font-size-12"
                 placeholder="Поиск"
-              />
+              >
+                <Icon
+                  icon={searchIcon}
+                  size={10}
+                  className="color-text-secondary mr-2.5"
+                />
+              </SearchInput>
               <ScrollBar>
                 <ArchiveItem
                   query={query}

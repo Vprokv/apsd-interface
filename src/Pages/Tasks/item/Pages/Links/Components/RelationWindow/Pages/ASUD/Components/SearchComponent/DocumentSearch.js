@@ -274,7 +274,7 @@ const DocumentSearch = ({
   }, [filter])
 
   return (
-    <div className="flex flex-col w-full p-6 overflow-hidden">
+    <div className="flex flex-col w-full p-4 overflow-hidden">
       {renderTable ? (
         children(() => setRenderTable(false))
       ) : (

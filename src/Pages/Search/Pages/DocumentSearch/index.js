@@ -335,7 +335,7 @@ const DocumentSearch = ({
 
   return (
     <ExportContext.Provider value={'asas'}>
-      <div className="flex flex-col w-full p-6 overflow-hidden">
+      <div className="flex flex-col w-full p-4 overflow-hidden">
         {renderTable ? (
           <TableSearch
             defaultOperators={defaultOperators}
