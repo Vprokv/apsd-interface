@@ -48,7 +48,13 @@ const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
   remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [
-    { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
+    {
+      name: VALIDATION_RULE_MAX,
+      args: {
+        max: 1024,
+        text: 'Превышено допустимое количество символов для замечания ',
+      },
+    },
     { name: VALIDATION_RULE_REQUIRED },
   ],
   'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],

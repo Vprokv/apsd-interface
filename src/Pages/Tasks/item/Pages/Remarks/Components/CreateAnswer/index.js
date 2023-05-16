@@ -35,7 +35,13 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [
-    { name: VALIDATION_RULE_MAX, args: { max: 4097 } },
+    {
+      name: VALIDATION_RULE_MAX,
+      args: {
+        max: 1024,
+        text: 'Превышено допустимое количество символов для ответа замечания ',
+      },
+    },
     { name: VALIDATION_RULE_REQUIRED },
   ],
   member: [{ name: VALIDATION_RULE_REQUIRED }],

@@ -86,7 +86,12 @@ const columns = [
   {
     id: 'setRemark',
     label: 'Свод замечаний',
-    component: ({ ParentValue: { setRemark, itsRemark } }) => (
+    component: ({
+      ParentValue: {
+        itsRemark,
+        props: { setRemark },
+      },
+    }) => (
       <BaseCell
         value={
           itsRemark && setRemark

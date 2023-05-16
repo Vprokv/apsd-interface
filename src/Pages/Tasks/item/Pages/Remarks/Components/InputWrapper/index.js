@@ -46,7 +46,9 @@ const InputWrapper = React.forwardRef(
         <InputContainer className="flex flex-col flex-auto relative w-full">
           {children}
           {hasError && (
-            <InputErrorContainer>{validationErrors[0]}</InputErrorContainer>
+            <InputErrorContainer
+              dangerouslySetInnerHTML={{ __html: validationErrors[0] }}
+            />
           )}
         </InputContainer>
       </InputWrapperContainer>
