@@ -23,6 +23,9 @@ export const InputErrorContainer = styled.div`
   top: calc(100% + 4px);
   margin-bottom: 2px;
   font-size: 12px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 `
 
 export const InputWrapperContainer = styled.div`
