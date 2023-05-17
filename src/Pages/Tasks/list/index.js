@@ -204,7 +204,7 @@ function TaskList({ loadFunctionRest }) {
     setTabState,
     shouldReloadDataFlag,
     loadDataHelper,
-    tabState: { data: { content = [], total = 0 } = {} },
+    tabState: { data: { content = [], total = 0 } = {}, loading },
   } = useTabItem({ stateId: TASK_LIST })
   const { token } = useContext(TokenContext)
 
@@ -378,6 +378,7 @@ function TaskList({ loadFunctionRest }) {
         onSelect={setSelectState}
         sortQuery={sortQuery}
         onSort={onSort}
+        loading={loading}
       />
       <Pagination
         className="mt-2 ml-4 mb-4"
