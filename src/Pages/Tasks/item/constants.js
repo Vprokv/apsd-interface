@@ -15,6 +15,9 @@ import FinishApproveIcon from './Icons/FinishApproveIcon.svg'
 import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
 import AnnulIcon from './Icons/AnnulIcon.svg'
 import StrelkaRight from './Icons/StrelkaRight.svg'
+import SendToCheck from './Icons/SendToCheck.svg'
+import RejectWithRemarks from './Icons/RejectWithRemarks.svg'
+import Repeat from './Icons/Repeat.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 import Requisites_New from '@/Parser/Requisites_New'
 
@@ -92,7 +95,6 @@ export const defaultTaskIcon = {
   on_approved: FinishApproveIcon,
   finish_simple_approve: FinishApproveIcon,
   finish_prepare: FinishApproveIcon,
-  reject_consider: FinishApproveIcon,
   apsd_prepare_reject: FinishApproveIcon,
   finish_approval: FinishApproveIcon,
   revision_finish: FinishApproveIcon,
@@ -102,4 +104,11 @@ export const defaultTaskIcon = {
   on_cancel: AnnulIcon,
   sent_to_curator: StrelkaRight,
   on_approve: StrelkaRight,
+  apsd_sap_prepare: SendToCheck,
+  apsd_sap_prepare_reject: RejectWithRemarks,
+  finish_consider: FinishApproveIcon,
+  reject_consider: RejectApproveIcon,
+  apsd_consolidate: FinishApproveIcon,
+  apsd_consolidate_reject: RejectApproveIcon,
+  apsd_all_consider: Repeat,
 }
