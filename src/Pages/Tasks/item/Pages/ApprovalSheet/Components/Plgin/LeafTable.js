@@ -50,7 +50,7 @@ const RowComponent = ({ node, RowC }) => {
           avatar={dsdtAvatar}
         />
         <DateCell
-          hot={dsdtDecision < dsdtDueDate}
+          hot={dsdtDecision && dsdtDueDate ? dsdtDecision < dsdtDueDate : false}
           plan={dsdtDueDate}
           fact={dsdtDecision}
           className=""
