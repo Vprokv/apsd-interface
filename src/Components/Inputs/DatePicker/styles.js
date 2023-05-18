@@ -47,7 +47,7 @@ export const ThemedDayView = styled(DayView)`
   min-height: 24px !important;
   font-size: 14px;
   font-weight: 400;
-  --calendar-init-day-color: var(--blue-1);
+  --calendar-init-day-color: var(--light-blue);
   --calendar-selection-bg-color: var(--blue-1);
   --calendar-highlight-bg-color: var(--separator);
   --selected-element-border-radius: 8px;
