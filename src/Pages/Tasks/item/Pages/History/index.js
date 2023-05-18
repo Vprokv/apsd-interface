@@ -84,7 +84,7 @@ const History = () => {
     stateId: TASK_ITEM_HISTORY,
   })
   const {
-    tabState: { data: documentData },
+    tabState: { data: documentData, loading },
   } = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
@@ -186,6 +186,7 @@ const History = () => {
         sortQuery={sortQuery}
         onSort={onSort}
         valueKey="id"
+        loading={loading}
       />
     </div>
   )

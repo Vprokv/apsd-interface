@@ -136,7 +136,7 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, permit = false },
+    tabState: { data: { content = [], total = 0 } = {}, permit = false, loading },
     tabState,
   } = tabItemState
 
@@ -352,6 +352,7 @@ const Content = () => {
         onSelect={setSelectState}
         sortQuery={sortQuery}
         onSort={onSort}
+        loading={loading}
       />
       <Pagination
         className="mt-2"
