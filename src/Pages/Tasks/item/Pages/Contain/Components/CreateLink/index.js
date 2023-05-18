@@ -73,7 +73,8 @@ const CreateLink = ({ addLinkState }) => {
   const onCrateLink = useCallback(async () => {
     try {
       const response = await api.post(URL_TITLE_CONTAIN_CREATE_LINK, {
-        source: id,
+        titleId: id,
+        source: addLinkState.id,
         target: selected,
       })
       setTabState({ loading: false, fetched: false })
@@ -83,7 +84,15 @@ const CreateLink = ({ addLinkState }) => {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, getNotification, id, onClose, selected, setTabState])
+  }, [
+    addLinkState.id,
+    api,
+    getNotification,
+    id,
+    onClose,
+    selected,
+    setTabState,
+  ])
 
   useEffect(() => {
     if (addLinkState.id) {
