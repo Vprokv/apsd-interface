@@ -5,12 +5,17 @@ import InputComponent from '@Components/Components/Inputs/Input'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { ApiContext, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
+import {
+  ApiContext,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  TASK_ITEM_CONTENT,
+} from '@/contants'
 import { URL_ENTITY_LIST, URL_UPDATE_VERSION } from '@/ApiList'
 import ScrollBar from '@Components/Components/ScrollBar'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -19,10 +24,13 @@ const rules = {
   contentTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const EditVersionWindow = ({ onClose, formData, setChange }) => {
+const EditVersionWindow = ({ onClose, formData }) => {
   const [values, setValues] = useState(formData)
-
   const api = useContext(ApiContext)
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_CONTENT,
+  })
 
   const onSave = useCallback(async () => {
     const { contentTypeId, comment, regNumber, versionDate, contentId } = values
@@ -35,9 +43,9 @@ const EditVersionWindow = ({ onClose, formData, setChange }) => {
         versionDate,
       },
     })
-    setChange()
+    setTabState({ loading: false, fetched: false })
     onClose()
-  }, [api, onClose, setChange, values])
+  }, [api, onClose, setTabState, values])
 
   const fieldMap = useMemo(() => {
     return [

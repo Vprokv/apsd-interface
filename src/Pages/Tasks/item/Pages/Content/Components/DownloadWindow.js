@@ -60,7 +60,7 @@ const customMessagesFuncMap = {
   },
 }
 
-const DownloadWindow = ({ onClose, contentId, setChange }) => {
+const DownloadWindow = ({ onClose, contentId }) => {
   const id = useContext(DocumentIdContext)
   const [values, setValues] = useState({
     versionDate: dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),

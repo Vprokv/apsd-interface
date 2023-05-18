@@ -117,6 +117,7 @@ export const URL_CREATE_VERSION = '/apsd/content/create/version'
 export const URL_UPDATE_VERSION = '/apsd/content/update/version'
 export const URL_DELETE_VERSION = '/apsd/content/delete/version'
 export const URL_UPLOAD_FILE_VERSION = '/sedo/content/uploadfiles'
+export const URL_CONTENT_PERMIT = '/apsd/content/create/version/permit'
 
 export const URL_CONTENT_SEARCH = '/sedo/content/eehd/search'
 export const URL_LINK_CREATE_RELATION = '/sedo/content/eehd/create'

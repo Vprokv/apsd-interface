@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
@@ -9,8 +9,10 @@ import {
 import ListTable from '@Components/Components/Tables/ListTable'
 import {
   URL_CONTENT_LIST,
+  URL_CONTENT_PERMIT,
   URL_DELETE_VERSION,
   URL_DOWNLOAD_FILE,
+  URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
@@ -134,9 +136,11 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {} },
+    tabState: { data: { content = [], total = 0 } = {}, permit = false },
     tabState,
   } = tabItemState
+
+  console.log(permit, 'permit')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_CONTENT,
@@ -144,14 +148,6 @@ const Content = () => {
     setState: setTabState,
     defaultLimit: 10,
   })
-
-  const setChange = useCallback(
-    () =>
-      setTabState(({ change }) => {
-        return { change: !change }
-      }),
-    [setTabState],
-  )
 
   const loadData = useCallback(async () => {
     try {
@@ -170,6 +166,21 @@ const Content = () => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [paginationState, api, id, filterValue.isFullVersion, getNotification])
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const { data } = await api.post(URL_CONTENT_PERMIT, { documentId: id })
+        setTabState({
+          permit: data,
+        })
+      } catch (e) {
+        setTabState({
+          permit: false,
+        })
+      }
+    })()
+  }, [id, setTabState, api])
 
   useAutoReload(loadData, tabItemState)
 
@@ -269,6 +280,7 @@ const Content = () => {
         />
         <div className="ml-auto flex items-center color-text-secondary">
           <SecondaryBlueButton
+            disabled={!permit}
             className="ml-2 text-white flex items-center w-60 rounded-lg justify-center"
             onClick={openSubscriptionWindow}
           >
@@ -352,7 +364,6 @@ const Content = () => {
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
       <DownloadWindow
-        setChange={setChange}
         contentId={idContent}
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}
@@ -361,7 +372,6 @@ const Content = () => {
         formData={dataVersion}
         open={openEditWindow}
         onClose={closeEditWindow}
-        setChange={setChange}
       />
       <PreviewContentWindow
         open={renderPreviewWindow}
