@@ -84,7 +84,7 @@ const customMessagesFuncMap = {
 
 export const NdtLinkWrapper = ValidationProvider(RowInputWrapperRefactor)
 
-const CreateRemark = ({ tabPermit: { editAuthor } = {} }) => {
+const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
@@ -241,7 +241,7 @@ const CreateRemark = ({ tabPermit: { editAuthor } = {} }) => {
   return (
     <div>
       <SecondaryBlueButton
-        // disabled={!createRemark}
+        disabled={!createRemark} //TODO Жми меня, чтобы разблочить окно
         onClick={changeModalState(true)}
       >
         Добавить замечание

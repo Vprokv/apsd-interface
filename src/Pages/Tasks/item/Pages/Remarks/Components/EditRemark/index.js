@@ -10,7 +10,7 @@ import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import {remarkValidator, UpdateContext} from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
@@ -25,6 +25,7 @@ import {
 import { useOpenNotification } from '@/Components/Notificator'
 import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
+import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -115,6 +116,7 @@ const EditRemark = ({
     {
       id: 'text',
       label: 'Текст замечания',
+      inputWrapper: RemarkWrapper,
       component: CustomInput,
       placeholder: 'Введите текст замечания',
     },
@@ -170,6 +172,7 @@ const EditRemark = ({
               rules={rules}
               inputWrapper={InputWrapper}
               onSubmit={onSave}
+              validators={remarkValidator}
             >
               <div className="mt-10">
                 <UnderButtons leftFunc={onClose} />

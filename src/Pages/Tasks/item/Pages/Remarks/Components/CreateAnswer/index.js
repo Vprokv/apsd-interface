@@ -1,10 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Button, {
-  LoadableBaseButton,
-  SecondaryBlueButton,
-  SecondaryGreyButton,
-} from '@/Components/Button'
+import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
@@ -20,7 +16,6 @@ import {
   VALIDATION_RULE_MAX,
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
-import { UpdateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
@@ -31,6 +26,9 @@ import { useOpenNotification } from '@/Components/Notificator'
 import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
+import { Validation } from '@Components/Logic/Validator'
+import {remarkValidator} from "@/Pages/Tasks/item/Pages/Remarks/constans";
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -143,6 +141,7 @@ const CreateAnswer = ({
       id: 'text',
       label: 'Текст ответа',
       isRequired: true,
+      inputWrapper: RemarkWrapper,
       className: '',
       component: CustomInput,
       max: 100,
@@ -219,19 +218,33 @@ const CreateAnswer = ({
       >
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4">
-            <FilterForm
-              className="form-element-sizes-40"
+            <Validation
               fields={fields}
               value={filter}
               onInput={setFilterValue}
               inputWrapper={InputWrapper}
               rules={rules}
               onSubmit={onSave}
+              validators={remarkValidator}
             >
-              <div className="mt-10">
-                <UnderButtons leftFunc={onClose} />
-              </div>
-            </FilterForm>
+              {(validationProps) => {
+                return (
+                  <>
+                    <FilterForm
+                      className="form-element-sizes-40"
+                      {...validationProps}
+                    />
+                    <div className="mt-10">
+                      <UnderButtons
+                        disabled={!validationProps.formValid}
+                        rightFunc={validationProps.onSubmit}
+                        leftFunc={onClose}
+                      />
+                    </div>
+                  </>
+                )
+              }}
+            </Validation>
           </div>
         </div>
       </StandardSizeModalWindow>

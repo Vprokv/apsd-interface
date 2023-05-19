@@ -15,6 +15,12 @@ export const defaultFunctionsMap = {
       message: 'Не удалось отправить запрос',
     }
   },
+  403: () => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Ошибка выполнения запроса',
+    }
+  },
   404: () => {
     return {
       type: NOTIFICATION_TYPE_ERROR,
