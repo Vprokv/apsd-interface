@@ -225,17 +225,6 @@ const Links = () => {
   const fields = useMemo(
     () => [
       {
-        id: 'documentType',
-        component: LoadableSelect,
-        placeholder: 'Тип документа',
-        valueKey: 'dss_name',
-        labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
-      },
-      {
         id: 'authorName',
         component: UserSelect,
         placeholder: 'Автор связи',
