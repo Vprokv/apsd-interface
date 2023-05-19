@@ -17,6 +17,7 @@ const UnderButtons = ({
   rightStyle,
   className,
   children,
+  disabled,
 }) => {
   return (
     <div className={`flex items-center justify-end ${className}`}>
@@ -25,6 +26,7 @@ const UnderButtons = ({
         {leftLabel}
       </SecondaryGreyButton>
       <LoadableSecondaryOverBlueButton
+        disabled={disabled}
         type="submit"
         className={rightStyle}
         onClick={rightFunc}
