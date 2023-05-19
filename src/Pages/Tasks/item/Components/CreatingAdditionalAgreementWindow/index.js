@@ -19,6 +19,17 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
+import ScrollBar from '@Components/Components/ScrollBar'
+
+import styled from 'styled-components'
+import ModalWindowWrapper from '../../../../../Components/ModalWindow'
+
+export const ModalWindow = styled(ModalWindowWrapper)`
+  width: 40%;
+  min-height: 45%;
+  margin: auto;
+  max-height: 95%;
+`
 
 const rules = {}
 
@@ -104,23 +115,24 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   ])
   return (
     <div className="flex flex-col overflow-hidden h-full">
-      <Form
-        className="mb-10"
-        inputWrapper={DefaultWrapper}
-        value={values}
-        onInput={setValues}
-        fields={fieldMap}
-        rules={rules}
-      />
-
-      <div className="flex items-center justify-end mt-auto mt-auto">
-        <UnderButtons
-          leftFunc={onClose}
-          rightFunc={onSave}
-          leftLabel={'Закрыть'}
-          rightLabel={'Сохранить'}
+      <ScrollBar>
+        <Form
+          className="mb-10"
+          inputWrapper={DefaultWrapper}
+          value={values}
+          onInput={setValues}
+          fields={fieldMap}
+          rules={rules}
         />
-      </div>
+        <div className="flex items-center justify-end mt-auto mt-auto">
+          <UnderButtons
+            leftFunc={onClose}
+            rightFunc={onSave}
+            leftLabel={'Закрыть'}
+            rightLabel={'Сохранить'}
+          />
+        </div>
+      </ScrollBar>
     </div>
   )
 }
@@ -134,12 +146,9 @@ CreatingAdditionalAgreementWindow.defaultProps = {
 
 const CreatingAdditionalAgreementWindowWrapper = (props) => {
   return (
-    <StandardSizeModalWindow
-      {...props}
-      title="Создание дополнительного согласования"
-    >
+    <ModalWindow {...props} title="Создание дополнительного согласования">
       <CreatingAdditionalAgreementWindow {...props} />
-    </StandardSizeModalWindow>
+    </ModalWindow>
   )
 }
 
