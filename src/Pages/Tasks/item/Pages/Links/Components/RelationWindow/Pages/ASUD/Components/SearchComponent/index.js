@@ -89,6 +89,9 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
   )
 }
 
-SearchComponent.propTypes = {}
+SearchComponent.propTypes = {
+  tabItemState: PropTypes.object,
+  updateTabState: PropTypes.func,
+}
 
 export default SearchComponent

@@ -22,8 +22,8 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import DownloadIcon from '@/Icons/DownloadIcon'
 import Tips from '@/Components/Tips'
+import PropTypes from 'prop-types'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -177,6 +177,8 @@ const EditLinksWindow = ({ value }) => {
   )
 }
 
-EditLinksWindow.propTypes = {}
+EditLinksWindow.propTypes = {
+  value: PropTypes.array,
+}
 
 export default EditLinksWindow

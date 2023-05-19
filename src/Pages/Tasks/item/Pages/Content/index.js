@@ -12,7 +12,6 @@ import {
   URL_CONTENT_PERMIT,
   URL_DELETE_VERSION,
   URL_DOWNLOAD_FILE,
-  URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
@@ -136,11 +135,13 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, permit = false, loading },
+    tabState: {
+      data: { content = [], total = 0 } = {},
+      permit = false,
+      loading,
+    },
     tabState,
   } = tabItemState
-
-  console.log(permit, 'permit')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_CONTENT,
@@ -271,7 +272,7 @@ const Content = () => {
 
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
-      <div className="flex items-center form-element-sizes-32">
+      <div className="flex items-center form-element-sizes-32 mb-4">
         <Form
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}

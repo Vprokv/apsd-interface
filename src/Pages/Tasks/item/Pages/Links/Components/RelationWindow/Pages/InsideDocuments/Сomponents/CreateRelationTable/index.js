@@ -61,7 +61,7 @@ const CreateRelationTable = ({ value, setLink }) => {
             loadFunction={async (query) => {
               const { data } = await api.post(URL_ENTITY_LIST, {
                 type: 'ddt_dict_link_type',
-                query
+                query,
               })
               return data
             }}
@@ -98,6 +98,9 @@ const CreateRelationTable = ({ value, setLink }) => {
   )
 }
 
-CreateRelationTable.propTypes = {}
+CreateRelationTable.propTypes = {
+  setLink: PropTypes.func,
+  value: PropTypes.array,
+}
 
 export default CreateRelationTable

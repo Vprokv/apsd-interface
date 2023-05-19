@@ -154,7 +154,11 @@ const Subscription = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, events = new Map() },
+    tabState: {
+      data: { content = [], total = 0 } = {},
+      events = new Map(),
+      loading,
+    },
     shouldReloadDataFlag,
     loadDataHelper,
   } = useTabItem({
@@ -282,6 +286,7 @@ const Subscription = () => {
           sortQuery={sortQuery}
           onSort={onSort}
           valueKey="id"
+          loading={loading}
         />
       </EventsContext.Provider>
       <Pagination

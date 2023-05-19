@@ -6,7 +6,6 @@ import {
   InputLabel,
   InputLabelStart,
   InputWrapperContainer,
-  Label,
 } from './styles'
 
 export {

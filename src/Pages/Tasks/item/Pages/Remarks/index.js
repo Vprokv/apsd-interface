@@ -24,6 +24,7 @@ import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import IterationComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/Iteration'
+import Loading from '../../../../../Components/Loading'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
@@ -39,7 +40,7 @@ const Remarks = () => {
     stateId: TASK_ITEM_REMARKS,
   })
   const {
-    tabState: { data: { stages = [], tabPermit } = {} },
+    tabState: { data: { stages = [], tabPermit } = {}, loading },
   } = tabItemState
 
   useEffect(() => {
@@ -130,7 +131,7 @@ const Remarks = () => {
   return (
     <ShowAnswerButtonContext.Provider value={{}}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-        <div className="flex items-center py-4 form-element-sizes-32">
+        <div className="flex items-center py-4 form-element-sizes-32 justify-between">
           <FilterForm
             className="mr-2"
             value={filter}
@@ -138,11 +139,7 @@ const Remarks = () => {
             fields={fields}
             inputWrapper={EmptyInputWrapper}
           />
-          <div className="flex items-center ml-auto">
-            <CreateRemark tabPermit={tabPermit} />
-            <SecondaryBlueButton className="ml-2">
-              Выгрузить свод замечаний
-            </SecondaryBlueButton>
+          <div>
             <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
                 onClick={ChangeAllToggls}
@@ -153,25 +150,35 @@ const Remarks = () => {
             </Tips>
           </div>
         </div>
-        <ScrollBar>
-          <div className="flex flex-col">
-            <ToggleContext.Provider value={{ toggle, onToggle }}>
-              {stages.map((val) => (
-                <WithToggle key={val.stageName} id={val.stageName}>
-                  {({ isDisplayed, toggleDisplayedFlag }) => {
-                    return (
-                      <IterationComponent
-                        isDisplayed={isDisplayed}
-                        toggleDisplayedFlag={toggleDisplayedFlag}
-                        {...val}
-                      />
-                    )
-                  }}
-                </WithToggle>
-              ))}
-            </ToggleContext.Provider>
-          </div>
-        </ScrollBar>
+        <div className="flex items-center ml-auto">
+          <CreateRemark tabPermit={tabPermit} />
+          <SecondaryBlueButton className="ml-2">
+            Выгрузить свод замечаний
+          </SecondaryBlueButton>
+        </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <ScrollBar>
+            <div className="flex flex-col">
+              <ToggleContext.Provider value={{ toggle, onToggle }}>
+                {stages.map((val) => (
+                  <WithToggle key={val.stageName} id={val.stageName}>
+                    {({ isDisplayed, toggleDisplayedFlag }) => {
+                      return (
+                        <IterationComponent
+                          isDisplayed={isDisplayed}
+                          toggleDisplayedFlag={toggleDisplayedFlag}
+                          {...val}
+                        />
+                      )
+                    }}
+                  </WithToggle>
+                ))}
+              </ToggleContext.Provider>
+            </div>
+          </ScrollBar>
+        )}
       </div>
     </ShowAnswerButtonContext.Provider>
   )

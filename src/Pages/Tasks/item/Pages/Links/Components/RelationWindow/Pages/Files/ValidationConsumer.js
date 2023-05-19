@@ -24,6 +24,7 @@ ValidationConsumer.propTypes = {
     PropTypes.node,
   ]),
   path: PropTypes.string.isRequired,
+  id: PropTypes.string,
 }
 
 export default ValidationConsumer

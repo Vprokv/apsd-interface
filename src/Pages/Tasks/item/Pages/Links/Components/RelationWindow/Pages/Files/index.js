@@ -1,17 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import FileInput from '@/Components/Inputs/FileInput'
-import Option from '@Components/Components/Inputs/FileInput/Option'
 import ListTable from '@Components/Components/Tables/ListTable'
 import Input from '@/Components/Fields/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
-import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_ENTITY_LIST, URL_LINK_CREATE } from '@/ApiList'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import ScrollBar from 'react-perfect-scrollbar'
@@ -19,10 +10,7 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import {
-  StateContext,
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Links/constans'
+import { StateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -222,7 +210,10 @@ const Files = (props) => {
   )
 }
 
-Files.propTypes = {}
+Files.propTypes = {
+  validationErrors: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  hasError: PropTypes.bool,
+}
 
 const WithValidationForm = WithValidationHoc(Files)
 export default (props) => (

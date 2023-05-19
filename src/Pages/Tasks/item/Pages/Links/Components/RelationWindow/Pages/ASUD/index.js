@@ -5,16 +5,10 @@ import {
   StateContext,
   UpdateContext,
 } from '@/Pages/Tasks/item/Pages/Links/constans'
-import {
-  ApiContext,
-  ASUD_DOCUMENT_WINDOW,
-  INSIDE_DOCUMENT_WINDOW,
-  TASK_ITEM_LINK,
-} from '@/contants'
+import { ApiContext, ASUD_DOCUMENT_WINDOW, TASK_ITEM_LINK } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_LINK_CREATE } from '@/ApiList'
-import ScrollBar from '@Components/Components/ScrollBar'
 import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/ASUD/Components/SearchComponent'
 

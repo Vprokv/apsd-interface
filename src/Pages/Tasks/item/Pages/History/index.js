@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import BaseCell, {
-  sizes as baseCellSize,
-} from '@/Components/ListTableComponents/BaseCell'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { FilterForm } from '../../styles'
 import DatePickerComponent from '@/Components/Inputs/DatePicker'
 import { useParams } from 'react-router-dom'
@@ -83,6 +81,7 @@ const History = () => {
   } = useTabItem({
     stateId: TASK_ITEM_HISTORY,
   })
+  // todo tabState пустой объект, поэтому loading undefined
   const {
     tabState: { data: documentData, loading },
   } = useTabItem({

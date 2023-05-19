@@ -1,7 +1,5 @@
 import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import Input from '@/Components/Fields/Input'
-import { StateRelationContext } from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/constans'
 import DatePicker from '@Components/Components/Inputs/DatePicker'
 import { EditLinkContext } from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/constans'
 
@@ -16,6 +14,8 @@ const LinkDate = ({ ParentValue: { contentId, linkDate } }) => {
   return <DatePicker value={value} onInput={onDate()(contentId)} />
 }
 
-LinkDate.propTypes = {}
+LinkDate.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default LinkDate

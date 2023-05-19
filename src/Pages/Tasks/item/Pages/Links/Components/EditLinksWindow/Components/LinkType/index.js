@@ -48,6 +48,8 @@ const LinkType = ({ ParentValue: { contentId, linkType } }) => {
   )
 }
 
-LinkType.propTypes = {}
+LinkType.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default LinkType

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import InputComponent, { Input } from '@Components/Components/Inputs/Input'
+import InputComponent from '@Components/Components/Inputs/Input'
 
 export default styled(InputComponent)`
   background-color: white;

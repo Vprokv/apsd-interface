@@ -10,6 +10,13 @@ const DocumentDescription = ({ value, disabled }) => {
   )
 }
 
-DocumentDescription.propTypes = {}
+DocumentDescription.propTypes = {
+  disabled: PropTypes.bool,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.array,
+  ]),
+}
 
 export default DocumentDescription

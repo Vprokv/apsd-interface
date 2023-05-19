@@ -11,7 +11,7 @@ const LinkType = ({ ParentValue: { id } }) => {
   const loadFunction = async (query) => {
     const { data } = await api.post(URL_ENTITY_LIST, {
       type: 'ddt_dict_link_type',
-      query
+      query,
     })
     return data
   }
@@ -28,6 +28,8 @@ const LinkType = ({ ParentValue: { id } }) => {
   )
 }
 
-LinkType.propTypes = {}
+LinkType.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default LinkType

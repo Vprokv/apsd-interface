@@ -6,7 +6,6 @@ import {
   URL_EXPORT_FILE,
   URL_SEARCH_ATTRIBUTES,
   URL_SEARCH_LIST,
-  URL_TASK_LIST_V2,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext, SEARCH_PAGE, TokenContext } from '@/contants'
