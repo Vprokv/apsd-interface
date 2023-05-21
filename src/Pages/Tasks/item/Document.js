@@ -249,7 +249,7 @@ const Document = () => {
         ? documentTabs
         : [
             ...documentTabs,
-            // { caption: 'Реквизиты NEW', name: 'requisites_new' },
+            { caption: 'Реквизиты NEW', name: 'requisites_new' },
           ],
     [documentTabs],
   )

@@ -39,6 +39,9 @@ import {
   ValidationProvider,
 } from '@/Components/InputWrapperRefactor'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
+import { Validation } from '@Components/Logic/Validator'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -180,6 +183,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
       {
         id: 'text',
         label: 'Текст замечания',
+        inputWrapper: RemarkWrapper,
         component: CustomInput,
         placeholder: 'Введите текст замечания',
       },
@@ -238,7 +242,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   return (
     <div>
       <SecondaryBlueButton
-        disabled={!createRemark}
+        disabled={!createRemark} //TODO Жми меня, чтобы разблочить окно
         onClick={changeModalState(true)}
       >
         Добавить замечание
@@ -252,26 +256,41 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4 h-full">
             <ScrollBar>
-              <WithValidationForm
-                className="form-element-sizes-40"
+              <Validation
                 fields={fields}
                 value={filter}
                 onInput={setFilterValue}
                 rules={rules}
-                inputWrapper={InputWrapper}
                 onSubmit={onSave}
+                validators={remarkValidator}
               >
-                <div className="mt-10">
-                  <SecondaryBlueButton className="ml-4 form-element-sizes-40 w-64 mb-2">
-                    Скачать шаблон таблицы
-                  </SecondaryBlueButton>
-                  <UnderButtons leftFunc={onClose}>
-                    <SecondaryBlueButton className="ml-4 form-element-sizes-40 w-48 mr-auto">
-                      Импорт значений
-                    </SecondaryBlueButton>
-                  </UnderButtons>
-                </div>
-              </WithValidationForm>
+                {(validationProps) => {
+                  return (
+                    <>
+                      <WithValidationForm
+                        className="form-element-sizes-40"
+                        inputWrapper={InputWrapper}
+                        {...validationProps}
+                      />
+                      <div className="mt-10">
+                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
+                          Скачать шаблон таблицы
+                        </SecondaryBlueButton>
+                        <div className="flex items-center">
+                          <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
+                            Импорт значений
+                          </SecondaryBlueButton>
+                          <UnderButtons
+                            disabled={!validationProps.formValid}
+                            leftFunc={onClose}
+                            rightFunc={validationProps.onSubmit}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )
+                }}
+              </Validation>
             </ScrollBar>
           </div>
         </div>
