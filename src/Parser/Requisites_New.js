@@ -15,6 +15,7 @@ import { RequisitesForm } from '@/Pages/Tasks/item/Pages/Requisites/styles'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { useParams } from 'react-router-dom'
 import { DocumentTypeContext } from '@/Pages/Tasks/item/constants'
+import PropTypes from 'prop-types'
 
 export const Requisites = ({ type: documentType, documentState }) => {
   const api = useContext(ApiContext)
@@ -192,7 +193,6 @@ export const Requisites = ({ type: documentType, documentState }) => {
     [api, data, documentType],
   )
 
-
   const { fields, rules, interceptors } = useMemo(() => {
     const { fields, visibility, disabled, rules, interceptors } = parsedDesign
     const interceptorsFunctions = new Map()
@@ -221,9 +221,6 @@ export const Requisites = ({ type: documentType, documentState }) => {
     }
   }, [values, parsedDesign])
 
-  console.log(fields, 'fields')
-
-
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
@@ -250,7 +247,10 @@ export const Requisites = ({ type: documentType, documentState }) => {
 }
 
 Requisites.defaultProps = {}
-Requisites.propTypes = {}
+Requisites.propTypes = {
+  documentState: PropTypes.object,
+  type: PropTypes.string,
+}
 
 const Requisites_New = () => {
   const { type } = useParams()

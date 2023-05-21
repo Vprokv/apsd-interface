@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import Form, { WithValidationForm } from '@Components/Components/Forms'
-import InputComponent, { Input } from '@Components/Components/Inputs/Input'
+import { WithValidationForm } from '@Components/Components/Forms'
+import { Input } from '@Components/Components/Inputs/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
 
 export const FilterForm = styled(WithValidationForm)`

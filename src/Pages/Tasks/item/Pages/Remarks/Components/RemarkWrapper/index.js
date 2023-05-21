@@ -96,6 +96,10 @@ RemarkWrapper.propTypes = {
   validationErrors: PropTypes.array,
   className: PropTypes.string,
   style: PropTypes.object,
+  hasError: PropTypes.bool,
+  isRequired: PropTypes.bool,
+  formPayload: PropTypes.object,
+  validationRules: PropTypes.array,
 }
 
 RemarkWrapper.defaultProps = {

@@ -1,7 +1,5 @@
 import ReferenceFilter from './ReferenceFilter'
-import {
-  URL_ORGSTURCTURE_BRANCHES,
-} from '@/ApiList'
+import { URL_ORGSTURCTURE_BRANCHES } from '@/ApiList'
 
 const BRANCH_ID_FILTER = 'branchId'
 const ORGANIZATION_FILTER = 'organization'

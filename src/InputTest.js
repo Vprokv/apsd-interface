@@ -4,7 +4,6 @@ import {
   Select,
 } from '@/Components/Inputs/Select'
 import DatePicker from '@/Components/Inputs/DatePicker'
-import CheckBox from '@/Components/Inputs/CheckBox'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import Input from '@Components/Components/Inputs/Input'
 
@@ -344,20 +343,53 @@ const InputTest = () => {
         value={state['datePicker']}
         onInput={onInput}
       />
-      <TextArea autosize id="textArea" value={state['textArea']} onInput={onInput} maxlength={1500} />
+      <TextArea
+        autosize
+        id="textArea"
+        value={state['textArea']}
+        onInput={onInput}
+        maxlength={1500}
+      />
 
-      <Input id="input" value={state['input']} onInput={onInput} maxlength={150}/>
+      <Input
+        id="input"
+        value={state['input']}
+        onInput={onInput}
+        maxlength={150}
+      />
 
-      <Input id="input" value={state['input']} onInput={onInput} maxlength={150} />
+      <Input
+        id="input"
+        value={state['input']}
+        onInput={onInput}
+        maxlength={150}
+      />
       <DatePicker
         id="datePicker"
         value={state['datePicker']}
         onInput={onInput}
       />
-      <TextArea autosize id="textArea" value={state['textArea']} onInput={onInput} maxlength={1500} />
+      <TextArea
+        autosize
+        id="textArea"
+        value={state['textArea']}
+        onInput={onInput}
+        maxlength={1500}
+      />
 
-      <TextArea autosize id="textArea" value={state['textArea']} onInput={onInput} maxlength={1500} />
-      <Input id="input" value={state['input']} onInput={onInput} maxlength={150} />
+      <TextArea
+        autosize
+        id="textArea"
+        value={state['textArea']}
+        onInput={onInput}
+        maxlength={1500}
+      />
+      <Input
+        id="input"
+        value={state['input']}
+        onInput={onInput}
+        maxlength={150}
+      />
       <DatePicker
         id="datePicker"
         value={state['datePicker']}

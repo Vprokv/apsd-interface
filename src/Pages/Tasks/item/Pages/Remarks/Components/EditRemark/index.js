@@ -10,7 +10,10 @@ import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import {remarkValidator, UpdateContext} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import {
+  remarkValidator,
+  UpdateContext,
+} from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
@@ -185,6 +188,16 @@ const EditRemark = ({
   )
 }
 
-EditRemark.propTypes = {}
+EditRemark.propTypes = {
+  onClose: PropTypes.func,
+  permits: PropTypes.object,
+  remarkAuthor: PropTypes.object,
+  remarkId: PropTypes.string,
+  remarkTypeId: PropTypes.string,
+  remarkType: PropTypes.string,
+  ndtLinks: PropTypes.array,
+  remarkText: PropTypes.string,
+  open: PropTypes.bool,
+}
 
 export default EditRemark

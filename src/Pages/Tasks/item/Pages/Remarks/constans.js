@@ -21,7 +21,6 @@ export const remarkValidator = {
     message: ({
       args: { text = 'Преышено допустимое количество символов' },
     }) => {
-      console.log('custom rule')
       return text
     },
   },
