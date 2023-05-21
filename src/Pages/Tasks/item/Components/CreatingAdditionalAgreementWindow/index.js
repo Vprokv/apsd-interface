@@ -1,7 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import Button from '@/Components/Button'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
@@ -114,8 +112,8 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
     onClose,
   ])
   return (
-    <div className="flex flex-col overflow-hidden h-full">
-      <ScrollBar>
+    <div className="flex flex-col overflow-hidden h-full grow">
+      <ScrollBar className="flex grow flex-col">
         <Form
           className="mb-10"
           inputWrapper={DefaultWrapper}
