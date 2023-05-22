@@ -1,8 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import {
-  ApiContext,
-  TASK_ITEM_LINK,
-} from '@/contants'
+import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_DOWNLOAD_FILE,
@@ -261,6 +258,27 @@ const Links = () => {
     }
   }, [api, getNotification, selectState, setTabState])
 
+  const onDoubleClick = useCallback(
+    (value) => () => {
+      setSelectState((prevValue) => {
+        const prev = [...prevValue]
+        prev.splice(0, 0, value)
+        return prev
+      })
+      setRenderPreviewWindowState(true)
+    },
+    [],
+  )
+
+  const closeWindow = useCallback(() => {
+    setSelectState((prev) => {
+      const prevState = [...prev]
+      prevState.splice(0, 1)
+      return prevState
+    })
+    setRenderPreviewWindowState(false)
+  }, [])
+
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4 form-element-sizes-32">
@@ -316,8 +334,8 @@ const Links = () => {
       <ListTable
         rowComponent={useMemo(
           () => (props) =>
-            <RowComponent onDoubleClick={() => null} {...props} />,
-          [],
+            <RowComponent onDoubleClick={onDoubleClick} {...props} />,
+          [onDoubleClick],
         )}
         value={content}
         columns={columns}
@@ -341,9 +359,8 @@ const Links = () => {
       </Pagination>
       <PreviewContentWindow
         open={renderPreviewWindow}
-        onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-        id={selectState[0]?.contentId}
-        type="ddt_document_content"
+        onClose={closeWindow}
+        value={selectState}
       />
     </div>
   )
