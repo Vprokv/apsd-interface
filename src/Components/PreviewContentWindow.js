@@ -9,12 +9,16 @@ const PreviewContentWindow = ({ value, ...props }) => {
   const iframe = useRef()
   const { token } = useContext(TokenContext)
   const url = useMemo(() => {
-    const id = value[0]?.childId ? value[0]?.childId : value[0]?.contentId
-    const type = value[0]?.childId
-      ? value[0]?.childType
-      : 'ddt_document_content'
+    if (value) {
+      const id =
+        value && value[0]?.childId ? value[0]?.childId : value[0]?.contentId
+      const type =
+        value && value[0]?.childId
+          ? value[0]?.childType
+          : 'ddt_document_content'
 
-    return `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
+      return `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
+    }
   }, [value, token])
 
   return (
@@ -25,7 +29,7 @@ const PreviewContentWindow = ({ value, ...props }) => {
 }
 
 PreviewContentWindow.propTypes = {
-  value: PropTypes.object.isRequired,
+  value: PropTypes.array.isRequired,
   type: PropTypes.string.isRequired,
 }
 
