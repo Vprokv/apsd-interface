@@ -12,7 +12,6 @@ import {
   URL_CONTENT_PERMIT,
   URL_DELETE_VERSION,
   URL_DOWNLOAD_FILE,
-  URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
