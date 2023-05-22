@@ -51,32 +51,30 @@ const IterationComponent = ({
         </Row>
       </button>
       {!isDisplayed &&
-        iterations
-          .map(({ number, remarks }) => (
-            <>
-              <button
-                type={'button'}
-                onClick={() => toggleIterationDisplayedFlag(number)}
-              >
-                <Row className="h-12 flex items-center">
-                  <div className="pl-2">
-                    <Icon
-                      icon={angleIcon}
-                      size={10}
-                      className={`color-text-secondary ${
-                        !show[number] ? '' : 'rotate-180'
-                      }`}
-                    />
-                  </div>
-                  <div className="ml-4 font-medium flex items-center ">
-                    {`${stageName} (Итерация ${number})`}
-                  </div>
-                </Row>
-              </button>
-              {!show[number] && <IterationRemarks remarks={remarks} />}
-            </>
-          ))
-          .reverse()}
+        iterations.map(({ number, remarks }) => (
+          <>
+            <button
+              type={'button'}
+              onClick={() => toggleIterationDisplayedFlag(number)}
+            >
+              <Row className="h-12 flex items-center">
+                <div className="pl-2">
+                  <Icon
+                    icon={angleIcon}
+                    size={10}
+                    className={`color-text-secondary ${
+                      !show[number] ? '' : 'rotate-180'
+                    }`}
+                  />
+                </div>
+                <div className="ml-4 font-medium flex items-center ">
+                  {`${stageName} (Итерация ${number})`}
+                </div>
+              </Row>
+            </button>
+            {!show[number] && <IterationRemarks remarks={remarks} />}
+          </>
+        ))}
     </>
   )
 }
