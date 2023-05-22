@@ -13,8 +13,12 @@ export const GridContainer = styled.div`
   }
 `
 
-const RowComponent = ({ children }) => {
-  return <GridContainer>{children}</GridContainer>
+const RowComponent = ({ children, onDoubleClick, value }) => {
+  return (
+    <GridContainer onDoubleClick={onDoubleClick(value)}>
+      {children}
+    </GridContainer>
+  )
 }
 
 RowComponent.propTypes = {

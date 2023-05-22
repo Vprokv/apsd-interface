@@ -140,7 +140,7 @@ const Content = () => {
     tabState,
   } = tabItemState
 
-  console.log(permit, 'permit')
+  console.log(selectState, 'selectState')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_CONTENT,
@@ -269,6 +269,14 @@ const Content = () => {
 
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
 
+  const onDoubleClick = useCallback(
+    (data) => () => {
+      setSelectState([data])
+      setRenderPreviewWindowState(true)
+    },
+    [],
+  )
+
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       <div className="flex items-center form-element-sizes-32">
@@ -340,8 +348,9 @@ const Content = () => {
       </FormWindow>
       <ListTable
         rowComponent={useMemo(
-          () => (props) => <ShowLineRowComponent {...props} />,
-          [],
+          () => (props) =>
+            <ShowLineRowComponent {...props} onDoubleClick={onDoubleClick} />,
+          [onDoubleClick],
         )}
         value={content || []}
         columns={columns}
@@ -375,7 +384,10 @@ const Content = () => {
       />
       <PreviewContentWindow
         open={renderPreviewWindow}
-        onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
+        onClose={useCallback(() => {
+          setRenderPreviewWindowState(false)
+          // setSelectState([])
+        }, [])}
         id={selectState[0]?.id}
         type="ddt_apsd_content_version"
       />
