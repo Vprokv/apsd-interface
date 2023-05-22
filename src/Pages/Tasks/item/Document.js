@@ -12,8 +12,8 @@ import {
   URL_BUSINESS_DOCUMENT_RECALL,
   URL_CONTENT_SEND_EEHD,
   URL_DOCUMENT_ITEM,
-  URL_DOCUMENT_UPDATE,
-  URL_INTEGRATION_SEND_LETTER,
+  URL_DOCUMENT_UPDATE, URL_DOWNLOAD_FILE,
+  URL_INTEGRATION_SEND_LETTER, URL_INTEGRATION_TOM_DOWNLOAD,
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
@@ -44,6 +44,7 @@ import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
+  NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -51,6 +52,8 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
+import downloadFile from "@/Utils/DownloadFile";
+import DownloadDocument from "@/Pages/Tasks/item/Icons/DownloadDocument.svg";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -195,6 +198,41 @@ const Document = () => {
           }
         },
         icon: DeleteIcon,
+      },
+      download_template_letter: {
+        handler: async () => {
+          try {
+            const { data, status } = await api.post(
+              URL_INTEGRATION_TOM_DOWNLOAD,
+              {
+                documentId,
+              },
+            )
+
+            const fileData = await api.post(
+              URL_DOWNLOAD_FILE,
+              {
+                type: data.tableName,
+                column: 'dsc_content',
+                id: data.filekey,
+              },
+              { responseType: 'blob' },
+            )
+
+            if (fileData.data instanceof Error) {
+              getNotification({
+                type: NOTIFICATION_TYPE_ERROR,
+                message: `${data.filekey} документ не найден`,
+              })
+            } else {
+              downloadFile(fileData)
+            }
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
+        icon: DownloadDocument,
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
