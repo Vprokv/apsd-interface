@@ -14,6 +14,7 @@ export const GridContainer = styled.div`
 `
 
 const RowComponent = ({ children, onDoubleClick, value }) => {
+  console.log(onDoubleClick, 'onDoubleClick')
   return (
     <GridContainer onDoubleClick={onDoubleClick(value)}>
       {children}
@@ -36,7 +37,7 @@ RowComponent.propTypes = {
 RowComponent.defaultProps = {
   // todo в консоли ошибка что onDoubleClickа нет
   // обязателен ли он?
-  onDoubleClick: () => null,
+  onDoubleClick: () => () => null,
 }
 
 export default RowComponent
