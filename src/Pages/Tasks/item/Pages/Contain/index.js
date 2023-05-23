@@ -408,7 +408,7 @@ const Contain = () => {
           open={renderPreviewWindow}
           onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
           id={selectState[0]?.content?.id || showContentByTypeButton}
-          type="ddt_document_content"
+          documentType="ddt_document_content"
         />
       </div>
     </LoadContainChildrenContext.Provider>
