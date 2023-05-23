@@ -1,11 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button, {
-  LoadableBaseButton,
+import {
   LoadableSecondaryOverBlueButton,
-  SecondaryBlueButton,
   SecondaryGreyButton,
-  SecondaryOverBlueButton,
 } from '@/Components/Button'
 
 const UnderButtons = ({
@@ -49,6 +46,7 @@ UnderButtons.defaultProps = {
 
 UnderButtons.propTypes = {
   leftFunc: PropTypes.func,
+  disabled: PropTypes.bool,
   leftLabel: PropTypes.string,
   rightFunc: PropTypes.func,
   rightLabel: PropTypes.string,
