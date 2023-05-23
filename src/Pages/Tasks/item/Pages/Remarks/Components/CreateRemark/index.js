@@ -68,7 +68,7 @@ const rules = {
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;
   min-height: 60.65%;
-  max-height: 80vh;
+  //max-height: 80vh;
   margin: auto;
 `
 
@@ -247,14 +247,14 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         Добавить замечание
       </SecondaryBlueButton>
       <StandardSizeModalWindow
-        className="h-full"
+        // className="h-full"
         title="Добавить замечание"
         open={open}
         onClose={onClose}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex flex-col py-4 h-full">
-            <ScrollBar>
+          <div className="flex flex-col py-4 h-full grow">
+            <ScrollBar className='grow'>
               <Validation
                 fields={fields}
                 value={filter}
