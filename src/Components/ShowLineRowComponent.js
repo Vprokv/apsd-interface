@@ -33,6 +33,10 @@ RowComponent.propTypes = {
   value: PropTypes.object,
 }
 
-RowComponent.defaultProps = {}
+RowComponent.defaultProps = {
+  // todo в консоли ошибка что onDoubleClickа нет
+  // обязателен ли он?
+  onDoubleClick: () => null,
+}
 
 export default RowComponent
