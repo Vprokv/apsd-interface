@@ -139,8 +139,6 @@ const Content = () => {
     tabState,
   } = tabItemState
 
-  console.log(selectState, 'selectState')
-
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_CONTENT,
     state: tabState,
@@ -269,12 +267,25 @@ const Content = () => {
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
 
   const onDoubleClick = useCallback(
-    (data) => () => {
-      setSelectState([data])
+    (value) => () => {
+      setSelectState((prevValue) => {
+        const prev = [...prevValue]
+        prev.splice(0, 0, value)
+        return prev
+      })
       setRenderPreviewWindowState(true)
     },
     [],
   )
+
+  const closeWindow = useCallback(() => {
+    setSelectState((prev) => {
+      const prevState = [...prev]
+      prevState.splice(0, 1)
+      return prevState
+    })
+    setRenderPreviewWindowState(false)
+  }, [])
 
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
@@ -383,12 +394,9 @@ const Content = () => {
       />
       <PreviewContentWindow
         open={renderPreviewWindow}
-        onClose={useCallback(() => {
-          setRenderPreviewWindowState(false)
-          // setSelectState([])
-        }, [])}
-        id={selectState[0]?.id}
-        type="ddt_apsd_content_version"
+        onClose={closeWindow}
+        value={selectState}
+        documentType="ddt_apsd_content_version"
       />
     </div>
   )

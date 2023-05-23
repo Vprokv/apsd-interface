@@ -361,6 +361,7 @@ const Links = () => {
         open={renderPreviewWindow}
         onClose={closeWindow}
         value={selectState}
+        documentType="ddt_document_content"
       />
     </div>
   )

@@ -5,7 +5,7 @@ import { TokenContext } from '@/contants'
 import { URL_ENTITY_PDF_FILE } from '@/ApiList'
 import { API_URL } from '@/api'
 
-const PreviewContentWindow = ({ value, ...props }) => {
+const PreviewContentWindow = ({ value, documentType, ...props }) => {
   const iframe = useRef()
   const { token } = useContext(TokenContext)
   const url = useMemo(() => {
@@ -13,13 +13,11 @@ const PreviewContentWindow = ({ value, ...props }) => {
       const id =
         value && value[0]?.childId ? value[0]?.childId : value[0]?.contentId
       const type =
-        value && value[0]?.childId
-          ? value[0]?.childType
-          : 'ddt_document_content'
+        value && value[0]?.childId ? value[0]?.childType : documentType
 
       return `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
     }
-  }, [value, token])
+  }, [value, documentType, token])
 
   return (
     <StandardSizeModalWindow {...props} title="Предпросмотр документа">
@@ -30,7 +28,7 @@ const PreviewContentWindow = ({ value, ...props }) => {
 
 PreviewContentWindow.propTypes = {
   value: PropTypes.array.isRequired,
-  type: PropTypes.string.isRequired,
+  documentType: PropTypes.string.isRequired,
 }
 
 PreviewContentWindow.defaultProps = {}
