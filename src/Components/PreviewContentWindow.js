@@ -9,7 +9,7 @@ const PreviewContentWindow = ({ value, documentType, fieldKey, ...props }) => {
   const iframe = useRef()
   const { token } = useContext(TokenContext)
   const url = useMemo(() => {
-    if (value.length) {
+    if (value?.length) {
       const id =
         value && value[0]?.childId ? value[0]?.childId : value[0][fieldKey]
       const type =
