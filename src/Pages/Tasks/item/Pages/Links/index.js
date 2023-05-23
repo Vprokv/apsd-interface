@@ -362,6 +362,7 @@ const Links = () => {
         onClose={closeWindow}
         value={selectState}
         documentType="ddt_document_content"
+        fieldKey="contentId"
       />
     </div>
   )

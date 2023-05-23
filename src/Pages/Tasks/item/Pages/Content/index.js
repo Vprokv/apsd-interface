@@ -397,6 +397,7 @@ const Content = () => {
         onClose={closeWindow}
         value={selectState}
         documentType="ddt_apsd_content_version"
+        fieldKey="id"
       />
     </div>
   )
