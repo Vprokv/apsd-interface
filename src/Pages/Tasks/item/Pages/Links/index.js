@@ -30,7 +30,7 @@ import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ViewIcon from '@/Icons/ViewIcon'
-import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import {
@@ -39,6 +39,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Tips from '@/Components/Tips'
+import { LinkWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -121,6 +122,8 @@ const columns = [
     sizes: 220,
   },
 ]
+
+const ContentWindow = LinkWindowWrapper(PreviewContentWindow)
 
 const Links = () => {
   const id = useContext(DocumentIdContext)
@@ -357,12 +360,10 @@ const Links = () => {
       >
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
-      <PreviewContentWindow
+      <ContentWindow
         open={renderPreviewWindow}
         onClose={closeWindow}
         value={selectState}
-        documentType="ddt_document_content"
-        fieldKey="contentId"
       />
     </div>
   )

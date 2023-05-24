@@ -33,7 +33,7 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import DownloadIcon from '@/Icons/DownloadIcon'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
-import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import EditIcon from '@/Icons/editIcon'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import {
@@ -43,6 +43,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
+import { ContentWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -112,6 +113,8 @@ const customMessagesFuncMap = {
     }
   },
 }
+
+const ContentWindow = ContentWindowWrapper(PreviewContentWindow)
 
 const Content = () => {
   const id = useContext(DocumentIdContext)
@@ -392,12 +395,10 @@ const Content = () => {
         open={openEditWindow}
         onClose={closeEditWindow}
       />
-      <PreviewContentWindow
+      <ContentWindow
         open={renderPreviewWindow}
         onClose={closeWindow}
         value={selectState}
-        documentType="ddt_apsd_content_version"
-        fieldKey="id"
       />
     </div>
   )

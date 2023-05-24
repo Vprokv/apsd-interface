@@ -68,12 +68,16 @@ export const ButtonForIcon = styled.button`
   //}
 `
 
-const CustomIconComponent = ({ tomId, content: { mimeType, contentId } }) => {
+const CustomIconComponent = (value) => {
+  const {
+    tomId,
+    content: { mimeType },
+  } = value
   const showButton = useContext(ShowContentByTypeButtonContext)
   const { [mimeType]: Icon = anyTypeIcon } = typesIcon
   return (
     tomId && (
-      <ButtonForIcon onClick={showButton(contentId)} className="">
+      <ButtonForIcon onClick={showButton(value)} className="">
         {<img src={Icon} alt="" className=" w-4 h-4" />}
       </ButtonForIcon>
     )

@@ -14,7 +14,6 @@ export const GridContainer = styled.div`
 `
 
 const RowComponent = ({ children, onDoubleClick, value }) => {
-  console.log(onDoubleClick, 'onDoubleClick')
   return (
     <GridContainer onDoubleClick={onDoubleClick(value)}>
       {children}
@@ -23,7 +22,7 @@ const RowComponent = ({ children, onDoubleClick, value }) => {
 }
 
 RowComponent.propTypes = {
-  onDoubleClick: PropTypes.func.isRequired,
+  onDoubleClick: PropTypes.func,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
   children: PropTypes.oneOfType([
