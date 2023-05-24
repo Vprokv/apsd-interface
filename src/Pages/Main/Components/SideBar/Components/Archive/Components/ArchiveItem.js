@@ -67,7 +67,22 @@ const ArchiveItem = ({
     <WithToggleNavigationItem id={levelId} key={levelId}>
       {({ isDisplayed, toggleDisplayedFlag }) => (
         <div className=" font-size-12 mt-2 ">
-          <div className="flex w-full py-1.5 justify-between">
+          <div className="flex w-full py-1.5 justify-start">
+            {expand && (
+              <button
+                className="pl-2 mr-2 "
+                type="button"
+                onClick={toggleDisplayedFlag}
+              >
+                <Icon
+                  icon={angleIcon}
+                  size={10}
+                  className={`color-text-secondary ${
+                    isDisplayed ? '' : 'rotate-180'
+                  }`}
+                />
+              </button>
+            )}
             <ButtonComponent
               id={id}
               toggleChildrenRender={toggleDisplayedFlag}
@@ -83,21 +98,6 @@ const ArchiveItem = ({
                 }
               }}
             />
-            {expand && (
-              <button
-                className="pl-2 "
-                type="button"
-                onClick={toggleDisplayedFlag}
-              >
-                <Icon
-                  icon={angleIcon}
-                  size={10}
-                  className={`color-text-secondary ${
-                    isDisplayed ? '' : 'rotate-180'
-                  }`}
-                />
-              </button>
-            )}
           </div>
 
           {isDisplayed && (
