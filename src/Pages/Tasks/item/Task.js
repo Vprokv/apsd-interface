@@ -45,6 +45,8 @@ import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
+import CancelIcon from '@/Pages/Tasks/item/Icons/CancelIcon.svg'
+import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
 import DownloadDocument from '@/Pages/Tasks/item/Icons/DownloadDocument.svg'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
@@ -61,6 +63,7 @@ import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdate
 import RejectPrepareWindow from '@/Pages/Tasks/item/Components/RejectPrepareWindow'
 import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
 import downloadFile from '@/Utils/DownloadFile'
+import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -394,6 +397,36 @@ const Task = () => {
         handler: () =>
           setComponent({ Component: CreatingAdditionalAgreementWindowWrapper }),
       },
+      apsd_reject_cancel: {
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_BUSINESS_DOCUMENT_RECALL, {
+              documentId,
+              documentType: type,
+              signal: 'apsd_reject_cancel',
+            })
+            getNotification(customMessagesFuncMap[status]())
+            setTabState({ loading: false, fetched: false })
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
+        icon: ReCancelIcon,
+      },
+      apsd_cancel: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <CancelWindow
+                signal={'apsd_cancel'}
+                documentType={type}
+                {...props}
+              />
+            ),
+          }),
+        icon: CancelIcon,
+      },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
@@ -455,6 +488,7 @@ const Task = () => {
             documentId={documentId}
             onClose={closeAction}
             loadData={loadData}
+            stateId={ITEM_TASK}
           />
         )}
         <FormWindow open={message} onClose={closeModalWindow}>

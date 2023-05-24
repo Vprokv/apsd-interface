@@ -12,8 +12,10 @@ import {
   URL_BUSINESS_DOCUMENT_RECALL,
   URL_CONTENT_SEND_EEHD,
   URL_DOCUMENT_ITEM,
-  URL_DOCUMENT_UPDATE, URL_DOWNLOAD_FILE,
-  URL_INTEGRATION_SEND_LETTER, URL_INTEGRATION_TOM_DOWNLOAD,
+  URL_DOCUMENT_UPDATE,
+  URL_DOWNLOAD_FILE,
+  URL_INTEGRATION_SEND_LETTER,
+  URL_INTEGRATION_TOM_DOWNLOAD,
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
@@ -52,8 +54,11 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
-import downloadFile from "@/Utils/DownloadFile";
-import DownloadDocument from "@/Pages/Tasks/item/Icons/DownloadDocument.svg";
+import downloadFile from '@/Utils/DownloadFile'
+import DownloadDocument from '@/Pages/Tasks/item/Icons/DownloadDocument.svg'
+import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
+import CancelIcon from "@/Pages/Tasks/item/Icons/CancelIcon.svg";
+import ReCancelIcon from "@/Pages/Tasks/item/Icons/ReCancelIcon.svg";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -72,6 +77,11 @@ const Document = () => {
   const api = useContext(ApiContext)
   const [message, setMessage] = useState('')
   const getNotification = useOpenNotification()
+  const [ActionComponent, setActionComponent] = useState(null)
+  const closeAction = useCallback(() => setActionComponent(null), [])
+  const setComponent = useCallback((Comp) => {
+    setActionComponent(Comp)
+  }, [])
   const loadData = useCallback(async () => {
     try {
       const { data } = await api.post(URL_DOCUMENT_ITEM, {
@@ -80,7 +90,7 @@ const Document = () => {
       })
       return data
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
   }, [api, getNotification, id, type])
@@ -205,7 +215,7 @@ const Document = () => {
             const { data, status } = await api.post(
               URL_INTEGRATION_TOM_DOWNLOAD,
               {
-                documentId,
+                documentId: id,
               },
             )
 
@@ -233,6 +243,36 @@ const Document = () => {
           }
         },
         icon: DownloadDocument,
+      },
+      apsd_reject_cancel: {
+        handler: async () => {
+          try {
+            const { status } = await api.post(URL_BUSINESS_DOCUMENT_RECALL, {
+              documentId: id,
+              documentType: type,
+              signal: 'apsd_reject_cancel',
+            })
+            getNotification(customMessagesFuncMap[status]())
+            setTabState({ loading: false, fetched: false })
+          } catch (e) {
+            const { response: { status, data } = {} } = e
+            getNotification(customMessagesFuncMap[status](data))
+          }
+        },
+        icon: ReCancelIcon,
+      },
+      apsd_cancel: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <CancelWindow
+                signal={'apsd_cancel'}
+                documentType={type}
+                {...props}
+              />
+            ),
+          }),
+        icon: CancelIcon,
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
@@ -266,6 +306,7 @@ const Document = () => {
       getNotification,
       id,
       remoteSideBarUpdater,
+      setComponent,
       setTabState,
       type,
       updateCurrentTabChildrenStates,
@@ -302,6 +343,14 @@ const Document = () => {
             <DocumentActions documentActions={wrappedDocumentActions} />
           </SidebarContainer>
         </Layout>
+        {ActionComponent && (
+          <ActionComponent.Component
+            open={true}
+            documentId={id}
+            onClose={closeAction}
+            stateId={ITEM_DOCUMENT}
+          />
+        )}
         <FormWindow open={message} onClose={closeModalWindow}>
           <div className="text-center mt-4 mb-12">{message}</div>
           <SecondaryGreyButton
