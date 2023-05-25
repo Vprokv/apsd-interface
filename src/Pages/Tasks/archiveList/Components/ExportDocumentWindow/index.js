@@ -2,7 +2,11 @@ import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import { URL_ENTITY_LIST } from '@/ApiList'
+import {
+  URL_DOWNLOAD_CONTENT,
+  URL_ENTITY_LIST,
+  URL_STORAGE_DOCUMENT,
+} from '@/ApiList'
 import { ApiContext } from '@/contants'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -11,7 +15,10 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import Input from '@/Components/Fields/Input'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
-import { NOTIFICATION_TYPE_INFO } from '@/Components/Notificator/constants'
+import {
+  defaultFunctionsMap,
+  NOTIFICATION_TYPE_INFO,
+} from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import styled from 'styled-components'
 
@@ -38,29 +45,40 @@ const fieldsMap = {
     'email',
     'contentType',
     'status',
-    'withArchive',
+    'archiveVersion',
   ],
-  ddt_project_calc_type_doc: ['email', 'contentType', 'withArchive'],
+  ddt_project_calc_type_doc: ['email', 'contentType', 'archiveVersion'],
 }
 
 const rules = {
   contentType: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const ExportDocumentWindow = ({ title, open, onClose, fields }) => {
-  const [filter, setFilter] = useState({ withArchive: true })
+const ExportDocumentWindow = ({ title, open, onClose, fields, id, type }) => {
+  const api = useContext(ApiContext)
+  const [filter, setFilter] = useState({ archiveVersion: true })
   const { setOpen } = useContext(OpenWindowContext)
 
   const getNotification = useOpenNotification()
 
-  const onExport = useCallback(() => {
-    getNotification({
-      type: NOTIFICATION_TYPE_INFO,
-      message: 'Функцион в разработке',
-    })
-    setOpen(false)()
-    setFilter({ withArchive: true })
-  }, [getNotification, setOpen])
+  const onExport = useCallback(async () => {
+    try {
+      const {
+        data: { filekey, tableName },
+      } = await api.post(URL_DOWNLOAD_CONTENT, {
+        documentType: type,
+        documentId: id,
+        ...filter,
+      })
+
+      setOpen(false)()
+      setFilter({ archiveVersion: true })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter, getNotification, id, setOpen, type])
+
   return (
     <StandardSizeModalWindow title={title} open={open} onClose={onClose}>
       <FilterForm
@@ -89,7 +107,8 @@ ExportDocumentWindow.propTypes = {
   fields: PropTypes.array.isRequired,
 }
 
-const ExportDocumentWindowWrapper = ({ type, ...props }) => {
+const ExportDocumentWindowWrapper = (props) => {
+  const { type } = props
   const api = useContext(ApiContext)
 
   const columnsMap = {
@@ -100,7 +119,7 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
       component: Input,
     },
     contentType: {
-      id: 'contentType',
+      id: 'exportType',
       label: 'Тип содержимого',
       placeholder: 'Введите значение',
       component: Select,
@@ -108,23 +127,24 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
       labelKey: 'typeLabel',
       options: [
         {
-          typeName: 'file',
+          typeName: 'files_export',
           typeLabel: 'Файлы',
         },
         {
-          typeName: 'linkDocument',
+          typeName: 'link_export',
           typeLabel: 'Документы',
         },
         {
-          typeName: 'allDocument',
+          typeName: 'all_export',
           typeLabel: 'Всё',
         },
       ],
     },
     status: {
-      id: 'status',
+      id: 'statuses',
       label: 'Тип документа',
       component: LoadableSelect,
+      multiply: true,
       valueKey: 'dss_name',
       labelKey: 'dss_caption',
       loadFunction: async (query) => {
@@ -135,8 +155,8 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
         return data
       },
     },
-    withArchive: {
-      id: 'withArchive',
+    archiveVersion: {
+      id: 'archiveVersion',
       component: CheckBox,
       text: 'Включая архивные копии',
     },
