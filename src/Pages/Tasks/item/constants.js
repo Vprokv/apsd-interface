@@ -10,7 +10,7 @@ import ApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet'
 import React from 'react'
 import { ITEM_DOCUMENT } from '@/contants'
 import PrintIcon from './Icons/PrintIcon.svg'
-import UploadDoc from './Icons/UploadDoc.svg'
+import NextIcon from './Icons/NextIcon.svg'
 import FinishApproveIcon from './Icons/FinishApproveIcon.svg'
 import RejectApproveIcon from './Icons/RejectApproveIcon.svg'
 import AnnulIcon from './Icons/AnnulIcon.svg'
@@ -20,6 +20,7 @@ import RejectWithRemarks from './Icons/RejectWithRemarks.svg'
 import Repeat from './Icons/Repeat.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 import Requisites_New from '@/Parser/Requisites_New'
+import UploadDoc from './Icons/UploadDoc.svg'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
@@ -104,6 +105,7 @@ export const defaultTaskIcon = {
   on_cancel: AnnulIcon,
   sent_to_curator: StrelkaRight,
   on_approve: StrelkaRight,
+  on_prepare: StrelkaRight,
   apsd_sap_prepare: SendToCheck,
   apsd_sap_prepare_reject: RejectWithRemarks,
   finish_consider: FinishApproveIcon,
@@ -111,4 +113,6 @@ export const defaultTaskIcon = {
   apsd_consolidate: FinishApproveIcon,
   apsd_consolidate_reject: RejectApproveIcon,
   apsd_all_consider: Repeat,
+  onward: NextIcon,
+  additional_agreement: UploadDoc,
 }
