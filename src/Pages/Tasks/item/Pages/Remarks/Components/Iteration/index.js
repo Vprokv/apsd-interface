@@ -4,6 +4,8 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import styled from 'styled-components'
 import IterationRemarks from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import IterationRemarksCheckBoxComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/IterationRemarksCheckBox'
 
 const Row = styled.div`
   background-color: var(--notifications);
@@ -53,12 +55,14 @@ const IterationComponent = ({
       {!isDisplayed &&
         iterations.map(({ number, remarks }) => (
           <>
-            <button
-              type={'button'}
-              onClick={() => toggleIterationDisplayedFlag(number)}
-            >
-              <Row className="h-12 flex items-center">
-                <div className="pl-2">
+            <Row className="h-12 flex items-center">
+              <IterationRemarksCheckBoxComponent remarks={remarks} />
+              <button
+                className="w-full"
+                type={'button'}
+                onClick={() => toggleIterationDisplayedFlag(number)}
+              >
+                <div className="h-12 flex items-center w-full">
                   <Icon
                     icon={angleIcon}
                     size={10}
@@ -66,12 +70,12 @@ const IterationComponent = ({
                       !show[number] ? '' : 'rotate-180'
                     }`}
                   />
+                  <div className="ml-4 font-medium flex items-center ">
+                    {`${stageName} (Итерация ${number})`}
+                  </div>
                 </div>
-                <div className="ml-4 font-medium flex items-center ">
-                  {`${stageName} (Итерация ${number})`}
-                </div>
-              </Row>
-            </button>
+              </button>
+            </Row>
             {!show[number] && <IterationRemarks remarks={remarks} />}
           </>
         ))}

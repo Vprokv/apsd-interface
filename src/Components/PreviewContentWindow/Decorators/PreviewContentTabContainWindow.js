@@ -7,7 +7,6 @@ import { TokenContext } from '@/contants'
 const PreviewContentTabContainWindow = (Component) => {
   const WindowContent = forwardRef(({ value, ...props }, ref) => {
     const { token } = useContext(TokenContext)
-    console.log(value, 'value')
     const url = useMemo(() => {
       let url = ''
       if (value?.length) {
