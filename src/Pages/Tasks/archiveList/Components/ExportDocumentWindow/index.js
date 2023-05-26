@@ -6,7 +6,6 @@ import {
   URL_DOWNLOAD_CONTENT,
   URL_DOWNLOAD_FILE,
   URL_ENTITY_LIST,
-  URL_STORAGE_DOCUMENT,
 } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import CheckBox from '@/Components/Inputs/CheckBox'
@@ -17,14 +16,12 @@ import Input from '@/Components/Fields/Input'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
 import {
-  defaultFunctionsMap,
   NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_INFO,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import styled from 'styled-components'
 import downloadFile from '@/Utils/DownloadFile'
-import log from 'tailwindcss/lib/util/log'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
