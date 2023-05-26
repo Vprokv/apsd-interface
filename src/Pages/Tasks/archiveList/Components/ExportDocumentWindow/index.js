@@ -4,6 +4,7 @@ import ModalWindowWrapper from '@/Components/ModalWindow'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import {
   URL_DOWNLOAD_CONTENT,
+  URL_DOWNLOAD_FILE,
   URL_ENTITY_LIST,
   URL_STORAGE_DOCUMENT,
 } from '@/ApiList'
@@ -17,10 +18,13 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
 import {
   defaultFunctionsMap,
+  NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_INFO,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import styled from 'styled-components'
+import downloadFile from '@/Utils/DownloadFile'
+import log from 'tailwindcss/lib/util/log'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -62,21 +66,50 @@ const ExportDocumentWindow = ({ title, open, onClose, fields, id, type }) => {
   const getNotification = useOpenNotification()
 
   const onExport = useCallback(async () => {
-    try {
-      const {
-        data: { filekey, tableName },
-      } = await api.post(URL_DOWNLOAD_CONTENT, {
-        documentType: type,
-        documentId: id,
-        ...filter,
-      })
+    await new Promise((res) => {
+      api
+        .post(URL_DOWNLOAD_CONTENT, {
+          documentType: type,
+          documentId: id,
+          ...filter,
+        })
+        .then((response) => {
+          res(response)
+        })
+        .catch(() =>
+          getNotification({
+            type: NOTIFICATION_TYPE_ERROR,
+            message: 'Ошибка получания файла',
+          }),
+        )
+    })
+      .then(({ data: { filekey, tableName } }) => {
+        getNotification({
+          type: NOTIFICATION_TYPE_INFO,
+          message: 'Формирование архива начато',
+        })
+        setOpen(false)()
 
-      setOpen(false)()
-      setFilter({ archiveVersion: true })
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
+        return api.post(
+          URL_DOWNLOAD_FILE,
+          {
+            type: tableName,
+            column: 'dsc_content',
+            id: filekey,
+          },
+          { responseType: 'blob' },
+        )
+      })
+      .then((result) => {
+        downloadFile(result)
+        setFilter({ archiveVersion: true })
+      })
+      .catch(() =>
+        getNotification({
+          type: NOTIFICATION_TYPE_ERROR,
+          message: 'Ошибка получания архива',
+        }),
+      )
   }, [api, filter, getNotification, id, setOpen, type])
 
   return (
@@ -102,6 +135,8 @@ const ExportDocumentWindow = ({ title, open, onClose, fields, id, type }) => {
 
 ExportDocumentWindow.propTypes = {
   title: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   fields: PropTypes.array.isRequired,
@@ -144,7 +179,7 @@ const ExportDocumentWindowWrapper = (props) => {
       id: 'statuses',
       label: 'Тип документа',
       component: LoadableSelect,
-      multiply: true,
+      multiple: true,
       valueKey: 'dss_name',
       labelKey: 'dss_caption',
       loadFunction: async (query) => {
@@ -173,6 +208,7 @@ const ExportDocumentWindowWrapper = (props) => {
 
 ExportDocumentWindowWrapper.propTypes = {
   type: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 }
 
 export default ExportDocumentWindowWrapper
