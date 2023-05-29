@@ -6,11 +6,14 @@ import {
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
+  URL_LINK_USER_LIST,
   URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
-import UserSelect from '@/Components/Inputs/UserSelect'
+import UserSelect, {
+  AddUserOptionsFullName,
+} from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ButtonForIcon, SecondaryGreyButton } from '@/Components/Button'
@@ -40,6 +43,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Tips from '@/Components/Tips'
 import { LinkWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
+import LinkOrgStructureComponent from '@/Pages/Tasks/item/Pages/Links/Components/LinkOrstructureComponent'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -226,7 +230,22 @@ const Links = () => {
     () => [
       {
         id: 'authorName',
-        component: UserSelect,
+        component: LinkOrgStructureComponent,
+        loadFunction: async (search) => {
+          const {
+            data: { content },
+          } = await api.post(URL_LINK_USER_LIST, {
+            parentId: id,
+            // sort: [
+            //   {
+            //     property: sortQuery.key,
+            //     direction: sortQuery.direction,
+            //   },
+            // ],
+            filter: { search },
+          })
+          return content.map(AddUserOptionsFullName)
+        },
         placeholder: 'Автор связи',
         valueKey: 'userName',
       },
@@ -245,7 +264,7 @@ const Links = () => {
         },
       },
     ],
-    [api],
+    [api, id],
   )
 
   const onDelete = useCallback(async () => {
