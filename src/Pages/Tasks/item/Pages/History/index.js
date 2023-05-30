@@ -15,6 +15,7 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
+import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -29,33 +30,82 @@ const columns = [
   {
     id: 'eventLabel',
     label: 'Событие',
-    component: ({ ParentValue: { eventLabel } }) => (
-      <BaseCell value={eventLabel} className="flex items-center" />
+    component: ({ ParentValue: { stageInfo, eventLabel } }) => (
+      <BaseCell
+        value={stageInfo ? stageInfo : eventLabel}
+        className="flex items-center"
+      />
     ),
-    sizes: 250,
+    sizes: 150,
   },
   {
-    id: 'performerId',
+    id: 'stageName',
+    label: 'Этап',
+    component: ({ ParentValue: { stageName } }) => (
+      <BaseCell value={stageName} className="flex items-center" />
+    ),
+    sizes: 200,
+  },
+  {
+    id: 'stageIteration',
+    label: 'Итерация',
+    component: ({ ParentValue: { stageIteration } }) => (
+      <BaseCell value={stageIteration} className="flex items-center" />
+    ),
+    sizes: 80,
+  },
+  {
+    id: 'eventStatus',
+    label: 'Состояние',
+    component: ({ ParentValue: { eventStatus } }) => (
+      <BaseCell value={eventStatus} className="flex items-center" />
+    ),
+    sizes: 180,
+  },
+  {
+    id: 'performer',
     label: 'Исполнитель',
     component: ({
       ParentValue: {
-        performer: { lastName = '', firstName, middleName },
+        performer: { lastName = '', firstName, middleName, position },
       },
     }) => {
       const fio = `${lastName} ${(firstName && `${firstName[0]}.`) || ''} ${
         (middleName && `${middleName[0]}.`) || ''
       }`
-      return <BaseCell value={fio} className="flex items-center" />
+      return (
+        <BaseSubCell
+          value={fio}
+          subValue={position}
+          className="flex items-center"
+        />
+      )
     },
     sizes: 250,
   },
   {
-    id: 'eventDate',
+    id: 'taskReceiveDate',
     label: 'Дата получения',
-    component: ({ ParentValue: { eventDate } }) => (
-      <BaseCell value={eventDate} className="flex items-center" />
+    component: ({ ParentValue: { taskReceiveDate } }) => (
+      <BaseCell value={taskReceiveDate} className="flex items-center" />
     ),
-    sizes: 250,
+    sizes: 170,
+  },
+  {
+    id: 'taskReadDate',
+    label: 'Дата начала работы',
+    component: ({ ParentValue: { taskReadDate } }) => (
+      <BaseCell value={taskReadDate} className="flex items-center" />
+    ),
+    sizes: 170,
+  },
+  {
+    id: 'taskExecutionDate',
+    label: 'Дата окончания работы',
+    component: ({ ParentValue: { taskExecutionDate } }) => (
+      <BaseCell value={taskExecutionDate} className="flex items-center" />
+    ),
+    sizes: 170,
   },
   {
     id: 'description',
@@ -72,7 +122,7 @@ const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({
-    key: 'eventDate',
+    key: 'taskReceiveDate',
     direction: 'DESC',
   })
   const documentId = useContext(DocumentIdContext)
