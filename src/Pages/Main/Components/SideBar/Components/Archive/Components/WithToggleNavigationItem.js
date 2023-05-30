@@ -1,6 +1,4 @@
 import PropTypes from 'prop-types'
-import { useRecoilState } from 'recoil'
-import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import { useCallback, useState } from 'react'
 
 const WithToggleNavigationItem = ({ id, children }) => {

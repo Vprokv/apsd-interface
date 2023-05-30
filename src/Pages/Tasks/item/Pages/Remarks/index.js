@@ -35,6 +35,10 @@ const Remarks = () => {
   const [toggle, onToggle] = useState({})
   const [open, setOpen] = useState(true)
   const getNotification = useOpenNotification()
+  const [sortQuery, onSort] = useState({
+    key: 'number',
+    direction: 'DESC',
+  })
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REMARKS,
@@ -59,6 +63,12 @@ const Remarks = () => {
       const { data } = await api.post(URL_REMARK_LIST, {
         documentId: id,
         filter,
+        sort: [
+          {
+            direction: sortQuery.direction,
+            property: sortQuery.key,
+          },
+        ],
       })
 
       return data

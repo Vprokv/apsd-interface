@@ -33,7 +33,7 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import DownloadIcon from '@/Icons/DownloadIcon'
 import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
-import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import EditIcon from '@/Icons/editIcon'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import {
@@ -43,6 +43,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
+import { ContentWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -112,6 +113,8 @@ const customMessagesFuncMap = {
     }
   },
 }
+
+const ContentWindow = ContentWindowWrapper(PreviewContentWindow)
 
 const Content = () => {
   const id = useContext(DocumentIdContext)
@@ -270,6 +273,27 @@ const Content = () => {
 
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
 
+  const onDoubleClick = useCallback(
+    (value) => () => {
+      setSelectState((prevValue) => {
+        const prev = [...prevValue]
+        prev.splice(0, 0, value)
+        return prev
+      })
+      setRenderPreviewWindowState(true)
+    },
+    [],
+  )
+
+  const closeWindow = useCallback(() => {
+    setSelectState((prev) => {
+      const prevState = [...prev]
+      prevState.splice(0, 1)
+      return prevState
+    })
+    setRenderPreviewWindowState(false)
+  }, [])
+
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       <div className="flex items-center form-element-sizes-32 mb-4">
@@ -341,8 +365,9 @@ const Content = () => {
       </FormWindow>
       <ListTable
         rowComponent={useMemo(
-          () => (props) => <ShowLineRowComponent {...props} />,
-          [],
+          () => (props) =>
+            <ShowLineRowComponent {...props} onDoubleClick={onDoubleClick} />,
+          [onDoubleClick],
         )}
         value={content || []}
         columns={columns}
@@ -375,11 +400,10 @@ const Content = () => {
         open={openEditWindow}
         onClose={closeEditWindow}
       />
-      <PreviewContentWindow
+      <ContentWindow
         open={renderPreviewWindow}
-        onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-        id={selectState[0]?.id}
-        type="ddt_apsd_content_version"
+        onClose={closeWindow}
+        value={selectState}
       />
     </div>
   )

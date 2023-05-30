@@ -92,23 +92,6 @@ const MoreActionComponent = (props) => {
     [api, getNotification, remarkId, setTabState],
   )
 
-  const onSetRemark = useCallback(async () => {
-    try {
-      const { status } = await api.post(URL_REMARK_EDIT_SET_REMARK, {
-        documentId,
-        remarkId,
-        vault: !setRemark,
-      })
-      getNotification(
-        customMessagesFuncMap[status]('Изменение выполнено успешно'),
-      )
-      setTabState({ loading: false, fetched: false })
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(customMessagesFuncMap[status](data))
-    }
-  }, [api, documentId, getNotification, remarkId, setRemark, setTabState])
-
   return (
     <div className="flex items-center w-full justify-center">
       <ContHover>
@@ -150,13 +133,6 @@ const MoreActionComponent = (props) => {
                 Удалить ответ
               </StyledItem>
             )}
-            <StyledItem
-              onClick={onSetRemark}
-              disabled={!vault}
-              className="mb-3 font-size-12"
-            >
-              {setRemark ? 'Исключить из свода' : 'Включить в свод'}
-            </StyledItem>
           </StyledContextMenu>
         </ContextMenu>
       )}

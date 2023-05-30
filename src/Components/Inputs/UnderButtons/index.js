@@ -46,6 +46,7 @@ UnderButtons.defaultProps = {
 
 UnderButtons.propTypes = {
   leftFunc: PropTypes.func,
+  disabled: PropTypes.bool,
   leftLabel: PropTypes.string,
   rightFunc: PropTypes.func,
   rightLabel: PropTypes.string,

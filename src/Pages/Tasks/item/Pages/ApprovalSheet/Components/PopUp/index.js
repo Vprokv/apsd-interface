@@ -45,11 +45,14 @@ const PopUp = ({ node }) => {
 
   const onDelete = useCallback(async () => {
     try {
-      const response = await api.post(URL_APPROVAL_SHEET_DELETE, {
+      await api.post(URL_APPROVAL_SHEET_DELETE, {
         id,
       })
       setTabState({ loading: false, fetched: false })
-      getNotification(customMessagesFuncMap[response.status]())
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Этап удален успешно',
+      })
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
@@ -57,9 +60,10 @@ const PopUp = ({ node }) => {
     changeModalState(false)()
   }, [api, changeModalState, getNotification, id, setTabState])
 
-  const openModal = useCallback(() => {
-    approvers && approvers.length > 0 ? onDelete() : changeModalState(true)()
-  }, [approvers, changeModalState, onDelete])
+  const openModal = useCallback(
+    () => changeModalState(true)(),
+    [changeModalState],
+  )
   return (
     <>
       <Tips text="Удалить этап">

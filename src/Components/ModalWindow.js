@@ -49,6 +49,7 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 `
 
 export const FormWindow = styled(ModalWindow)`
+  max-width: 450px;
   width: 30%;
   margin: auto;
 `

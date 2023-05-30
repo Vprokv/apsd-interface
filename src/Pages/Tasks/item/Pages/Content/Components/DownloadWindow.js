@@ -31,9 +31,9 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import styled from 'styled-components'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
-  width: 40%;
+  min-width: 40%;
   min-height: 400px;
-  height: 45%;
+  //height: 45%;
   margin: auto;
 `
 
@@ -172,8 +172,8 @@ const DownloadWindow = ({ onClose, contentId }) => {
   }, [api, context, userObject])
 
   return (
-    <div className="flex flex-col overflow-hidden h-full">
-      <ScrollBar>
+    <div className="flex flex-col overflow-hidden h-full grow">
+      <ScrollBar className="flex grow flex-col">
         <FilterForm
           inputWrapper={InputWrapper}
           value={values}

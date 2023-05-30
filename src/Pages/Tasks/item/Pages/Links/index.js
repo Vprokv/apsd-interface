@@ -1,19 +1,19 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import {
-  ApiContext,
-  TASK_ITEM_LINK,
-} from '@/contants'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_DOWNLOAD_FILE,
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
+  URL_LINK_USER_LIST,
   URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
-import UserSelect from '@/Components/Inputs/UserSelect'
+import UserSelect, {
+  AddUserOptionsFullName,
+} from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ButtonForIcon, SecondaryGreyButton } from '@/Components/Button'
@@ -33,7 +33,7 @@ import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ViewIcon from '@/Icons/ViewIcon'
-import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import {
@@ -42,6 +42,8 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Tips from '@/Components/Tips'
+import { LinkWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
+import LinkOrgStructureComponent from '@/Pages/Tasks/item/Pages/Links/Components/LinkOrstructureComponent'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -124,6 +126,8 @@ const columns = [
     sizes: 220,
   },
 ]
+
+const ContentWindow = LinkWindowWrapper(PreviewContentWindow)
 
 const Links = () => {
   const id = useContext(DocumentIdContext)
@@ -226,7 +230,22 @@ const Links = () => {
     () => [
       {
         id: 'authorName',
-        component: UserSelect,
+        component: LinkOrgStructureComponent,
+        loadFunction: async (search) => {
+          const {
+            data: { content },
+          } = await api.post(URL_LINK_USER_LIST, {
+            parentId: id,
+            // sort: [
+            //   {
+            //     property: sortQuery.key,
+            //     direction: sortQuery.direction,
+            //   },
+            // ],
+            filter: { search },
+          })
+          return content.map(AddUserOptionsFullName)
+        },
         placeholder: 'Автор связи',
         valueKey: 'userName',
       },
@@ -245,7 +264,7 @@ const Links = () => {
         },
       },
     ],
-    [api],
+    [api, id],
   )
 
   const onDelete = useCallback(async () => {
@@ -260,6 +279,27 @@ const Links = () => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, getNotification, selectState, setTabState])
+
+  const onDoubleClick = useCallback(
+    (value) => () => {
+      setSelectState((prevValue) => {
+        const prev = [...prevValue]
+        prev.splice(0, 0, value)
+        return prev
+      })
+      setRenderPreviewWindowState(true)
+    },
+    [],
+  )
+
+  const closeWindow = useCallback(() => {
+    setSelectState((prev) => {
+      const prevState = [...prev]
+      prevState.splice(0, 1)
+      return prevState
+    })
+    setRenderPreviewWindowState(false)
+  }, [])
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -316,8 +356,8 @@ const Links = () => {
       <ListTable
         rowComponent={useMemo(
           () => (props) =>
-            <RowComponent onDoubleClick={() => null} {...props} />,
-          [],
+            <RowComponent onDoubleClick={onDoubleClick} {...props} />,
+          [onDoubleClick],
         )}
         value={content}
         columns={columns}
@@ -340,11 +380,10 @@ const Links = () => {
       >
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
-      <PreviewContentWindow
+      <ContentWindow
         open={renderPreviewWindow}
-        onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-        id={selectState[0]?.contentId}
-        type="ddt_document_content"
+        onClose={closeWindow}
+        value={selectState}
       />
     </div>
   )

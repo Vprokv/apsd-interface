@@ -32,7 +32,7 @@ import CreateVolume from './Components/CreateVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 import DateCell from './Components/DateCell'
 import ViewIcon from '@/Icons/ViewIcon'
-import PreviewContentWindow from '@/Components/PreviewContentWindow'
+import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import {
@@ -43,6 +43,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/TitleNameComponent'
 import Tips from '@/Components/Tips'
 import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
+import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -123,6 +124,8 @@ const columns = [
   },
 ]
 
+const ContentWindow = ContainWindowWrapper(PreviewContentWindow)
+
 const Contain = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
@@ -134,7 +137,6 @@ const Contain = () => {
   const [addVolumeState, setAddVolumeState] = useState({})
   const [addLinkState, setAddLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
-  const [showContentByTypeButton, setShowContentByTypeButton] = useState()
   const getNotification = useOpenNotification()
   const [defaultOpen, setDefaultOpen] = useState(true)
 
@@ -305,13 +307,25 @@ const Contain = () => {
   )
 
   const onShowContentByTypeButton = useCallback(
-    (id) => () => {
-      setSelectState([])
-      setShowContentByTypeButton(id)
+    (value) => () => {
+      setSelectState((prevValue) => {
+        const prev = [...prevValue]
+        prev.splice(0, 0, value)
+        return prev
+      })
       setRenderPreviewWindowState(true)
     },
     [],
   )
+
+  const closeWindow = useCallback(() => {
+    setSelectState((prev) => {
+      const prevState = [...prev]
+      prevState.splice(0, 1)
+      return prevState
+    })
+    setRenderPreviewWindowState(false)
+  }, [])
 
   const changeOpenState = useCallback(() => setDefaultOpen((prev) => !prev), [])
 
@@ -405,11 +419,10 @@ const Contain = () => {
             loading={loading}
           />
         </ShowContentByTypeButtonContext.Provider>
-        <PreviewContentWindow
+        <ContentWindow
           open={renderPreviewWindow}
-          onClose={useCallback(() => setRenderPreviewWindowState(false), [])}
-          id={selectState[0]?.content?.id || showContentByTypeButton}
-          type="ddt_document_content"
+          onClose={closeWindow}
+          value={selectState}
         />
       </div>
     </LoadContainChildrenContext.Provider>

@@ -226,7 +226,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
         open={open}
         onClose={changeModalState(false)}
       >
-        <div className="flex flex-col overflow-hidden h-full">
+        <div className="flex flex-col overflow-hidden h-full grow">
           <ScrollBar>
             <div className="flex py-4">
               <WithValidationForm

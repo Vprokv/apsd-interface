@@ -2,7 +2,11 @@ import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import { URL_ENTITY_LIST } from '@/ApiList'
+import {
+  URL_DOWNLOAD_CONTENT,
+  URL_DOWNLOAD_FILE,
+  URL_ENTITY_LIST,
+} from '@/ApiList'
 import { ApiContext } from '@/contants'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -11,9 +15,13 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import Input from '@/Components/Fields/Input'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
-import { NOTIFICATION_TYPE_INFO } from '@/Components/Notificator/constants'
+import {
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_INFO,
+} from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import styled from 'styled-components'
+import downloadFile from '@/Utils/DownloadFile'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -38,29 +46,69 @@ const fieldsMap = {
     'email',
     'contentType',
     'status',
-    'withArchive',
+    'archiveVersion',
   ],
-  ddt_project_calc_type_doc: ['email', 'contentType', 'withArchive'],
+  ddt_project_calc_type_doc: ['email', 'contentType', 'archiveVersion'],
 }
 
 const rules = {
   contentType: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const ExportDocumentWindow = ({ title, open, onClose, fields }) => {
-  const [filter, setFilter] = useState({ withArchive: true })
+const ExportDocumentWindow = ({ title, open, onClose, fields, id, type }) => {
+  const api = useContext(ApiContext)
+  const [filter, setFilter] = useState({ archiveVersion: true })
   const { setOpen } = useContext(OpenWindowContext)
 
   const getNotification = useOpenNotification()
 
-  const onExport = useCallback(() => {
-    getNotification({
-      type: NOTIFICATION_TYPE_INFO,
-      message: 'Функцион в разработке',
+  const onExport = useCallback(async () => {
+    await new Promise((res) => {
+      api
+        .post(URL_DOWNLOAD_CONTENT, {
+          documentType: type,
+          documentId: id,
+          ...filter,
+        })
+        .then((response) => {
+          res(response)
+        })
+        .catch(() =>
+          getNotification({
+            type: NOTIFICATION_TYPE_ERROR,
+            message: 'Ошибка получания файла',
+          }),
+        )
     })
-    setOpen(false)()
-    setFilter({ withArchive: true })
-  }, [getNotification, setOpen])
+      .then(({ data: { filekey, tableName } }) => {
+        getNotification({
+          type: NOTIFICATION_TYPE_INFO,
+          message: 'Формирование архива начато',
+        })
+        setOpen(false)()
+
+        return api.post(
+          URL_DOWNLOAD_FILE,
+          {
+            type: tableName,
+            column: 'dsc_content',
+            id: filekey,
+          },
+          { responseType: 'blob' },
+        )
+      })
+      .then((result) => {
+        downloadFile(result)
+        setFilter({ archiveVersion: true })
+      })
+      .catch(() =>
+        getNotification({
+          type: NOTIFICATION_TYPE_ERROR,
+          message: 'Ошибка получания архива',
+        }),
+      )
+  }, [api, filter, getNotification, id, setOpen, type])
+
   return (
     <StandardSizeModalWindow title={title} open={open} onClose={onClose}>
       <FilterForm
@@ -84,12 +132,15 @@ const ExportDocumentWindow = ({ title, open, onClose, fields }) => {
 
 ExportDocumentWindow.propTypes = {
   title: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   fields: PropTypes.array.isRequired,
 }
 
-const ExportDocumentWindowWrapper = ({ type, ...props }) => {
+const ExportDocumentWindowWrapper = (props) => {
+  const { type } = props
   const api = useContext(ApiContext)
 
   const columnsMap = {
@@ -100,7 +151,7 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
       component: Input,
     },
     contentType: {
-      id: 'contentType',
+      id: 'exportType',
       label: 'Тип содержимого',
       placeholder: 'Введите значение',
       component: Select,
@@ -108,23 +159,24 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
       labelKey: 'typeLabel',
       options: [
         {
-          typeName: 'file',
+          typeName: 'files_export',
           typeLabel: 'Файлы',
         },
         {
-          typeName: 'linkDocument',
+          typeName: 'link_export',
           typeLabel: 'Документы',
         },
         {
-          typeName: 'allDocument',
+          typeName: 'all_export',
           typeLabel: 'Всё',
         },
       ],
     },
     status: {
-      id: 'status',
+      id: 'statuses',
       label: 'Тип документа',
       component: LoadableSelect,
+      multiple: true,
       valueKey: 'dss_name',
       labelKey: 'dss_caption',
       loadFunction: async (query) => {
@@ -135,8 +187,8 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
         return data
       },
     },
-    withArchive: {
-      id: 'withArchive',
+    archiveVersion: {
+      id: 'archiveVersion',
       component: CheckBox,
       text: 'Включая архивные копии',
     },
@@ -153,6 +205,7 @@ const ExportDocumentWindowWrapper = ({ type, ...props }) => {
 
 ExportDocumentWindowWrapper.propTypes = {
   type: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 }
 
 export default ExportDocumentWindowWrapper

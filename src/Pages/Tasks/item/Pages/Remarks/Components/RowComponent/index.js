@@ -8,6 +8,7 @@ import UserComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RowCompon
 import MoreActionComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/MoreActionComponent'
 import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import PropTypes from 'prop-types'
+import RemarkCheckBoxComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkCheckBoxComponent'
 
 export const RowTableComponent = styled.div`
   &:hover {
@@ -20,6 +21,13 @@ export const RowTableComponent = styled.div`
 `
 
 const columns = [
+  {
+    id: 'checkBox',
+    label: '',
+    component: ({ ParentValue: { props, itsRemark } }) =>
+      itsRemark ? <RemarkCheckBoxComponent {...props} /> : <div />,
+    sizes: 50,
+  },
   {
     id: 'number',
     label: 'Номер',

@@ -84,6 +84,7 @@ export const URL_LINK_CREATE = '/apsd/link/create'
 export const URL_LINK_DELETE = '/apsd/link/delete'
 export const URL_LINK_UPDATE = '/apsd/link/update'
 export const URL_LINK_VIEWED_LIST = '/apsd/task/v2/list/recently'
+export const URL_LINK_USER_LIST = ' /apsd/link/list/filters'
 
 // REMARK
 export const URL_REMARK_LIST = '/apsd/remark/list'
@@ -92,7 +93,7 @@ export const URL_REMARK_DELETE = '/apsd/remark/delete'
 export const URL_REMARK_ANSWER = '/apsd/remark/answer'
 export const URL_REMARK_UPDATE = '/apsd/remark/update'
 export const URL_REMARK_PERMIT = '/apsd/remark/permit'
-export const URL_REMARK_EDIT_SET_REMARK = '/apsd/remark/edit/vault'
+export const URL_REMARK_EDIT_SET_REMARK = '/edit/vault'
 
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'
@@ -132,12 +133,16 @@ export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/tom/letter/send'
 export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
 export const URL_BUSINESS_PERMIT = '/apsd/business/permit'
 export const URL_BUSINESS_DOCUMENT_STAGES = '/apsd/business/document/stages'
+export const URL_BUSINESS_DOCUMENT_CANCEL = '/apsd/business/document/cancel'
 
 export const URL_PREVIEW_VERSION = 'preview/pdf/ddt_apsd_content_version'
 export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'
 
 // DOWNLOAD
 export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'
+export const URL_DOWNLOAD_CONTENT = '/apsd/document/export/content'
+export const URL_INTEGRATION_TOM_DOWNLOAD =
+  '/apsd/integration/tom/letter/template/download'
 
 // PREVIEW
 export const URL_ENTITY_PDF_FILE = '/preview/pdf/'

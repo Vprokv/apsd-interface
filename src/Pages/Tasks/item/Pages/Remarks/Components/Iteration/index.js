@@ -4,6 +4,8 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import styled from 'styled-components'
 import IterationRemarks from '@/Pages/Tasks/item/Pages/Remarks/Components/RowComponent'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import IterationRemarksCheckBoxComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/IterationRemarksCheckBox'
 
 const Row = styled.div`
   background-color: var(--notifications);
@@ -51,32 +53,32 @@ const IterationComponent = ({
         </Row>
       </button>
       {!isDisplayed &&
-        iterations
-          .map(({ number, remarks }) => (
-            <>
+        iterations.map(({ number, remarks }) => (
+          <>
+            <Row className="h-12 flex items-center">
+              <IterationRemarksCheckBoxComponent remarks={remarks} />
               <button
+                className="w-full"
                 type={'button'}
                 onClick={() => toggleIterationDisplayedFlag(number)}
               >
-                <Row className="h-12 flex items-center">
-                  <div className="pl-2">
-                    <Icon
-                      icon={angleIcon}
-                      size={10}
-                      className={`color-text-secondary ${
-                        !show[number] ? '' : 'rotate-180'
-                      }`}
-                    />
-                  </div>
+                <div className="h-12 flex items-center w-full">
+                  <Icon
+                    icon={angleIcon}
+                    size={10}
+                    className={`color-text-secondary ${
+                      !show[number] ? '' : 'rotate-180'
+                    }`}
+                  />
                   <div className="ml-4 font-medium flex items-center ">
                     {`${stageName} (Итерация ${number})`}
                   </div>
-                </Row>
+                </div>
               </button>
-              {!show[number] && <IterationRemarks remarks={remarks} />}
-            </>
-          ))
-          .reverse()}
+            </Row>
+            {!show[number] && <IterationRemarks remarks={remarks} />}
+          </>
+        ))}
     </>
   )
 }
