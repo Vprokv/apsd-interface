@@ -12,7 +12,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
-  undefined: {
+  [undefined]: {
     type: NOTIFICATION_TYPE_ERROR,
     message: 'Не удалось отправить запрос',
   },
@@ -24,11 +24,10 @@ const IterationRemarksCheckBoxComponent = ({ remarks }) => {
     stateId: TASK_ITEM_REMARKS,
   })
   const getNotification = useOpenNotification()
-
   const disabled = useMemo(() => {
-    let val = false
+    let val = true
     if (remarks.length) {
-      val = !remarks[0]?.permit?.vault
+      val = !remarks[0]?.permits?.vault
     }
     return val
   }, [remarks])
