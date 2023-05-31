@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { ApiContext } from '@/contants'
+import {ApiContext, TASK_ITEM_REMARKS} from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -26,6 +26,7 @@ import { useOpenNotification } from '@/Components/Notificator'
 import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
+import useTabItem from "@Components/Logic/Tab/TabItem";
 
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -71,7 +72,6 @@ const EditRemark = ({
   remarkAuthor: { memberFullName, memberPosition, memberId },
 }) => {
   const api = useContext(ApiContext)
-  const update = useContext(UpdateContext)
   const getNotification = useOpenNotification()
   const [filter, setFilterValue] = useState({
     text: remarkText,
@@ -81,6 +81,10 @@ const EditRemark = ({
       emplId: memberId,
       fullDescription: `${memberFullName}, ${memberPosition}`,
     },
+  })
+
+  const { setTabState } = useTabItem({
+    stateId: TASK_ITEM_REMARKS,
   })
 
   const fields = [
@@ -145,15 +149,14 @@ const EditRemark = ({
         }),
         ...other,
       })
-
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[status]())
-      update()
       onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [filter, api, remarkId, getNotification, update, onClose])
+  }, [filter, api, remarkId, getNotification, onClose])
 
   return (
     <StandardSizeModalWindow
