@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import InputComponent, { Input } from '@Components/Components/Inputs/Input'
+import { Input } from '@Components/Components/Inputs/Input'
 import NumericInput from '@Components/Components/Inputs/NumericInput'
 
 export default styled(NumericInput)`

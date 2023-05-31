@@ -7,16 +7,8 @@ import {
 import Icon from '@Components/Components/Icon'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
-import {
-  ShowAnswerButtonContext,
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import styled from 'styled-components'
-import {
-  URL_REMARK_DELETE,
-  URL_REMARK_EDIT_SET_REMARK,
-  URL_REMARK_UPDATE,
-} from '@/ApiList'
+import { URL_REMARK_DELETE } from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
@@ -26,6 +18,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import PropTypes from 'prop-types'
 
 export const ThreeDotButton = styled.button`
   height: 20px;
@@ -100,7 +93,7 @@ const MoreActionComponent = (props) => {
   )
 
   return (
-    <div className="flex items-center w-full justify-center">
+    <div className="flex items-center w-full justify-start">
       <ContHover>
         <ThreeDotButton
         // loading={loading}
@@ -151,6 +144,13 @@ const MoreActionComponent = (props) => {
       />
     </div>
   )
+}
+
+MoreActionComponent.propTypes = {
+  answerCreationDate: PropTypes.string,
+  remarkId: PropTypes.string,
+  permits: PropTypes.object,
+  setRemark: PropTypes.bool,
 }
 
 export default MoreActionComponent

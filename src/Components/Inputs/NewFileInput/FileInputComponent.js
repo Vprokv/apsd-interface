@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types'
-import ClipIcon from './Icons/ClipIcon'
 import {
-  FileInputContainer,
   ModalSubmitButton,
   RejectedFilesModalWindow,
 } from './style'
 import { FILE_INPUT_ERROR_EXTENSION, FILE_INPUT_ERROR_SIZE } from './constants'
 import Option from './Option'
 import { useCallback } from 'react'
-import Icon from '@Components/Components/Icon'
 import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,

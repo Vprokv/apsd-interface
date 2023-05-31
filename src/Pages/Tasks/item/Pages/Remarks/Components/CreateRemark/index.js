@@ -9,9 +9,9 @@ import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { CustomInput, FilterForm } from './styles'
+import { CustomInput } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect, { Select } from '@/Components/Inputs/Select'
+import LoadableSelect from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_CREATE } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
@@ -238,6 +238,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
     setFilterValue(initialUserValue)
   }, [changeModalState, initialUserValue])
 
+  // todo поправить верстку
   return (
     <div>
       <SecondaryBlueButton
@@ -298,6 +299,8 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   )
 }
 
-CreateRemark.propTypes = {}
+CreateRemark.propTypes = {
+  tabPermit: PropTypes.object,
+}
 
 export default CreateRemark

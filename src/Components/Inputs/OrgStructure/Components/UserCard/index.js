@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { UserCircle } from './styles'
 import colorFromString from '@Components/Utils/colorFromString'
 
 const UserCard = ({

@@ -14,6 +14,8 @@ const Comment = ({ ParentValue: { id } }) => {
   )
 }
 
-Comment.propTypes = {}
+Comment.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default Comment

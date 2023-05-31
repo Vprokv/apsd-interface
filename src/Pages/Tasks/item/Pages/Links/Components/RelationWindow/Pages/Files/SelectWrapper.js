@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import LoadableSelect from '@/Components/Inputs/Select'
 import ValidationConsumer from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/ValidationConsumer'
@@ -11,6 +11,9 @@ const SelectWrapper = (props) => {
   )
 }
 
-SelectWrapper.propTypes = {}
+SelectWrapper.propTypes = {
+  rowIndex: PropTypes.string,
+  id: PropTypes.string,
+}
 
 export default SelectWrapper

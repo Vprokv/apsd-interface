@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import BaseCell, {
-  sizes as baseCellSize,
-} from '@/Components/ListTableComponents/BaseCell'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { FilterForm } from '../../styles'
 import DatePickerComponent from '@/Components/Inputs/DatePicker'
 import { useParams } from 'react-router-dom'
@@ -122,7 +120,7 @@ const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({
-    key: 'taskReceiveDate',
+    key: 'eventDate',
     direction: 'DESC',
   })
   const documentId = useContext(DocumentIdContext)
@@ -133,8 +131,9 @@ const History = () => {
   } = useTabItem({
     stateId: TASK_ITEM_HISTORY,
   })
+  // todo tabState пустой объект, поэтому loading undefined
   const {
-    tabState: { data: documentData },
+    tabState: { data: documentData, loading },
   } = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
@@ -236,6 +235,7 @@ const History = () => {
         sortQuery={sortQuery}
         onSort={onSort}
         valueKey="id"
+        loading={loading}
       />
     </div>
   )

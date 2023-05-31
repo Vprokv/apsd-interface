@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StatusDot } from './styles'
 
 const VolumeStatus = ({ value, className }) => {
   return (

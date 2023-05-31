@@ -145,7 +145,7 @@ const Contain = () => {
   })
   const {
     setTabState,
-    tabState: { data },
+    tabState: { data, loading },
   } = tabItemState
 
   const loadData = useCallback(
@@ -430,6 +430,7 @@ const Contain = () => {
             onSort={onSort}
             value={data}
             onInput={onTableUpdate}
+            loading={loading}
           />
         </ShowContentByTypeButtonContext.Provider>
         <ContentWindow

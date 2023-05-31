@@ -14,10 +14,7 @@ import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
-import {
-  LoadContext,
-  PermitDisableContext,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
@@ -27,11 +24,11 @@ import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/D
 import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
 import CreateTemplateWindow from './Components/CreateTemplateWindow'
 import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
-import EditIcon from '@/Icons/editIcon'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import PropTypes from 'prop-types'
+import Loading from '../../../../../Components/Loading'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -62,7 +59,7 @@ const ApprovalSheet = () => {
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const {
-    tabState: { data = [] },
+    tabState: { data = [], loading },
   } = tabItemState
 
   const loadData = useCallback(async () => {
@@ -178,52 +175,56 @@ const ApprovalSheet = () => {
             </Tips>
           </div>
         </div>
-        <ScrollBar>
-          {data.map(({ stages, type, name, canAdd }, key) => (
-            <div className="flex flex-col" key={type}>
-              <LevelStage onClick={() => toggleStage(type)}>
-                {!!stages?.length && (
-                  <button
-                    className="pl-2"
-                    type="button"
-                    onClick={() => toggleStage(type)}
+        {loading ? (
+          <Loading />
+        ) : (
+          <ScrollBar>
+            {data.map(({ stages, type, name, canAdd }, key) => (
+              <div className="flex flex-col" key={type}>
+                <LevelStage onClick={() => toggleStage(type)}>
+                  {!!stages?.length && (
+                    <button
+                      className="pl-2"
+                      type="button"
+                      onClick={() => toggleStage(type)}
+                    >
+                      <Icon
+                        icon={angleIcon}
+                        size={10}
+                        className={`color-text-secondary ${
+                          toggleNavigationData[type] ? '' : 'rotate-180'
+                        }`}
+                      />
+                    </button>
+                  )}
+                  <div
+                    className={`${
+                      !stages?.length ? 'ml-6' : 'ml-2'
+                    } my-4 flex bold`}
                   >
-                    <Icon
-                      icon={angleIcon}
-                      size={10}
-                      className={`color-text-secondary ${
-                        toggleNavigationData[type] ? '' : 'rotate-180'
-                      }`}
-                    />
-                  </button>
+                    {name}
+                  </div>
+                  {canAdd && <CreateApprovalSheetWindow stageType={type} />}
+                </LevelStage>
+                {toggleNavigationData[type] && (
+                  <Tree
+                    childrenLessIcon={DotIcon}
+                    DefaultChildrenIcon={DotIcon}
+                    key={key}
+                    defaultExpandAll={true}
+                    valueKey="id"
+                    options={stages}
+                    rowComponent={RowSelector}
+                    onUpdateOptions={() => null}
+                    childrenKey="approvers"
+                    onInput={handleInput}
+                    LeafComponent={LeafComponent}
+                  />
                 )}
-                <div
-                  className={`${
-                    !stages?.length ? 'ml-6' : 'ml-2'
-                  } my-4 flex bold`}
-                >
-                  {name}
-                </div>
-                {canAdd && <CreateApprovalSheetWindow stageType={type} />}
-              </LevelStage>
-              {toggleNavigationData[type] && (
-                <Tree
-                  childrenLessIcon={DotIcon}
-                  DefaultChildrenIcon={DotIcon}
-                  key={key}
-                  defaultExpandAll={true}
-                  valueKey="id"
-                  options={stages}
-                  rowComponent={RowSelector}
-                  onUpdateOptions={() => null}
-                  childrenKey="approvers"
-                  onInput={handleInput}
-                  LeafComponent={LeafComponent}
-                />
-              )}
-            </div>
-          ))}
-        </ScrollBar>
+              </div>
+            ))}
+          </ScrollBar>
+        )}
       </div>
     </PermitDisableContext.Provider>
   )

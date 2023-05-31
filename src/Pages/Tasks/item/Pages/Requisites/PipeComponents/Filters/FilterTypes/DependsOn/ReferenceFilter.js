@@ -1,9 +1,6 @@
 import { forwardRef, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import log from 'tailwindcss/lib/util/log'
 import { ApiContext } from '@/contants'
-
-
 
 const WithFiltersUserSelect = (
   Component,
@@ -99,6 +96,7 @@ const WithFiltersUserSelect = (
   WithFiltersUserSelect.propTypes = {
     formPayload: PropTypes.object,
     filter: PropTypes.object,
+    filterOptions: PropTypes.object,
   }
 
   WithFiltersUserSelect.defaultProps = {

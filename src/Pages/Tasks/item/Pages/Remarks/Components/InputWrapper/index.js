@@ -68,6 +68,8 @@ InputWrapper.propTypes = {
   validationErrors: PropTypes.array,
   className: PropTypes.string,
   style: PropTypes.object,
+  isRequired: PropTypes.bool,
+  hasError: PropTypes.bool,
 }
 
 InputWrapper.defaultProps = {

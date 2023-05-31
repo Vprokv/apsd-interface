@@ -1,8 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Input from '@/Components/Fields/Input'
-import { StateRelationContext } from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/constans'
-import DatePicker from '@Components/Components/Inputs/DatePicker'
 import { EditLinkContext } from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/constans'
 
 const Comment = ({ ParentValue: { contentId, comment: defaultComment } }) => {
@@ -22,6 +20,8 @@ const Comment = ({ ParentValue: { contentId, comment: defaultComment } }) => {
   )
 }
 
-Comment.propTypes = {}
+Comment.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default Comment

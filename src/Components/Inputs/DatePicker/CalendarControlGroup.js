@@ -7,7 +7,6 @@ import {
 } from './styles'
 import Icon from '@Components/Components/Icon'
 import arrow from './icons/arrowUp'
-import log from "tailwindcss/lib/util/log";
 
 const CalendarControlGroup = ({
   currentMonth,

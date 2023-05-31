@@ -138,7 +138,11 @@ const Content = () => {
 
   const {
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, permit = false },
+    tabState: {
+      data: { content = [], total = 0 } = {},
+      permit = false,
+      loading,
+    },
     tabState,
   } = tabItemState
 
@@ -292,7 +296,7 @@ const Content = () => {
 
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
-      <div className="flex items-center form-element-sizes-32">
+      <div className="flex items-center form-element-sizes-32 mb-4">
         <Form
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
@@ -374,6 +378,7 @@ const Content = () => {
         onSelect={setSelectState}
         sortQuery={sortQuery}
         onSort={onSort}
+        loading={loading}
       />
       <Pagination
         className="mt-2"

@@ -1,12 +1,11 @@
 import { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { FilterForm, SearchInput } from '../../styles'
-import LoadableSelect, { Select } from '@/Components/Inputs/Select'
+import LoadableSelect from '@/Components/Inputs/Select'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { ApiContext } from '@/contants'
-import { URL_ENTITY_LIST, URL_TASK_LIST_FILTERS } from '@/ApiList'
-import { DOCUMENT_TYPE, TASK_TYPE } from '../../constants'
+import { URL_TASK_LIST_FILTERS } from '@/ApiList'
 import CheckBox from '@/Components/Inputs/CheckBox'
 
 const emptyWrapper = ({ children }) => children

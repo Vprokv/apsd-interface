@@ -28,7 +28,7 @@ import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/Crea
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 import { Validation } from '@Components/Logic/Validator'
-import {remarkValidator} from "@/Pages/Tasks/item/Pages/Remarks/constans";
+import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -252,6 +252,10 @@ const CreateAnswer = ({
   )
 }
 
-CreateAnswer.propTypes = {}
+CreateAnswer.propTypes = {
+  remarkText: PropTypes.string,
+  remarkId: PropTypes.string,
+  permits: PropTypes.object,
+}
 
 export default CreateAnswer

@@ -6,7 +6,6 @@ import {
   URL_EXPORT_FILE,
   URL_SEARCH_ATTRIBUTES,
   URL_SEARCH_LIST,
-  URL_TASK_LIST_V2,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext, SEARCH_PAGE, TokenContext } from '@/contants'
@@ -281,7 +280,7 @@ const DocumentSearch = ({
 
   const onSearch = useCallback(async () => {
     setRenderTable(true)
-  }, [api, defaultOperators, filter, getNotification, setSearchState])
+  }, [])
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
@@ -333,6 +332,11 @@ const DocumentSearch = ({
     return Object.keys(keys).length === 0
   }, [filter])
 
+  const onCloseTable = useCallback(() => {
+    setRenderTable(false)
+    setSearchState([])
+  }, [setSearchState])
+
   return (
     <ExportContext.Provider value={'asas'}>
       <div className="flex flex-col w-full p-4 overflow-hidden">
@@ -343,7 +347,7 @@ const DocumentSearch = ({
             filter={filter}
             onExportToExcel={onExportToExcel}
           >
-            {children(() => setRenderTable(false), onExportToExcel)}
+            {children(() => onCloseTable(), onExportToExcel)}
           </TableSearch>
         ) : (
           <div className="flex overflow-hidden">
@@ -435,7 +439,7 @@ const TableSearch = ({
     const { limit, offset } = paginationState
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        value.length &&
+        value?.length &&
           acc.push({
             attr: key,
             operator: operator || defaultOperators[key],

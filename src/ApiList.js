@@ -93,7 +93,7 @@ export const URL_REMARK_DELETE = '/apsd/remark/delete'
 export const URL_REMARK_ANSWER = '/apsd/remark/answer'
 export const URL_REMARK_UPDATE = '/apsd/remark/update'
 export const URL_REMARK_PERMIT = '/apsd/remark/permit'
-export const URL_REMARK_EDIT_SET_REMARK = '/edit/vault'
+export const URL_REMARK_EDIT_SET_REMARK = '/apsd/remark/edit/vault'
 
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'

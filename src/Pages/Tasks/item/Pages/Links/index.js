@@ -149,7 +149,7 @@ const Links = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {} },
+    tabState: { data: { content = [], total = 0 } = {}, loading },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -368,6 +368,7 @@ const Links = () => {
         sortQuery={sortQuery}
         onSort={onSort}
         valueKey="id"
+        loading={loading}
       />
       <Pagination
         total={total}

@@ -132,7 +132,7 @@ const Objects = () => {
   })
 
   const {
-    tabState: { data },
+    tabState: { data, loading },
     tabState,
     loadDataHelper,
     shouldReloadDataFlag,
@@ -335,6 +335,7 @@ const Objects = () => {
         sortQuery={sortQuery}
         onSort={onSort}
         valueKey="id"
+        loading={loading}
       />
       <Pagination
         className="mt-2"

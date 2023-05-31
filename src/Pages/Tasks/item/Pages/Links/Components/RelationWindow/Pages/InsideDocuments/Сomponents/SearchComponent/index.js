@@ -49,6 +49,7 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
       filter = defaultFilter,
       searchState = defaultSearchState,
       selected,
+      loading,
     },
   } = tabItemState
 
@@ -82,6 +83,7 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
               selectState={selected}
               onSelect={updateTabState('selected')}
               plugins={plugins}
+              loading={loading}
             />
           </ScrollBar>
         </>

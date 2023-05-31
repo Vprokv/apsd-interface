@@ -17,6 +17,8 @@ const NumberComponent = ({
   },
 }) => (itsRemark ? <Number number={number} /> : <ItsAnswer />)
 
-NumberComponent.propTypes = {}
+NumberComponent.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default NumberComponent

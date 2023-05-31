@@ -77,7 +77,7 @@ const Handouts = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data: { content = [], total = 0 } = {} },
+    tabState: { data: { content = [], total = 0 } = {}, loading },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -188,6 +188,7 @@ const Handouts = () => {
         onSort={onSort}
         value={content}
         onInput={onTableUpdate}
+        loading={loading}
       />
       <Pagination
         tottal={total}

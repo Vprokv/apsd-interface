@@ -4,7 +4,6 @@ import { PaginationButton } from './styles'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '../../Icons/angleIcon'
 import doubleAngleIcon from '../../Icons/doubleAngleIcon'
-import log from 'tailwindcss/lib/util/log'
 
 const Pagination = ({
   children,
