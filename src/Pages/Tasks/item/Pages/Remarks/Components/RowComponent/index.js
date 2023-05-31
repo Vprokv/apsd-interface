@@ -117,7 +117,7 @@ const columns = [
     label: '',
     component: ({ ParentValue: { props, itsRemark } }) =>
       itsRemark ? <MoreActionComponent {...props} /> : <div />,
-    sizes: 50,
+    sizes: 120,
   },
 ]
 
