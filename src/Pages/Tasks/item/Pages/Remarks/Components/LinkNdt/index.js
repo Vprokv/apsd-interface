@@ -39,6 +39,8 @@ export const DocumentButton = styled.button.attrs({ type: 'button' })`
 const baseFieldValue = {}
 const Field = ({
   onInput,
+  onFocus,
+  onBlur,
   value = baseFieldValue,
   index,
   valueIndex,
@@ -57,6 +59,8 @@ const Field = ({
           id={`${index}_id`}
           value={value.id}
           onInput={onInput('id')}
+          onFocus={onFocus('id')}
+          onBlur={onBlur('id')}
           valueKey="r_object_id"
           labelKey="dss_name"
           refKey="ddt_dict_ndt"
@@ -73,13 +77,15 @@ const Field = ({
         />
       </ValidationConsumer>
       <div className="flex">
-        <ValidationConsumer path={`${index}.comment`}>
+        <ValidationConsumer path={`${valueIndex}.comment`}>
           <Input
             id={`${index}_comment`}
             placeholder="Раздел/Статья/Пункт НТД"
             value={value.comment}
             className="ml-2"
             onInput={onInput('comment')}
+            onFocus={onFocus('comment')}
+            onBlur={onBlur('comment')}
           />
         </ValidationConsumer>
         {index !== 0 && (
@@ -100,13 +106,23 @@ Field.propTypes = {
   index: PropTypes.string,
   valueIndex: PropTypes.object,
   deleteLink: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 }
 Field.defaultProps = {
   value: {},
 }
 const baseValue = []
+const emptyFunction = () => null
 const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
-  const { onInput, value = baseValue, id, options } = props
+  const {
+    onInput,
+    value = baseValue,
+    id,
+    options,
+    onFocus = emptyFunction,
+    onBlur = emptyFunction,
+  } = props
   const [fields, setFields] = useState(1)
   const [isTouchedFieldMap, setTouchedState] = useState({})
   const valueRef = useRef()
@@ -121,10 +137,25 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
 
   const addLink = useCallback(() => setFields((s) => s + 1), [])
 
+  const updateTouchedValidationState = useCallback(
+    (nextVal) => {
+      // в ручную пересоздаем состояние полей к которым дотронулся пользователь, чтобы избежать случайных подсветок
+      const touchedMap = nextVal.map(({ id, comment }) => ({
+        id: !!id,
+        comment: !!comment,
+      }))
+      onFocus(touchedMap)
+      onBlur(touchedMap)
+    },
+    [onBlur, onFocus],
+  )
+
   const deleteLink = useCallback(
     (index, valueIndex) => () => {
       if (valueIndex !== undefined) {
-        handleInput(pureDeleteItems(value, valueIndex))
+        const nextValue = pureDeleteItems(value, valueIndex)
+        handleInput(nextValue)
+        updateTouchedValidationState
         setTouchedState(({ [index]: _, ...nextState }) => nextState)
       }
       setTouchedState((prevState) => {
@@ -142,7 +173,7 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
       })
       setFields((s) => s - 1)
     },
-    [fields, handleInput, value],
+    [fields, handleInput, updateTouchedValidationState, value],
   )
 
   useLayoutEffect(() => {
@@ -171,10 +202,29 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
         let nextVal = [...value]
         nextVal.splice(prevValueIndex, 0, { [key]: val })
         handleInput(nextVal)
+        updateTouchedValidationState(nextVal)
         setTouchedState((nextState) => ({ ...nextState, [index]: true }))
       }
     },
-    [handleInput, value],
+    [handleInput, updateTouchedValidationState, value],
+  )
+
+  const handleFieldFocus = useCallback(
+    (valueIndex) => (key) => () => {
+      if (valueIndex !== undefined) {
+        onFocus({ [valueIndex]: { [key]: true } })
+      }
+    },
+    [onFocus],
+  )
+
+  const handleFieldBlur = useCallback(
+    (valueIndex) => (key) => () => {
+      if (valueIndex !== undefined) {
+        onBlur({ [valueIndex]: { [key]: true } })
+      }
+    },
+    [onBlur],
   )
 
   const renderFields = useMemo(() => {
@@ -196,6 +246,8 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
           deleteLink={deleteLink(i, valueIndex)}
           index={i}
           onInput={handleFieldInput(i, valueIndex, vIndex)}
+          onFocus={handleFieldFocus(valueIndex)}
+          onBlur={handleFieldBlur(valueIndex)}
           value={v}
           valueIndex={valueIndex}
           key={i}
@@ -204,7 +256,16 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
     }
 
     return arr
-  }, [deleteLink, fields, handleFieldInput, isTouchedFieldMap, value])
+  }, [
+    deleteLink,
+    fields,
+    handleFieldBlur,
+    handleFieldFocus,
+    handleFieldInput,
+    isTouchedFieldMap,
+    options,
+    value,
+  ])
 
   return (
     <div className="w-full">
@@ -230,6 +291,8 @@ LinkNdt.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 }
 LinkNdt.defaultProps = {
   label: 'Ссылка на НДТ',

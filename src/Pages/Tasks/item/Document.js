@@ -57,8 +57,8 @@ import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdate
 import downloadFile from '@/Utils/DownloadFile'
 import DownloadDocument from '@/Pages/Tasks/item/Icons/DownloadDocument.svg'
 import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
-import CancelIcon from "@/Pages/Tasks/item/Icons/CancelIcon.svg";
-import ReCancelIcon from "@/Pages/Tasks/item/Icons/ReCancelIcon.svg";
+import CancelIcon from '@/Pages/Tasks/item/Icons/CancelIcon.svg'
+import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -321,7 +321,7 @@ const Document = () => {
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
 
-  //TODO не трогать, пока идет разработка нового парсера
+  // TODO не трогать, пока идет разработка нового парсера
   const customDocumentsTab = useMemo(
     () =>
       process.env.NODE_ENV === 'production'

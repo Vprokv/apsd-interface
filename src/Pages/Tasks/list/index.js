@@ -49,6 +49,7 @@ import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -199,13 +200,12 @@ function TaskList({ loadFunctionRest }) {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
+  const tabItemState = useTabItem({ stateId: TASK_LIST })
   const {
     tabState,
     setTabState,
-    shouldReloadDataFlag,
-    loadDataHelper,
     tabState: { data: { content = [], total = 0 } = {}, loading },
-  } = useTabItem({ stateId: TASK_LIST })
+  } = tabItemState
   const { token } = useContext(TokenContext)
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -225,50 +225,58 @@ function TaskList({ loadFunctionRest }) {
     [openTabOrCreateNewTab],
   )
 
-  const loadData = useMemo(() => {
-    try {
-      const { limit, offset } = paginationState
-      return loadDataHelper(async () => {
-        const { data } = await api.post(loadFunctionRest, {
-          filter: {
-            ...(search
-              ? search
-                  .replace('?', '')
-                  .split('&')
-                  .reduce((acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc[key] = JSON.parse(value)
-                    return acc
-                  }, {})
-              : {}),
-            ...filter,
-          },
-          sort: [
+  const loadData = useMemo(
+    () =>
+      async ({ source, controller } = {}) => {
+        const { limit, offset } = paginationState
+        try {
+          const { data } = await api.post(
+            loadFunctionRest,
             {
-              direction: sortQuery.direction,
-              property: sortQuery.key,
+              filter: {
+                ...(search
+                  ? search
+                      .replace('?', '')
+                      .split('&')
+                      .reduce((acc, p) => {
+                        const [key, value] = p.split('=')
+                        acc[key] = JSON.parse(value)
+                        return acc
+                      }, {})
+                  : {}),
+                ...filter,
+              },
+              sort: [
+                {
+                  direction: sortQuery.direction,
+                  property: sortQuery.key,
+                },
+              ],
+              limit,
+              offset,
             },
-          ],
-          limit,
-          offset,
-        })
-        return data
-      })
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [
-    paginationState,
-    loadDataHelper,
-    api,
-    loadFunctionRest,
-    search,
-    filter,
-    sortQuery.direction,
-    sortQuery.key,
-    getNotification,
-  ])
+            {
+              cancelToken: source.token,
+              signal: controller.signal,
+            },
+          )
+          return data
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          getNotification(defaultFunctionsMap[status](data))
+        }
+      },
+    [
+      paginationState,
+      api,
+      loadFunctionRest,
+      search,
+      filter,
+      sortQuery.direction,
+      sortQuery.key,
+      getNotification,
+    ],
+  )
 
   const onExportToExcel = useCallback(async () => {
     try {
@@ -325,18 +333,7 @@ function TaskList({ loadFunctionRest }) {
     sortQuery.key,
     token,
   ])
-
-  const refLoadDataFunction = useRef(loadData)
-
-  // todo замена useEffect и refLoadDataFunction
-  // useAutoReload(loadData, tabItemState)
-
-  useEffect(() => {
-    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
-      loadData()
-    }
-    refLoadDataFunction.current = loadData
-  }, [loadData, shouldReloadDataFlag])
+  useAutoReload(loadData, tabItemState)
 
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">

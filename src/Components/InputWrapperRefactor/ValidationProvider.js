@@ -6,12 +6,18 @@ import { get } from '@Components/Utils/ObjectPath'
 
 const ValidationProvider = memoize((Component) => {
   const ValidationProvider = forwardRef((props, ref) => {
-    const { hasError, validationErrors } = props
+    const { touched, changed, validationErrors, submitFailed, hasError } = props
     const getErrors = useCallback(
       (path) => {
-        return hasError ? get(path, validationErrors)[0] : ''
+        return (
+          typeof hasError === 'object'
+            ? submitFailed || (get(path, touched) && get(path, changed))
+            : hasError
+        )
+          ? get(path, validationErrors)[0]
+          : ''
       },
-      [hasError, validationErrors],
+      [changed, hasError, submitFailed, touched, validationErrors],
     )
     return (
       <FieldValidationStateContext.Provider value={getErrors}>
@@ -22,6 +28,9 @@ const ValidationProvider = memoize((Component) => {
 
   ValidationProvider.propTypes = {
     hasError: PropTypes.bool,
+    touched: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+    changed: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+    submitFailed: PropTypes.bool,
     validationErrors: PropTypes.array,
   }
 

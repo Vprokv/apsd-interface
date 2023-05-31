@@ -120,7 +120,7 @@ const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({
-    key: 'taskReceiveDate',
+    key: 'eventDate',
     direction: 'DESC',
   })
   const documentId = useContext(DocumentIdContext)

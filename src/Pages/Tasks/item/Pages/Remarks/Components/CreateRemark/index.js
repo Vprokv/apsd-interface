@@ -25,7 +25,7 @@ import {
 } from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
-import {
+import Form, {
   returnChildren,
   WithValidationForm,
 } from '@Components/Components/Forms'
@@ -242,7 +242,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   return (
     <div>
       <SecondaryBlueButton
-        disabled={!createRemark} //TODO Жми меня, чтобы разблочить окно
+        disabled={!createRemark} // TODO Жми меня, чтобы разблочить окно
         onClick={changeModalState(true)}
       >
         Добавить замечание
@@ -255,7 +255,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
       >
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4 h-full grow">
-            <ScrollBar className='grow'>
+            <ScrollBar className="grow">
               <Validation
                 fields={fields}
                 value={filter}
@@ -267,7 +267,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
                 {(validationProps) => {
                   return (
                     <>
-                      <WithValidationForm
+                      <Form
                         className="form-element-sizes-40"
                         inputWrapper={InputWrapper}
                         {...validationProps}
