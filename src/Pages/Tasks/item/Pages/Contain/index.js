@@ -149,19 +149,27 @@ const Contain = () => {
   } = tabItemState
 
   const loadData = useCallback(
-    async (partId = null, expand = true) => {
-      try {
-        const { data } = await api.post(URL_TITLE_CONTAIN, {
-          expand,
-          titleId: id,
-          partId,
-        })
-        return data
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(customMessagesFuncMap[status](data))
-      }
-    },
+    ({ source = {}, controller = {} } = {}) =>
+      async (partId = null, expand = true) => {
+        try {
+          const { data } = await api.post(
+            URL_TITLE_CONTAIN,
+            {
+              expand,
+              titleId: id,
+              partId,
+            },
+            {
+              cancelToken: source.token,
+              signal: controller.signal,
+            },
+          )
+          return data
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          getNotification(customMessagesFuncMap[status](data))
+        }
+      },
     [api, getNotification, id],
   )
 
@@ -199,7 +207,8 @@ const Contain = () => {
   const addDepartment = useCallback(async () => {
     setAddDepartmentState({
       onCreate: async () => {
-        const newData = await loadData()
+        // TODO: сделать нормальный bypass контроллера и параметров. Вызов без параметров.  Вызов без контроллером
+        const newData = await loadData()()
         setTabState({
           data: newData.map((nD) => {
             const oldRow = data.find((r) => r.id === nD.id)
@@ -259,12 +268,17 @@ const Contain = () => {
             id,
           })
         }),
-      loadData,
+      // TODO: сделать нормальный bypass контроллера и параметров. Вызов без контроллера. Но с параметрами
+      loadData: loadData(),
     }),
     [loadData],
   )
 
-  useAutoReload(loadData, tabItemState)
+  useAutoReload(
+    // TODO: сделать нормальный bypass контроллера и параметров. Вызов без параметров. Но с контроллером
+    useCallback((controller) => loadData(controller)(), [loadData]),
+    tabItemState,
+  )
 
   const fields = useMemo(
     () => [
