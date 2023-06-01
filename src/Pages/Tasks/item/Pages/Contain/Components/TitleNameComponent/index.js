@@ -71,8 +71,7 @@ const TitleNameComponent = ({
   } = useContext(TreeStateContext)
 
   const api = useContext(ApiContext)
-  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
-  const { loadData, addDepartment, addVolume, addLink } = useContext(
+  const { loadData, addDepartment, addVolume, addLink, editLink } = useContext(
     LoadContainChildrenContext,
   )
   const getNotification = useOpenNotification()
@@ -188,11 +187,6 @@ const TitleNameComponent = ({
     }
   }, [ParentValue, addVolume, closeContextMenu, nestedDataKey, onInput])
 
-  const edit = useCallback(
-    () => openTabOrCreateNewTab(`/document/${tomId}/${type}`),
-    [openTabOrCreateNewTab, tomId, type],
-  )
-
   const addLinkWindow = useCallback(async () => {
     try {
       const { [valueKey]: id } = ParentValue
@@ -203,6 +197,17 @@ const TitleNameComponent = ({
       setLoading(false)
     }
   }, [ParentValue, addLink, closeContextMenu, valueKey])
+
+  const addEditLinkWindow = useCallback(async () => {
+    try {
+      closeContextMenu()
+      setLoading(true)
+      console.log(ParentValue, 'ParentValue')
+      await editLink(ParentValue)
+    } finally {
+      setLoading(false)
+    }
+  }, [ParentValue, editLink, closeContextMenu])
 
   return (
     <LeafContainer className="flex items-center">
@@ -253,7 +258,10 @@ const TitleNameComponent = ({
                   <StyledItem className="mb-3 font-size-12" onClick={addTome}>
                     Добавить том
                   </StyledItem>
-                  <StyledItem className="mb-3 font-size-12" onClick={edit}>
+                  <StyledItem
+                    className="mb-3 font-size-12"
+                    onClick={addEditLinkWindow}
+                  >
                     Редактировать
                   </StyledItem>
                   <StyledItem

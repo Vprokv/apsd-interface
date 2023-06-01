@@ -44,6 +44,8 @@ import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/Titl
 import Tips from '@/Components/Tips'
 import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
+import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
+import EditLink from "@/Pages/Tasks/item/Pages/Contain/Components/EditWindow";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -136,6 +138,7 @@ const Contain = () => {
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
   const [addLinkState, setAddLinkState] = useState({})
+  const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
   const [defaultOpen, setDefaultOpen] = useState(true)
@@ -268,6 +271,20 @@ const Contain = () => {
             id,
           })
         }),
+      editLink: (id) =>
+        new Promise((resolve, reject) => {
+          setEditLinkState({
+            onCreate: () => {
+              resolve()
+              setEditLinkState({})
+            },
+            onCancel: () => {
+              reject()
+              setEditLinkState({})
+            },
+            id,
+          })
+        }),
       // TODO: сделать нормальный bypass контроллера и параметров. Вызов без контроллера. Но с параметрами
       loadData: loadData(),
     }),
@@ -365,6 +382,7 @@ const Contain = () => {
               addVolumeState={addVolumeState}
             />
             <CreateLink addLinkState={addLinkState} />
+            <EditLink addEditLinkState={addEditLinkState} />
             <div className="flex items-center color-text-secondary">
               <Tips text="Посмотреть файл">
                 <ButtonForIcon

@@ -321,24 +321,22 @@ const Document = () => {
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
 
-  // TODO не трогать, пока идет разработка нового парсера
-  const customDocumentsTab = useMemo(
-    () =>
-      process.env.NODE_ENV === 'production'
-        ? documentTabs
-        : [
-            ...documentTabs,
-            { caption: 'Реквизиты NEW', name: 'requisites_new' },
-          ],
-    [documentTabs],
-  )
+  // // TODO не трогать, пока идет разработка нового парсера
+  // const customDocumentsTab = useMemo(
+  //   () =>
+  //     process.env.NODE_ENV === 'production'
+  //       ? documentTabs
+  //       : [
+  //           ...documentTabs,
+  //           { caption: 'Реквизиты NEW', name: 'requisites_new' },
+  //         ],
+  //   [documentTabs],
+  // )
 
   return (
     <DocumentTypeContext.Provider value={ITEM_DOCUMENT}>
       <DocumentIdContext.Provider value={id}>
-        <Layout
-          documentTabs={useDocumentTabs(customDocumentsTab, defaultPages)}
-        >
+        <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
             <DocumentActions documentActions={wrappedDocumentActions} />
           </SidebarContainer>
