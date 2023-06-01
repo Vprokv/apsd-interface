@@ -30,7 +30,7 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
   const rules = {
-    reportText: [{ name: VALIDATION_RULE_REQUIRED }],
+    description: [{ name: VALIDATION_RULE_REQUIRED }],
   }
 
   const { setTabState } = useTabItem({
