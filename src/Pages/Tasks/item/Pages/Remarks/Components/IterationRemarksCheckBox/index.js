@@ -32,11 +32,16 @@ const IterationRemarksCheckBoxComponent = ({ remarks }) => {
     return val
   }, [remarks])
 
+  const vault = useMemo(
+    () => remarks?.some(({ setRemark }) => setRemark === false),
+    [remarks],
+  )
+
   const onSetRemark = useCallback(async () => {
     try {
       const { status } = await api.post(URL_REMARK_EDIT_SET_REMARK, {
         remarkIds: remarks?.map(({ remarkId }) => remarkId),
-        vault: true,
+        vault,
       })
       getNotification(customMessagesFuncMap[status]())
       setTabState({ loading: false, fetched: false })
@@ -44,7 +49,7 @@ const IterationRemarksCheckBoxComponent = ({ remarks }) => {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, getNotification, remarks, setTabState])
+  }, [api, getNotification, remarks, setTabState, vault])
 
   return (
     <div className="ml-2">
