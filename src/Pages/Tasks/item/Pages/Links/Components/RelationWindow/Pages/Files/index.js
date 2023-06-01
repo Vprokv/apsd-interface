@@ -153,9 +153,10 @@ const Files = (props) => {
             valueKey="r_object_id"
             labelKey="dss_name"
             placeholder="Выберите тип файла"
-            loadFunction={async () => {
+            loadFunction={async (query) => {
               const { data } = await api.post(URL_ENTITY_LIST, {
                 type: 'ddt_dict_link_type',
+                query,
               })
               return data
             }}
