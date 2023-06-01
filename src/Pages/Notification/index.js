@@ -35,7 +35,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'documentId',
+    valueKey: 'key',
   },
 }
 
@@ -120,7 +120,9 @@ const Notification = () => {
   const loadData = useCallback(async () => {
     try {
       const { limit, offset } = paginationState
-      const { data } = await api.post(URL_SUBSCRIPTION_NOTIFICATION_LIST, {
+      const {
+        data: { total, content },
+      } = await api.post(URL_SUBSCRIPTION_NOTIFICATION_LIST, {
         filter,
         sort: [
           {
@@ -131,7 +133,10 @@ const Notification = () => {
         limit,
         offset,
       })
-      return data
+      return {
+        total,
+        content: content?.map((val, key) => ({ ...val, key: key + 1 })),
+      }
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
