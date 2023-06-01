@@ -11,9 +11,11 @@ import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
-import { ApiContext, ITEM_DOCUMENT } from '@/contants'
+import { ApiContext, ITEM_DOCUMENT, TASK_LIST } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
+import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
+import { LoadTasks } from '@/Pages/Main/constants'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -37,6 +39,9 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
     stateId: ITEM_DOCUMENT,
   })
 
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
+  const reloadSidebarTaskCounters = useContext(LoadTasks)
+
   const fields = useMemo(
     () => [
       {
@@ -58,6 +63,11 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
         description: filter.description,
       })
       setTabState({ loading: false, fetched: false })
+      updateTabStateUpdaterByName([TASK_LIST], {
+        loading: false,
+        fetched: false,
+      })
+      reloadSidebarTaskCounters()
       getNotification(customMessagesFuncMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -69,8 +79,10 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
     documentType,
     filter.description,
     getNotification,
+    reloadSidebarTaskCounters,
     setTabState,
     signal,
+    updateTabStateUpdaterByName,
   ])
 
   return (
