@@ -174,7 +174,7 @@ const ExportDocumentWindowWrapper = (props) => {
     },
     status: {
       id: 'statuses',
-      label: 'Тип документа',
+      label: 'Статус томов',
       component: LoadableSelect,
       multiple: true,
       valueKey: 'dss_name',
