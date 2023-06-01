@@ -7,7 +7,7 @@ import styled from 'styled-components'
 export default styled(CheckBox)`
   &:disabled {
     ${Box} {
-      background-color: var(--form-elements-border-color, #bdbdbd) !important;
+      background-color: var(--input-placeholder-color, #bdbdbd) !important;
     }
   }
 
