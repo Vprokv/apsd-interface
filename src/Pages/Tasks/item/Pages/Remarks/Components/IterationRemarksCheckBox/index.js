@@ -53,7 +53,7 @@ const IterationRemarksCheckBoxComponent = ({ remarks }) => {
 
   return (
     <div className="ml-2">
-      <CheckBox onInput={onSetRemark} disabled={disabled} />
+      <CheckBox value={!vault} onInput={onSetRemark} disabled={disabled} />
     </div>
   )
 }
