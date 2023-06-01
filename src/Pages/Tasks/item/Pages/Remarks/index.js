@@ -160,7 +160,7 @@ const Remarks = () => {
             </Tips>
           </div>
         </div>
-        <div className="flex items-center ml-auto">
+        <div className="flex items-center ml-auto mb-4">
           <CreateRemark tabPermit={tabPermit} />
           <SecondaryBlueButton className="ml-2">
             Выгрузить свод замечаний

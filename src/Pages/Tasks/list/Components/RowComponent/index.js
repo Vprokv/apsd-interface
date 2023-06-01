@@ -1,9 +1,25 @@
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
+
+const RowTableComponent = styled.div`
+  &:hover {
+    ${ContHover} {
+      opacity: 1;
+    }
+
+    background-color: #e3e9f8;
+  }
+`
 
 const RowComponent = ({ className, children, style, onDoubleClick, value }) => (
-  <div onDoubleClick={onDoubleClick(value)} className={className} style={style}>
+  <RowTableComponent
+    onDoubleClick={onDoubleClick(value)}
+    className={className}
+    style={style}
+  >
     {children}
-  </div>
+  </RowTableComponent>
 )
 
 RowComponent.propTypes = {
