@@ -12,7 +12,7 @@ import refsTransmission from '@/RefsTransmission'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
 import CustomValuesPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents/CustomValues'
 import FiltersPipe from './Filters/index'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
 const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
@@ -49,22 +49,32 @@ CustomOrgstructure.propTypes = {
   id: PropTypes.string,
 }
 
+const keyMap = {
+  1: 'r_creation_dateFirst',
+  2: 'r_creation_dateSecond',
+}
+
 const CustomDatePicker = ({ onInput, value, ...props }) => {
-  const [filter, setFilter] = useState()
+  const [filter, setFilter] = useState([])
   const filterRef = useRef(filter)
 
+  const filterValue = useMemo(
+    () =>
+      filter.reduce((acc, val, key) => {
+        if (val) {
+          acc[keyMap[key]] = val
+        }
+        return acc
+      }, {}),
+    [filter],
+  )
+
   useEffect(() => {
-    if (filter !== filterRef.current) {
-      onInput(
-        {
-          r_creation_dateFirst: filter[0],
-          r_creation_dateSecond: filter[1],
-        },
-        props.id,
-      )
+    if (filter !== filterRef.current && Object.keys(filterValue).length) {
+      onInput({ filterValue }, props.id)
       filterRef.current = filter
     }
-  }, [filter, onInput, props.id, value])
+  }, [filter, filterValue, onInput, props.id, value])
 
   return (
     <DatePicker {...props} range={true} value={filter} onInput={setFilter} />
