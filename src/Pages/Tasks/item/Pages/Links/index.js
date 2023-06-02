@@ -94,13 +94,13 @@ const columns = [
     id: 'authorFullName',
     label: 'Автор',
     component: BaseCell,
-    sizes: 150,
+    sizes: 100,
   },
   {
     id: 'stageName',
     label: 'Этап',
     component: BaseCell,
-    sizes: 200,
+    sizes: 140,
   },
   {
     id: 'comment',
@@ -111,13 +111,13 @@ const columns = [
         {...props}
       />
     ),
-    sizes: 220,
+    sizes: 120,
   },
   {
     id: 'linkDate',
     label: 'Дата связи',
     component: BaseCell,
-    sizes: 220,
+    sizes: 100,
   },
   {
     id: 'linkType',
