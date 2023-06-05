@@ -11,9 +11,6 @@ import {
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
-import UserSelect, {
-  AddUserOptionsFullName,
-} from '@/Components/Inputs/UserSelect'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ButtonForIcon, SecondaryGreyButton } from '@/Components/Button'
@@ -127,6 +124,15 @@ const columns = [
   },
 ]
 
+const AddUserOptionsFullName = (v = {}) => ({
+  ...v,
+  fullName: `${v.fio} 111`,
+  fullDescription: `${v.fio}, ${v.positionName}, ${v.departmentName}222`,
+  position: v.positionName,
+  department: v.departmentName,
+  r_object_id: '1212',
+})
+
 const ContentWindow = LinkWindowWrapper(PreviewContentWindow)
 
 const Links = () => {
@@ -233,7 +239,7 @@ const Links = () => {
         component: LinkOrgStructureComponent,
         loadFunction: async (search) => {
           const {
-            data: { content },
+            data: { userModelList },
           } = await api.post(URL_LINK_USER_LIST, {
             parentId: id,
             // sort: [
@@ -244,10 +250,11 @@ const Links = () => {
             // ],
             filter: { search },
           })
-          return content.map(AddUserOptionsFullName)
+          return userModelList.map(AddUserOptionsFullName)
         },
         placeholder: 'Автор связи',
-        valueKey: 'userName',
+        valueKey: 'r_object_id',
+        labelKey: 'fullName',
       },
       {
         id: 'linkType',

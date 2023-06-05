@@ -10,13 +10,18 @@ const UserCard = ({
   department,
   avatarId,
   widthDepartment = false,
+  fullName,
 } = {}) => {
+  console.log(position, 'position')
+
   const fio = useMemo(
     () =>
-      `${lastName} ${(firstName?.length && `${firstName[0]}.`) || ''} ${
-        (middleName?.length && `${middleName[0]}.`) || ''
-      }`,
-    [firstName, middleName, lastName],
+      fullName
+        ? fullName
+        : `${lastName} ${(firstName?.length && `${firstName[0]}.`) || ''} ${
+            (middleName?.length && `${middleName[0]}.`) || ''
+          }`,
+    [fullName, lastName, firstName, middleName],
   )
 
   const bg = useMemo(() => {
