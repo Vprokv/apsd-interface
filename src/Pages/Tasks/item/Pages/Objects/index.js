@@ -22,7 +22,6 @@ import ListTable from '../../../../../components_ocean/Components/Tables/ListTab
 import HeaderCell from '../../../../../Components/ListTableComponents/HeaderCell'
 import Button, { ButtonForIcon } from '../../../../../Components/Button'
 import Icon from '../../../../../components_ocean/Components/Icon'
-import filterIcon from '../../../list/icons/filterIcon'
 import CreateObjectsWindow from './Components/CreateObjectsWindow'
 import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
@@ -33,7 +32,7 @@ import DeleteIcon from '@/Icons/deleteIcon'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import searchIcon from '@/Icons/searchIcon'
 import LoadableSelect from '../../../../../Components/Inputs/Select'
-import FilterWindowWrapper from '@/Pages/Tasks/item/Pages/Objects/Components/FilterWindow'
+import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -302,23 +301,19 @@ const Objects = () => {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
-          {!show && (
-            <Tips text=" Фильтры">
-              <ButtonForIcon onClick={changeFilterWindowState(true)}>
-                <Icon icon={filterIcon} />
-              </ButtonForIcon>
-            </Tips>
-          )}
+          <FilterWindowWrapper
+            show={show}
+            fields={filterFormConfig}
+            filter={filter}
+            onOpen={changeFilterWindowState(true)}
+            setFilterValue={setFilterValue}
+            open={filterWindowOpen}
+            onClose={changeFilterWindowState(false)}
+          />
         </div>
         <CreateObjectsWindow
           open={addCreateObjectsWindow}
           onClose={changeObjectsWindow(false)}
-        />
-        <FilterWindowWrapper
-          filter={filter}
-          setFilterValue={setFilterValue}
-          open={filterWindowOpen}
-          onClose={changeFilterWindowState(false)}
         />
       </div>
       <ListTable

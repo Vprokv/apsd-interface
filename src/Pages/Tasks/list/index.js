@@ -27,13 +27,16 @@ import VolumeStatus, {
 } from '@/Components/ListTableComponents/VolumeStatus'
 import HeaderCell from '../../../Components/ListTableComponents/HeaderCell'
 import XlsIcon from '@/Icons/XlsIcon'
-import filterIcon from './icons/filterIcon'
 import sortIcon from './icons/sortIcon'
-import volumeIcon from './icons/volumeIcon'
 import Pagination from '../../../Components/Pagination'
 import RowComponent from './Components/RowComponent'
 import CheckBox from '../../../Components/Inputs/CheckBox'
-import { URL_EXPORT, URL_EXPORT_FILE, URL_TASK_LIST_V2 } from '@/ApiList'
+import {
+  URL_EXPORT,
+  URL_EXPORT_FILE,
+  URL_TASK_LIST_FILTERS,
+  URL_TASK_LIST_V2,
+} from '@/ApiList'
 import { ApiContext, TASK_LIST, TokenContext } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
@@ -50,6 +53,11 @@ import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
+import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
+import LoadableSelect from '@/Components/Inputs/Select'
+import searchIcon from '@/Icons/searchIcon'
+import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -201,6 +209,13 @@ function TaskList({ loadFunctionRest }) {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
   const tabItemState = useTabItem({ stateId: TASK_LIST })
+  const [filterWindowOpen, setFilterWindow] = useState(false)
+  const changeFilterWindowState = useCallback(
+    (state) => () => setFilterWindow(state),
+    [],
+  )
+  const ref = useRef()
+  const [width, setWidth] = useState(ref.current?.clientWidth)
   const {
     tabState,
     setTabState,
@@ -335,24 +350,128 @@ function TaskList({ loadFunctionRest }) {
   ])
   useAutoReload(loadData, tabItemState)
 
+  const resizeSlider = useCallback(
+    () => setWidth(ref?.current?.offsetWidth),
+    [],
+  )
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeSlider)
+    resizeSlider()
+    return () => {
+      window.removeEventListener('resize', resizeSlider)
+    }
+  }, [resizeSlider])
+
+  const show = useMemo(() => width > 1200, [width])
+
+  const fields = useMemo(
+    () => [
+      {
+        id: 'readTask',
+        component: CheckBox,
+        text: 'Непросмотренные',
+      },
+      {
+        id: 'taskTypes',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Тип задания',
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const {
+            data: { taskTypes },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter: { ...filter, readTask: !filter.readTask },
+          })
+
+          return taskTypes.map((val) => {
+            return { dss_name: val }
+          })
+        },
+      },
+      {
+        id: 'stageNames',
+        component: LoadableSelect,
+        placeholder: 'Этап',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const {
+            data: { stageNames },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter,
+          })
+
+          return stageNames.map((val) => {
+            return { dss_name: val }
+          })
+        },
+      },
+      {
+        id: 'documentStatus',
+        component: LoadableSelect,
+        placeholder: 'Статус',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const {
+            data: { documentStatus },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter,
+          })
+
+          return documentStatus.map((val) => {
+            return { dss_name: val }
+          })
+        },
+      },
+      {
+        id: 'searchQuery',
+        component: SearchInput,
+        placeholder: 'Поиск',
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+    ],
+    [api, filter],
+  )
+
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
-      <div className="flex items-center ">
-        <Filter value={filter} onInput={setFilter} className="pl-4" />
+      <div ref={ref} className="flex items-center ">
+        {show && (
+          <FilterForm
+            className="pl-4"
+            fields={fields}
+            inputWrapper={emptyWrapper}
+            value={filter}
+            onInput={setFilter}
+          />
+        )}
         <div className="flex items-center color-text-secondary ml-auto">
-          <Tips text="Фильтры">
-            <ButtonForIcon className="mx-2">
-              <Icon icon={filterIcon} />
-            </ButtonForIcon>
-          </Tips>
+          <FilterWindowWrapper
+            show={show}
+            fields={fields}
+            filter={filter}
+            onOpen={changeFilterWindowState(true)}
+            setFilterValue={setFilter}
+            open={filterWindowOpen}
+            onClose={changeFilterWindowState(false)}
+          />
           <Tips text="Настройка колонок">
             <ButtonForIcon className="mr-2">
               <Icon icon={sortIcon} />
             </ButtonForIcon>
           </Tips>
-          <ButtonForIcon className="mr-2">
-            <Icon icon={volumeIcon} />
-          </ButtonForIcon>
           <Tips text="Выгрузить в Excel">
             <ButtonForIcon className="color-green" onClick={onExportToExcel}>
               <Icon icon={XlsIcon} />
