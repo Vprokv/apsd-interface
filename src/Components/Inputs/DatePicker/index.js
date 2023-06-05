@@ -5,6 +5,11 @@ import Icon from '@Components/Components/Icon'
 import calendarIcon from '@/Icons/calendarIcon'
 import { ThemedCalendar } from './styles'
 import ContextMenu from '@Components/Components/ContextMenu'
+import closeIcon from '@/Icons/closeIcon'
+
+export const RemoveIconComponent = () => (
+  <Icon icon={closeIcon} className="color-text-secondary" size={12} />
+)
 
 const DropDownComponent = ({ isOpen, children, ...props }) =>
   isOpen && (
@@ -52,6 +57,7 @@ const DatePicker = ({
         onInput={handleInput}
         selectRestrictions={useMemo(() => ({ maxDate: value[1] }), [value])}
         DropDownComponent={DropDownComponent}
+        removeIconComponent={RemoveIconComponent}
         {...props}
       />
       <DatePickerComponent
@@ -65,6 +71,7 @@ const DatePicker = ({
         onInput={handleInput}
         selectRestrictions={useMemo(() => ({ minDate: value[0] }), [value])}
         DropDownComponent={DropDownComponent}
+        removeIconComponent={RemoveIconComponent}
         {...props}
       />
     </div>
@@ -98,5 +105,6 @@ export default ({ range, ...props }) =>
       }
       CalendarComponent={ThemedCalendar}
       DropDownComponent={DropDownComponent}
+      removeIconComponent={RemoveIconComponent}
     />
   )

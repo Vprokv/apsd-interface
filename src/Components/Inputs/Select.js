@@ -32,7 +32,7 @@ const StyledSelect = styled(SelectComponent)`
 const ToggleIndicatorIconComponent = () => (
   <Icon icon={angleIcon} className="color-text-secondary" size={12} />
 )
-const RemoveIconComponent = () => (
+export const RemoveIconComponent = () => (
   <Icon icon={closeIcon} className="color-text-secondary" size={12} />
 )
 // делаем мультипл версию базового селекта
