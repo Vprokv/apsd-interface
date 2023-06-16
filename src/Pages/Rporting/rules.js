@@ -142,6 +142,7 @@ const loadFunctions = {
         filter: {
           ...filters,
           query,
+          useAllFilter: true,
         },
       })
       return content
@@ -161,6 +162,7 @@ const loadFunctions = {
         query,
         filter: {
           ...filters,
+          useAllFilter: true,
         },
       })
       return content
