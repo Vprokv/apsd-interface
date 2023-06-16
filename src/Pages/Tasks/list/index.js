@@ -120,13 +120,13 @@ const columnMap = [
 
 const columns = [
   {
-    id: 'task',
+    id: 'taskType',
     label: 'Задание',
     component: DocumentState,
     sizes: DocumentStateSizes,
   },
   {
-    id: 'volume',
+    id: 'display',
     label: 'Том',
     component: VolumeState,
     sizes: volumeStateSize,
@@ -162,7 +162,7 @@ const columns = [
     sizes: volumeStatusSize,
   },
   {
-    id: 'fromAuthor',
+    id: 'fromWhomEmployee',
     label: 'От кого',
     component: ({ ParentValue: { fromWhomEmployee } = {} }) =>
       fromWhomEmployee &&
@@ -176,7 +176,7 @@ const columns = [
     sizes: useCardSizes,
   },
   {
-    id: 'author',
+    id: 'creatorEmployee',
     label: 'Автор',
     component: ({
       ParentValue: {
@@ -261,12 +261,15 @@ function TaskList({ loadFunctionRest }) {
                   : {}),
                 ...filter,
               },
-              sort: [
-                {
-                  direction: sortQuery.direction,
-                  property: sortQuery.key,
-                },
-              ],
+              sort:
+                Object.keys(sortQuery).length > 0
+                  ? [
+                      {
+                        property: sortQuery.key,
+                        direction: sortQuery.direction,
+                      },
+                    ]
+                  : [],
               limit,
               offset,
             },
