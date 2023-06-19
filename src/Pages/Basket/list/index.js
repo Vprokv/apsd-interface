@@ -130,6 +130,8 @@ function BasketList() {
     tabState: { data },
   } = tabBasketState
 
+  console.log(data, 'data')
+
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
     state: tabState,

@@ -1,4 +1,11 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon, SideBarContainer } from './style'
 import Button from '@/Components/Button'
@@ -26,6 +33,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import notificationIcon from '@/Icons/notificationIcon'
 import Notification from '@/Pages/Main/Components/SideBar/Components/Notification'
+import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -38,10 +46,18 @@ const customMessagesFuncMap = {
 }
 let timeout
 
+const MIN_SIDEBAR_WIDTH = 240
+const MAX_SIDEBAR_WIDTH = 800
+
 const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const [createDocumentWindow, setCreateDocumentWindowState] = useState(false)
+  const [resizeState, setResizeState] = useState({})
+  const headerContainerRef = useRef()
+  const [sideBarState, setSideBarState] = useRecoilState(
+    cachedLocalStorageValue('SideBarState'),
+  )
   const openCreateDocumentWindow = useCallback(
     () => setCreateDocumentWindowState(true),
     [],
@@ -51,6 +67,16 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
     [],
   )
   const [task, updateTasks] = useRecoilState(tasksAtom)
+
+  const columnsWithUiSetting = useMemo(
+    () => sideBarState || MIN_SIDEBAR_WIDTH,
+    [sideBarState],
+  )
+
+  const refColumnsState = useRef(columnsWithUiSetting)
+  refColumnsState.current = columnsWithUiSetting
+
+  console.log(refColumnsState.current, 'refColumnsState.current')
 
   const loadTasks = useCallback(() => {
     const loadTask = async () => {
@@ -85,7 +111,7 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
 
   return (
     <LoadTasks.Provider value={loadTasks}>
-      <div className="flex h-full overflow-hidden">
+      <div className="flex h-full overflow-hidden" ref={headerContainerRef}>
         <SideBarContainer className="py-4 bg-white flex-container">
           <Button
             className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 "

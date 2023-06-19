@@ -29,6 +29,8 @@ const RowComponent = ({ node, RowC }) => {
     approvers,
   } = node
 
+  console.log(report, 'report')
+
   const [isDisplayed, setShow] = useState(true)
 
   const toggleDisplayedFlag = useCallback(() => setShow((s) => !s), [])
