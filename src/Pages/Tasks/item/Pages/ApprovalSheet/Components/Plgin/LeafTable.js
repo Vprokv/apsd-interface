@@ -1,21 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Tree from '@Components/Components/Tree'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
-import log from 'tailwindcss/lib/util/log'
 import UserCard from '../UserCard'
 import DateCell from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DateCell'
 import DocumentState from '../DocumentState'
 import HideAndShowText from '@/Components/HideAndShowText'
 import { Button } from '@Components/Components/Button'
 import { Row, RowGrid } from './styles'
-import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
-import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
-import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin/index'
-import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
-import DotIcon from '@Components/Components/Tree/Icons/Dot'
 
 const RowComponent = ({ node, RowC }) => {
   const {
@@ -65,6 +58,7 @@ const RowComponent = ({ node, RowC }) => {
           buttonComponent={() => (
             <Button className="color-text-secondary">...</Button>
           )}
+          {...report}
         />
       </RowGrid>
       {approvers && (

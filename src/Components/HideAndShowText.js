@@ -1,11 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import ButtonsForHiddenText from '@/Components/Button'
+import ShowContentComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/ShowContentComponent'
 
 const HideAndShowText = ({
   className,
   value,
   numberOfCharactersDisplayed,
+  contents,
   buttonComponent: ButtonComponent,
 }) => {
   const [showText, updateShowText] = useState(true)
@@ -30,6 +32,7 @@ const HideAndShowText = ({
           <ButtonComponent className="color-lightGold" showText={showText} />
         </button>
       )}
+      <ShowContentComponent contents={contents} />
     </div>
   )
 }
