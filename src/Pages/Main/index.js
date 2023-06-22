@@ -8,9 +8,11 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import CloseAllTabButton from '@/Pages/Main/Components/CloseAllTabsButton'
 import TabsContainer from '@/Pages/Main/Components/Tab/TabsContainer'
+import { useState } from 'react'
 
 const Main = ({ initUrl }) => {
   const { r_object_id } = useRecoilValue(userAtom)
+  const [moveSideBarState, setMoveSideBarState] = useState(() => null)
   return (
     <Tab userId={r_object_id} initUrl={initUrl}>
       {({
