@@ -8,11 +8,11 @@ import {
   IconsGroup,
   UserContextMenuContainer,
 } from './styles'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import Search from '@/Pages/Main/Components/Header/Components/Search'
 import ContextMenu from '@Components/Components/ContextMenu'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useMemo, useRef, useState } from 'react'
 import LogoutIcon from '@/Pages/Main/Icons/LogoutIcon'
 import { TokenContext } from '@/contants'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
@@ -22,8 +22,12 @@ import Tips from '@/Components/Tips'
 import { SETTINGS_PATH } from '@/routePaths'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
+import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 
-const Header = () => {
+const MIN_SIDEBAR_WIDTH = { width: 240, margin: 70 }
+const MAX_SIDEBAR_WIDTH = { width: 800, margin: 630 }
+
+const Header = ({ children }) => {
   const { dss_first_name, dss_last_name } = useRecoilValue(userAtom)
   const { dropToken } = useContext(TokenContext)
   const [contextMenuState, setContextMenuState] = useState(false)
@@ -31,63 +35,158 @@ const Header = () => {
   const closeContextMenu = useCallback(() => setContextMenuState(false), [])
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const navigate = useNavigate()
+  const [resizeState, setResizeState] = useState({})
+  const [sideBarState, setSideBarState] = useRecoilState(
+    cachedLocalStorageValue('SideBarState'),
+  )
 
   const openSetting = useCallback(
     () => openTabOrCreateNewTab(navigate(SETTINGS_PATH)),
     [navigate, openTabOrCreateNewTab],
   )
 
+  const columnsWithUiSetting = useMemo(
+    () => sideBarState || MIN_SIDEBAR_WIDTH,
+    [sideBarState],
+  )
+
+  const refColumnsState = useRef(columnsWithUiSetting)
+  refColumnsState.current = columnsWithUiSetting
+
+  const onColumnResizing = useCallback(({ clientX }) => {
+    setResizeState((prevState) => {
+      const nextWidth =
+        prevState.initialWidth - prevState.initPointerPosition + clientX
+      const nextMargin =
+        prevState.initialMargin - prevState.initPointerPosition + clientX
+
+      return {
+        ...prevState,
+        width:
+          nextWidth < MIN_SIDEBAR_WIDTH.width
+            ? MIN_SIDEBAR_WIDTH.width
+            : nextWidth < MAX_SIDEBAR_WIDTH.width
+            ? nextWidth
+            : MAX_SIDEBAR_WIDTH.width,
+        margin:
+          nextMargin < MIN_SIDEBAR_WIDTH.margin
+            ? MIN_SIDEBAR_WIDTH.margin
+            : nextMargin < MAX_SIDEBAR_WIDTH.margin
+            ? nextMargin
+            : MAX_SIDEBAR_WIDTH.margin,
+      }
+    })
+  }, [])
+  const onColumnStopResize = useCallback(() => {
+    let state
+
+    document.body.style.cursor = ''
+    document.body.style.userSelect = ''
+    setResizeState(({ width, margin, onMouseMoveSubscriber }) => {
+      document.removeEventListener('mousemove', onMouseMoveSubscriber)
+      state = { width, margin }
+      return {}
+    })
+    document.removeEventListener('mouseup', onColumnStopResize)
+    setSideBarState(state)
+  }, [setSideBarState])
+
+  const onColumnStartResize = useCallback(
+    (e) => {
+      e?.preventDefault()
+      e?.stopPropagation()
+      const sideBarWith = refColumnsState.current
+
+      setResizeState({
+        width: sideBarWith.width,
+        initialWidth: sideBarWith.width,
+        initialMargin: sideBarWith.margin,
+        initPointerPosition: e.clientX,
+        onMouseMoveSubscriber: onColumnResizing,
+      })
+      document.addEventListener('mousemove', onColumnResizing)
+      document.addEventListener('mouseup', onColumnStopResize)
+      document.body.style.cursor = 'e-resize'
+      document.body.style.userSelect = 'none'
+    },
+    [onColumnResizing, onColumnStopResize],
+  )
+
+  console.log(
+    columnsWithUiSetting.margin === MAX_SIDEBAR_WIDTH.margin,
+    'columnsWithUiSetting.margin === MAX_SIDEBAR_WIDTH.margin',
+  )
+
+  // const tipsText = useMemo(() =>)
+
   return (
-    <div className="bg-blue-1 flex items-center py-2 pl-6 pr-5 text-white">
-      <img src={MainLogo} className="mr-20" />
-      <Tips text="Свернуть дерево навигации">
-        <button type="button" className="bg-blue-4 rounded-md h-8 pl-1 pr-1">
-          <Icon icon={doubleShevronIcon} size="22" />
-        </button>
-      </Tips>
-      <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2">
-        <Search />
-        <Tips text="Настройки">
-          <ButtonForIcon onClick={openSetting} className="ml-2 mr-2">
-            <Icon icon={settingsIcon} size="20" />
-          </ButtonForIcon>
+    <div className="flex-container">
+      <div className="bg-blue-1 flex items-center py-2 pl-6 pr-5 text-white">
+        <img src={MainLogo} />
+        <Tips text="Свернуть дерево навигации">
+          <button
+            style={{ 'margin-left': columnsWithUiSetting.margin }}
+            type="button"
+            onMouseDown={onColumnStartResize}
+            className="bg-blue-4 rounded-md h-8 pl-1 pr-1"
+          >
+            <Icon icon={doubleShevronIcon} size="22" />
+          </button>
         </Tips>
-        <Reports />
-      </IconsGroup>
-      <div className="pl-10 flex items-center">
-        <div className="text-right mr-4 font-medium">
-          <div>{dss_last_name}</div>
-          <div>{dss_first_name}</div>
-        </div>
-        <button
-          onClick={contextMenuState ? closeContextMenu : openContextMenu}
-          type="button"
-          className="flex items-center"
-        >
-          <div className="rounded-full bg-white mr-2 w-10 h-10 flex items-center justify-center">
-            <UserAvatar />
+        <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2">
+          <Search />
+          <Tips text="Настройки">
+            <ButtonForIcon onClick={openSetting} className="ml-2 mr-2">
+              <Icon
+                icon={settingsIcon}
+                size="20"
+                // className={columnsWithUiSetting.margin === 630 ? '' : 'rotate-180'}
+              />
+            </ButtonForIcon>
+          </Tips>
+          <Reports />
+        </IconsGroup>
+        <div className="pl-10 flex items-center">
+          <div className="text-right mr-4 font-medium">
+            <div>{dss_last_name}</div>
+            <div>{dss_first_name}</div>
           </div>
-          <Icon icon={angleIcon} size={10} />
-          {contextMenuState && (
-            <ContextMenu onClose={closeContextMenu} width={240}>
-              <UserContextMenuContainer className="py-3 mr-2 font-size-14">
-                <ContextMenuElement
-                  className="flex items-center px-5 w-full py-2"
-                  type="button"
-                  onClick={dropToken}
-                >
-                  <Icon
-                    size={20}
-                    icon={LogoutIcon}
-                    className="mr-4 color-text-secondary"
-                  />
-                  <span className="font-medium">Выход</span>
-                </ContextMenuElement>
-              </UserContextMenuContainer>
-            </ContextMenu>
-          )}
-        </button>
+          <button
+            onClick={contextMenuState ? closeContextMenu : openContextMenu}
+            type="button"
+            className="flex items-center"
+          >
+            <div className="rounded-full bg-white mr-2 w-10 h-10 flex items-center justify-center">
+              <UserAvatar />
+            </div>
+            <Icon icon={angleIcon} size={10} />
+            {contextMenuState && (
+              <ContextMenu onClose={closeContextMenu} width={240}>
+                <UserContextMenuContainer className="py-3 mr-2 font-size-14">
+                  <ContextMenuElement
+                    className="flex items-center px-5 w-full py-2"
+                    type="button"
+                    onClick={dropToken}
+                  >
+                    <Icon
+                      size={20}
+                      icon={LogoutIcon}
+                      className="mr-4 color-text-secondary"
+                    />
+                    <span className="font-medium">Выход</span>
+                  </ContextMenuElement>
+                </UserContextMenuContainer>
+              </ContextMenu>
+            )}
+          </button>
+        </div>
       </div>
+      {children({
+        onColumnStartResize,
+        refColumnsState,
+        columnsWithUiSetting,
+        resizeState,
+      })}
     </div>
   )
 }

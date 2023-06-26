@@ -9,10 +9,11 @@ import { useRecoilValue } from 'recoil'
 import CloseAllTabButton from '@/Pages/Main/Components/CloseAllTabsButton'
 import TabsContainer from '@/Pages/Main/Components/Tab/TabsContainer'
 import { useState } from 'react'
+import { MoveSideBar } from '@/Pages/Main/constants'
+import {ColumnManipulationIndicator} from "@Components/Components/Tables/ListTable/styles";
 
 const Main = ({ initUrl }) => {
   const { r_object_id } = useRecoilValue(userAtom)
-  const [moveSideBarState, setMoveSideBarState] = useState(() => null)
   return (
     <Tab userId={r_object_id} initUrl={initUrl}>
       {({
@@ -22,30 +23,39 @@ const Main = ({ initUrl }) => {
         onCloseTab,
       }) => (
         <div className="flex-container ">
-          <Header />
-          <SideBar
-            onOpenNewTab={openTabOrCreateNewTab}
-            onChangeActiveTab={onChangeActiveTab}
-          >
-            <div className="flex-container w-full overflow-hidden">
-              <div className="flex p-4 justify-between">
-                <TabsContainer className="flex">
-                  {tabs.map(({ name, id }, index) => (
-                    <TabHeader
-                      key={id}
-                      active={index === currentTabIndex}
-                      name={name}
-                      onClick={() => onChangeActiveTab(index)}
-                      onClose={() => onCloseTab(index)}
-                      closeable={tabs.length > 1}
-                    />
-                  ))}
-                </TabsContainer>
-                <CloseAllTabButton tabs={tabs} />
-              </div>
-              <Outlet />
-            </div>
-          </SideBar>
+          <Header>
+            {(props) => (
+              <SideBar
+                onOpenNewTab={openTabOrCreateNewTab}
+                onChangeActiveTab={onChangeActiveTab}
+                {...props}
+              >
+                <ColumnManipulationIndicator
+                  left={0}
+                  width={props.resizeState.width}
+                  className="absolute top-0 bottom-0"
+                />
+                <div className="flex-container w-full overflow-hidden">
+                  <div className="flex p-4 justify-between">
+                    <TabsContainer className="flex">
+                      {tabs.map(({ name, id }, index) => (
+                        <TabHeader
+                          key={id}
+                          active={index === currentTabIndex}
+                          name={name}
+                          onClick={() => onChangeActiveTab(index)}
+                          onClose={() => onCloseTab(index)}
+                          closeable={tabs.length > 1}
+                        />
+                      ))}
+                    </TabsContainer>
+                    <CloseAllTabButton tabs={tabs} />
+                  </div>
+                  <Outlet />
+                </div>
+              </SideBar>
+            )}
+          </Header>
         </div>
       )}
     </Tab>

@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon, SideBarContainer } from './style'
 import Button from '@/Components/Button'
@@ -20,7 +13,7 @@ import Archive from './Components/Archive'
 import Basket from './Components/Basket'
 import CreateDocumentWindow from './Components/CreateDocumentWindow'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { NOTIFICATION_PATH, TASK_VIEWED_LIST_PATH } from '@/routePaths'
+import { TASK_VIEWED_LIST_PATH } from '@/routePaths'
 import { useRecoilState } from 'recoil'
 import { tasksAtom } from '@/Pages/Main/store'
 import { URL_TASK_STATISTIC } from '@/ApiList'
@@ -34,6 +27,7 @@ import { LoadTasks } from '@/Pages/Main/constants'
 import Notification from '@/Pages/Main/Components/SideBar/Components/Notification'
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import styled from 'styled-components'
+import { ColumnManipulationIndicator } from '@Components/Components/Tables/ListTable/styles'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -46,9 +40,6 @@ const customMessagesFuncMap = {
 }
 let timeout
 
-const MIN_SIDEBAR_WIDTH = 240
-const MAX_SIDEBAR_WIDTH = 800
-
 const Resizer = styled.div`
   bottom: 0;
   right: 0;
@@ -56,28 +47,30 @@ const Resizer = styled.div`
   cursor: e-resize;
   width: 3px;
   height: 100%;
-  background: var(--red);
 
   &:hover {
     &::after {
       display: block;
       content: '';
       height: 100%;
-      width: 5px;
+      width: 1px;
       background: var(--blue-1);
     }
   }
 `
 
-const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
+const SideBar = ({
+  onOpenNewTab,
+  onChangeActiveTab,
+  onColumnStartResize,
+  columnsWithUiSetting,
+  resizeState,
+  children,
+}) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const [createDocumentWindow, setCreateDocumentWindowState] = useState(false)
-  const [resizeState, setResizeState] = useState({})
-  const headerContainerRef = useRef()
-  const [sideBarState, setSideBarState] = useRecoilState(
-    cachedLocalStorageValue('SideBarState'),
-  )
+
   const openCreateDocumentWindow = useCallback(
     () => setCreateDocumentWindowState(true),
     [],
@@ -87,66 +80,6 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
     [],
   )
   const [task, updateTasks] = useRecoilState(tasksAtom)
-
-  const columnsWithUiSetting = useMemo(
-    () => sideBarState || MIN_SIDEBAR_WIDTH,
-    [sideBarState],
-  )
-
-  const refColumnsState = useRef(columnsWithUiSetting)
-  refColumnsState.current = columnsWithUiSetting
-
-  // console.log(refColumnsState.current, 'refColumnsState.current')
-
-  const onColumnResizing = useCallback(({ clientX }) => {
-    setResizeState((prevState) => {
-      const nextWidth =
-        prevState.initialWidth - prevState.initPointerPosition + clientX
-
-      return {
-        ...prevState,
-        width:
-          nextWidth < MIN_SIDEBAR_WIDTH
-            ? MIN_SIDEBAR_WIDTH
-            : nextWidth < MAX_SIDEBAR_WIDTH
-            ? nextWidth
-            : MAX_SIDEBAR_WIDTH,
-      }
-    })
-  }, [])
-  const onColumnStopResize = useCallback(() => {
-    let state
-
-    document.body.style.cursor = ''
-    document.body.style.userSelect = ''
-    setResizeState(({ width, onMouseMoveSubscriber }) => {
-      document.removeEventListener('mousemove', onMouseMoveSubscriber)
-      state = width
-      return {}
-    })
-    document.removeEventListener('mouseup', onColumnStopResize)
-    setSideBarState(state)
-  }, [setSideBarState])
-
-  const onColumnStartResize = useCallback(
-    (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      const sideBarWith = refColumnsState.current
-
-      setResizeState({
-        width: sideBarWith,
-        initialWidth: sideBarWith,
-        initPointerPosition: e.clientX,
-        onMouseMoveSubscriber: onColumnResizing,
-      })
-      document.addEventListener('mousemove', onColumnResizing)
-      document.addEventListener('mouseup', onColumnStopResize)
-      document.body.style.cursor = 'e-resize'
-      document.body.style.userSelect = 'none'
-    },
-    [onColumnResizing, onColumnStopResize],
-  )
 
   const loadTasks = useCallback(() => {
     const loadTask = async () => {
@@ -181,9 +114,9 @@ const SideBar = ({ onOpenNewTab, onChangeActiveTab, children }) => {
 
   return (
     <LoadTasks.Provider value={loadTasks}>
-      <div className="flex h-full overflow-hidden" ref={headerContainerRef}>
+      <div className="flex h-full overflow-hidden">
         <SideBarContainer
-          style={{ width: columnsWithUiSetting }}
+          style={{ width: columnsWithUiSetting.width }}
           className="py-4 bg-white flex-container"
         >
           <Button
