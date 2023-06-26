@@ -56,7 +56,8 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
           </div>
           <div className="font-bold mt-4">Сборка ts:</div>
           <div>
-            {direction.ts && `${direction.ts?.commit}/ ${direction.ts?.branch} от ${direction.ts.date}`}
+            {direction.ts &&
+              `${direction.ts?.commit}/ ${direction.ts?.branch} от ${direction.ts.date}`}
           </div>
         </div>
         <FormContainer className="p-5 flex flex-col">

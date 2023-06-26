@@ -23,7 +23,7 @@ export const LoginFormContainer = styled.div`
   width: 100%;
   height: 100%;
   flex: 0 0 auto;
-  padding: 20px 10px 10px;
+  padding: 20px 10px 90px;
 `
 
 export const FormContainer = styled.div`
