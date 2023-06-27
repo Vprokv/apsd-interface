@@ -68,7 +68,7 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
             style={{ height: 'auto', width: '250px' }}
           />
           {children}
-          <div className="mt-auto font-size-12 font-medium">
+          <div className="mt-auto font-size-12 font-medium mb-8">
             <div className="mb-4 color-blue-1 font-bold">{support.message}</div>
             <div className="mb-4">{support.phone}</div>
             <div>{support.email}</div>
