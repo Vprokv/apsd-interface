@@ -12,6 +12,7 @@ import { OthersLevelsArchiveButton, SecondArchiveButton } from './ArchiveButton'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/Archive/Components/WithToggleNavigationItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import Tips from '@/Components/Tips'
 
 const apisMap = {
   0: async ({ api, query }) => {
@@ -45,6 +46,7 @@ const ArchiveItem = ({
   onOpenNewTab,
   sectionId,
   query,
+  width,
   buttonComponent: ButtonComponent,
   childrenComponent: ChildrenComponent,
 }) => {
@@ -85,6 +87,8 @@ const ArchiveItem = ({
             )}
             <ButtonComponent
               id={id}
+              level={level}
+              width={width}
               toggleChildrenRender={toggleDisplayedFlag}
               name={name}
               sectionId={levelId}
@@ -99,11 +103,11 @@ const ArchiveItem = ({
               }}
             />
           </div>
-
           {isDisplayed && (
             <div className="flex flex-col pl-4 ">
               <ChildrenComponent
                 level={level + 1}
+                width={width}
                 id={id}
                 query={query}
                 sectionId={levelId}

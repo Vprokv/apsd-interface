@@ -17,7 +17,7 @@ const ScrollBar = styled(SimpleBar)`
   max-height: 300px;
 `
 
-const Archive = ({ onOpenNewTab }) => {
+const Archive = ({ onOpenNewTab, width }) => {
   const [query, setQuery] = useState()
 
   return (
@@ -52,6 +52,7 @@ const Archive = ({ onOpenNewTab }) => {
               </SearchInput>
               <ScrollBar>
                 <ArchiveItem
+                  width={width}
                   query={query}
                   onOpenNewTab={onOpenNewTab}
                   buttonComponent={FirstLevelArchiveButton}

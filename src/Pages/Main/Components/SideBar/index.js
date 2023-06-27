@@ -28,6 +28,7 @@ import Notification from '@/Pages/Main/Components/SideBar/Components/Notificatio
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import styled from 'styled-components'
 import { ColumnManipulationIndicator } from '@Components/Components/Tables/ListTable/styles'
+import log from 'tailwindcss/lib/util/log'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -64,7 +65,6 @@ const SideBar = ({
   onChangeActiveTab,
   onColumnStartResize,
   columnsWithUiSetting,
-  resizeState,
   children,
 }) => {
   const api = useContext(ApiContext)
@@ -157,7 +157,10 @@ const SideBar = ({
               </div>
             </div>
             <Storage />
-            <Archive onOpenNewTab={onOpenNewTab} />
+            <Archive
+              onOpenNewTab={onOpenNewTab}
+              width={columnsWithUiSetting.width}
+            />
             <Basket onOpenNewTab={onOpenNewTab} />
             <CreateDocumentWindow
               open={createDocumentWindow}

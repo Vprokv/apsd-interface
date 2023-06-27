@@ -55,10 +55,9 @@ const Header = ({ children }) => {
 
   const onColumnResizing = useCallback(({ clientX }) => {
     setResizeState((prevState) => {
-      const nextWidth =
-        prevState.initialWidth - prevState.initPointerPosition + clientX
-      const nextMargin =
-        prevState.initialMargin - prevState.initPointerPosition + clientX
+      const { initialWidth = 0, initialMargin = 0 } = prevState
+      const nextWidth = initialWidth - prevState.initPointerPosition + clientX
+      const nextMargin = initialMargin - prevState.initPointerPosition + clientX
 
       return {
         ...prevState,
@@ -77,6 +76,7 @@ const Header = ({ children }) => {
       }
     })
   }, [])
+
   const onColumnStopResize = useCallback(() => {
     let state
 
@@ -101,6 +101,7 @@ const Header = ({ children }) => {
         width: sideBarWith.width,
         initialWidth: sideBarWith.width,
         initialMargin: sideBarWith.margin,
+        margin: sideBarWith.margin,
         initPointerPosition: e.clientX,
         onMouseMoveSubscriber: onColumnResizing,
       })
@@ -112,25 +113,31 @@ const Header = ({ children }) => {
     [onColumnResizing, onColumnStopResize],
   )
 
-  console.log(
-    columnsWithUiSetting.margin === MAX_SIDEBAR_WIDTH.margin,
-    'columnsWithUiSetting.margin === MAX_SIDEBAR_WIDTH.margin',
+  const buttonRotate = useMemo(
+    () => (columnsWithUiSetting.width <= 240 ? 'rotate-180' : ''),
+    [columnsWithUiSetting.width],
   )
 
-  // const tipsText = useMemo(() =>)
+  const tipsText = useMemo(
+    () =>
+      columnsWithUiSetting.width <= 240
+        ? 'Развернуть дерево навигации'
+        : 'Свернуть дерево навигации',
+    [columnsWithUiSetting.width],
+  )
 
   return (
     <div className="flex-container">
       <div className="bg-blue-1 flex items-center py-2 pl-6 pr-5 text-white">
         <img src={MainLogo} />
-        <Tips text="Свернуть дерево навигации">
+        <Tips text={tipsText}>
           <button
             style={{ 'margin-left': columnsWithUiSetting.margin }}
             type="button"
             onMouseDown={onColumnStartResize}
             className="bg-blue-4 rounded-md h-8 pl-1 pr-1"
           >
-            <Icon icon={doubleShevronIcon} size="22" />
+            <Icon icon={doubleShevronIcon} size="22" className={buttonRotate} />
           </button>
         </Tips>
         <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2">
@@ -140,7 +147,9 @@ const Header = ({ children }) => {
               <Icon
                 icon={settingsIcon}
                 size="20"
-                // className={columnsWithUiSetting.margin === 630 ? '' : 'rotate-180'}
+                className={` ml-2 ${
+                  columnsWithUiSetting.margin === 630 ? '' : 'rotate-180'
+                }`}
               />
             </ButtonForIcon>
           </Tips>

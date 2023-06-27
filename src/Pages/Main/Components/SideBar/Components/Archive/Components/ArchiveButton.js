@@ -1,11 +1,43 @@
 import PropTypes from 'prop-types'
-import { useCallback } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
+import Tips from '@/Components/Tips'
 
-const ArchiveButton = ({ name, onClick }) => {
+const ArchiveButton = ({ name, onClick, width, level }) => {
+  const ref = useRef()
+  const widthForText = useMemo(
+    () => width - (level + 1) * 14 - 30,
+    [level, width],
+  )
+
+  const withTips = useMemo(
+    () => name?.split('').length * 12 * 0.2645833333333 > widthForText,
+    [name, widthForText],
+  )
+
+  console.log(ref, 'ref.current?.clientWidth')
+  console.log(ref.current?.clientWidth, 'ref.current?.clientWidth')
+
   return (
-    <button type="button" className="flex text-left" onClick={onClick}>
-      <span className="mr-auto">{name}</span>
-    </button>
+    <>
+      <span ref={ref} style={{ left: 1000 }} className="absolute">
+        {name}
+      </span>
+      {withTips ? (
+        <Tips text={name}>
+          <button type="button" className="flex text-left " onClick={onClick}>
+            <span style={{ width: widthForText }} className="mr-auto truncate">
+              {name}
+            </span>
+          </button>
+        </Tips>
+      ) : (
+        <button type="button" className="flex text-left " onClick={onClick}>
+          <span style={{ width: widthForText }} className="mr-auto truncate">
+            {name}
+          </span>
+        </button>
+      )}
+    </>
   )
 }
 
@@ -14,8 +46,18 @@ ArchiveButton.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-export const FirstLevelArchiveButton = ({ name, toggleChildrenRender }) => (
-  <ArchiveButton name={name} onClick={toggleChildrenRender} />
+export const FirstLevelArchiveButton = ({
+  name,
+  toggleChildrenRender,
+  width,
+  level,
+}) => (
+  <ArchiveButton
+    name={name}
+    onClick={toggleChildrenRender}
+    width={width}
+    level={level}
+  />
 )
 
 FirstLevelArchiveButton.propTypes = {
@@ -25,9 +67,11 @@ FirstLevelArchiveButton.propTypes = {
 
 export const SecondArchiveButton = ({
   name,
+  width,
   onOpenNewTab,
   parentName,
   sectionId,
+  level,
 }) => {
   const handleClick = useCallback(() => {
     onOpenNewTab(
@@ -37,7 +81,14 @@ export const SecondArchiveButton = ({
       )}/${sectionId}`,
     )
   }, [onOpenNewTab, parentName, name, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} />
+  return (
+    <ArchiveButton
+      name={name}
+      onClick={handleClick}
+      width={width}
+      level={level}
+    />
+  )
 }
 
 SecondArchiveButton.propTypes = {
@@ -53,6 +104,8 @@ export const OthersLevelsArchiveButton = ({
   parentName,
   id,
   sectionId,
+  width,
+  level,
 }) => {
   const handleClick = useCallback(() => {
     onOpenNewTab(
@@ -62,7 +115,14 @@ export const OthersLevelsArchiveButton = ({
       )}/${id}${sectionId ? `/${sectionId}` : ''}`,
     )
   }, [onOpenNewTab, parentName, name, id, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} />
+  return (
+    <ArchiveButton
+      name={name}
+      onClick={handleClick}
+      width={width}
+      level={level}
+    />
+  )
 }
 
 OthersLevelsArchiveButton.propTypes = {
