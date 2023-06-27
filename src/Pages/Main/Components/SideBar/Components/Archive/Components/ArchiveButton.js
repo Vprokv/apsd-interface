@@ -1,43 +1,47 @@
 import PropTypes from 'prop-types'
-import { useCallback, useMemo, useRef } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import Tips from '@/Components/Tips'
+import { ContextArchiveContainerWidth } from '../constants'
 
-const ArchiveButton = ({ name, onClick, width, level }) => {
-  const ref = useRef()
-  const widthForText = useMemo(
-    () => width - (level + 1) * 14 - 30,
-    [level, width],
-  )
+const ArchiveButton = ({ name, onClick }) => {
+  const RefFullWidthContainer = useRef()
+  const RefVisibleTextContainerRef = useRef()
+  const containerWidth = useContext(ContextArchiveContainerWidth)
+  const [renderTips, setRenderTips] = useState(false)
 
-  const withTips = useMemo(
-    () => name?.split('').length * 12 * 0.2645833333333 > widthForText,
-    [name, widthForText],
-  )
+  useLayoutEffect(() => {
+    setRenderTips(
+      RefFullWidthContainer.current.clientWidth >
+        RefVisibleTextContainerRef.current.clientWidth,
+    )
+  }, [containerWidth])
 
-  console.log(ref, 'ref.current?.clientWidth')
-  console.log(ref.current?.clientWidth, 'ref.current?.clientWidth')
-
+  const Container = renderTips ? Tips : React.Fragment
   return (
-    <>
-      <span ref={ref} style={{ left: 1000 }} className="absolute">
-        {name}
-      </span>
-      {withTips ? (
-        <Tips text={name}>
-          <button type="button" className="flex text-left " onClick={onClick}>
-            <span style={{ width: widthForText }} className="mr-auto truncate">
-              {name}
-            </span>
-          </button>
-        </Tips>
-      ) : (
-        <button type="button" className="flex text-left " onClick={onClick}>
-          <span style={{ width: widthForText }} className="mr-auto truncate">
-            {name}
-          </span>
-        </button>
-      )}
-    </>
+    <Container text={name} className="max-w-lg text-center">
+      <button
+        type="button"
+        className="flex text-left overflow-hidden"
+        onClick={onClick}
+      >
+        <span
+          ref={RefFullWidthContainer}
+          style={{ left: 10000 }}
+          className="absolute whitespace-nowrap"
+        >
+          {name}
+        </span>
+        <span className="mr-auto truncate" ref={RefVisibleTextContainerRef}>
+          {name}
+        </span>
+      </button>
+    </Container>
   )
 }
 
@@ -46,18 +50,8 @@ ArchiveButton.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-export const FirstLevelArchiveButton = ({
-  name,
-  toggleChildrenRender,
-  width,
-  level,
-}) => (
-  <ArchiveButton
-    name={name}
-    onClick={toggleChildrenRender}
-    width={width}
-    level={level}
-  />
+export const FirstLevelArchiveButton = ({ name, toggleChildrenRender }) => (
+  <ArchiveButton name={name} onClick={toggleChildrenRender} />
 )
 
 FirstLevelArchiveButton.propTypes = {
@@ -67,11 +61,9 @@ FirstLevelArchiveButton.propTypes = {
 
 export const SecondArchiveButton = ({
   name,
-  width,
   onOpenNewTab,
   parentName,
   sectionId,
-  level,
 }) => {
   const handleClick = useCallback(() => {
     onOpenNewTab(
@@ -81,14 +73,7 @@ export const SecondArchiveButton = ({
       )}/${sectionId}`,
     )
   }, [onOpenNewTab, parentName, name, sectionId])
-  return (
-    <ArchiveButton
-      name={name}
-      onClick={handleClick}
-      width={width}
-      level={level}
-    />
-  )
+  return <ArchiveButton name={name} onClick={handleClick} />
 }
 
 SecondArchiveButton.propTypes = {
@@ -104,8 +89,6 @@ export const OthersLevelsArchiveButton = ({
   parentName,
   id,
   sectionId,
-  width,
-  level,
 }) => {
   const handleClick = useCallback(() => {
     onOpenNewTab(
@@ -115,14 +98,7 @@ export const OthersLevelsArchiveButton = ({
       )}/${id}${sectionId ? `/${sectionId}` : ''}`,
     )
   }, [onOpenNewTab, parentName, name, id, sectionId])
-  return (
-    <ArchiveButton
-      name={name}
-      onClick={handleClick}
-      width={width}
-      level={level}
-    />
-  )
+  return <ArchiveButton name={name} onClick={handleClick} />
 }
 
 OthersLevelsArchiveButton.propTypes = {

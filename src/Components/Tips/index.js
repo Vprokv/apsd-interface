@@ -8,7 +8,7 @@ import {
 import PropTypes from 'prop-types'
 import { StyledContextMenu, TextContainer } from './styles'
 
-const Tips = ({ children, text }) => {
+const Tips = ({ children, text, className = '' }) => {
   const [renderTips, setRenderTipsState] = useState(false)
   const [textSize, setTextSize] = useState(0)
   const childRef = useRef()
@@ -53,7 +53,7 @@ const Tips = ({ children, text }) => {
           target={childRef.current.children[0]}
           width={textSize}
         >
-          <TextContainer className="min-w-min" ref={textRef}>
+          <TextContainer className={` ${className}`} ref={textRef}>
             {text}
           </TextContainer>
         </StyledContextMenu>
@@ -63,6 +63,7 @@ const Tips = ({ children, text }) => {
 }
 
 Tips.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

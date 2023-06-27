@@ -8,7 +8,6 @@ export const TextContainer = styled.div`
   color: white;
   font-weight: 500;
   padding: 5px;
-  white-space: nowrap;
   border-radius: 5px;
 `
 

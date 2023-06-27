@@ -25,10 +25,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import Notification from '@/Pages/Main/Components/SideBar/Components/Notification'
-import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import styled from 'styled-components'
-import { ColumnManipulationIndicator } from '@Components/Components/Tables/ListTable/styles'
-import log from 'tailwindcss/lib/util/log'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
