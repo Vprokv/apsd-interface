@@ -120,7 +120,7 @@ const columnMap = [
 
 const columns = [
   {
-    id: 'taskType',
+    id: 'creationDate',
     label: 'Задание',
     component: DocumentState,
     sizes: DocumentStateSizes,
@@ -176,7 +176,7 @@ const columns = [
     sizes: useCardSizes,
   },
   {
-    id: 'creatorEmployee',
+    id: 'authorEmployee',
     label: 'Автор',
     component: ({
       ParentValue: {

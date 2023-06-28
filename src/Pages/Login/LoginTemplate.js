@@ -56,7 +56,8 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
           </div>
           <div className="font-bold mt-4">Сборка ts:</div>
           <div>
-            {direction.ts && `${direction.ts?.commit}/ ${direction.ts?.branch} от ${direction.ts.date}`}
+            {direction.ts &&
+              `${direction.ts?.commit}/ ${direction.ts?.branch} от ${direction.ts.date}`}
           </div>
         </div>
         <FormContainer className="p-5 flex flex-col">
@@ -67,7 +68,7 @@ const LoginTemplate = ({ children, backgroundUrlPath }) => {
             style={{ height: 'auto', width: '250px' }}
           />
           {children}
-          <div className="mt-auto font-size-12 font-medium">
+          <div className="mt-auto font-size-12 font-medium mb-8">
             <div className="mb-4 color-blue-1 font-bold">{support.message}</div>
             <div className="mb-4">{support.phone}</div>
             <div>{support.email}</div>
