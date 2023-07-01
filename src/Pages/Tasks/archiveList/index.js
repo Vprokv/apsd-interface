@@ -221,7 +221,7 @@ const ArchiveList = () => {
     const {
       data: { id },
     } = await api.post(URL_EXPORT, {
-      url: `${API_URL}${URL_STORAGE_DOCUMENT}`,
+      url: `${API_URL}/${URL_STORAGE_DOCUMENT}`,
       label: `${parentName}${name}`,
       sheetName: `${parentName}${name}`,
       columns: columnMap,
