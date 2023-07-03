@@ -111,6 +111,11 @@ export const URL_STORAGE_TITLE = 'apsd/archive/title'
 export const URL_STORAGE_DOCUMENT = 'apsd/archive/list'
 export const URL_STORAGE_SECTION = '/apsd/archive/section'
 
+// KNOWLEDGE
+export const URL_KNOWLEDGE_STRUCTURE = '/apsd/storage/structure'
+export const URL_KNOWLEDGE_TASKS = '/apsd/storage/tasks'
+export const URL_KNOWLEDGE_TITLE = '/apsd/storage/title'
+
 // CONTENT
 export const URL_CONTENT_LIST = '/apsd/content/list/version'
 export const URL_CONTENT_SEND_EEHD = '/apsd/content/send/eehd'

@@ -26,6 +26,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import Notification from '@/Pages/Main/Components/SideBar/Components/Notification'
 import styled from 'styled-components'
+import Knowledge from '@/Pages/Main/Components/SideBar/Components/KnowLedge'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -153,7 +154,10 @@ const SideBar = ({
                 Созданные мной
               </div>
             </div>
-            <Storage />
+            <Knowledge
+              onOpenNewTab={onOpenNewTab}
+              width={columnsWithUiSetting.width}
+            />
             <Archive
               onOpenNewTab={onOpenNewTab}
               width={columnsWithUiSetting.width}
