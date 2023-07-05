@@ -15,10 +15,16 @@ export const SecondKnowledgeButton = ({
   name,
   onOpenNewTab,
   parentName,
-  toggleChildrenRender,
-  readTaskCounts,
-  allTaskCounts,
-  sectionId,
+  id,
 }) => {
-  return <ArchiveButton name={name} onClick={toggleChildrenRender} />
+  const handleClick = useCallback(() => {
+    onOpenNewTab(
+      `/task/storage/${parentName.replaceAll('/', '%2f')}/${name.replaceAll(
+        '/',
+        '%2f',
+      )}/${id ? `${id}` : ''}`,
+    )
+  }, [onOpenNewTab, parentName, name, id])
+
+  return <ArchiveButton name={name} onClick={handleClick} />
 }

@@ -19,7 +19,7 @@ import {
 import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import { CREATE_PASSWORD_PAGE_PATH } from './routePaths'
+import { CREATE_PASSWORD_PAGE_PATH, TASK_STORAGE_LIST_PATH } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'
@@ -27,6 +27,7 @@ import Reporting from '@/Pages/Rporting'
 import ViewedTask from '@/Pages/Tasks/viewed'
 import Settings from '@/Pages/Settings'
 import Notification from '@/Pages/Notification'
+import StorageList from '@/Pages/Tasks/storegeList'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -168,6 +169,10 @@ function App() {
                   <Route
                     path={routePath.TASK_LIST_PATH}
                     element={<TaskList />}
+                  />
+                  <Route
+                    path={routePath.TASK_STORAGE_LIST_PATH}
+                    element={<StorageList />}
                   />
                   <Route
                     path={routePath.VOLUME_ITEM_PATH}

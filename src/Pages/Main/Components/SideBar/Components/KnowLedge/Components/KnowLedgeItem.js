@@ -73,14 +73,14 @@ const LevelTwoKnowledgeItem = ({
                 toggleChildrenRender={toggleDisplayedFlag}
                 name={name}
                 parentName={parentName}
-                // onOpenNewTab={(args) => {
-                //   if (isDisplayed) {
-                //     toggleDisplayedFlag()
-                //   } else {
-                //     // onOpenNewTab(args)
-                //     toggleDisplayedFlag()
-                //   }
-                // }}
+                onOpenNewTab={(args) => {
+                  if (isDisplayed) {
+                    toggleDisplayedFlag()
+                  } else {
+                    onOpenNewTab(args)
+                    toggleDisplayedFlag()
+                  }
+                }}
                 {...props}
               />
               {tomId && (
@@ -183,14 +183,14 @@ const KnowLedgeItem = ({
                 toggleChildrenRender={toggleDisplayedFlag}
                 name={description}
                 parentName={parentName}
-                // onOpenNewTab={(args) => {
-                //   if (isDisplayed) {
-                //     toggleDisplayedFlag()
-                //   } else {
-                //     onOpenNewTab(args)
-                //     toggleDisplayedFlag()
-                //   }
-                // }}
+                onOpenNewTab={(args) => {
+                  if (isDisplayed) {
+                    toggleDisplayedFlag()
+                  } else {
+                    onOpenNewTab(args)
+                    toggleDisplayedFlag()
+                  }
+                }}
                 {...props}
               />
               {tomId && (

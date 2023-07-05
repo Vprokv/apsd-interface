@@ -17,7 +17,7 @@ const ScrollBar = styled(SimpleBar)`
 `
 
 const Knowledge = ({ onOpenNewTab, width }) => (
-  <WithToggleNavigationItem id="Архив">
+  <WithToggleNavigationItem id="Хранилище">
     {({ isDisplayed, toggleDisplayedFlag }) => (
       <ContextArchiveContainerWidth.Provider value={width}>
         <div className="mb-4 flex flex-col w-full">
