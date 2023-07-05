@@ -99,13 +99,13 @@ const CreateTemplateWindow = ({ jsonData }) => {
   ])
   return (
     <>
-      <SecondaryBlueButton
-        disabled={permit}
-        className="mr-2 font-size-12"
-        onClick={changeModalState(true)}
-      >
-        Создать шаблон
-      </SecondaryBlueButton>
+      {/*<SecondaryBlueButton*/}
+      {/*  disabled={permit}*/}
+      {/*  className="mr-2 font-size-12"*/}
+      {/*  onClick={changeModalState(true)}*/}
+      {/*>*/}
+      {/*  Создать шаблон*/}
+      {/*</SecondaryBlueButton>*/}
       <StandardSizeModalWindow
         title="Создать шаблон"
         open={open}

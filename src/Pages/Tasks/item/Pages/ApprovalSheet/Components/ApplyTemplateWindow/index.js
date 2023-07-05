@@ -138,13 +138,13 @@ const ApplyTemplateWindow = () => {
 
   return (
     <>
-      <SecondaryBlueButton
-        disabled={permit}
-        className="font-size-12"
-        onClick={getTemplates}
-      >
-        Применить шаблон
-      </SecondaryBlueButton>
+      {/*<SecondaryBlueButton*/}
+      {/*  disabled={permit}*/}
+      {/*  className="font-size-12"*/}
+      {/*  onClick={getTemplates}*/}
+      {/*>*/}
+      {/*  Применить шаблон*/}
+      {/*</SecondaryBlueButton>*/}
       <StandardSizeModalWindow
         title="Выбор шаблона"
         open={open}
