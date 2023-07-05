@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import ArchiveItem, {
   LevelTwoArchiveItem,
 } from '@/Pages/Main/Components/SideBar/Components/Archive/Components/ArchiveItem'
-import { URL_KNOWLEDGE_STRUCTURE, URL_KNOWLEDGE_TITLE } from '@/ApiList'
 import { useOpenNotification } from '@/Components/Notificator'
 import { ApiContext } from '@/contants'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
@@ -11,28 +10,115 @@ import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import { SecondKnowledgeButton } from '@/Pages/Main/Components/SideBar/Components/KnowLedge/Components/KnowLedgeButton'
+import { URL_KNOWLEDGE_STRUCTURE, URL_KNOWLEDGE_TITLE } from '@/ApiList'
 
 const apisMap = {
   0: async ({ api }) => {
     const { data } = await api.post(URL_KNOWLEDGE_TITLE)
     return data
   },
-  // 1: async ({ api, id }) => {
-  //   const { data } = await api.post(URL_KNOWLEDGE_STRUCTURE, {
-  //     filter: {
-  //       id,
-  //     },
-  //   })
-  //   return data
-  // },
   defaultRequest: async ({ api, id }) => {
     const { data } = await api.post(URL_KNOWLEDGE_STRUCTURE, {
-      filter: {
-        id,
-      },
+      id,
     })
     return data
   },
+}
+
+const LevelTwoKnowledgeItem = ({
+  parentName,
+  level,
+  childs,
+  onOpenNewTab,
+  query,
+  width,
+  buttonComponent: ButtonComponent,
+  childrenComponent: ChildrenComponent,
+}) => {
+  return childs.map(
+    ({
+      id,
+      name,
+      expand = true,
+      childs,
+      readTaskCounts,
+      allTaskCounts,
+      tomId,
+      ...props
+    }) => (
+      <WithToggleNavigationItem id={id} key={id}>
+        {({ isDisplayed, toggleDisplayedFlag }) => (
+          <div className=" font-size-12 mt-2 ">
+            <div className="flex w-full py-1.5">
+              {expand && (
+                <button
+                  className="pl-2 mr-2 "
+                  type="button"
+                  onClick={toggleDisplayedFlag}
+                >
+                  <Icon
+                    icon={angleIcon}
+                    size={10}
+                    className={`color-text-secondary ${
+                      isDisplayed ? '' : 'rotate-180'
+                    }`}
+                  />
+                </button>
+              )}
+              <ButtonComponent
+                key={id}
+                id={id}
+                level={level}
+                width={width}
+                toggleChildrenRender={toggleDisplayedFlag}
+                name={name}
+                parentName={parentName}
+                // onOpenNewTab={(args) => {
+                //   if (isDisplayed) {
+                //     toggleDisplayedFlag()
+                //   } else {
+                //     // onOpenNewTab(args)
+                //     toggleDisplayedFlag()
+                //   }
+                // }}
+                {...props}
+              />
+              {tomId && (
+                <div className="font-medium ml-auto w-16 flex justify-end">{` ${readTaskCounts}/ ${allTaskCounts}`}</div>
+              )}
+            </div>
+            {isDisplayed && (
+              <div className="flex flex-col pl-4 ">
+                <ChildrenComponent
+                  childs={childs}
+                  level={level + 1}
+                  width={width}
+                  id={id}
+                  query={query}
+                  parentName={name}
+                  onOpenNewTab={onOpenNewTab}
+                  buttonComponent={SecondKnowledgeButton}
+                  childrenComponent={LevelTwoKnowledgeItem}
+                  {...props}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </WithToggleNavigationItem>
+    ),
+  )
+}
+LevelTwoKnowledgeItem.defaultProps = {
+  level: 0,
+  parentName: 123123,
+  childs: [],
+  buttonComponent: SecondKnowledgeButton,
+  childrenComponent: LevelTwoKnowledgeItem,
+}
+
+LevelTwoKnowledgeItem.propTypes = {
+  id: PropTypes.string.isRequired,
 }
 
 const KnowLedgeItem = ({
@@ -40,7 +126,6 @@ const KnowLedgeItem = ({
   level,
   id,
   onOpenNewTab,
-  sectionId,
   query,
   width,
   buttonComponent: ButtonComponent,
@@ -59,63 +144,77 @@ const KnowLedgeItem = ({
         getNotification(defaultFunctionsMap[status](data))
       }
     })()
-  }, [api, level, id, sectionId, setItems, query, getNotification])
+  }, [api, level, id, setItems, query, getNotification])
 
-  return items.map(({ id: levelId, name, expand }) => (
-    <WithToggleNavigationItem id={levelId} key={levelId}>
-      {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className=" font-size-12 mt-2 ">
-          <div className="flex w-full py-1.5 justify-start">
-            {expand && (
-              <button
-                className="pl-2 mr-2 "
-                type="button"
-                onClick={toggleDisplayedFlag}
-              >
-                <Icon
-                  icon={angleIcon}
-                  size={10}
-                  className={`color-text-secondary ${
-                    isDisplayed ? '' : 'rotate-180'
-                  }`}
-                />
-              </button>
-            )}
-            <ButtonComponent
-              id={id}
-              level={level}
-              width={width}
-              toggleChildrenRender={toggleDisplayedFlag}
-              name={name}
-              sectionId={levelId}
-              parentName={parentName}
-              onOpenNewTab={(args) => {
-                if (isDisplayed) {
-                  toggleDisplayedFlag()
-                } else {
-                  onOpenNewTab(args)
-                  toggleDisplayedFlag()
-                }
-              }}
-            />
-          </div>
-          {isDisplayed && (
-            <div className="flex flex-col pl-4 ">
-              <ChildrenComponent
-                level={level + 1}
-                width={width}
+  return items.map(
+    ({
+      id,
+      description,
+      expand = true,
+      childs,
+      tomId,
+      readTaskCounts,
+      allTaskCounts,
+      ...props
+    }) => (
+      <WithToggleNavigationItem id={id} key={id}>
+        {({ isDisplayed, toggleDisplayedFlag }) => (
+          <div className=" font-size-12 mt-2 ">
+            <div className="flex w-full py-1.5 justify-start">
+              {expand && (
+                <button
+                  className="pl-2 mr-2 "
+                  type="button"
+                  onClick={toggleDisplayedFlag}
+                >
+                  <Icon
+                    icon={angleIcon}
+                    size={10}
+                    className={`color-text-secondary ${
+                      isDisplayed ? '' : 'rotate-180'
+                    }`}
+                  />
+                </button>
+              )}
+              <ButtonComponent
                 id={id}
-                query={query}
-                sectionId={levelId}
-                parentName={name}
-                onOpenNewTab={onOpenNewTab}
+                level={level}
+                width={width}
+                toggleChildrenRender={toggleDisplayedFlag}
+                name={description}
+                parentName={parentName}
+                // onOpenNewTab={(args) => {
+                //   if (isDisplayed) {
+                //     toggleDisplayedFlag()
+                //   } else {
+                //     onOpenNewTab(args)
+                //     toggleDisplayedFlag()
+                //   }
+                // }}
+                {...props}
               />
+              {tomId && (
+                <div className="font-medium ml-auto w-16  flex justify-end">{` ${readTaskCounts}/ ${allTaskCounts}`}</div>
+              )}
             </div>
-          )}
-        </div>
-      )}
-    </WithToggleNavigationItem>
-  ))
+            {isDisplayed && (
+              <div className="flex flex-col pl-4 ">
+                <ChildrenComponent
+                  childs={childs}
+                  level={level + 1}
+                  width={width}
+                  id={id}
+                  query={query}
+                  parentName={description}
+                  onOpenNewTab={onOpenNewTab}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </WithToggleNavigationItem>
+    ),
+  )
 }
 
 KnowLedgeItem.propTypes = {
@@ -128,25 +227,19 @@ KnowLedgeItem.defaultProps = {
   level: 0,
   parentName: 123123,
   buttonComponent: SecondKnowledgeButton,
-  childrenComponent: ArchiveItem,
+  childrenComponent: KnowLedgeItem,
 }
 
 export const LevelOneKnowledgeItem = ({ id, ...props }) => (
-  <ArchiveItem
+  <KnowLedgeItem
     {...props}
     id={id}
     buttonComponent={SecondKnowledgeButton}
     childrenComponent={LevelTwoKnowledgeItem}
   />
 )
-LevelOneKnowledgeItem.propTypes = {
-  id: PropTypes.string.isRequired,
-}
 
-export const LevelTwoKnowledgeItem = ({ id, ...props }) => (
-  <ArchiveItem {...props} id={id} />
-)
-LevelTwoArchiveItem.propTypes = {
+LevelOneKnowledgeItem.propTypes = {
   id: PropTypes.string.isRequired,
 }
 

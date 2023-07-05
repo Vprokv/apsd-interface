@@ -1,19 +1,24 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import ArchiveButton from '@/Pages/Main/Components/SideBar/Components/Archive/Components/ArchiveButton'
+import PropTypes from 'prop-types'
+
+export const FirstLevelArchiveButton = ({ name, toggleChildrenRender }) => {
+  return <ArchiveButton name={name} onClick={toggleChildrenRender} />
+}
+
+FirstLevelArchiveButton.propTypes = {
+  name: PropTypes.string.isRequired,
+  toggleChildrenRender: PropTypes.func.isRequired,
+}
 
 export const SecondKnowledgeButton = ({
   name,
   onOpenNewTab,
   parentName,
+  toggleChildrenRender,
+  readTaskCounts,
+  allTaskCounts,
   sectionId,
 }) => {
-  const handleClick = useCallback(() => {
-    onOpenNewTab(
-      `/task/list/${parentName.replaceAll('/', '%2f')}/${name.replaceAll(
-        '/',
-        '%2f',
-      )}/${sectionId}`,
-    )
-  }, [onOpenNewTab, parentName, name, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} />
+  return <ArchiveButton name={name} onClick={toggleChildrenRender} />
 }

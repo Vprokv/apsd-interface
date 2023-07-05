@@ -24,7 +24,7 @@ const ArchiveButton = ({ name, onClick }) => {
 
   const Container = renderTips ? Tips : React.Fragment
   return (
-    <Container text={name} className="max-w-lg text-center">
+    <Container key={name} text={name} className="max-w-lg text-center">
       <button
         type="button"
         className="flex text-left overflow-hidden"
