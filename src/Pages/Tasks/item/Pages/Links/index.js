@@ -126,11 +126,11 @@ const columns = [
 
 const AddUserOptionsFullName = (v = {}) => ({
   ...v,
-  fullName: `${v.fio} 111`,
-  fullDescription: `${v.fio}, ${v.positionName}, ${v.departmentName}222`,
+  fullName: v.fio,
+  fullDescription: `${v.fio}, ${v.positionName}, ${v.departmentName}`,
   position: v.positionName,
   department: v.departmentName,
-  r_object_id: '1212',
+  emplId: v.id,
 })
 
 const ContentWindow = LinkWindowWrapper(PreviewContentWindow)
@@ -253,7 +253,8 @@ const Links = () => {
           return userModelList.map(AddUserOptionsFullName)
         },
         placeholder: 'Автор связи',
-        valueKey: 'r_object_id',
+        returnOption: false,
+        valueKey: 'emplId',
         labelKey: 'fullName',
       },
       {

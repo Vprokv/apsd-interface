@@ -8,12 +8,9 @@ const UserCard = ({
   middleName = '',
   position,
   department,
-  avatarId,
   widthDepartment = false,
   fullName,
 } = {}) => {
-  console.log(position, 'position')
-
   const fio = useMemo(
     () =>
       fullName
