@@ -159,12 +159,12 @@ const ApprovalSheet = () => {
           <div className="flex items-center ml-auto">
             <CreateTemplateWindow jsonData={data} />
             <ApplyTemplateWindow />
-            <ButtonForIcon
-              disabled={!permit}
-              className="mx-2 color-text-secondary"
-            >
-              <Icon icon={PostponeIcon} />
-            </ButtonForIcon>
+            {/*<ButtonForIcon*/}
+            {/*  disabled={!permit}*/}
+            {/*  className="mx-2 color-text-secondary"*/}
+            {/*>*/}
+            {/*  <Icon icon={PostponeIcon} />*/}
+            {/*</ButtonForIcon>*/}
             <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
                 className="color-text-secondary"
