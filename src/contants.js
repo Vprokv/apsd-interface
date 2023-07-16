@@ -28,6 +28,8 @@ export const SEARCH_PAGE_TASKS = 'SEARCH_PAGE_TASKS'
 export const REPORTING = 'REPORTING'
 export const BASKET = 'BASKET'
 export const NOTIFICATION = 'NOTIFICATION'
+export const TASK_DEPUTY_LIST = 'TASK_LIST'
+export const TASK_STORAGE_LIST = 'TASK_LIST'
 export const SETTINGS = 'SETTINGS'
 
 export const WINDOW_ADD_EMPLOYEE = 'WINDOW_ADD_EMPLOYEE'

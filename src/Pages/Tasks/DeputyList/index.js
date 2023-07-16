@@ -1,4 +1,4 @@
-import {
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -6,205 +6,53 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
-import ListTable from '@Components/Components/Tables/ListTable'
-import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
-import Icon from '@Components/Components/Icon'
-import UserCard, {
-  sizes as useCardSizes,
-} from '@/Components/ListTableComponents/UserCard'
-import DocumentState, {
-  sizes as DocumentStateSizes,
-} from '@/Components/ListTableComponents/DocumentState'
-import VolumeState, {
-  sizes as volumeStateSize,
-} from '@/Components/ListTableComponents/VolumeState'
-import BaseCell, {
-  sizes as baseCellSize,
-} from '@/Components/ListTableComponents/BaseCell'
-import VolumeStatus, {
-  sizes as volumeStatusSize,
-} from '@/Components/ListTableComponents/VolumeStatus'
-import HeaderCell from '../../../Components/ListTableComponents/HeaderCell'
-import XlsIcon from '@/Icons/XlsIcon'
-import Pagination from '../../../Components/Pagination'
-import CheckBox from '../../../Components/Inputs/CheckBox'
+import PropTypes from 'prop-types'
 import {
-  URL_DEPUTY_TASK_LIST,
+  ApiContext,
+  TASK_DEPUTY_LIST,
+  TASK_LIST,
+  TokenContext,
+} from '@/contants'
+import { TabStateManipulation } from '@Components/Logic/Tab'
+import { useLocation, useParams } from 'react-router-dom'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import usePagination from '@Components/Logic/usePagination'
+import { useOpenNotification } from '@/Components/Notificator'
+import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
   URL_EXPORT,
   URL_EXPORT_FILE,
+  URL_KNOWLEDGE_TASKS,
   URL_TASK_LIST_FILTERS,
   URL_TASK_LIST_V2,
 } from '@/ApiList'
-import {
-  ApiContext,
-  TASK_LIST,
-  TASK_STORAGE_LIST,
-  TokenContext,
-} from '@/contants'
-import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
-import usePagination from '../../../components_ocean/Logic/usePagination'
-import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
-import { ButtonForIcon } from '@/Components/Button'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import PropTypes from 'prop-types'
-import { TabStateManipulation } from '@Components/Logic/Tab'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import Tips from '@/Components/Tips'
-import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { useOpenNotification } from '@/Components/Notificator'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
-import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
+import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
+import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
+import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
+import Tips from '@/Components/Tips'
+import { ButtonForIcon } from '@/Components/Button'
 import sortIcon from '@/Pages/Tasks/list/icons/sortIcon'
+import XlsIcon from '@/Icons/XlsIcon'
+import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
+import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
+import Pagination from '@/Components/Pagination'
+import { columnMap, taskColumns } from '@/Pages/Tasks/storegeList'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 
-const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
-
-export const taskPlugins = {
+const taskPlugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
-  selectPlugin: {
-    driver: FlatSelect,
-    component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,
-    valueKey: 'id',
-  },
 }
 
-export const columnMap = [
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Задание',
-    path: '[documentStatus, creationDate, dueDate, taskType, read, dueDate]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Том',
-    path: '[documentRegNumber, display, creationDate]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Наименование тома',
-    path: 'documentDescription',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Этап',
-    path: 'stageName',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Статус тома',
-    path: 'documentStatus',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'От кого',
-    path: '[fromWhomEmployee.firstName,fromWhomEmployee.lastName,fromWhomEmployee.position,fromWhomEmployee.middleName]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'От кого',
-    path: '[fromWhomEmployee.firstName,fromWhomEmployee.lastName,fromWhomEmployee.position,fromWhomEmployee.middleName]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Автор',
-    path: '[creatorEmployee.firstName,creatorEmployee.lastName,creatorEmployee.position,creatorEmployee.middleName]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Контрольный срок',
-    path: 'dueDate',
-  },
-]
-
-export const taskColumns = [
-  {
-    id: 'creationDate',
-    label: 'Задание',
-    component: DocumentState,
-    sizes: DocumentStateSizes,
-  },
-  {
-    id: 'display',
-    label: 'Том',
-    component: VolumeState,
-    sizes: volumeStateSize,
-  },
-  {
-    id: 'documentDescription',
-    label: 'Наименование тома',
-    component: (props) => (
-      <BaseCell
-        className="flex items-center break-words break-all min-h-10"
-        {...props}
-      />
-    ),
-    sizes: baseCellSize,
-  },
-  {
-    id: 'titleDescription',
-    label: 'Титул',
-    component: BaseCell,
-    sizes: baseCellSize,
-  },
-  {
-    id: 'stageName',
-    label: 'Этап',
-    component: BaseCell,
-    sizes: baseCellSize,
-  },
-  {
-    id: 'documentStatus',
-    label: 'Статус тома',
-    className: 'flex items-center',
-    component: VolumeStatus,
-    sizes: volumeStatusSize,
-  },
-  {
-    id: 'fromWhomEmployee',
-    label: 'От кого',
-    component: ({ ParentValue: { fromWhomEmployee } = {} }) =>
-      fromWhomEmployee &&
-      UserCard({
-        name: fromWhomEmployee?.firstName,
-        lastName: fromWhomEmployee?.lastName,
-        middleName: fromWhomEmployee?.middleName,
-        position: fromWhomEmployee?.position,
-        avatar: fromWhomEmployee?.avatartId,
-      }),
-    sizes: useCardSizes,
-  },
-  {
-    id: 'authorEmployee',
-    label: 'Автор',
-    component: ({
-      ParentValue: {
-        creatorEmployee: {
-          firstName = '',
-          position = '',
-          avatartId,
-          lastName,
-          middleName,
-        },
-      },
-    }) =>
-      UserCard({
-        name: firstName,
-        lastName: lastName,
-        middleName: middleName,
-        position: position,
-        avatar: avatartId,
-      }),
-    sizes: useCardSizes,
-  },
-]
-
-function StorageList() {
+const DeputyList = () => {
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
     direction: 'DESC',
@@ -212,7 +60,7 @@ function StorageList() {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
-  const tabItemState = useTabItem({ stateId: TASK_STORAGE_LIST })
+  const tabItemState = useTabItem({ stateId: TASK_DEPUTY_LIST })
   const [filterWindowOpen, setFilterWindow] = useState(false)
   const changeFilterWindowState = useCallback(
     (state) => () => setFilterWindow(state),
@@ -226,7 +74,7 @@ function StorageList() {
     tabState: { data: { content = [], total = 0 } = {}, loading },
   } = tabItemState
   const { token } = useContext(TokenContext)
-  const { parentName, name, id } = useParams()
+  const { userName, name } = useParams()
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -245,7 +93,7 @@ function StorageList() {
     [openTabOrCreateNewTab],
   )
 
-  useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
+  useSetTabName(useCallback(() => `Задания (${name})`, [name]))
 
   const loadData = useMemo(
     () =>
@@ -253,9 +101,9 @@ function StorageList() {
         const { limit, offset } = paginationState
         try {
           const { data } = await api.post(
-            URL_DEPUTY_TASK_LIST,
+            URL_KNOWLEDGE_TASKS,
             {
-              sectionId: id,
+              depute: userName,
               filter,
               sort:
                 Object.keys(sortQuery).length > 0
@@ -280,7 +128,7 @@ function StorageList() {
           getNotification(defaultFunctionsMap[status](data))
         }
       },
-    [paginationState, api, id, filter, sortQuery, getNotification],
+    [paginationState, api, userName, filter, sortQuery, getNotification],
   )
 
   const onExportToExcel = useCallback(async () => {
@@ -289,7 +137,7 @@ function StorageList() {
       const {
         data: { id },
       } = await api.post(URL_EXPORT, {
-        url: `${API_URL}${URL_TASK_LIST_V2}`,
+        url: `${API_URL}${URL_KNOWLEDGE_TASKS}`,
         label: 'Все задания',
         sheetName: 'Все задания',
         columns: columnMap,
@@ -357,11 +205,6 @@ function StorageList() {
 
   const fields = useMemo(
     () => [
-      {
-        id: 'readTask',
-        component: CheckBox,
-        text: 'Непросмотренные',
-      },
       {
         id: 'taskTypes',
         component: LoadableSelect,
@@ -500,8 +343,8 @@ function StorageList() {
   )
 }
 
-StorageList.propTypes = {
+DeputyList.propTypes = {
   loadFunctionRest: PropTypes.string.isRequired,
 }
 
-export default StorageList
+export default DeputyList

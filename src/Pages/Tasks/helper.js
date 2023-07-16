@@ -35,7 +35,7 @@ export const useStatistic = (stat) =>
       termMoreThanWeakUnread,
       deadlineToday,
       deadlineTodayUnread,
-    } = stat
+    } = stat[0]
 
     return {
       '': `${allUnread}/${all}`,

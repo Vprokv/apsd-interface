@@ -27,6 +27,7 @@ import { LoadTasks } from '@/Pages/Main/constants'
 import Notification from '@/Pages/Main/Components/SideBar/Components/Notification'
 import styled from 'styled-components'
 import Knowledge from '@/Pages/Main/Components/SideBar/Components/KnowLedge'
+import DeputyPeople from '@/Pages/Main/Components/SideBar/Components/DeputyPeople'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -83,10 +84,7 @@ const SideBar = ({
     const loadTask = async () => {
       clearTimeout(timeout)
       let attempts = 0
-      const {
-        data: [data],
-        status,
-      } = await api.post(URL_TASK_STATISTIC)
+      const { data, status } = await api.post(URL_TASK_STATISTIC)
       try {
         if (status === 200) {
           // на случай кондишен рейса, первый запрос в процессе, прилетел другой и выполнился раньше и уже разместил свой таймер
@@ -127,6 +125,11 @@ const SideBar = ({
           <ScrollBar className="flex-container">
             <Notification onOpenNewTab={onOpenNewTab} />
             <MyTasks
+              task={task}
+              onOpenNewTab={onOpenNewTab}
+              onChangeActiveTab={onChangeActiveTab}
+            />
+            <DeputyPeople
               task={task}
               onOpenNewTab={onOpenNewTab}
               onChangeActiveTab={onChangeActiveTab}
