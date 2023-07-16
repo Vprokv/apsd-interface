@@ -45,8 +45,106 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import { columnMap, taskColumns } from '@/Pages/Tasks/storegeList'
+import { columnMap } from '@/Pages/Tasks/storegeList'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import DocumentState, {
+  sizes as DocumentStateSizes,
+} from '@/Components/ListTableComponents/DocumentState'
+import VolumeState, {
+  sizes as volumeStateSize,
+} from '@/Components/ListTableComponents/VolumeState'
+import BaseCell, {
+  sizes as baseCellSize,
+} from '@/Components/ListTableComponents/BaseCell'
+import VolumeStatus, {
+  sizes as volumeStatusSize,
+} from '@/Components/ListTableComponents/VolumeStatus'
+import UserCard, {
+  sizes as useCardSizes,
+} from '@/Components/ListTableComponents/UserCard'
+
+const taskColumns = [
+  {
+    id: 'creationDate',
+    label: 'Задание',
+    widthMarker: false,
+    component: DocumentState,
+    sizes: DocumentStateSizes,
+  },
+  {
+    id: 'display',
+    label: 'Том',
+    component: VolumeState,
+    sizes: volumeStateSize,
+  },
+  {
+    id: 'documentDescription',
+    label: 'Наименование тома',
+    component: (props) => (
+      <BaseCell
+        className="flex items-center break-words break-all min-h-10"
+        {...props}
+      />
+    ),
+    sizes: baseCellSize,
+  },
+  {
+    id: 'titleDescription',
+    label: 'Титул',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
+    id: 'stageName',
+    label: 'Этап',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
+    id: 'documentStatus',
+    label: 'Статус тома',
+    className: 'flex items-center',
+    component: VolumeStatus,
+    sizes: volumeStatusSize,
+  },
+  {
+    id: 'fromWhomEmployee',
+    label: 'От кого',
+    component: ({ ParentValue: { fromWhomEmployee } = {} }) =>
+      fromWhomEmployee &&
+      UserCard({
+        name: fromWhomEmployee?.firstName,
+        lastName: fromWhomEmployee?.lastName,
+        middleName: fromWhomEmployee?.middleName,
+        position: fromWhomEmployee?.position,
+        avatar: fromWhomEmployee?.avatartId,
+      }),
+    sizes: useCardSizes,
+  },
+  {
+    id: 'authorEmployee',
+    label: 'Автор',
+    component: ({
+      ParentValue: {
+        creatorEmployee: {
+          firstName = '',
+          position = '',
+          avatartId,
+          lastName,
+          middleName,
+        },
+      },
+    }) =>
+      UserCard({
+        name: firstName,
+        lastName: lastName,
+        middleName: middleName,
+        position: position,
+        avatar: avatartId,
+      }),
+    sizes: useCardSizes,
+  },
+]
 
 const taskPlugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },

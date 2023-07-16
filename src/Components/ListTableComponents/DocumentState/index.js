@@ -11,7 +11,7 @@ import {
 } from '@/contants'
 
 const DocumentState = ({
-  ParentValue: { creationDate, dueDate, taskType, read },
+  ParentValue: { creationDate, dueDate, taskType, read, widthMarker },
 }) => {
   const formatDueTo = useMemo(
     () =>
@@ -22,13 +22,15 @@ const DocumentState = ({
 
   return (
     <div className="flex items-center h-full">
-      <div
-        className={`h-full mr-2  ${
-          read ? 'color-white' : ' bg-blue-1 color-blue-1'
-        }`}
-      >
-        .
-      </div>
+      {widthMarker && (
+        <div
+          className={`h-full mr-2  ${
+            read ? 'color-white' : ' bg-blue-1 color-blue-1'
+          }`}
+        >
+          .
+        </div>
+      )}
       <div>
         <div className="font-size-12 mb-1 font-medium">{taskType}</div>
         <div className="flex items-center font-size-12">
@@ -75,7 +77,9 @@ const DocumentState = ({
 DocumentState.propTypes = {
   ParentValue: PropTypes.object,
 }
-
+DocumentState.defaultProps = {
+  widthMarker: true,
+}
 export default DocumentState
 
 export const sizes = 200
