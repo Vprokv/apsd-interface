@@ -46,7 +46,6 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import { columnMap } from '@/Pages/Tasks/storegeList'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import DocumentState, {
   sizes as DocumentStateSizes,
@@ -63,6 +62,69 @@ import VolumeStatus, {
 import UserCard, {
   sizes as useCardSizes,
 } from '@/Components/ListTableComponents/UserCard'
+
+const columnMap = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Филиал титула',
+    path: 'dsid_branch_customer',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Титул',
+    path: 'dss_description',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Раздел',
+    path: '',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Наименование тома',
+    path: 'dss_description',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Тип тома',
+    path: 'dsid_type',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Шифр',
+    path: 'dss_reg_number',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Текущий этап ЖЦ тома',
+    path: '',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Задача / Сообщение по тому',
+    path: '',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата получения задачи',
+    path: 'dueDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Отправитель задачи',
+    path: 'dueDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Исполнитель задачи',
+    path: 'dueDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Контрольный срок',
+    path: 'dueDate',
+  },
+]
 
 const taskColumns = [
   {
@@ -236,33 +298,24 @@ const DeputyList = () => {
       const {
         data: { id },
       } = await api.post(URL_EXPORT, {
-        url: `${API_URL}${URL_KNOWLEDGE_TASKS}`,
-        label: 'Все задания',
-        sheetName: 'Все задания',
+        url: `${API_URL}${URL_DEPUTY_TASK_LIST}`,
+        label: `Задания (${name})`,
+        sheetName: `Задания (${name})`,
         columns: columnMap,
         body: {
-          filter: {
-            ...(search
-              ? search
-                  .replace('?', '')
-                  .split('&')
-                  .reduce((acc, p) => {
-                    const [key, value] = p.split('=')
-                    acc[key] = JSON.parse(value)
-                    return acc
-                  }, {})
-              : {}),
-            ...filter,
-          },
-          sort: [
-            {
-              direction: sortQuery.direction,
-              property: sortQuery.key,
-            },
-          ],
+          depute: userName,
+          filter,
+          sort:
+            Object.keys(sortQuery).length > 0
+              ? [
+                  {
+                    property: sortQuery.key,
+                    direction: sortQuery.direction,
+                  },
+                ]
+              : [],
           limit,
           offset,
-          token,
         },
       })
 
@@ -270,7 +323,7 @@ const DeputyList = () => {
         responseType: 'blob',
       })
 
-      downloadFileWithReload(data, 'Все задания.xlsx')
+      downloadFileWithReload(data, `Задания (${name}).xlsx`)
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
@@ -279,11 +332,11 @@ const DeputyList = () => {
     api,
     filter,
     getNotification,
+    name,
     paginationState,
-    search,
-    sortQuery.direction,
-    sortQuery.key,
+    sortQuery,
     token,
+    userName,
   ])
   useAutoReload(loadData, tabItemState)
 
