@@ -32,7 +32,7 @@ import CheckBox from '../../../Components/Inputs/CheckBox'
 import {
   URL_DEPUTY_TASK_LIST,
   URL_EXPORT,
-  URL_EXPORT_FILE,
+  URL_EXPORT_FILE, URL_KNOWLEDGE_TASKS,
   URL_TASK_LIST_FILTERS,
   URL_TASK_LIST_V2,
 } from '@/ApiList'
@@ -253,7 +253,7 @@ function StorageList() {
         const { limit, offset } = paginationState
         try {
           const { data } = await api.post(
-            URL_DEPUTY_TASK_LIST,
+            URL_KNOWLEDGE_TASKS,
             {
               sectionId: id,
               filter,
@@ -289,7 +289,7 @@ function StorageList() {
       const {
         data: { id },
       } = await api.post(URL_EXPORT, {
-        url: `${API_URL}${URL_TASK_LIST_V2}`,
+        url: `${API_URL}${URL_KNOWLEDGE_TASKS}`,
         label: 'Все задания',
         sheetName: 'Все задания',
         columns: columnMap,
