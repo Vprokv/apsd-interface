@@ -20,6 +20,7 @@ import usePagination from '@Components/Logic/usePagination'
 import { useOpenNotification } from '@/Components/Notificator'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
+  URL_DEPUTY_TASK_LIST,
   URL_EXPORT,
   URL_EXPORT_FILE,
   URL_KNOWLEDGE_TASKS,
@@ -199,7 +200,7 @@ const DeputyList = () => {
         const { limit, offset } = paginationState
         try {
           const { data } = await api.post(
-            URL_KNOWLEDGE_TASKS,
+            URL_DEPUTY_TASK_LIST,
             {
               depute: userName,
               filter,
@@ -411,7 +412,7 @@ const DeputyList = () => {
         </div>
       </div>
       <ListTable
-        className="mt-2"
+        className="my-2 mx-4"
         rowComponent={useMemo(
           () => (props) =>
             <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
