@@ -103,11 +103,6 @@ const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'От кого',
-    path: '[fromWhomEmployee.firstName,fromWhomEmployee.lastName,fromWhomEmployee.position,fromWhomEmployee.middleName]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
     header: 'Автор',
     path: '[creatorEmployee.firstName,creatorEmployee.lastName,creatorEmployee.position,creatorEmployee.middleName]',
   },

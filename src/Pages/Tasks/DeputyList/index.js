@@ -67,7 +67,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Филиал титула',
-    path: 'dsid_branch_customer',
+    path: 'dss_description', //todo
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -77,7 +77,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Раздел',
-    path: '',
+    path: 'dss_description', //todo
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -87,7 +87,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Тип тома',
-    path: 'dsid_type',
+    path: 'dss_description', //todo
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -97,27 +97,27 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Текущий этап ЖЦ тома',
-    path: '',
+    path: 'stageName',
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Задача / Сообщение по тому',
-    path: '',
+    header: 'Наименование задания',
+    path: 'dss_description',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Дата получения задачи',
-    path: 'dueDate',
+    path: 'creationDate',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Отправитель задачи',
-    path: 'dueDate',
+    path: '[authorEmployee.firstName,authorEmployee.lastName,authorEmployee.position,authorEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Исполнитель задачи',
-    path: 'dueDate',
+    path: 'dss_description', //todo
   },
   {
     componentType: 'DescriptionTableColumn',
