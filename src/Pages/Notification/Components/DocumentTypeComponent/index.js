@@ -9,12 +9,13 @@ import documentIcon from '@/Icons/documentIcon'
 const DocumentTypeComponent = ({
   ParentValue: { documentRegNumber, documentTypeLabel, documentRegDate, read },
 }) => {
+  console.log(documentTypeLabel, 'documentTypeLabel')
   const color = useMemo(() => {
-    return colorFromString(documentTypeLabel, 100, 35)
+    return documentTypeLabel && colorFromString(documentTypeLabel, 100, 35)
   }, [documentTypeLabel])
 
   const bg = useMemo(() => {
-    return `${color.slice(0, 3)}a${color.slice(3, -1)}, 0.1)`
+    return color && `${color.slice(0, 3)}a${color.slice(3, -1)}, 0.1)`
   }, [color])
 
   const date = useMemo(
@@ -39,7 +40,7 @@ const DocumentTypeComponent = ({
           bg={bg}
           dangerouslySetInnerHTML={{
             __html: useMemo(
-              () => documentTypeLabel.replaceAll('-', '&#x2011'),
+              () => documentTypeLabel?.replaceAll('-', '&#x2011'),
               [documentTypeLabel],
             ),
           }}
@@ -59,6 +60,10 @@ const DocumentTypeComponent = ({
       </div>
     </div>
   )
+}
+
+DocumentTypeComponent.defaultProps = {
+  documentTypeLabel: 'label',
 }
 
 export default DocumentTypeComponent

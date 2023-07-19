@@ -4,7 +4,7 @@ import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_BUSINESS_DOCUMENT_STAGES, URL_TASK_COMPLETE } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -14,6 +14,7 @@ import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
+import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -59,6 +60,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
   const { currentTabIndex } = useContext(CurrentTabContext)
 
   const reloadSidebarTaskCounters = useContext(LoadTasks)
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -75,8 +77,13 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
         },
       })
       onClose()
-      closeCurrenTab()
       reloadSidebarTaskCounters()
+      updateTabStateUpdaterByName([TASK_LIST], {
+        loading: false,
+        fetched: false,
+      })
+      closeCurrenTab()
+
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -91,6 +98,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
     reloadSidebarTaskCounters,
     selected?.id,
     selected?.type,
+    updateTabStateUpdaterByName,
   ])
 
   const rules = {

@@ -74,9 +74,7 @@ const columns = [
     id: 'documentAuthor',
     label: 'Автор документа',
     component: ({
-      ParentValue: {
-        initiatorEvent: { fio, position },
-      },
+      ParentValue: { initiatorEvent: { fio = '', position = '' } = {} } = {},
     }) => <BaseSubCell value={fio} subValue={position} />,
     sizes: baseCellSize,
   },
@@ -116,6 +114,8 @@ const Notification = () => {
     setState: setTabState,
     defaultLimit: 10,
   })
+
+  console.log(content, 'content')
 
   const loadData = useCallback(async () => {
     try {
