@@ -67,32 +67,32 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Филиал титула',
-    path: 'dss_description', //todo
+    path: 'customerBranch',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Титул',
-    path: 'dss_description',
+    path: 'titleDescription',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Раздел',
-    path: 'dss_description', //todo
+    path: 'sectionName',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Наименование тома',
-    path: 'dss_description',
+    path: 'documentDescription',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Тип тома',
-    path: 'dss_description', //todo
+    path: 'tomType',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Шифр',
-    path: 'dss_reg_number',
+    path: 'documentRegNumber',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -102,7 +102,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Наименование задания',
-    path: 'dss_description',
+    path: 'taskType',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -111,13 +111,13 @@ const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Отправитель задачи',
-    path: '[authorEmployee.firstName,authorEmployee.lastName,authorEmployee.position,authorEmployee.middleName]',
+    header: 'От кого',
+    path: '[authorEmployee.lastName,authorEmployee.firstName,authorEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
     header: 'Исполнитель задачи',
-    path: 'dss_description', //todo
+    path: '[performerEmployee.lastName,performerEmployee.firstName,performerEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',

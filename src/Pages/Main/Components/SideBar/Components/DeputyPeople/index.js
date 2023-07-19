@@ -68,7 +68,7 @@ const DeputyPeople = ({ task, onOpenNewTab }) => {
         ({ lastName, middleName, firstName, userName, all }) => (
           <button
             key={userName}
-            className="flex items-center w-full"
+            className="flex items-center w-full mb-2"
             onClick={openTaskList({
               lastName,
               middleName,
