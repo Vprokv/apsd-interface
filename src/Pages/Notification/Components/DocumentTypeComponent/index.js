@@ -20,7 +20,11 @@ const DocumentTypeComponent = ({
 
   const date = useMemo(
     () =>
-      dayjs(documentRegDate, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
+      documentRegDate
+        ? dayjs(documentRegDate, DEFAULT_DATE_FORMAT).format(
+            PRESENT_DATE_FORMAT,
+          )
+        : '',
     [documentRegDate],
   )
 

@@ -73,9 +73,10 @@ const columns = [
   {
     id: 'documentAuthor',
     label: 'Автор документа',
-    component: ({
-      ParentValue: { initiatorEvent: { fio = '', position = '' } = {} } = {},
-    }) => <BaseSubCell value={fio} subValue={position} />,
+    component: ({ ParentValue: { initiatorEvent } }) => {
+      const { fio, position } = initiatorEvent === null ? {} : initiatorEvent
+      return <BaseSubCell value={fio} subValue={position} />
+    },
     sizes: baseCellSize,
   },
   {
