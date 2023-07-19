@@ -104,7 +104,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Автор',
-    path: '[creatorEmployee.firstName,creatorEmployee.lastName,creatorEmployee.position,creatorEmployee.middleName]',
+    path: '[authorEmployee.firstName,authorEmployee.lastName,authorEmployee.position,authorEmployee.middleName]',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -175,7 +175,7 @@ const columns = [
     label: 'Автор',
     component: ({
       ParentValue: {
-        creatorEmployee: {
+        authorEmployee: {
           firstName = '',
           position = '',
           avatartId,
