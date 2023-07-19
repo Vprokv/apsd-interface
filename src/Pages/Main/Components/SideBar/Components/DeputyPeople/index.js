@@ -63,7 +63,7 @@ const DeputyPeople = ({ task, onOpenNewTab }) => {
   )
 
   return (
-    <div className="px-2 mb-4 font-size-12">
+    <div className="px-2 font-size-12">
       {peopleWidthTask.map(
         ({ lastName, middleName, firstName, userName, all }) => (
           <button

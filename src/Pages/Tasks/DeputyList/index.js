@@ -220,7 +220,6 @@ const DeputyList = () => {
   })
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
-  const { search } = useLocation()
   const tabItemState = useTabItem({ stateId: TASK_DEPUTY_LIST })
   const [filterWindowOpen, setFilterWindow] = useState(false)
   const changeFilterWindowState = useCallback(
@@ -254,7 +253,7 @@ const DeputyList = () => {
     [openTabOrCreateNewTab],
   )
 
-  useSetTabName(useCallback(() => `Задания (${name})`, [name]))
+  useSetTabName(useCallback(() => `Задания (${name}.)`, [name]))
 
   const loadData = useMemo(
     () =>
