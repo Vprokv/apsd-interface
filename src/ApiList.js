@@ -51,6 +51,7 @@ export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
 export const URL_TECHNICAL_OBJECTS_CREATE = '/apsd/title/technical_objects/add'
 export const URL_TECHNICAL_OBJECTS_DELETE =
   '/apsd/title/technical_objects/delete'
+export const URL_TITLE_LIST = '/apsd/title/list'
 
 // HANDOUTS
 export const URL_HANDOUTS_LIST = '/apsd/original/accounting/list'

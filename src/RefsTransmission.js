@@ -15,6 +15,10 @@ const refsMap = {
     valueKey: 'dsid_departmen',
     labelKey: 'dss_department_name',
   },
+  TitleDocument: {
+    valueKey: 'id',
+    labelKey: 'description',
+  },
 }
 
 const defaultObject = { valueKey: 'r_object_id', labelKey: 'dss_name' }

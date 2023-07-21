@@ -7,6 +7,7 @@ import {
   URL_ENTITY_LIST,
   URL_REPORTS_BRUNCH,
   URL_REPORTS_DEPARTMENT,
+  URL_TITLE_LIST,
 } from '@/ApiList'
 import refsTransmission from '@/RefsTransmission'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
@@ -14,6 +15,7 @@ import CustomValuesPipe from '@/Pages/Tasks/item/Pages/Requisites/PipeComponents
 import FiltersPipe from './Filters/index'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+import TitleDocument from '@/Pages/Rporting/Components/TitleDocument'
 
 const CustomOrgstructure = ({ onInput, value, res_author, ...props }) => {
   const [filter, setFilter] = useState()
@@ -157,6 +159,19 @@ const loadFunctions = {
     nextProps.valueKey = valueKey
     nextProps.labelKey = labelKey
   },
+  TitleDocument: (accumulator) => {
+    const { nextProps, api, type } = accumulator
+    nextProps.loadFunction = (filters) => async (query) => {
+      const { data } = await api.post(URL_TITLE_LIST, {
+        query,
+        ...filters,
+      })
+      return data
+    }
+    const { valueKey, labelKey } = refsTransmission(type)
+    nextProps.valueKey = valueKey
+    nextProps.labelKey = labelKey
+  },
 }
 
 const getLoadFunction = (accumulator) => {
@@ -222,6 +237,14 @@ export const propsTransmission = {
   },
   Department: (accumulator) => {
     accumulator.nextProps.component = Select
+    getLoadFunction(accumulator)
+    getMultiply(accumulator)
+    getRequired(accumulator)
+    FiltersPipe(accumulator)
+    return accumulator.nextProps
+  },
+  TitleDocument: (accumulator) => {
+    accumulator.nextProps.component = TitleDocument
     getLoadFunction(accumulator)
     getMultiply(accumulator)
     getRequired(accumulator)
