@@ -26,7 +26,9 @@ const Knowledge = ({ onOpenNewTab, width }) => (
             onClick={toggleDisplayedFlag}
           >
             <NavigationHeaderIcon icon={StorageIcon} size={22} />
-            <span className="font-size-12 mr-auto font-medium">Хранилище</span>
+            <span className="font-size-12 mr-auto font-medium">
+              Титулы в работе
+            </span>
             <Icon
               icon={angleIcon}
               size={10}
