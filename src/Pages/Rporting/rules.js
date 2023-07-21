@@ -58,8 +58,8 @@ const CustomDatePicker = ({ onInput, value, ...props }) => {
   useEffect(() => {
     if (filter !== filterRef.current && Object.keys(filter).length) {
       const [before, after] = filter
-      before && onInput(before, `${props.id}_before`)
-      after && onInput(after, `${props.id}_after`)
+      onInput(before, `${props.id}_before`)
+      onInput(after, `${props.id}_after`)
       filterRef.current = filter
     }
   }, [filter, onInput, props.id, value])
