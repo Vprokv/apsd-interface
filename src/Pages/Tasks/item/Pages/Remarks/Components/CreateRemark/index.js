@@ -115,7 +115,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   } = useRecoilValue(userAtom)
 
   const remarkType = useMemo(
-    () => options.find(({ dss_name }) => dss_name === 'Внутреннее'),
+    () => options.find(({ dss_name }) => dss_name === 'Внешнее'),
     [options],
   )
 
