@@ -49,32 +49,18 @@ CustomOrgstructure.propTypes = {
   id: PropTypes.string,
 }
 
-const keyMap = {
-  1: 'r_creation_dateFirst',
-  2: 'r_creation_dateSecond',
-}
-
 const CustomDatePicker = ({ onInput, value, ...props }) => {
   const [filter, setFilter] = useState([])
   const filterRef = useRef(filter)
 
-  const filterValue = useMemo(
-    () =>
-      filter.reduce((acc, val, key) => {
-        if (val) {
-          acc[keyMap[key]] = val
-        }
-        return acc
-      }, {}),
-    [filter],
-  )
-
   useEffect(() => {
-    if (filter !== filterRef.current && Object.keys(filterValue).length) {
-      onInput({ filterValue }, props.id)
+    if (filter !== filterRef.current && Object.keys(filter).length) {
+      const [before, after] = filter
+      before && onInput(before, `${props.id}_before`)
+      after && onInput(after, `${props.id}_after`)
       filterRef.current = filter
     }
-  }, [filter, filterValue, onInput, props.id, value])
+  }, [filter, onInput, props.id, value])
 
   return (
     <DatePicker {...props} range={true} value={filter} onInput={setFilter} />
