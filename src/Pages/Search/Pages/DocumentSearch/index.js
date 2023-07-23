@@ -9,7 +9,11 @@ import {
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext, SEARCH_PAGE, TokenContext } from '@/contants'
-import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
+import {
+  getField,
+  getLoadFunction,
+  mapOfKeyRules,
+} from '@/Pages/Search/Pages/rules'
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryBlueButton,
@@ -237,6 +241,7 @@ const DocumentSearch = ({
               getField(dss_component_type),
             ),
             id: dss_attr_name,
+            dss_attr_name,
             placeholder: dss_attr_label,
             label: dss_attr_label,
             multiple,
@@ -286,11 +291,16 @@ const DocumentSearch = ({
     const { type, ...filters } = filter
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          arguments: [value],
-        })
+        if (Array.isArray(value)) {
+          acc.splice(0, 0, ...value)
+        } else {
+          acc.push({
+            attr: key,
+            operator: operator || defaultOperators[key],
+            arguments: [value],
+          })
+        }
+
         return acc
       },
       [],
@@ -439,12 +449,15 @@ const TableSearch = ({
     const { limit, offset } = paginationState
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        value?.length &&
+        if (Array.isArray(value)) {
+          acc.splice(0, 0, ...value)
+        } else {
           acc.push({
             attr: key,
             operator: operator || defaultOperators[key],
             arguments: [value],
           })
+        }
         return acc
       },
       [],

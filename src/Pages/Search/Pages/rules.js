@@ -9,6 +9,56 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import DateWithButton from '@/Pages/Search/Pages/Components/DateWithButton'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import PropTypes from 'prop-types'
+
+export const mapOfKeyRules = {
+  Date: true,
+}
+
+const CustomDatePicker = ({ onInput, value, ...props }) => {
+  const [filter, setFilter] = useState([])
+  const filterRef = useRef(filter)
+
+  const memo = useMemo(() => {
+    let arr = []
+    const [before, after] = filter
+
+    before &&
+      arr.push({
+        attr: props.dss_attr_name,
+        operator: 'GTE',
+        arguments: [before],
+      })
+
+    after &&
+      arr.push({
+        attr: props.dss_attr_name,
+        operator: 'LTE',
+        arguments: [after],
+      })
+
+    return arr
+  }, [filter, props.dss_attr_name])
+
+  useEffect(() => {
+    if (filter !== filterRef.current) {
+      onInput(memo, props.id)
+
+      filterRef.current = filter
+    }
+  }, [filter, memo, onInput, props.id, value])
+
+  return (
+    <DatePicker {...props} range={true} value={filter} onInput={setFilter} />
+  )
+}
+
+CustomDatePicker.propTypes = {
+  onInput: PropTypes.func,
+  value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  id: PropTypes.string,
+}
 
 const fields = {
   Classification: Classification,
@@ -20,7 +70,7 @@ const fields = {
   // UserSelect:(props) =>  BaseUserSelect,
   Text: Input,
   TextArea: TextArea,
-  Date: DateWithButton,
+  Date: CustomDatePicker,
   Checkbox: CheckBox,
 }
 

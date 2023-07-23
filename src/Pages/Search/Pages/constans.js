@@ -31,6 +31,7 @@ const COMBOBOX_COMPONENT = 'Combobox'
 const ORGSTRUCTURE_COMPONENT = 'Orgstructure'
 const USER_SELECT_COMPONENT = 'UserSelect'
 const DATE_COMPONENT = 'Date'
+const CHECKBOX = 'Checkbox'
 // const TAG_COMPONENT = 'ddt_document_tag'
 
 export const operatorsComponent = {
@@ -38,5 +39,6 @@ export const operatorsComponent = {
   [ORGSTRUCTURE_COMPONENT]: true,
   [USER_SELECT_COMPONENT]: true,
   [DATE_COMPONENT]: true,
+  [CHECKBOX]: true,
   // [TAG_COMPONENT]: true,
 }
