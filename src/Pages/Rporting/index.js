@@ -58,7 +58,7 @@ const Reporting = () => {
   useSetTabName(useCallback(() => name, [name]))
   useAutoReload(loadData, tabItemState)
 
-  const { fields, rules } = useMemo(
+  const parsedDesign = useMemo(
     () =>
       parameters.reduce(
         (acc, attr) => {
@@ -75,19 +75,40 @@ const Reporting = () => {
             id: name,
             ...transmission({
               api,
+              fieldName: 'name',
               backConfig: attr,
               nextProps: {},
               type,
               user,
+              interceptors: acc.interceptors,
             }),
           })
 
           return acc
         },
-        { rules: {}, fields: [] },
+        { rules: {}, fields: [], interceptors: new Map() },
       ),
     [api, parameters, user],
   )
+
+  const { fields, rules, interceptors } = useMemo(() => {
+    const { fields, rules, interceptors } = parsedDesign
+    const interceptorsFunctions = new Map()
+
+    interceptors.forEach((deps, key) => {
+      interceptorsFunctions.set(key, ({ handleInput }) =>
+        deps.forEach((key) => handleInput(undefined, key)),
+      )
+    })
+
+    return {
+      fields,
+      rules,
+      interceptors: interceptorsFunctions,
+    }
+  }, [parsedDesign])
+
+  console.log(fields, 'fields')
 
   const onBuild = useCallback(async () => {
     try {
@@ -125,6 +146,7 @@ const Reporting = () => {
           rules={rules}
           onSubmit={onBuild}
           inputWrapper={DefaultWrapper}
+          interceptors={interceptors}
         >
           {(validationProps) => (
             <>

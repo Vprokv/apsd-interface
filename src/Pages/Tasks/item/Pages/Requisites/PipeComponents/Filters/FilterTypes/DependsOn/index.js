@@ -25,7 +25,7 @@ const map = {
 }
 
 const WithDependsOnFilter = (
-  { nextProps, type, interceptors, backConfig },
+  { nextProps, type, interceptors, backConfig, fieldName },
   filters,
 ) => {
   nextProps.component = ReferenceFilter(
@@ -36,13 +36,11 @@ const WithDependsOnFilter = (
     backConfig.filters,
   )
 
-  console.log(interceptors, 'interceptors')
-
   filters.forEach(({ field }) => {
-    if (!interceptors?.has(field)) {
-      interceptors?.set(field, [])
+    if (!interceptors.has(field)) {
+      interceptors.set(field, [])
     }
-    interceptors?.get(field)?.push(backConfig.dss_attr_name)
+    interceptors.get(field).push(backConfig[fieldName])
   })
 }
 export default WithDependsOnFilter

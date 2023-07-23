@@ -165,6 +165,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
             placeholder: dss_placeholder,
             disabled: dsb_readonly,
             ...transmission({
+              fieldName: 'dss_attr_name',
               api,
               backConfig: attr,
               nextProps: {},
@@ -194,6 +195,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
 
   const { fields, rules, interceptors } = useMemo(() => {
     const { fields, visibility, disabled, rules, interceptors } = parsedDesign
+
     const interceptorsFunctions = new Map()
     const fieldsCopy = new Map(fields)
     disabled.forEach((condition, key) => {
@@ -207,6 +209,9 @@ export const Requisites = ({ type: documentType, documentState }) => {
         fieldsCopy.delete(key)
       }
     })
+    // console.log(interceptors, 'interceptors')
+    // console.log(interceptorsFunctions, 'interceptorsFunctions')
+
     interceptors.forEach((deps, key) => {
       interceptorsFunctions.set(key, ({ handleInput }) =>
         deps.forEach((key) => handleInput(undefined, key)),
@@ -220,7 +225,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
     }
   }, [values, parsedDesign])
 
-  // console.log(rules, 'rules')
+  // console.log(fields, 'rules')
 
   return (
     <ScrollBar className="w-full">
