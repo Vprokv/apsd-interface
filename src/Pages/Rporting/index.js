@@ -108,8 +108,6 @@ const Reporting = () => {
     }
   }, [parsedDesign])
 
-  console.log(fields, 'fields')
-
   const onBuild = useCallback(async () => {
     try {
       const {
