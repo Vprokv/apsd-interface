@@ -135,8 +135,6 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
     [id, onInput],
   )
 
-  console.log(options, 'options')
-
   const addLink = useCallback(() => setFields((s) => s + 1), [])
 
   const updateTouchedValidationState = useCallback(
