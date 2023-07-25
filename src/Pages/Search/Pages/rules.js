@@ -8,56 +8,9 @@ import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
-import DateWithButton from '@/Pages/Search/Pages/Components/DateWithButton'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
 
 export const mapOfKeyRules = {
   Date: true,
-}
-
-const CustomDatePicker = ({ onInput, value, ...props }) => {
-  const [filter, setFilter] = useState([])
-  const filterRef = useRef(filter)
-
-  const memo = useMemo(() => {
-    let arr = []
-    const [before, after] = filter
-
-    before &&
-      arr.push({
-        attr: props.dss_attr_name,
-        operator: 'GTE',
-        arguments: [before],
-      })
-
-    after &&
-      arr.push({
-        attr: props.dss_attr_name,
-        operator: 'LTE',
-        arguments: [after],
-      })
-
-    return arr
-  }, [filter, props.dss_attr_name])
-
-  useEffect(() => {
-    if (filter !== filterRef.current) {
-      onInput(memo, props.id)
-
-      filterRef.current = filter
-    }
-  }, [filter, memo, onInput, props.id, value])
-
-  return (
-    <DatePicker {...props} range={true} value={filter} onInput={setFilter} />
-  )
-}
-
-CustomDatePicker.propTypes = {
-  onInput: PropTypes.func,
-  value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  id: PropTypes.string,
 }
 
 const fields = {
@@ -70,7 +23,7 @@ const fields = {
   // UserSelect:(props) =>  BaseUserSelect,
   Text: Input,
   TextArea: TextArea,
-  Date: CustomDatePicker,
+  Date: (props) => <DatePicker {...props} range={true} />,
   Checkbox: CheckBox,
 }
 
@@ -78,7 +31,7 @@ const fields = {
 //Orgstructure
 //Orgstructure
 //Checkbox
-//Date
+//≈
 //Branch
 //Department
 //Document
@@ -109,3 +62,31 @@ export const getLoadFunction =
       labelKey: dss_reference_attr_label || 'dss_name',
     }
   }
+
+export const parseQueryItemsRules = {
+  default: ({ value, operator, key, defaultOperators }) => ({
+    attr: key,
+    operator: operator || defaultOperators[key],
+    arguments: [value],
+  }),
+  Date: ({ value, key }) => {
+    let arr = []
+    const [before, after] = value
+
+    before &&
+      arr.push({
+        attr: key,
+        operator: 'GTE',
+        arguments: [before],
+      })
+
+    after &&
+      arr.push({
+        attr: key,
+        operator: 'LTE',
+        arguments: [after],
+      })
+
+    return arr
+  },
+}

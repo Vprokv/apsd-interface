@@ -13,6 +13,7 @@ import {
   getField,
   getLoadFunction,
   mapOfKeyRules,
+  parseQueryItemsRules,
 } from '@/Pages/Search/Pages/rules'
 import {
   LoadableSecondaryOverBlueButton,
@@ -197,6 +198,7 @@ const DocumentSearch = ({
   const [renderTable, setRenderTable] = useState(false)
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
+
   const fields = useMemo(
     () => [
       {
@@ -287,20 +289,29 @@ const DocumentSearch = ({
     setRenderTable(true)
   }, [])
 
+  const attributesComponent = useMemo(
+    () =>
+      attributes.reduce((acc, { dss_attr_name, dss_component_type }) => {
+        acc[dss_attr_name] = dss_component_type
+        return acc
+      }, {}),
+    [attributes],
+  )
+
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
-        if (Array.isArray(value)) {
-          acc.splice(0, 0, ...value)
-        } else {
-          acc.push({
-            attr: key,
-            operator: operator || defaultOperators[key],
-            arguments: [value],
-          })
-        }
+        const {
+          [attributesComponent[key]]: rulePars = parseQueryItemsRules.default,
+        } = parseQueryItemsRules
 
+        const parseResult = rulePars({ key, value, operator, defaultOperators })
+        if (Array.isArray(value)) {
+          acc.splice(0, 0, ...parseResult)
+        } else {
+          acc.push(parseResult)
+        }
         return acc
       },
       [],
@@ -331,16 +342,23 @@ const DocumentSearch = ({
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, defaultOperators, filter, getNotification, token])
+  }, [
+    api,
+    attributesComponent,
+    defaultOperators,
+    filter,
+    getNotification,
+    token,
+  ])
 
   const onRemove = useCallback(() => setFilter({}), [setFilter])
 
   useEffect(loadData, [loadData])
 
-  const isSearchDisabled = useMemo(() => {
-    const { type, ...keys } = filter
-    return Object.keys(keys).length === 0
-  }, [filter])
+  // const isSearchDisabled = useMemo(() => {
+  //   const { type, ...keys } = filter
+  //   return Object.keys(keys).length === 0
+  // }, [filter])
 
   const onCloseTable = useCallback(() => {
     setRenderTable(false)
@@ -352,6 +370,7 @@ const DocumentSearch = ({
       <div className="flex flex-col w-full p-4 overflow-hidden">
         {renderTable ? (
           <TableSearch
+            attributesComponent={attributesComponent}
             defaultOperators={defaultOperators}
             setSearchState={setSearchState}
             filter={filter}
@@ -432,6 +451,7 @@ const TableSearch = ({
   defaultOperators,
   setSearchState,
   filter,
+  attributesComponent,
 }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
@@ -447,21 +467,24 @@ const TableSearch = ({
   const loadSearch = useCallback(async () => {
     const { type, ...filters } = filter
     const { limit, offset } = paginationState
+
     const queryItems = Object.entries(filters).reduce(
       (acc, [key, { value, operator }]) => {
+        const {
+          [attributesComponent[key]]: rulePars = parseQueryItemsRules.default,
+        } = parseQueryItemsRules
+
+        const parseResult = rulePars({ key, value, operator, defaultOperators })
         if (Array.isArray(value)) {
-          acc.splice(0, 0, ...value)
+          acc.splice(0, 0, ...parseResult)
         } else {
-          acc.push({
-            attr: key,
-            operator: operator || defaultOperators[key],
-            arguments: [value],
-          })
+          acc.push(parseResult)
         }
         return acc
       },
       [],
     )
+
     try {
       const { data } = await api.post(
         `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
@@ -477,12 +500,13 @@ const TableSearch = ({
       getNotification(defaultFunctionsMap[status]())
     }
   }, [
-    api,
-    defaultOperators,
     filter,
-    getNotification,
-    setSearchState,
     paginationState,
+    attributesComponent,
+    defaultOperators,
+    api,
+    setSearchState,
+    getNotification,
   ])
 
   useEffect(loadSearch, [paginationState])
@@ -510,4 +534,5 @@ TableSearch.propTypes = {
   filter: PropTypes.object,
   setSearchState: PropTypes.func,
   defaultOperators: PropTypes.object,
+  attributesComponent: PropTypes.object,
 }
