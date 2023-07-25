@@ -15,29 +15,29 @@ export const mapOfKeyRules = {
   Date: true,
 }
 
-const CustomCheckBox = ({ onInput, ...props }) => {
-  const [filter, setFilter] = useState(false)
-  const filterRef = useRef()
-
-  useEffect(() => {
-    if (filter !== filterRef.current) {
-      onInput(filter, props.id)
-      filterRef.current = filter
-    }
-  }, [filter, onInput, props.id])
-
-  return <CheckBox {...props} value={filter} onInput={setFilter} />
-}
-
-CustomCheckBox.propTypes = {
-  onInput: PropTypes.func,
-  value: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.bool,
-    PropTypes.object,
-  ]),
-  id: PropTypes.string,
-}
+// const CustomCheckBox = ({ onInput, ...props }) => {
+//   const [filter, setFilter] = useState(false)
+//   const filterRef = useRef()
+//
+//   useEffect(() => {
+//     if (filter !== filterRef.current) {
+//       onInput(filter, props.id)
+//       filterRef.current = filter
+//     }
+//   }, [filter, onInput, props.id])
+//
+//   return <CheckBox {...props} value={filter} onInput={setFilter} />
+// }
+//
+// CustomCheckBox.propTypes = {
+//   onInput: PropTypes.func,
+//   value: PropTypes.oneOfType([
+//     PropTypes.array,
+//     PropTypes.bool,
+//     PropTypes.object,
+//   ]),
+//   id: PropTypes.string,
+// }
 
 const fields = {
   Classification: Classification,
@@ -50,7 +50,7 @@ const fields = {
   Text: Input,
   TextArea: TextArea,
   Date: (props) => <DatePicker {...props} range={true} />,
-  Checkbox: CustomCheckBox,
+  Checkbox: CheckBox,
 }
 
 //Combobox
