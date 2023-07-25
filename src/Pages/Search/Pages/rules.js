@@ -103,14 +103,14 @@ export const parseQueryItemsRules = {
       arr.push({
         attr: key,
         operator: 'GTE',
-        arguments: [before],
+        arguments: [`${before} 00:00:00`],
       })
 
     after &&
       arr.push({
         attr: key,
         operator: 'LTE',
-        arguments: [after],
+        arguments: [`${after} 23:59:59`],
       })
 
     return arr
