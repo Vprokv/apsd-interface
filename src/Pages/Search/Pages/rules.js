@@ -8,9 +8,35 @@ import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_ENTITY_LIST } from '@/ApiList'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
+import { useEffect, useRef, useState } from 'react'
+import PropTypes from 'prop-types'
 
 export const mapOfKeyRules = {
   Date: true,
+}
+
+const CustomCheckBox = ({ onInput, ...props }) => {
+  const [filter, setFilter] = useState(false)
+  const filterRef = useRef()
+
+  useEffect(() => {
+    if (filter !== filterRef.current) {
+      onInput(filter, props.id)
+      filterRef.current = filter
+    }
+  }, [filter, onInput, props.id])
+
+  return <CheckBox {...props} value={filter} onInput={setFilter} />
+}
+
+CustomCheckBox.propTypes = {
+  onInput: PropTypes.func,
+  value: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.bool,
+    PropTypes.object,
+  ]),
+  id: PropTypes.string,
 }
 
 const fields = {
@@ -24,7 +50,7 @@ const fields = {
   Text: Input,
   TextArea: TextArea,
   Date: (props) => <DatePicker {...props} range={true} />,
-  Checkbox: CheckBox,
+  Checkbox: CustomCheckBox,
 }
 
 //Combobox
