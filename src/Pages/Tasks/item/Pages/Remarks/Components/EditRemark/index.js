@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import {ApiContext, TASK_ITEM_REMARKS} from '@/contants'
+import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -29,7 +29,7 @@ import { useOpenNotification } from '@/Components/Notificator'
 import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
-import useTabItem from "@Components/Logic/Tab/TabItem";
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -130,8 +130,8 @@ const EditRemark = ({
     {
       id: 'ndtLinks',
       label: 'Ссылка нa НДТ',
-      options: ndtLinks.map(({ id, name }) => {
-        return { r_object_id: id, dss_name: name }
+      options: ndtLinks.map(({ ndtId, name }) => {
+        return { r_object_id: ndtId, dss_name: name }
       }),
       component: LinkNdt,
       placeholder: 'Выберите значение',
@@ -147,9 +147,11 @@ const EditRemark = ({
         remarkId,
         memberId: member.emplId,
         memberName: member.userName,
-        ndtLinks: ndtLinks.map(({ id, comment }) => {
-          return { id, comment }
-        }),
+        ndtLinks: ndtLinks.map(({ id, ndtId, comment }) => ({
+          id,
+          comment,
+          ndtId,
+        })),
         ...other,
       })
       setTabState({ loading: false, fetched: false })
@@ -159,7 +161,7 @@ const EditRemark = ({
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [filter, api, remarkId, getNotification, onClose])
+  }, [filter, api, remarkId, setTabState, getNotification, onClose])
 
   return (
     <StandardSizeModalWindow

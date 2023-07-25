@@ -52,15 +52,15 @@ const Field = ({
 
   return (
     <LinkContainer className={className}>
-      <ValidationConsumer path={`${valueIndex}.id`}>
+      <ValidationConsumer path={`${valueIndex}.ndtId`}>
         <LoadableSelect
           options={options}
           placeholder="Выберите значение"
-          id={`${index}_id`}
-          value={value.id}
-          onInput={onInput('id')}
-          onFocus={onFocus('id')}
-          onBlur={onBlur('id')}
+          id={`${index}_ndtId`}
+          value={value.ndtId}
+          onInput={onInput('ndtId')}
+          onFocus={onFocus('ndtId')}
+          onBlur={onBlur('ndtId')}
           valueKey="r_object_id"
           labelKey="dss_name"
           refKey="ddt_dict_ndt"
@@ -134,6 +134,8 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
     },
     [id, onInput],
   )
+
+  console.log(options, 'options')
 
   const addLink = useCallback(() => setFields((s) => s + 1), [])
 

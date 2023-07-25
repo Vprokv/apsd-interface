@@ -60,7 +60,7 @@ const rules = {
     },
     { name: VALIDATION_RULE_REQUIRED },
   ],
-  'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
+  'ndtLinks.*.ndtId': [{ name: VALIDATION_RULE_REQUIRED }],
   'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
   ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
@@ -208,11 +208,12 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
 
   const onSave = useCallback(async () => {
     try {
-      const { member, ...other } = filter
+      const { member, ndtLinks, ...other } = filter
       const { status } = await api.post(URL_REMARK_CREATE, {
         documentId: id,
         memberId: member.emplId,
         memberName: member.userName,
+        ndtLinks: ndtLinks.map((val) => ({ ...val, id: null })),
         ...other,
       })
       getNotification(customMessagesFuncMap[status]())

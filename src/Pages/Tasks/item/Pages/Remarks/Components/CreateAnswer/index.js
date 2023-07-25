@@ -170,11 +170,12 @@ const CreateAnswer = ({
   const onSave = useCallback(async () => {
     try {
       // eslint-disable-next-line no-unused-vars
-      const { remarkText, member, ...other } = filter
+      const { remarkText, ndtLinks, member, ...other } = filter
       const { status } = await api.post(URL_REMARK_ANSWER, {
         documentId: id,
         memberId: member.emplId,
         memberName: member.userName,
+        ndtLinks: ndtLinks.map((val) => ({ ...val, id: null })),
         remarkId,
         ...other,
       })
