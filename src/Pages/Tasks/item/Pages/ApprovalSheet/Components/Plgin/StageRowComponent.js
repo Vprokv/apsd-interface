@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import styled from 'styled-components'
@@ -20,6 +20,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import log from 'tailwindcss/lib/util/log'
 
 const Row = styled.div`
   height: 48px;
@@ -45,6 +46,7 @@ const StageRowComponent = ({ node }, props) => {
     selectedState,
     stageType,
     approvers,
+    reworkInfo,
   } = node
 
   const permit = useContext(PermitDisableContext)
@@ -65,6 +67,18 @@ const StageRowComponent = ({ node }, props) => {
     }
   }, [api, getNotification, selectedState, setTabState])
 
+  const info = useMemo(() => {
+    if (!reworkInfo) {
+      return ''
+    } else {
+      const { dueDate, lastName, firstName, middleName } = reworkInfo
+
+      return `На доработке у ${lastName} ${firstName[0]}. ${middleName[0]}. ${
+        dueDate ? `до ${dueDate}` : ''
+      }`
+    }
+  }, [reworkInfo])
+
   const includeApprove = approvers.some(({ id }) => selectedState.has(id))
 
   return (
@@ -79,6 +93,7 @@ const StageRowComponent = ({ node }, props) => {
                 PRESENT_DATE_FORMAT,
               )
         }`}</div>
+        <div className="ml-12 font-medium">{info}</div>
         <div className="flex items-center ml-auto">
           {editable && (
             <>

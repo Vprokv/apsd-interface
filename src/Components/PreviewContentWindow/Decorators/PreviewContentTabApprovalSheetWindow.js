@@ -15,8 +15,6 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
       return url
     }, [value, token])
 
-    console.log(url, 'url')
-
     return <Component url={url} ref={ref} {...props} />
   })
   WindowContent.propTypes = {
