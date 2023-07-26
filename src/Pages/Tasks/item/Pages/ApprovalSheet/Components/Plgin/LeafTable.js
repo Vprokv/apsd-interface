@@ -46,8 +46,8 @@ const RowComponent = ({ node, RowC }) => {
         />
         <DateCell
           hot={dsdtDecision && dsdtDueDate ? dsdtDecision < dsdtDueDate : false}
-          plan={dsdtDueDate}
-          fact={dsdtDecision}
+          plan={dsdtDecision}
+          fact={dsdtDueDate}
           className=""
         />
         <DocumentState value={dssStatus} className="" />
