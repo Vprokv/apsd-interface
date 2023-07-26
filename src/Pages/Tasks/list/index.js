@@ -117,6 +117,7 @@ const columns = [
   {
     id: 'creationDate',
     label: 'Задание',
+    widthMarker: true,
     component: DocumentState,
     sizes: DocumentStateSizes,
   },

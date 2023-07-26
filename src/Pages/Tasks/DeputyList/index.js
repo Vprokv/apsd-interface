@@ -130,7 +130,7 @@ const taskColumns = [
   {
     id: 'creationDate',
     label: 'Задание',
-    widthMarker: false,
+    withMarker: false,
     component: DocumentState,
     sizes: DocumentStateSizes,
   },
