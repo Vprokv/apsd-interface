@@ -53,30 +53,30 @@ const IterationComponent = ({
         </Row>
       </button>
       {!isDisplayed &&
-        iterations.map(({ number, remarks }) => (
+        iterations.map(({ iteration, remarks }) => (
           <>
             <Row className="h-12 flex items-center">
               <IterationRemarksCheckBoxComponent remarks={remarks} />
               <button
                 className="w-full"
                 type={'button'}
-                onClick={() => toggleIterationDisplayedFlag(number)}
+                onClick={() => toggleIterationDisplayedFlag(iteration)}
               >
                 <div className="h-12 flex items-center w-full">
                   <Icon
                     icon={angleIcon}
                     size={10}
                     className={`color-text-secondary ${
-                      !show[number] ? '' : 'rotate-180'
+                      !show[iteration] ? '' : 'rotate-180'
                     }`}
                   />
                   <div className="ml-4 font-medium flex items-center ">
-                    {`${stageName} (Итерация ${number})`}
+                    {`${stageName} (Итерация ${iteration})`}
                   </div>
                 </div>
               </button>
             </Row>
-            {!show[number] && <IterationRemarks remarks={remarks} />}
+            {!show[iteration] && <IterationRemarks remarks={remarks} />}
           </>
         ))}
     </>
