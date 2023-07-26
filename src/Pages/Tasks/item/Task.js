@@ -64,7 +64,7 @@ import RejectPrepareWindow from '@/Pages/Tasks/item/Components/RejectPrepareWind
 import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
 import downloadFile from '@/Utils/DownloadFile'
 import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
-import RejectApproveWindow from "@/Pages/Tasks/item/Components/RejectApproveWindow";
+import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -129,6 +129,7 @@ const Task = () => {
         documentTabs,
         values,
       } = {},
+      data,
     },
     setTabState,
   } = tabItemState

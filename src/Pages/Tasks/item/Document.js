@@ -101,8 +101,11 @@ const Document = () => {
 
   const {
     tabState: { data: { documentActions, documentTabs = [], values } = {} },
+    tabState,
     setTabState,
   } = tabItemState
+
+  console.log(tabState, 'tabState')
 
   const documentId = useMemo(() => {
     let v
