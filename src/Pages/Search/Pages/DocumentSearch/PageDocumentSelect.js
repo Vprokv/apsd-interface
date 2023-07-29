@@ -8,7 +8,7 @@ import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { SEARCH_PAGE } from '@/contants'
+import { SEARCH_PAGE, SEARCH_PAGE_DOCUMENT } from '@/contants'
 import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
@@ -37,7 +37,7 @@ const PageDocumentSelect = ({ props }) => {
   )
 
   const tabItemState = useTabItem({
-    stateId: SEARCH_PAGE,
+    stateId: SEARCH_PAGE_DOCUMENT,
   })
 
   const {

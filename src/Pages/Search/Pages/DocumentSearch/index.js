@@ -8,7 +8,12 @@ import {
   URL_SEARCH_LIST,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
-import { ApiContext, SEARCH_PAGE, TokenContext } from '@/contants'
+import {
+  ApiContext,
+  SEARCH_PAGE,
+  SEARCH_PAGE_DOCUMENT,
+  TokenContext,
+} from '@/contants'
 import {
   getField,
   getLoadFunction,
@@ -37,6 +42,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 
 export const tableConfig = [
   {
@@ -195,9 +201,15 @@ const DocumentSearch = ({
 }) => {
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
-  const [renderTable, setRenderTable] = useState(false)
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
+
+  const {
+    setTabState,
+    tabState: { renderTable = false },
+  } = useTabItem({
+    stateId: SEARCH_PAGE_DOCUMENT,
+  })
 
   const fields = useMemo(
     () => [
@@ -286,8 +298,8 @@ const DocumentSearch = ({
   }, [api, filter.type, getNotification])
 
   const onSearch = useCallback(async () => {
-    setRenderTable(true)
-  }, [])
+    setTabState({ renderTable: true })
+  }, [setTabState])
 
   const attributesComponent = useMemo(
     () =>
@@ -361,9 +373,9 @@ const DocumentSearch = ({
   // }, [filter])
 
   const onCloseTable = useCallback(() => {
-    setRenderTable(false)
+    setTabState({ renderTable: true })
     setSearchState([])
-  }, [setSearchState])
+  }, [setSearchState, setTabState])
 
   return (
     <ExportContext.Provider value={'asas'}>
