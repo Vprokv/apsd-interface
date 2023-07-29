@@ -59,6 +59,7 @@ import DownloadDocument from '@/Pages/Tasks/item/Icons/DownloadDocument.svg'
 import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
 import CancelIcon from '@/Pages/Tasks/item/Icons/CancelIcon.svg'
 import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
+import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -100,12 +101,13 @@ const Document = () => {
   })
 
   const {
-    tabState: { data: { documentActions, documentTabs = [], values } = {} },
+    tabState: {
+      data: { documentActions, documentTabs = [], values } = {},
+      data,
+    },
     tabState,
     setTabState,
   } = tabItemState
-
-  console.log(tabState, 'tabState')
 
   const documentId = useMemo(() => {
     let v
@@ -341,6 +343,7 @@ const Document = () => {
       <DocumentIdContext.Provider value={id}>
         <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
+            {data && <DocumentInfoComponent {...data} />}
             <DocumentActions documentActions={wrappedDocumentActions} />
           </SidebarContainer>
         </Layout>
