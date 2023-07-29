@@ -8,9 +8,6 @@ const ProjectCalcTypeComponent = ({
   dss_description,
   dss_reg_number,
 }) => {
-  console.log(titleDescription, 'titleDescription')
-  console.log(dss_description, 'dss_description')
-  console.log(dss_reg_number, 'dss_reg_number')
   return (
     <div className="flex flex-col m-4 break-words font-size-12">
       <div className="mb-2">
@@ -29,6 +26,10 @@ const ProjectCalcTypeComponent = ({
   )
 }
 
-ProjectCalcTypeComponent.propTypes = {}
+ProjectCalcTypeComponent.propTypes = {
+  dsid_startup_complex: PropTypes.object,
+  dss_description: PropTypes.string,
+  dss_reg_number: PropTypes.string,
+}
 
 export default ProjectCalcTypeComponent
