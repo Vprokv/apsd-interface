@@ -104,7 +104,7 @@ const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Автор',
-    path: '[authorEmployee.firstName,authorEmployee.lastName,authorEmployee.position,authorEmployee.middleName]',
+    path: '[authorEmployee.firstName,authorEmployee.lastName,authorEmployee.middleName, authorEmployee.position]',
   },
   {
     componentType: 'DescriptionTableColumn',
