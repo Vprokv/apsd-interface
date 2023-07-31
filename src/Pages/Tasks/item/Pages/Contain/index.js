@@ -448,7 +448,7 @@ const Contain = () => {
             onSort={onSort}
             value={data}
             onInput={onTableUpdate}
-            loading={loading}
+            // loading={loading}
           />
         </ShowContentByTypeButtonContext.Provider>
         <ContentWindow
