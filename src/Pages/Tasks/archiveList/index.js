@@ -156,6 +156,8 @@ const ArchiveList = () => {
     [navigate, openTabOrCreateNewTab],
   )
 
+  console.log(name, 'name')
+
   const [open, setOpen] = useState(false)
   const [activeDocumentState, setActiveDocumentState] = useState({})
   const tabItemState = useTabItem({ stateId: TASK_LIST_ARCHIVE })
@@ -243,12 +245,21 @@ const ArchiveList = () => {
   return (
     <OpenWindowContext.Provider value={{ open, setOpen: changeModalState }}>
       <div className="px-4 pb-4 overflow-hidden flex-container">
-        <div className="flex items-center color-text-secondary ml-auto">
-          <Tips text="Выгрузить в Excel">
-            <ButtonForIcon className="color-green" onClick={onExportToExcel}>
-              <Icon icon={XlsIcon} />
-            </ButtonForIcon>
-          </Tips>
+        <div className="flex items-center mb-2">
+          <div className=" font-size-14 justify-start break-word">
+            <span>Титул: </span>
+            <span className="font-medium">{name}</span>
+          </div>
+          <div className="w-64">
+            <Tips text="Выгрузить в Excel">
+              <ButtonForIcon
+                className="color-green  ml-auto"
+                onClick={onExportToExcel}
+              >
+                <Icon icon={XlsIcon} />
+              </ButtonForIcon>
+            </Tips>
+          </div>
         </div>
         <ListTable
           rowComponent={useMemo(
