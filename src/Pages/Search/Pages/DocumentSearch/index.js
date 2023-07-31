@@ -371,7 +371,7 @@ const DocumentSearch = ({
   // }, [filter])
 
   const onCloseTable = useCallback(() => {
-    setTabState({ renderTable: true })
+    setTabState({ renderTable: false })
     setSearchState([])
   }, [setSearchState, setTabState])
 
@@ -502,6 +502,14 @@ const TableSearch = ({
           types: [type],
           inVersions: false,
           queryItems,
+          // sort: [
+          //   {
+          //     property: 'dsdt_creation_date',
+          //     direction: 'DESC',
+          //   },
+          // ],
+          orderBy: 'values.dsdt_creation_date',
+          sortType: 'DESC',
         },
       )
       setSearchState(data)
