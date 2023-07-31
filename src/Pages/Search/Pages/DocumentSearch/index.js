@@ -134,12 +134,10 @@ export const tableConfig = [
     component: ({
       ParentValue: {
         valuesCustom: {
-          dsid_author_empl: { lastName, middleName, firstName },
+          dsid_author_empl: { fio },
         },
       },
-    }) => (
-      <BaseCell value={() => `${lastName} ${firstName}.  ${middleName}. `} />
-    ),
+    }) => <BaseCell value={fio} />,
   },
 ]
 
