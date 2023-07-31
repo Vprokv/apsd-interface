@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {LoadableSecondaryBlueButton, SecondaryBlueButton} from '@/Components/Button'
+import { LoadableSecondaryBlueButton } from '@/Components/Button'
 import Select from '@/Components/Inputs/Select'
 
 const TitleDocument = (props) => {
@@ -18,9 +18,6 @@ const TitleDocument = (props) => {
     <div className="flex items-center">
       <Select
         {...props}
-        // loadFunction={loadFunction}
-        // labelKey="description"
-        // valueKey="id"
       />
       <>
         <LoadableSecondaryBlueButton onClick={onAdd} className="ml-2">
@@ -31,6 +28,10 @@ const TitleDocument = (props) => {
   )
 }
 
-TitleDocument.propTypes = {}
+TitleDocument.propTypes = {
+  onInput: PropTypes.func,
+  id: PropTypes.string,
+  loadFunction: PropTypes.func,
+}
 
 export default TitleDocument
