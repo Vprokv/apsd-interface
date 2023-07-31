@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { SecondaryBlueButton } from '@/Components/Button'
+import {LoadableSecondaryBlueButton, SecondaryBlueButton} from '@/Components/Button'
 import Select from '@/Components/Inputs/Select'
 
 const TitleDocument = (props) => {
@@ -23,9 +23,9 @@ const TitleDocument = (props) => {
         // valueKey="id"
       />
       <>
-        <SecondaryBlueButton onClick={onAdd} className="ml-2">
+        <LoadableSecondaryBlueButton onClick={onAdd} className="ml-2">
           Выбрать все
-        </SecondaryBlueButton>
+        </LoadableSecondaryBlueButton>
       </>
     </div>
   )
