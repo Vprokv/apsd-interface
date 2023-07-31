@@ -60,6 +60,7 @@ import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
 import CancelIcon from '@/Pages/Tasks/item/Icons/CancelIcon.svg'
 import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
+import ScrollBar from '@Components/Components/ScrollBar'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -343,8 +344,10 @@ const Document = () => {
       <DocumentIdContext.Provider value={id}>
         <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SidebarContainer>
-            {data && <DocumentInfoComponent {...data} />}
-            <DocumentActions documentActions={wrappedDocumentActions} />
+            <ScrollBar>
+              {data && <DocumentInfoComponent {...data} />}
+              <DocumentActions documentActions={wrappedDocumentActions} />
+            </ScrollBar>
           </SidebarContainer>
         </Layout>
         {ActionComponent && (

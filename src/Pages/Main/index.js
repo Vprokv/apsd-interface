@@ -8,9 +8,7 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useRecoilValue } from 'recoil'
 import CloseAllTabButton from '@/Pages/Main/Components/CloseAllTabsButton'
 import TabsContainer from '@/Pages/Main/Components/Tab/TabsContainer'
-import { useState } from 'react'
-import { MoveSideBar } from '@/Pages/Main/constants'
-import {ColumnManipulationIndicator} from "@Components/Components/Tables/ListTable/styles";
+import { ColumnManipulationIndicator } from '@Components/Components/Tables/ListTable/styles'
 
 const Main = ({ initUrl }) => {
   const { r_object_id } = useRecoilValue(userAtom)
@@ -64,6 +62,7 @@ const Main = ({ initUrl }) => {
 
 Main.propTypes = {
   initUrl: PropTypes.string,
+  resizeState: PropTypes.object,
 }
 
 export default Main
