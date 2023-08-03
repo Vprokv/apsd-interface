@@ -7,13 +7,12 @@ import ProjectCalcTypeComponent from '@/Pages/Tasks/item/Components/DocumentInfo
 const mapTypesComponent = {
   ddt_startup_complex_type_doc: StartupComplexComponent,
   ddt_project_calc_type_doc: ProjectCalcTypeComponent,
-  default: <div />,
 }
 
 const DocumentInfoComponent = ({ valuesCustom }) => {
   const { type } = useParams()
-  const { [type]: Component = mapTypesComponent.default } = mapTypesComponent
-  return <Component {...valuesCustom} />
+  const { [type]: Component } = mapTypesComponent
+  return Component ? <Component {...valuesCustom} /> : <div />
 }
 
 DocumentInfoComponent.propTypes = {
