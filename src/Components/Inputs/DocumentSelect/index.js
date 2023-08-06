@@ -19,6 +19,7 @@ import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import Input from '../../Fields/Input'
 import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
 import Tips from '@/Components/Tips'
+import log from 'tailwindcss/lib/util/log'
 
 const changeInput = () => {}
 
@@ -65,7 +66,7 @@ const DocumentSelect = ({
       const pattern = displayName?.match(/[A-z_]+/gi) || []
       const getLabel = (value) => {
         const obj = cache.get(value)
-        return pattern.map((key) => obj.values[key]).join(' ')
+        return obj ? pattern.map((key) => obj.values[key]).join(' ') : ''
       }
 
       if (Array.isArray(selectedState)) {
