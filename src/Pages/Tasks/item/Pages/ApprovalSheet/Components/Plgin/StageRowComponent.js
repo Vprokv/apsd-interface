@@ -74,7 +74,11 @@ const StageRowComponent = ({ node }, props) => {
       const { dueDate, lastName, firstName, middleName } = reworkInfo
 
       return `На доработке у ${lastName} ${firstName[0]}. ${middleName[0]}. ${
-        dueDate ? `до ${dueDate}` : ''
+        dueDate
+          ? `до ${dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
+              PRESENT_DATE_FORMAT,
+            )}`
+          : ''
       }`
     }
   }, [reworkInfo])
