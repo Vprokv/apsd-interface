@@ -141,7 +141,7 @@ const Contain = () => {
   const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
-  const [defaultOpen, setDefaultOpen] = useState(true)
+  const [defaultOpen, setDefaultOpen] = useState(false)
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
