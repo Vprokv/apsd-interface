@@ -250,7 +250,7 @@ const ArchiveList = () => {
             <span>Титул: </span>
             <span className="font-medium">{name}</span>
           </div>
-          <div className="w-64">
+          <div className="w-64 ml-auto">
             <Tips text="Выгрузить в Excel">
               <ButtonForIcon
                 className="color-green  ml-auto"
