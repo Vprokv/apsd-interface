@@ -52,7 +52,7 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
         title="Предупреждение"
       >
         <>
-          <div className="flex flex-col overflow-hidden h-full">
+          <div className="flex flex-col overflow-hidden h-full mb-4">
             Вы уверены, что хотите удалить выбранную запись ?
           </div>
           <UnderButtons
