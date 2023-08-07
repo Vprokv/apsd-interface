@@ -96,8 +96,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
     id,
     onClose,
     reloadSidebarTaskCounters,
-    selected?.stage?.id,
-    selected?.stage?.type,
+    selected,
     updateTabStateUpdaterByName,
   ])
 
