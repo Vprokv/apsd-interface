@@ -149,13 +149,13 @@ const taskColumns = [
         {...props}
       />
     ),
-    sizes: baseCellSize,
+    sizes: 224,
   },
   {
     id: 'titleDescription',
     label: 'Титул',
     component: BaseCell,
-    sizes: baseCellSize,
+    sizes: 385,
   },
   {
     id: 'stageName',
