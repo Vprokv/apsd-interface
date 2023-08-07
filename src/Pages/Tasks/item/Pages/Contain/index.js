@@ -45,7 +45,7 @@ import Tips from '@/Components/Tips'
 import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
-import EditLink from "@/Pages/Tasks/item/Pages/Contain/Components/EditWindow";
+import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
