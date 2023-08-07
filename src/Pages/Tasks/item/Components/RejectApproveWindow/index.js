@@ -72,8 +72,8 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
         taskId: id,
         signal: 'reject_approve',
         bpSettings: {
-          moveStageId: selected?.stage.id,
-          moveStageType: selected?.stage.type,
+          moveStageId: selected?.stage?.id,
+          moveStageType: selected?.stage?.type,
         },
       })
       onClose()
@@ -96,8 +96,8 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
     id,
     onClose,
     reloadSidebarTaskCounters,
-    selected?.stage.id,
-    selected?.stage.type,
+    selected?.stage?.id,
+    selected?.stage?.type,
     updateTabStateUpdaterByName,
   ])
 
