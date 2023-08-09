@@ -248,7 +248,7 @@ const ArchiveList = () => {
         <div className="flex items-center mb-2">
           <div className=" font-size-14 justify-start break-word">
             <span>Титул: </span>
-            <span className="font-medium">{name}</span>
+            <span className="font-medium">{name.replaceAll('%2f', '/')}</span>
           </div>
           <div className="w-64 ml-auto">
             <Tips text="Выгрузить в Excel">
