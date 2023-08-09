@@ -122,19 +122,28 @@ const loadFunctions = {
   Branch: (accumulator) => {
     const { nextProps, api, type } = accumulator
 
-    nextProps.loadFunction = (filters) => async (query) => {
-      const {
-        data: { content },
-      } = await api.post(URL_REPORTS_BRUNCH, {
-        type: 'branch_list',
-        filter: {
-          ...filters,
-          query,
-          useAllFilter: true,
-        },
-      })
-      return content
-    }
+    nextProps.loadFunction =
+      (filters) =>
+      async (query, { source, controller } = {}) => {
+        const {
+          data: { content },
+        } = await api.post(
+          URL_REPORTS_BRUNCH,
+          {
+            type: 'branch_list',
+            filter: {
+              ...filters,
+              query,
+              useAllFilter: true,
+            },
+          },
+          {
+            cancelToken: source.token,
+            signal: controller.signal,
+          },
+        )
+        return content
+      }
     const { valueKey, labelKey } = refsTransmission(type)
     nextProps.valueKey = valueKey
     nextProps.labelKey = labelKey
@@ -142,32 +151,50 @@ const loadFunctions = {
   Department: (accumulator) => {
     const { nextProps, api, type } = accumulator
 
-    nextProps.loadFunction = (filters) => async (query) => {
-      const {
-        data: { content },
-      } = await api.post(URL_REPORTS_DEPARTMENT, {
-        type: 'branch_list',
-        query,
-        filter: {
-          ...filters,
-          useAllFilter: true,
-        },
-      })
-      return content
-    }
+    nextProps.loadFunction =
+      (filters) =>
+      async (query, { source, controller } = {}) => {
+        const {
+          data: { content },
+        } = await api.post(
+          URL_REPORTS_DEPARTMENT,
+          {
+            type: 'branch_list',
+            query,
+            filter: {
+              ...filters,
+              useAllFilter: true,
+            },
+          },
+          {
+            cancelToken: source.token,
+            signal: controller.signal,
+          },
+        )
+        return content
+      }
     const { valueKey, labelKey } = refsTransmission(type)
     nextProps.valueKey = valueKey
     nextProps.labelKey = labelKey
   },
   TitleDocument: (accumulator) => {
     const { nextProps, api, type } = accumulator
-    nextProps.loadFunction = (filters) => async (query) => {
-      const { data } = await api.post(URL_TITLE_LIST, {
-        query,
-        ...filters,
-      })
-      return data
-    }
+    nextProps.loadFunction =
+      (filters) =>
+      async (query, { source, controller } = {}) => {
+        const { data } = await api.post(
+          URL_TITLE_LIST,
+          {
+            query,
+            ...filters,
+          },
+          {
+            cancelToken: source.token,
+            signal: controller.signal,
+          },
+        )
+        return data
+      }
     const { valueKey, labelKey } = refsTransmission(type)
     nextProps.valueKey = valueKey
     nextProps.labelKey = labelKey

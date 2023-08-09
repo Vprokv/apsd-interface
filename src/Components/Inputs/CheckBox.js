@@ -5,16 +5,15 @@ import CheckBox, {
 import styled from 'styled-components'
 
 export default styled(CheckBox)`
-  &:disabled {
-    ${Box} {
-      background-color: var(--input-placeholder-color, #bdbdbd) !important;
-    }
-  }
-
   ${BoxContainer} {
     background: var(--separator);
     border-radius: 4px;
     border: unset;
+    &:disabled {
+      ${Box} {
+        background-color: var(--input-placeholder-color, #bdbdbd) !important;
+      }
+    }
   }
 
   ${Box} {
