@@ -149,7 +149,7 @@ const CreateAnswer = ({
     },
     {
       id: 'ndtLinks',
-      label: 'Ссылка нa НДТ',
+      label: 'Ссылка нa НТД',
       component: LinkNdt,
       placeholder: 'Выберите значение',
       inputWrapper: returnChildren,

@@ -62,7 +62,7 @@ const rules = {
   ],
   // 'ndtLinks.*.ndtId': [{ name: VALIDATION_RULE_REQUIRED }],
   // 'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
-  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
+  // ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
@@ -189,7 +189,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
       },
       {
         id: 'ndtLinks',
-        label: 'Ссылка нa НДТ',
+        label: 'Ссылка нa НТД',
         component: LinkNdt,
         placeholder: 'Выберите значение',
         inputWrapper: returnChildren,

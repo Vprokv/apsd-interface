@@ -80,7 +80,7 @@ const Field = ({
         <ValidationConsumer path={`${valueIndex}.comment`}>
           <Input
             id={`${index}_comment`}
-            placeholder="Ссылка на НТД"
+            placeholder="Раздел/Статья/Пункт НТД"
             value={value.comment}
             className="ml-2"
             onInput={onInput('comment')}

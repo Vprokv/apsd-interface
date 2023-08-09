@@ -129,7 +129,7 @@ const EditRemark = ({
     },
     {
       id: 'ndtLinks',
-      label: 'Ссылка нa НДТ',
+      label: 'Ссылка нa НТД',
       options: ndtLinks.map(({ ndtId, name }) => {
         return { r_object_id: ndtId, dss_name: name }
       }),
