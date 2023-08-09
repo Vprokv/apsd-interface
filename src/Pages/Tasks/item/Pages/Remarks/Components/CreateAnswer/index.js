@@ -36,7 +36,7 @@ const rules = {
     {
       name: VALIDATION_RULE_MAX,
       args: {
-        max: 1024,
+        max: 2048,
         text: 'Превышено допустимое количество символов для ответа замечания ',
       },
     },
