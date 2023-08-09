@@ -176,7 +176,7 @@ const ArchiveList = () => {
   const {
     tabState,
     setTabState,
-    tabState: { data: { content, total = 0 } = {} },
+    tabState: { data: { content, total = 0 } = {}, loading },
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -275,6 +275,7 @@ const ArchiveList = () => {
           onSelect={setSelectState}
           sortQuery={sortQuery}
           onSort={onSort}
+          loading={loading}
         />
         <Pagination
           className="mt-2"
