@@ -66,15 +66,21 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
     () => onCloseTab(currentTabIndex),
     [onCloseTab, currentTabIndex],
   )
+
+  const settings = useMemo(() => {
+    if (selected?.stage?.type === 'apsd_prepare') {
+      return { moveStageType: selected?.stage?.type }
+    } else {
+      return { moveStageId: selected?.stage?.id }
+    }
+  }, [selected])
+
   const complete = useCallback(async () => {
     try {
       const { status } = await api.post(URL_TASK_COMPLETE, {
         taskId: id,
         signal: 'reject_approve',
-        bpSettings: {
-          moveStageId: selected?.stage?.id,
-          moveStageType: selected?.stage?.type,
-        },
+        bpSettings: settings,
       })
       onClose()
       reloadSidebarTaskCounters()
@@ -96,7 +102,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
     id,
     onClose,
     reloadSidebarTaskCounters,
-    selected,
+    settings,
     updateTabStateUpdaterByName,
   ])
 
