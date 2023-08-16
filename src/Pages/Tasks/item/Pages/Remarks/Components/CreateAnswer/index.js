@@ -29,6 +29,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 import { Validation } from '@Components/Logic/Validator'
 import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import ScrollBar from '@Components/Components/ScrollBar'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -175,7 +176,7 @@ const CreateAnswer = ({
         documentId: id,
         memberId: member.emplId,
         memberName: member.userName,
-        ndtLinks: ndtLinks.map((val) => ({ ...val, id: null })),
+        ndtLinks: ndtLinks && ndtLinks.map((val) => ({ ...val, id: null })),
         remarkId,
         ...other,
       })
@@ -218,35 +219,37 @@ const CreateAnswer = ({
         onClose={onClose}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex flex-col py-4">
-            <Validation
-              fields={fields}
-              value={filter}
-              onInput={setFilterValue}
-              inputWrapper={InputWrapper}
-              rules={rules}
-              onSubmit={onSave}
-              validators={remarkValidator}
-            >
-              {(validationProps) => {
-                return (
-                  <>
-                    <FilterForm
-                      className="form-element-sizes-40"
-                      {...validationProps}
-                    />
-                    <div className="mt-10">
-                      <UnderButtons
-                        disabled={!validationProps.formValid}
-                        rightFunc={validationProps.onSubmit}
-                        leftFunc={onClose}
+          <ScrollBar>
+            <div className="flex flex-col py-4">
+              <Validation
+                fields={fields}
+                value={filter}
+                onInput={setFilterValue}
+                inputWrapper={InputWrapper}
+                rules={rules}
+                onSubmit={onSave}
+                validators={remarkValidator}
+              >
+                {(validationProps) => {
+                  return (
+                    <>
+                      <FilterForm
+                        className="form-element-sizes-40"
+                        {...validationProps}
                       />
-                    </div>
-                  </>
-                )
-              }}
-            </Validation>
-          </div>
+                      <div className="mt-10">
+                        <UnderButtons
+                          disabled={!validationProps.formValid}
+                          rightFunc={validationProps.onSubmit}
+                          leftFunc={onClose}
+                        />
+                      </div>
+                    </>
+                  )
+                }}
+              </Validation>
+            </div>
+          </ScrollBar>
         </div>
       </StandardSizeModalWindow>
     </div>
