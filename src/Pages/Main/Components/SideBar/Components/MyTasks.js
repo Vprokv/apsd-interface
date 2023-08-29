@@ -16,17 +16,28 @@ import {
 } from '@/Pages/Tasks/list/constants'
 import { useStatistic } from '@/Pages/Tasks/helper'
 import { CurrentTabContext } from '@Components/Logic/Tab'
+import { TASK_LIST } from '@/contants'
+import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 
 const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task }) => {
   const { tabs } = useContext(CurrentTabContext)
   const statistic = useStatistic(task)
+  const updateTabStateUpdaterByName = useUpdateCurrentTabChildrenStates()
 
   const handleOpenNewTab = useCallback(
     (path) => () => {
       const tab = tabs.findIndex(({ pathname }) => pathname === path)
-      return tab >= 0 ? onChangeActiveTab(tab) : onOpenNewTab(path)
+      if (tab >= 0) {
+        onChangeActiveTab(tab)
+        updateTabStateUpdaterByName([TASK_LIST], {
+          loading: false,
+          fetched: false,
+        })
+      } else {
+        onOpenNewTab(path)
+      }
     },
-    [onChangeActiveTab, onOpenNewTab, tabs],
+    [onChangeActiveTab, onOpenNewTab, tabs, updateTabStateUpdaterByName],
   )
   return (
     <WithToggleNavigationItem id="Мои задания">
