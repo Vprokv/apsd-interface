@@ -9,8 +9,8 @@ import { ContextArchiveContainerWidth } from '@/Pages/Main/Components/SideBar/Co
 import KnowLedgeItem, {
   LevelOneKnowledgeItem,
 } from '@/Pages/Main/Components/SideBar/Components/KnowLedge/Components/KnowLedgeItem'
-import { FirstLevelArchiveButton } from '@/Pages/Main/Components/SideBar/Components/Archive/Components/ArchiveButton'
 import StorageIcon from '@/Pages/Main/Components/SideBar/icons/StorageIcon'
+import { FirstLevelKnowledgeButton } from '@/Pages/Main/Components/SideBar/Components/KnowLedge/Components/KnowLedgeButton'
 
 const ScrollBar = styled(SimpleBar)`
   max-height: 300px;
@@ -41,7 +41,7 @@ const Knowledge = ({ onOpenNewTab, width }) => (
                 <KnowLedgeItem
                   width={width}
                   onOpenNewTab={onOpenNewTab}
-                  buttonComponent={FirstLevelArchiveButton}
+                  buttonComponent={FirstLevelKnowledgeButton}
                   childrenComponent={LevelOneKnowledgeItem}
                 />
               </ScrollBar>

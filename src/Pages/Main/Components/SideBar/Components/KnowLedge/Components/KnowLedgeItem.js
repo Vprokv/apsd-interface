@@ -11,6 +11,7 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import { SecondKnowledgeButton } from '@/Pages/Main/Components/SideBar/Components/KnowLedge/Components/KnowLedgeButton'
 import { URL_KNOWLEDGE_STRUCTURE, URL_KNOWLEDGE_TITLE } from '@/ApiList'
+import log from "tailwindcss/lib/util/log";
 
 const apisMap = {
   0: async ({ api }) => {
@@ -180,17 +181,11 @@ const KnowLedgeItem = ({
                 id={id}
                 level={level}
                 width={width}
+                isDisplayed={isDisplayed}
                 toggleChildrenRender={toggleDisplayedFlag}
                 name={description}
                 parentName={parentName}
-                onOpenNewTab={(args) => {
-                  if (isDisplayed) {
-                    toggleDisplayedFlag()
-                  } else {
-                    onOpenNewTab(args)
-                    toggleDisplayedFlag()
-                  }
-                }}
+                onOpenNewTab={onOpenNewTab}
                 {...props}
               />
               {tomId && (

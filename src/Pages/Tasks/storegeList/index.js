@@ -30,11 +30,10 @@ import XlsIcon from '@/Icons/XlsIcon'
 import Pagination from '../../../Components/Pagination'
 import CheckBox from '../../../Components/Inputs/CheckBox'
 import {
-  URL_DEPUTY_TASK_LIST,
   URL_EXPORT,
-  URL_EXPORT_FILE, URL_KNOWLEDGE_TASKS,
+  URL_EXPORT_FILE,
+  URL_KNOWLEDGE_TASKS,
   URL_TASK_LIST_FILTERS,
-  URL_TASK_LIST_V2,
 } from '@/ApiList'
 import {
   ApiContext,
@@ -227,6 +226,7 @@ function StorageList() {
   } = tabItemState
   const { token } = useContext(TokenContext)
   const { parentName, name, id } = useParams()
+  console.log(useParams(), 'useParams()')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -245,7 +245,17 @@ function StorageList() {
     [openTabOrCreateNewTab],
   )
 
-  useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
+  useSetTabName(
+    useCallback(
+      () => (parentName ? `${parentName}/${name}` : name),
+      [name, parentName],
+    ),
+  )
+
+  const memoData = useMemo(
+    () => (parentName ? { sectionId: id } : { titleId: id }),
+    [id, parentName],
+  )
 
   const loadData = useMemo(
     () =>
@@ -255,7 +265,7 @@ function StorageList() {
           const { data } = await api.post(
             URL_KNOWLEDGE_TASKS,
             {
-              sectionId: id,
+              ...memoData,
               filter,
               sort:
                 Object.keys(sortQuery).length > 0
@@ -280,7 +290,7 @@ function StorageList() {
           getNotification(defaultFunctionsMap[status](data))
         }
       },
-    [paginationState, api, id, filter, sortQuery, getNotification],
+    [paginationState, api, memoData, filter, sortQuery, getNotification],
   )
 
   const onExportToExcel = useCallback(async () => {
