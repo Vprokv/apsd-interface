@@ -4,7 +4,11 @@ import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 
-const AdditionalStage = ({ approvers, Component }) => {
+const AdditionalStage = ({
+  approvers = [],
+  Component = <div/>,
+  // permit: { revoke = '', send, deleteApprover } = {},
+}) => {
   const [isDisplayed, setShow] = useState(true)
 
   const toggleDisplayedFlag = useCallback(() => setShow((s) => !s), [])
@@ -33,6 +37,7 @@ const AdditionalStage = ({ approvers, Component }) => {
           <div className="font-size-12 ml-2">
             {'Дополнительное согласование'}
           </div>
+          <div className="flex items-center ml-auto"></div>
         </LevelStage>
         <div className="">{isDisplayed && renderedEntities}</div>
       </div>
