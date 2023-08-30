@@ -68,8 +68,8 @@ const ApprovalSheet = () => {
         id: documentId,
         type,
       })
-      // return data
-      return responseData
+      return data
+      // return responseData
     } catch (e) {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
