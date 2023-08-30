@@ -14,7 +14,7 @@ import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
-import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {PermitDisableContext, responseData} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
@@ -68,7 +68,8 @@ const ApprovalSheet = () => {
         id: documentId,
         type,
       })
-      return data
+      // return data
+      return responseData
     } catch (e) {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())

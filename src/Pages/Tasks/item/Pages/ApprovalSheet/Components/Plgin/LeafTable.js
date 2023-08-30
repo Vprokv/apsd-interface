@@ -9,46 +9,30 @@ import HideAndShowText from '@/Components/HideAndShowText'
 import { Button } from '@Components/Components/Button'
 import { Row, RowGrid } from './styles'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
+import AdditionalStage from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/AdditionalStage'
 
 const RowComponent = ({ node, RowC }) => {
   const {
-    dssApproverFio,
-    dssApproverPosition,
-    dssStatus,
-    dsdtDecision,
-    dsdtDueDate,
-    dsdtAvatar,
+    approverFio,
+    approverPosition,
+    status,
+    decisionDate,
+    dueDate,
     report,
-    approvers,
+    additionalStage,
   } = node
-
-  const [isDisplayed, setShow] = useState(true)
-
-  const toggleDisplayedFlag = useCallback(() => setShow((s) => !s), [])
-
-  const renderedEntities = useMemo(
-    () =>
-      approvers?.map((approver, i) => {
-        return <RowC key={i} node={approver} RowC={RowC} />
-      }),
-    [RowC, approvers],
-  )
 
   return (
     <Row>
       <RowGrid className="h-full items-center ml-2">
-        <UserCard
-          fio={dssApproverFio}
-          position={dssApproverPosition}
-          avatar={dsdtAvatar}
-        />
+        <UserCard fio={approverFio} position={approverPosition} />
         <DateCell
-          hot={dsdtDecision && dsdtDueDate ? dsdtDecision < dsdtDueDate : false}
-          plan={dsdtDecision}
-          fact={dsdtDueDate}
+          hot={decisionDate && dueDate ? decisionDate < dueDate : false}
+          plan={decisionDate}
+          fact={dueDate}
           className=""
         />
-        <DocumentState value={dssStatus} className="" />
+        <DocumentState value={status} className="" />
         <HideAndShowText
           className="font-size-14 break-all flex items-center m-width max-w-xs"
           value={report?.dssReportText}
@@ -59,29 +43,7 @@ const RowComponent = ({ node, RowC }) => {
           {...report}
         />
       </RowGrid>
-      {approvers && (
-        <div className="ml-6">
-          <LevelStage onClick={toggleDisplayedFlag}>
-            <button
-              className="pl-2"
-              type="button"
-              onClick={toggleDisplayedFlag}
-            >
-              <Icon
-                icon={angleIcon}
-                size={10}
-                className={`color-text-secondary ${
-                  isDisplayed ? '' : 'rotate-180'
-                }`}
-              />
-            </button>
-            <div className="font-size-12 ml-2">
-              {'Дополнительное согласование'}
-            </div>
-          </LevelStage>
-          <div className="">{isDisplayed && renderedEntities}</div>
-        </div>
-      )}
+      <AdditionalStage {...additionalStage} Component={RowC} />
     </Row>
   )
 }
