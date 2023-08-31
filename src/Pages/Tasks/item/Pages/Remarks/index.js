@@ -36,8 +36,8 @@ const Remarks = () => {
   const [open, setOpen] = useState(true)
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
-    key: 'number',
-    direction: 'DESC',
+    key: 'remarkCreationDate',
+    direction: 'ASC',
   })
 
   const tabItemState = useTabItem({
@@ -76,7 +76,7 @@ const Remarks = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, id, filter, getNotification])
+  }, [api, id, filter, sortQuery, getNotification])
 
   useAutoReload(loadData, tabItemState)
 
