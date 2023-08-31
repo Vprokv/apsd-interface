@@ -45,9 +45,8 @@ const StageRowComponent = ({ node }, props) => {
     deletable,
     selectedState,
     stageType,
-    approvers,
     reworkInfo,
-  } = node
+  } = node.options
 
   const permit = useContext(PermitDisableContext)
   const getNotification = useOpenNotification()
@@ -83,7 +82,7 @@ const StageRowComponent = ({ node }, props) => {
     }
   }, [reworkInfo])
 
-  const includeApprove = approvers.some(({ id }) => selectedState.has(id))
+  // const includeApprove = approvers.some(({ id }) => selectedState.has(id))
 
   return (
     <Row>
@@ -110,7 +109,7 @@ const StageRowComponent = ({ node }, props) => {
                 <CustomButtonForIcon
                   className="color-blue-1"
                   onClick={onDelete}
-                  disabled={!permit && !includeApprove}
+                  // disabled={!permit && !includeApprove}
                 >
                   <Icon icon={DeleteUserIcon} />
                 </CustomButtonForIcon>

@@ -10,6 +10,7 @@ import {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
+import { object } from 'bfj/src/events'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon
@@ -48,7 +49,7 @@ const Leaf = (props) => {
     childrenKey,
     valueKey,
     options,
-    options: { title, [childrenKey]: children, [valueKey]: leafVal, editable },
+    // options: { title, [childrenKey]: children, [valueKey]: leafVal, editable },
     level,
     onInput,
     index,
@@ -75,6 +76,15 @@ const Leaf = (props) => {
     selectedState,
   } = props
 
+  const rowKey =
+    typeof childrenKey === 'string' ? childrenKey : childrenKey(level)
+
+
+  const { title, [rowKey]: rowData, [valueKey]: leafVal, editable } = options
+  const children = typeof rowData === 'object' ? [rowData] : rowData
+
+  // console.log(children, 'children')
+
   const refProps = useRef(props)
   refProps.current = props
 
@@ -92,7 +102,7 @@ const Leaf = (props) => {
           for (let i = 0; i < stack.length; i++) {
             const item = stack[i]
 
-            const { [childrenKey]: stackChildren } = item
+            const { [rowKey]: stackChildren } = item
             if (stackChildren) {
               stackChildren.forEach((item) => {
                 stack.push(item)
@@ -110,18 +120,18 @@ const Leaf = (props) => {
         onInput([[leafVal, returnObjects ? options : leafVal]], value)
       }
     },
-    [children, options, onInput, childrenKey, valueKey, returnObjects, leafVal],
+    [children, options, onInput, rowKey, valueKey, returnObjects, leafVal],
   )
 
   const onDragEnd = useCallback(() => {
     setBorderState('')
     setDropState(null)
-  }, [])
+  }, [setDropState])
 
   const onDrop = useCallback(() => {
     setBorderState('')
     setDropState(null)
-  }, [options])
+  }, [setDropState])
 
   const onDragOver = useCallback((event) => {
     event.stopPropagation()
@@ -166,16 +176,16 @@ const Leaf = (props) => {
   }, [index, onDeleteLeafOption])
 
   const handleUpdateOptions = useCallback((nextLeafValue, childrenIndex) => {
-    const { options, onUpdateOptions, index, childrenKey } = refProps.current
-    const nextOptions = { ...options, [childrenKey]: [...options[childrenKey]] }
-    nextOptions[childrenKey][childrenIndex] = nextLeafValue
+    const { options, onUpdateOptions, index, rowKey } = refProps.current
+    const nextOptions = { ...options, [rowKey]: [...options[rowKey]] }
+    nextOptions[rowKey][childrenIndex] = nextLeafValue
     onUpdateOptions(nextOptions, index)
   }, [])
 
   const deleteLeaf = useCallback((childrenIndex) => {
-    const { options, onUpdateOptions, index, childrenKey } = refProps.current
-    const nextOptions = { ...options, [childrenKey]: [...options[childrenKey]] }
-    nextOptions[childrenKey].splice(childrenIndex, 1)
+    const { options, onUpdateOptions, index, rowKey } = refProps.current
+    const nextOptions = { ...options, [rowKey]: [...options[rowKey]] }
+    nextOptions[rowKey].splice(childrenIndex, 1)
     onUpdateOptions(nextOptions, index)
   }, [])
 
@@ -212,7 +222,7 @@ const Leaf = (props) => {
           <CheckBox
             className="mr-1.5"
             onInput={checkBoxInput}
-            value={getLeafSelectedStatus(options)}
+            // value={getLeafSelectedStatus({ item: options, childrenKey: rowKey })}
           />
         )}
         <Row
@@ -248,7 +258,7 @@ const Leaf = (props) => {
               index={index}
               level={level + 1}
               onInput={onInput}
-              getLeafSelectedStatus={getLeafSelectedStatus}
+              // getLeafSelectedStatus={getLeafSelectedStatus}
               onSelect={onSelect}
               selectedNode={selectedNode}
               parent={options}
@@ -259,6 +269,7 @@ const Leaf = (props) => {
               onUpdateOptions={handleUpdateOptions}
               onDeleteLeafOption={deleteLeaf}
               ChildrenLessIcon={ChildrenLessIcon}
+              childrenKey={childrenKey}
             />
           ))}
       </ChildrenContainer>
