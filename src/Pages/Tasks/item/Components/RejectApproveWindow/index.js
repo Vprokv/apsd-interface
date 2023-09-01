@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -15,6 +15,11 @@ import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
+import ScrollBar from "@Components/Components/ScrollBar";
+import {Validation} from "@Components/Logic/Validator";
+import InputWrapper from "@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper";
+import {remarkValidator} from "@/Pages/Tasks/item/Pages/Remarks/constans";
+import {FilterForm} from "@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles";
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -139,21 +144,35 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
       title="Выберите этап, на который будет возвращен том после доработки"
     >
       <div className="flex flex-col overflow-hidden ">
-        <WithValidationForm
-          className="mb-4"
-          value={selected}
-          onInput={setSelected}
-          fields={fields}
-          inputWrapper={DefaultWrapper}
-          rules={rules}
-          onSubmit={complete}
-        >
-          <UnderButtons
-            leftLabel="Отменить"
-            rightLabel="На доработку"
-            leftFunc={onClose}
-          />
-        </WithValidationForm>
+        <ScrollBar>
+          <div className="flex flex-col py-4">
+            <Validation
+              fields={fields}
+              value={selected}
+              onInput={setSelected}
+              rules={rules}
+              onSubmit={complete}
+            >
+              {(validationProps) => {
+                return (
+                  <>
+                    <FilterForm
+                      className="form-element-sizes-40"
+                      {...validationProps}
+                    />
+                    <div className="mt-10">
+                      <UnderButtons
+                        disabled={!validationProps.formValid}
+                        rightFunc={validationProps.onSubmit}
+                        leftFunc={onClose}
+                      />
+                    </div>
+                  </>
+                )
+              }}
+            </Validation>
+          </div>
+        </ScrollBar>
       </div>
     </StandardSizeModalWindow>
   )
