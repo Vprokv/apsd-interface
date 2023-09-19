@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -28,8 +28,9 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
   const getNotification = useOpenNotification()
+  const navigate = useNavigate()
   const reloadSidebarTaskCounters = useContext(LoadTasks)
-  const { id } = useParams()
+  const { id, type } = useParams()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -64,6 +65,11 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
     signal,
   ])
 
+  const onRedirectTo = useCallback(() => {
+    onClose()
+    navigate(`/task/${id}/${type}/remarks`)
+  }, [id, navigate, onClose, type])
+
   return (
     <StandardSizeModalWindow open={open} onClose={onClose} title="Внимание">
       <div className="flex flex-col overflow-hidden ">
@@ -72,7 +78,7 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
           className="w-44 ml-auto w-full"
           leftLabel="Нет"
           rightLabel="Да"
-          leftFunc={onClose}
+          leftFunc={onRedirectTo}
           rightFunc={complete}
         />
       </div>
