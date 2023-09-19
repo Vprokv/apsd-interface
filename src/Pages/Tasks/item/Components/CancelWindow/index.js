@@ -89,7 +89,7 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
     <StandardSizeModalWindow
       open={open}
       onClose={onClose}
-      title="Причина отклонения"
+      title="Причина аннулирования"
     >
       <div className="flex flex-col overflow-hidden ">
         <WithValidationForm
@@ -103,7 +103,7 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
         >
           <UnderButtons
             leftLabel="Отменить"
-            rightLabel="Отклонить"
+            rightLabel="Аннулировать"
             leftFunc={onClose}
           />
         </WithValidationForm>
