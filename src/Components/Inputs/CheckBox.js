@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 export default styled(CheckBox)`
   ${BoxContainer} {
-    background: var(--separator);
+    background: #d1d6e6;
     border-radius: 4px;
     border: unset;
     &:disabled {
