@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const BaseCell = ({ value, className }) => {
   return (
     <div
-      className={`${className} flex items-center word-wrap-anywhere font-size-12`}
+      className={`${className} flex items-center word-wrap-anywhere font-size-12 break-all`}
     >
       {value}
     </div>
