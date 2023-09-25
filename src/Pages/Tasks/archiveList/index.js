@@ -156,8 +156,6 @@ const ArchiveList = () => {
     [navigate, openTabOrCreateNewTab],
   )
 
-  console.log(name, 'name')
-
   const [open, setOpen] = useState(false)
   const [activeDocumentState, setActiveDocumentState] = useState({})
   const tabItemState = useTabItem({ stateId: TASK_LIST_ARCHIVE })

@@ -43,8 +43,8 @@ const rules = {}
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 41.6%;
-  min-height: 42.65%;
-  margin: auto;
+  //min-height: 42.65%;
+  margin: auto; 
   z-index: 10;
 `
 

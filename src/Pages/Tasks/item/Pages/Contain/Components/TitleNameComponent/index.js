@@ -202,7 +202,6 @@ const TitleNameComponent = ({
     try {
       closeContextMenu()
       setLoading(true)
-      console.log(ParentValue, 'ParentValue')
       await editLink(ParentValue)
     } finally {
       setLoading(false)
