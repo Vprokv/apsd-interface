@@ -66,7 +66,7 @@ import downloadFile from '@/Utils/DownloadFile'
 import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
 import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWindow'
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
-import ScrollBar from "@Components/Components/ScrollBar";
+import ScrollBar from '@Components/Components/ScrollBar'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -77,7 +77,6 @@ const titleName = 'ddt_startup_complex_type_doc'
 const Task = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
-  const [documentId, setIdDocument] = useState('')
   const [ActionComponent, setActionComponent] = useState(null)
   const closeAction = useCallback(() => setActionComponent(null), [])
 
@@ -98,7 +97,6 @@ const Task = () => {
       const { data } = await api.post(URL_TASK_ITEM, {
         taskId: id,
       })
-      setIdDocument(data?.id)
       if (!data.read) {
         // теперь авейтим, чтобы получить корректную статистику
         try {
@@ -130,6 +128,7 @@ const Task = () => {
         taskActions,
         documentTabs,
         values,
+        id: documentId,
       } = {},
       data,
     },
@@ -475,7 +474,6 @@ const Task = () => {
   })
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
-
   return (
     <DocumentTypeContext.Provider value={ITEM_TASK}>
       <DocumentIdContext.Provider value={documentId}>
