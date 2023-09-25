@@ -24,14 +24,14 @@ export const LeafContainer = styled.div`
   flex-direction: column;
   margin-left: ${(props) => (props.level ? '10px' : '0')};
   //border-bottom: ${(props) => (props.level === 0 ? '1px solid' : '')};
-  padding: 5px 5px;
+  padding: 2px;
   border-radius: 4px;
   ${(props) =>
     props.selected ? 'background: var(--color-selected-leaf, #EFE4C5);' : ''}
   ${(props) =>
     props.level === 2
       ? `
-          padding-left: 5px;
+          padding-left: 2px;
           margin-left: 10px;
           `
       : ''}

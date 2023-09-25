@@ -69,6 +69,12 @@ export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT =
   '/apsd/business/start/additional'
 export const URL_APPROVAL_SHEET_APPROVER_DELETE =
   '/sedo/approve/approver/delete'
+export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE =
+  '/apsd/business/approver/delete'
+export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND =
+  '/apsd/business/additional/send'
+export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE =
+  '/apsd/business/additional/revoke'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'

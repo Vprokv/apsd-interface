@@ -155,13 +155,10 @@ const ApprovalSheet = () => {
     })
   }, [])
 
-  const getChildrenKey = useCallback(
-    (level) => {
-      const { [level]: key = childrenKeyMap['0'] } = childrenKeyMap
-      return key
-    },
-    [],
-  )
+  const getChildrenKey = useCallback((level) => {
+    const { [level]: key  } = childrenKeyMap
+    return key
+  }, [])
 
   return (
     <PermitDisableContext.Provider value={!permit}>

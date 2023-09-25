@@ -24,7 +24,7 @@ import log from 'tailwindcss/lib/util/log'
 
 const Row = styled.div`
   height: 48px;
-  //background-color: var(--notifications);
+  background-color: var(--notifications);
   font-size: 12px;
   display: flex;
   flex-direction: column;
@@ -33,10 +33,10 @@ const Row = styled.div`
   //border-top: 1px solid var(--separator);
 `
 
-const StageRowComponent = ({ node }, props) => {
+const StageRowComponent = ({ node }) => {
   const api = useContext(ApiContext)
   const {
-    term,
+    // term,
     id,
     name,
     documentId,
@@ -88,7 +88,7 @@ const StageRowComponent = ({ node }, props) => {
     <Row>
       <div className="flex h-full items-center">
         <div className="mr-12 font-medium w-32 ml-2">{name}</div>
-        <div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>
+        {/*<div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>*/}
         <div>{`Дата завершения: ${
           finishDate === null
             ? ''
@@ -114,10 +114,10 @@ const StageRowComponent = ({ node }, props) => {
                   <Icon icon={DeleteUserIcon} />
                 </CustomButtonForIcon>
               </Tips>
-              <EditStageWindow {...node} />
+              <EditStageWindow {...node.options} />
             </>
           )}
-          {deletable && <PopUp node={node} />}
+          {deletable && <PopUp node={node.options} />}
         </div>
       </div>
     </Row>
