@@ -76,14 +76,14 @@ export const tableConfig = [
     }) => <BaseCell value={dss_status_display} />,
   },
   {
-    id: 'dsid_startup_complex',
+    id: 'dsid_startup_complex_display',
     label: 'Титул',
     sizes: 200,
     component: ({
       ParentValue: {
-        values: { dsid_startup_complex = '' },
+        values: { dsid_startup_complex_display = '' },
       },
-    }) => <BaseCell value={dsid_startup_complex} />,
+    }) => <BaseCell value={dsid_startup_complex_display} />,
   },
   {
     id: 'Дата регистрации',
@@ -160,7 +160,7 @@ const columnsMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Титул',
-    path: 'values.dsid_startup_complex',
+    path: 'values.dsid_startup_complex_display',
   },
   {
     componentType: 'DescriptionTableColumn',
