@@ -113,7 +113,6 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
         onClose()
         navigate(`/task/${id}/${type}/links/*`)
       }
-      console.log(data, 'data')
     }
   }, [
     api,

@@ -18,7 +18,6 @@ export const FilterForm = styled(Form)`
 `
 
 const Title = ({ value, onInput }) => {
-  console.log(value, 'value')
   const api = useContext(ApiContext)
 
   // todo не понятный запрос

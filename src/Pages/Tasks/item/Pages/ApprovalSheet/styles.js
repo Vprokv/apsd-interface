@@ -9,5 +9,5 @@ export const LevelStage = styled.div`
   border-bottom: 1px solid var(--separator);
   align-content: center;
   height: 48px;
-  margin-top: 10px;
+  //margin-top: 10px;
 `

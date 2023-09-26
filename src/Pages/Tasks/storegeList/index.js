@@ -226,7 +226,6 @@ function StorageList() {
   } = tabItemState
   const { token } = useContext(TokenContext)
   const { parentName, name, id } = useParams()
-  console.log(useParams(), 'useParams()')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,

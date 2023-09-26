@@ -1,30 +1,212 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
+import Tips from '@/Components/Tips'
+import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
+import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/AddUserIcon'
+import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
+import deleteIcon from '@/Icons/deleteIcon'
+import SendIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/SendIcon'
+import SendReverseIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/SendReverseIcon'
+import AdditionalApprover from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/AdditionalStage/Components/AdditionalApprovers'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import CreatingAdditionalApproversWindowWrapper from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/AdditionalStage/Components/AddApprover'
+import {
+  NOTIFICATION_TYPE_ERROR,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+import {
+  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE,
+  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE,
+  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND,
+} from '@/ApiList'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import { useParams } from 'react-router-dom'
 
-const AdditionalStage = ({
-  approvers = [],
-  Component = <div/>,
-  // permit: { revoke = '', send, deleteApprover } = {},
-}) => {
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Удаление доп. согласующего выполнено успешно',
+    }
+  },
+}
+
+const AdditionalStage = (props) => {
+  const { approvers, permit: { ['delete']: deleteStage, addApprover } = {} } =
+    props.node.options
+
   const [isDisplayed, setShow] = useState(true)
-
+  const [selected, onInput] = useState({ additional: false })
+  const [ActionComponent, setActionComponent] = useState(null)
+  const closeAction = useCallback(() => setActionComponent(null), [])
   const toggleDisplayedFlag = useCallback(() => setShow((s) => !s), [])
+  const getNotification = useOpenNotification()
+  const api = useContext(ApiContext)
+  const documentId = useContext(DocumentIdContext)
+  const { type: documentType } = useParams()
+  const updateCurrentTabChildrenStates = updateTabChildrenStates()
+
+  const onChecked = useCallback((val, id) => {
+    onInput(() => {
+      if (val) {
+        return id
+      } else {
+        return { additional: false }
+      }
+    })
+  }, [])
 
   const renderedEntities = useMemo(
     () =>
       approvers?.map((approver, i) => {
-        return <Component key={i} node={approver} RowC={Component} />
+        if (approver) {
+          return (
+            <AdditionalApprover
+              onInput={onChecked}
+              value={selected}
+              key={i}
+              {...approver}
+            />
+          )
+        }
       }),
-    [Component, approvers],
+    [approvers, selected, onChecked],
   )
 
+  const onAddAdditionalApprovers = useCallback(
+    () =>
+      setActionComponent({
+        Component: CreatingAdditionalApproversWindowWrapper,
+      }),
+    [],
+  )
+
+  const onDeleteApprover = useCallback(async () => {
+    if (selected.deleteApprover) {
+      try {
+        await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
+          approvers: [selected.id],
+        })
+        getNotification({
+          type: NOTIFICATION_TYPE_SUCCESS,
+          message: 'Удаление доп. согласующего выполнено успешно',
+        })
+        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+          loading: false,
+          fetched: false,
+        })
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
+    } else {
+      getNotification({
+        type: NOTIFICATION_TYPE_ERROR,
+        message: `Согласующий ${selected.approverFio} не доступен для удаления`,
+      })
+    }
+  }, [api, getNotification, selected, updateCurrentTabChildrenStates])
+
+  const onSendApprover = useCallback(async () => {
+    if (selected.deleteApprover) {
+      try {
+        await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND, {
+          performersIds: [selected.id],
+          documentId,
+          documentType,
+        })
+        getNotification({
+          type: NOTIFICATION_TYPE_SUCCESS,
+          message: 'Рассылка выполнена успешно',
+        })
+        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+          loading: false,
+          fetched: false,
+        })
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
+    } else {
+      getNotification({
+        type: NOTIFICATION_TYPE_ERROR,
+        message: `Согласующий ${selected.approverFio} не доступен для рассылки`,
+      })
+    }
+  }, [
+    api,
+    documentId,
+    documentType,
+    getNotification,
+    selected,
+    updateCurrentTabChildrenStates,
+  ])
+
+  const onRevokeApprover = useCallback(async () => {
+    if (selected.deleteApprover) {
+      try {
+        await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE, {
+          performersIds: [selected.id],
+          documentId,
+          documentType,
+        })
+        getNotification({
+          type: NOTIFICATION_TYPE_SUCCESS,
+          message: 'Рассылка выполнена успешно',
+        })
+        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+          loading: false,
+          fetched: false,
+        })
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
+    } else {
+      getNotification({
+        type: NOTIFICATION_TYPE_ERROR,
+        message: `Согласующий ${selected.approverFio} не доступен для отзыва`,
+      })
+    }
+  }, [
+    api,
+    documentId,
+    documentType,
+    getNotification,
+    selected,
+    updateCurrentTabChildrenStates,
+  ])
+
+  const onDeleteAllApprovers = useCallback(async () => {
+    try {
+      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
+        approvers: approvers?.map(({ id }) => id),
+      })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Удаление доп. согласующих выполнено успешно',
+      })
+      updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
+        loading: false,
+        fetched: false,
+      })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [api, approvers, getNotification, updateCurrentTabChildrenStates])
+
   return (
-    !!approvers.length && (
+    !!approvers?.length && (
       <div className="ml-6">
-        <LevelStage onClick={toggleDisplayedFlag}>
+        <LevelStage>
           <button className="pl-2" type="button" onClick={toggleDisplayedFlag}>
             <Icon
               icon={angleIcon}
@@ -34,12 +216,69 @@ const AdditionalStage = ({
               }`}
             />
           </button>
-          <div className="font-size-12 ml-2">
+          <div
+            className="font-size-12 ml-2 h-full flex items-center  w-full"
+            onClick={toggleDisplayedFlag}
+          >
             {'Дополнительное согласование'}
           </div>
-          <div className="flex items-center ml-auto"></div>
+          <div className="flex items-center  h-10">
+            <Tips text="Добавить доп. согласующего">
+              <CustomButtonForIcon
+                className="color-blue-1"
+                onClick={onAddAdditionalApprovers}
+                disabled={!(selected?.additional && addApprover)}
+              >
+                <Icon icon={AddUserIcon} />
+              </CustomButtonForIcon>
+            </Tips>
+            <Tips text="Удалить доп. согласующего">
+              <CustomButtonForIcon
+                className="color-blue-1 h-10"
+                onClick={onDeleteApprover}
+                disabled={!selected?.additional}
+              >
+                <Icon icon={DeleteUserIcon} />
+              </CustomButtonForIcon>
+            </Tips>
+            <Tips text="Разослать доп. согласование">
+              <CustomButtonForIcon
+                className="color-blue-1"
+                onClick={onSendApprover}
+                disabled={!selected?.additional}
+              >
+                <Icon icon={SendIcon} />
+              </CustomButtonForIcon>
+            </Tips>
+            <Tips text="Отозвать доп. согласование">
+              <CustomButtonForIcon
+                className="color-blue-1"
+                onClick={onRevokeApprover}
+                disabled={!selected?.additional}
+              >
+                <Icon icon={SendReverseIcon} />
+              </CustomButtonForIcon>
+            </Tips>
+            <Tips text="Удалить этап доп. согласования">
+              <CustomButtonForIcon
+                className="color-blue-1"
+                onClick={onDeleteAllApprovers}
+                disabled={!(selected?.additional && deleteStage)}
+              >
+                <Icon icon={deleteIcon} />
+              </CustomButtonForIcon>
+            </Tips>
+          </div>
         </LevelStage>
         <div className="">{isDisplayed && renderedEntities}</div>
+        {ActionComponent && (
+          <ActionComponent.Component
+            open={true}
+            onClose={closeAction}
+            approvers={approvers}
+            selected={selected}
+          />
+        )}
       </div>
     )
   )

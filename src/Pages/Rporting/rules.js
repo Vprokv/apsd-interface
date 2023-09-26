@@ -76,7 +76,7 @@ CustomDatePicker.propTypes = {
 }
 
 const CustomCheckBox = ({ onInput, value, ...props }) => {
-  const [filter, setFilter] = useState(false)
+  const [filter, setFilter] = useState(props.id === 'only_original') //todo убрать харды , надо для отоброжения, ког
 
   useEffect(() => {
     onInput(filter, props.id)

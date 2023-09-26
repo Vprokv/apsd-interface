@@ -10,6 +10,8 @@ import {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
+import { object } from 'bfj/src/events'
+import log from 'tailwindcss/lib/util/log'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon
@@ -48,7 +50,7 @@ const Leaf = (props) => {
     childrenKey,
     valueKey,
     options,
-    options: { title, [childrenKey]: children, [valueKey]: leafVal, editable },
+    // options: { title, [childrenKey]: children, [valueKey]: leafVal, editable },
     level,
     onInput,
     index,
@@ -75,6 +77,18 @@ const Leaf = (props) => {
     selectedState,
   } = props
 
+  const rowKey =
+    typeof childrenKey === 'string' ? childrenKey : childrenKey(level)
+
+  const { title, [rowKey]: rowData, [valueKey]: leafVal, editable } = options
+
+  const children =
+    Array.isArray(rowData) && rowData.length > 0
+      ? rowData
+      : !Array.isArray(rowData) && rowData?.approvers?.length > 0 //TODO хорды на распознования ребенка, переделать
+      ? [rowData]
+      : undefined
+
   const refProps = useRef(props)
   refProps.current = props
 
@@ -87,41 +101,41 @@ const Leaf = (props) => {
     (value) => {
       if (children) {
         const nextValue = []
-        const stack = [options]
-        if (value) {
-          for (let i = 0; i < stack.length; i++) {
-            const item = stack[i]
 
-            const { [childrenKey]: stackChildren } = item
-            if (stackChildren) {
-              stackChildren.forEach((item) => {
-                stack.push(item)
-              })
-            } else {
-              nextValue.push([
-                item[valueKey],
-                returnObjects ? item : item[valueKey],
-              ])
-            }
+        const stack = [options]
+        for (let i = 0; i < stack.length; i++) {
+          const item = stack[i]
+
+          const { [rowKey]: stackChildren } = item
+          if (Array.isArray(stackChildren)) {
+            stackChildren.forEach((item) => {
+              stack.push(item)
+            })
+          } else {
+            nextValue.push([
+              item[valueKey],
+              returnObjects ? item : item[valueKey],
+            ])
           }
         }
+
         onInput(nextValue, value)
       } else {
         onInput([[leafVal, returnObjects ? options : leafVal]], value)
       }
     },
-    [children, options, onInput, childrenKey, valueKey, returnObjects, leafVal],
+    [children, options, onInput, rowKey, valueKey, returnObjects, leafVal],
   )
 
   const onDragEnd = useCallback(() => {
     setBorderState('')
     setDropState(null)
-  }, [])
+  }, [setDropState])
 
   const onDrop = useCallback(() => {
     setBorderState('')
     setDropState(null)
-  }, [options])
+  }, [setDropState])
 
   const onDragOver = useCallback((event) => {
     event.stopPropagation()
@@ -166,16 +180,16 @@ const Leaf = (props) => {
   }, [index, onDeleteLeafOption])
 
   const handleUpdateOptions = useCallback((nextLeafValue, childrenIndex) => {
-    const { options, onUpdateOptions, index, childrenKey } = refProps.current
-    const nextOptions = { ...options, [childrenKey]: [...options[childrenKey]] }
-    nextOptions[childrenKey][childrenIndex] = nextLeafValue
+    const { options, onUpdateOptions, index, rowKey } = refProps.current
+    const nextOptions = { ...options, [rowKey]: [...options[rowKey]] }
+    nextOptions[rowKey][childrenIndex] = nextLeafValue
     onUpdateOptions(nextOptions, index)
   }, [])
 
   const deleteLeaf = useCallback((childrenIndex) => {
-    const { options, onUpdateOptions, index, childrenKey } = refProps.current
-    const nextOptions = { ...options, [childrenKey]: [...options[childrenKey]] }
-    nextOptions[childrenKey].splice(childrenIndex, 1)
+    const { options, onUpdateOptions, index, rowKey } = refProps.current
+    const nextOptions = { ...options, [rowKey]: [...options[rowKey]] }
+    nextOptions[rowKey].splice(childrenIndex, 1)
     onUpdateOptions(nextOptions, index)
   }, [])
 
@@ -208,13 +222,17 @@ const Leaf = (props) => {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        {editable && (
-          <CheckBox
-            className="mr-1.5"
-            onInput={checkBoxInput}
-            value={getLeafSelectedStatus(options)}
-          />
-        )}
+        {editable &&
+          level !== 2 && ( //TODO хорды на правило появления чекбокса
+            <CheckBox
+              className="mr-1.5"
+              onInput={checkBoxInput}
+              value={getLeafSelectedStatus({
+                item: options,
+                childrenKey: rowKey,
+              })}
+            />
+          )}
         <Row
           level={level}
           title={title}
@@ -225,7 +243,7 @@ const Leaf = (props) => {
           draggable={draggable}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
-          node={{ ...options, selectedState }}
+          node={{ options, selectedState }}
           parent={parent}
           rowComponent={rowComponent}
           onInput={onUpdateLeafOption}
@@ -234,33 +252,36 @@ const Leaf = (props) => {
       </HeaderContainer>
       <ChildrenContainer>
         {expanded &&
-          children &&
-          children?.map((item, index) => (
-            <LeafComponent
-              selectedState={selectedState}
-              getSequence={handleGetSequence}
-              LeafComponent={LeafComponent}
-              dropRule={dropRule}
-              draggable={draggable}
-              key={item[valueKey]}
-              options={{ ...item, editable }}
-              // checkAble={checkAble}
-              index={index}
-              level={level + 1}
-              onInput={onInput}
-              getLeafSelectedStatus={getLeafSelectedStatus}
-              onSelect={onSelect}
-              selectedNode={selectedNode}
-              parent={options}
-              defaultExpandAll={defaultExpandAll}
-              setDropState={setDropState}
-              dropState={dropState}
-              rowComponent={rowComponent}
-              onUpdateOptions={handleUpdateOptions}
-              onDeleteLeafOption={deleteLeaf}
-              ChildrenLessIcon={ChildrenLessIcon}
-            />
-          ))}
+          children?.map(
+            (item, index) =>
+              item && (
+                <LeafComponent
+                  selectedState={selectedState}
+                  getSequence={handleGetSequence}
+                  LeafComponent={LeafComponent}
+                  dropRule={dropRule}
+                  draggable={draggable}
+                  key={item[valueKey]}
+                  options={{ ...item, editable }}
+                  // checkAble={checkAble}
+                  index={index}
+                  level={level + 1}
+                  onInput={onInput}
+                  getLeafSelectedStatus={getLeafSelectedStatus}
+                  onSelect={onSelect}
+                  selectedNode={selectedNode}
+                  parent={options}
+                  defaultExpandAll={defaultExpandAll}
+                  setDropState={setDropState}
+                  dropState={dropState}
+                  rowComponent={rowComponent}
+                  onUpdateOptions={handleUpdateOptions}
+                  onDeleteLeafOption={deleteLeaf}
+                  ChildrenLessIcon={ChildrenLessIcon}
+                  childrenKey={childrenKey}
+                />
+              ),
+          )}
       </ChildrenContainer>
     </LeafContainer>
   )

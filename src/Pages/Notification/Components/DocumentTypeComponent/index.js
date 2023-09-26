@@ -9,7 +9,6 @@ import documentIcon from '@/Icons/documentIcon'
 const DocumentTypeComponent = ({
   ParentValue: { documentRegNumber, documentTypeLabel, documentRegDate, read },
 }) => {
-  console.log(documentTypeLabel, 'documentTypeLabel')
   const color = useMemo(() => {
     return documentTypeLabel && colorFromString(documentTypeLabel, 100, 35)
   }, [documentTypeLabel])

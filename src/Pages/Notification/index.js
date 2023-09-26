@@ -116,8 +116,6 @@ const Notification = () => {
     defaultLimit: 10,
   })
 
-  console.log(content, 'content')
-
   const loadData = useCallback(async () => {
     try {
       const { limit, offset } = paginationState

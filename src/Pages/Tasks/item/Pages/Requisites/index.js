@@ -209,8 +209,6 @@ export const Requisites = ({ type: documentType, documentState }) => {
         fieldsCopy.delete(key)
       }
     })
-    // console.log(interceptors, 'interceptors')
-    // console.log(interceptorsFunctions, 'interceptorsFunctions')
 
     interceptors.forEach((deps, key) => {
       interceptorsFunctions.set(key, ({ handleInput }) =>
@@ -224,8 +222,6 @@ export const Requisites = ({ type: documentType, documentState }) => {
       interceptors: interceptorsFunctions,
     }
   }, [values, parsedDesign])
-
-  // console.log(fields, 'rules')
 
   return (
     <ScrollBar className="w-full">

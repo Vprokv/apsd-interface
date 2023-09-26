@@ -14,7 +14,10 @@ import OtherIcon from './Components/icons/Other'
 import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
-import {PermitDisableContext, responseData} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import {
+  PermitDisableContext,
+  responseData,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
@@ -44,6 +47,11 @@ DotIcon.propTypes = {
   onClick: PropTypes.func,
 }
 
+const childrenKeyMap = {
+  0: 'approvers',
+  1: 'additionalStage',
+}
+
 const ApprovalSheet = () => {
   const { type } = useParams()
   const api = useContext(ApiContext)
@@ -54,38 +62,6 @@ const ApprovalSheet = () => {
   const documentType = useContext(DocumentTypeContext)
   const [state, setState] = useState(false)
   const getNotification = useOpenNotification()
-
-  const tabItemState = useTabItem({
-    stateId: TASK_ITEM_APPROVAL_SHEET,
-  })
-  const {
-    tabState: { data = [], loading },shouldReloadDataFlag
-  } = tabItemState
-
-  const loadData = useCallback(async () => {
-    try {
-      const { data } = await api.post(URL_APPROVAL_SHEET, {
-        id: documentId,
-        type,
-      })
-      return data
-      // return responseData
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
-  }, [api, documentId, getNotification, type])
-
-  useEffect(() => {
-    setToggleNavigationData(
-      data.reduce((acc, { type }) => {
-        return {
-          ...acc,
-          [type]: true,
-        }
-      }, {}),
-    )
-  }, [data])
 
   useEffect(() => {
     ;(async () => {
@@ -101,6 +77,39 @@ const ApprovalSheet = () => {
       }
     })()
   }, [api, documentId, documentType, getNotification, type])
+
+  const tabItemState = useTabItem({
+    stateId: TASK_ITEM_APPROVAL_SHEET,
+  })
+  const {
+    tabState: { data = [], loading },shouldReloadDataFlag
+  } = tabItemState
+
+  const loadData = useCallback(async () => {
+    try {
+      const { data } = await api.post(URL_APPROVAL_SHEET, {
+        id: documentId,
+        type,
+      })
+
+      return data
+      // return responseData
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, documentId, getNotification, permit, type])
+
+  useEffect(() => {
+    setToggleNavigationData(
+      data.reduce((acc, { type }) => {
+        return {
+          ...acc,
+          [type]: true,
+        }
+      }, {}),
+    )
+  }, [data])
 
   const fetchDataFunction = useAutoReload(loadData, tabItemState)
 
@@ -154,6 +163,11 @@ const ApprovalSheet = () => {
     setToggleNavigationData(({ [v]: prevAmount, ...prevState }) => {
       return { ...prevState, [v]: !prevAmount }
     })
+  }, [])
+
+  const getChildrenKey = useCallback((level) => {
+    const { [level]: key  } = childrenKeyMap
+    return key
   }, [])
 
   return (
@@ -227,7 +241,7 @@ const ApprovalSheet = () => {
                     options={stages}
                     rowComponent={RowSelector}
                     onUpdateOptions={() => null}
-                    childrenKey="approvers"
+                    childrenKey={getChildrenKey}
                     onInput={handleInput}
                     LeafComponent={LeafComponent}
                   />

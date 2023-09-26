@@ -77,7 +77,7 @@ const EditStageWindow = (props) => {
       return {
         term,
         name,
-        approvers: approvers.map(({ dsidApproverEmpl }) => dsidApproverEmpl),
+        approvers: approvers?.map(({ dsidApproverEmpl }) => dsidApproverEmpl),
         id: globalId,
       }
     }
