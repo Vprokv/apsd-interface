@@ -63,7 +63,7 @@ const columns = [
     label: 'Наименование',
     className: 'flex font-size-12',
     component: TitleNameComponent,
-    sizes: 500,
+    sizes: 600,
   },
   {
     id: 'linkName',
@@ -449,7 +449,7 @@ const Contain = () => {
             onSort={onSort}
             value={data}
             onInput={onTableUpdate}
-            // loading={loading}
+            loading={loading}
           />
         </ShowContentByTypeButtonContext.Provider>
         <ContentWindow

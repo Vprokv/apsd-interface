@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Loading = () => {
+const Loading = ({ className, width, height }) => {
   return (
-    <div className="w-full h-full flex items-center justify-center  relative">
+    <div className={`flex items-center relative className ${className}`}>
       <svg
-        width="30%"
-        height="30%"
+        width={width}
+        height={height}
         viewBox="0 0 38 38"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -51,3 +51,8 @@ const Loading = () => {
 }
 
 export default Loading
+Loading.defaultProps = {
+  className: 'justify-center',
+  width: '30%',
+  height: '30%',
+}
