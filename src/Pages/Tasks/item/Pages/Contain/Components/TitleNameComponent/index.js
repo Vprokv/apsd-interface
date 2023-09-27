@@ -1,7 +1,11 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { TreeStateContext } from '@Components/Components/Tables/Plugins/constants'
-import { ApiContext } from '@/contants'
+import {
+  ApiContext,
+  TASK_ITEM_APPROVAL_SHEET,
+  TASK_ITEM_STRUCTURE,
+} from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 import { URL_STURCTURE_SEND, URL_TITLE_CONTAIN_CREATE_APPROVE } from '@/ApiList'
@@ -23,6 +27,9 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
+import Loading from '@/Components/Loading'
 
 const customMessagesSendFuncMap = {
   ...defaultFunctionsMap,
@@ -69,7 +76,9 @@ const TitleNameComponent = ({
     state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
     onChange,
   } = useContext(TreeStateContext)
-
+  const closeContextMenu = useCallback(() => {
+    setOpen(false)
+  }, [])
   const api = useContext(ApiContext)
   const { loadData, addDepartment, addVolume, addLink, editLink } = useContext(
     LoadContainChildrenContext,
@@ -80,56 +89,68 @@ const TitleNameComponent = ({
   const [loading, setLoading] = useState(false)
   const [target, setTarget] = useState({})
 
+  const updateTabStateUpdaterByName = useUpdateCurrentTabChildrenStates()
+
   const onSend = useCallback(async () => {
     try {
+      setLoading(true)
+      closeContextMenu()
       const { status } = await api.post(URL_STURCTURE_SEND, {
         partId: ParentValue.id,
       })
       getNotification(customMessagesSendFuncMap[status]())
-      const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      if (!children || children.length === 0) {
-        onInput(await loadData(id, false), nestedDataKey)
-      }
-      setLoading(true)
+      // const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+      // if (!children || children.length === 0) {
+      //   onInput(await loadData(id, false), nestedDataKey)
+      // }
+
+      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
+        loading: false,
+        fetched: false,
+      })
     } catch (e) {
       const { response: { status, data: { trace } } = {} } = e
       getNotification(customMessagesSendFuncMap[status](trace))
       setLoading(false)
+    } finally {
+      setLoading(false)
     }
   }, [
-    ParentValue,
+    ParentValue.id,
     api,
+    closeContextMenu,
     getNotification,
-    loadData,
-    nestedDataKey,
-    onInput,
-    valueKey,
+    updateTabStateUpdaterByName,
   ])
 
   const onApprove = useCallback(async () => {
     try {
+      setLoading(true)
+      closeContextMenu()
       const { status } = await api.post(URL_TITLE_CONTAIN_CREATE_APPROVE, {
         partId: ParentValue.id,
       })
       getNotification(customMessagesApproveFuncMap[status]())
-      const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      if (!children || children.length === 0) {
-        onInput(await loadData(id, false), nestedDataKey)
-      }
-      setLoading(true)
+      // const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
+      // if (!children || children.length === 0) {
+      //   onInput(await loadData(id, false), nestedDataKey)
+      // }
+      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
+        loading: false,
+        fetched: false,
+      })
     } catch (e) {
       const { response: { status, data: { trace }, data } = {} } = e
       getNotification(customMessagesApproveFuncMap[status](trace ?? data))
+    } finally {
       setLoading(false)
     }
   }, [
-    ParentValue,
+    ParentValue.id,
     api,
+    closeContextMenu,
     getNotification,
-    loadData,
-    nestedDataKey,
-    onInput,
-    valueKey,
+    updateTabStateUpdaterByName,
   ])
 
   const onOpenNestedTable = useCallback(async () => {
@@ -143,10 +164,6 @@ const TitleNameComponent = ({
   const openContextMenu = useCallback((event) => {
     setTarget(event.target)
     setOpen(true)
-  }, [])
-
-  const closeContextMenu = useCallback(() => {
-    setOpen(false)
   }, [])
 
   const addSubsection = useCallback(async () => {
@@ -209,7 +226,7 @@ const TitleNameComponent = ({
   }, [ParentValue, editLink, closeContextMenu])
 
   return (
-    <LeafContainer className="flex items-center">
+    <LeafContainer className="flex items-center h-14">
       {send && (
         <Icon
           icon={sortIcons}
@@ -218,12 +235,14 @@ const TitleNameComponent = ({
         />
       )}
       <CustomIconComponent {...ParentValue} />
+
       <>
         <button onClick={() => expand && onOpenNestedTable()}>
           <div className="font-size-12 font-normal flex text-left items-center break-words min-h-10 h-full">
             {name}
           </div>
         </button>
+
         <ContHover>
           <ThreeDotButton>
             <Icon
@@ -275,6 +294,11 @@ const TitleNameComponent = ({
           </ContextMenu>
         )}
       </>
+      <div className="items-center ">
+        {loading && (
+          <Loading className="justify-start ml-2" height="25px" width="25px" />
+        )}
+      </div>
     </LeafContainer>
   )
 }
