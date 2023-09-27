@@ -82,7 +82,8 @@ const ApprovalSheet = () => {
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const {
-    tabState: { data = [], loading },shouldReloadDataFlag
+    tabState: { data = [], loading },
+    shouldReloadDataFlag,
   } = tabItemState
 
   const loadData = useCallback(async () => {
@@ -166,7 +167,7 @@ const ApprovalSheet = () => {
   }, [])
 
   const getChildrenKey = useCallback((level) => {
-    const { [level]: key  } = childrenKeyMap
+    const { [level]: key } = childrenKeyMap
     return key
   }, [])
 

@@ -11,7 +11,7 @@ import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
+import { DeepSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -432,11 +432,12 @@ const Contain = () => {
                   component: LeafTableComponent,
                 },
                 selectPlugin: {
-                  driver: FlatSelect,
+                  driver: DeepSelect,
                   component: CheckBox,
                   style: { margin: 'auto 0' },
                   valueKey: 'id',
                   returnObjects: true,
+                  nestedDataKey: 'childs',
                 },
               }
             }, [defaultOpen])}
