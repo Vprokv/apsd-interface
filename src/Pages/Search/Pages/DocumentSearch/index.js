@@ -282,6 +282,12 @@ const DocumentSearch = ({
       }, {}),
     [fields],
   )
+
+  useEffect(
+    () => setTabState({ defaultOperators }),
+    [defaultOperators, setTabState],
+  )
+
   const loadData = useCallback(async () => {
     try {
       const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
@@ -458,7 +464,6 @@ export default DocumentSearch
 
 const TableSearch = ({
   children,
-  defaultOperators,
   setSearchState,
   filter,
   attributesComponent,
@@ -466,6 +471,12 @@ const TableSearch = ({
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const [paginationStateComp, setPaginationStateComp] = useState({})
+
+  const {
+    tabState: { defaultOperators },
+  } = useTabItem({
+    stateId: SEARCH_PAGE_DOCUMENT,
+  })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,
