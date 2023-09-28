@@ -11,7 +11,10 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
 import searchIcon from '@/Icons/searchIcon'
-import { ContextArchiveContainerWidth } from '@/Pages/Main/Components/SideBar/Components/Archive/constants'
+import {
+  ContextArchiveContainerWidth,
+  ContextArchiveLoading,
+} from '@/Pages/Main/Components/SideBar/Components/Archive/constants'
 
 const ScrollBar = styled(SimpleBar)`
   max-height: 300px;
@@ -19,6 +22,7 @@ const ScrollBar = styled(SimpleBar)`
 
 const Archive = ({ onOpenNewTab, width }) => {
   const [query, setQuery] = useState()
+  const [loading, setLoading] = useState()
 
   return (
     <WithToggleNavigationItem id="Архив">
@@ -51,15 +55,19 @@ const Archive = ({ onOpenNewTab, width }) => {
                     className="color-text-secondary mr-2.5"
                   />
                 </SearchInput>
-                <ScrollBar>
-                  <ArchiveItem
-                    width={width}
-                    query={query}
-                    onOpenNewTab={onOpenNewTab}
-                    buttonComponent={FirstLevelArchiveButton}
-                    childrenComponent={LevelOneArchiveItem}
-                  />
-                </ScrollBar>
+                <ContextArchiveLoading.Provider value={{ loading, setLoading }}>
+                  <ScrollBar>
+                    <ArchiveItem
+                      loading={loading}
+                      setLoading={setLoading}
+                      width={width}
+                      query={query}
+                      onOpenNewTab={onOpenNewTab}
+                      buttonComponent={FirstLevelArchiveButton}
+                      childrenComponent={LevelOneArchiveItem}
+                    />
+                  </ScrollBar>
+                </ContextArchiveLoading.Provider>
               </div>
             )}
           </div>

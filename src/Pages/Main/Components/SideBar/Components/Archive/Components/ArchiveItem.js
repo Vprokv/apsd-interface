@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import {
@@ -6,13 +6,15 @@ import {
   URL_STORAGE_SECTION,
   URL_STORAGE_TITLE,
 } from '@/ApiList'
-import Icon from '@Components/Components/Icon'
-import angleIcon from '@/Icons/angleIcon'
-import { OthersLevelsArchiveButton, SecondArchiveButton } from './ArchiveButton'
+import {
+  LevelToggleIcon,
+  OthersLevelsArchiveButton,
+  SecondArchiveButton,
+} from './ArchiveButton'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/Archive/Components/WithToggleNavigationItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import Tips from '@/Components/Tips'
+import { ContextArchiveLoading } from '@/Pages/Main/Components/SideBar/Components/Archive/constants'
 
 const apisMap = {
   0: async ({ api, query }) => {
@@ -53,6 +55,7 @@ const ArchiveItem = ({
   const [items, setItems] = useState([])
   const getNotification = useOpenNotification()
   const api = useContext(ApiContext)
+  const { loading, setLoading } = useContext(ContextArchiveLoading)
   useEffect(() => {
     ;(async () => {
       try {
@@ -61,9 +64,11 @@ const ArchiveItem = ({
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
+      } finally {
+        setLoading()
       }
     })()
-  }, [api, level, id, sectionId, setItems, query, getNotification])
+  }, [api, level, id, sectionId, setItems, query, getNotification, setLoading])
 
   return items.map(({ id: levelId, name, expand }) => (
     <WithToggleNavigationItem id={levelId} key={levelId}>
@@ -71,25 +76,26 @@ const ArchiveItem = ({
         <div className=" font-size-12 mt-2 ">
           <div className="flex w-full py-1.5 justify-start">
             {expand && (
-              <button
-                className="pl-2 mr-2 "
-                type="button"
-                onClick={toggleDisplayedFlag}
-              >
-                <Icon
-                  icon={angleIcon}
-                  size={10}
-                  className={`color-text-secondary ${
-                    isDisplayed ? '' : 'rotate-180'
-                  }`}
-                />
-              </button>
+              <LevelToggleIcon
+                levelId={levelId}
+                loading={loading}
+                toggleDisplayedFlag={toggleDisplayedFlag}
+                isDisplayed={isDisplayed}
+              />
             )}
             <ButtonComponent
               id={id}
+              key={id}
               level={level}
               width={width}
-              toggleChildrenRender={toggleDisplayedFlag}
+              toggleChildrenRender={() => {
+                if (!isDisplayed) {
+                  setLoading(levelId)
+                  toggleDisplayedFlag()
+                } else {
+                  toggleDisplayedFlag()
+                }
+              }}
               name={name}
               sectionId={levelId}
               parentName={parentName}
@@ -97,6 +103,7 @@ const ArchiveItem = ({
                 if (isDisplayed) {
                   toggleDisplayedFlag()
                 } else {
+                  setLoading(levelId)
                   onOpenNewTab(args)
                   toggleDisplayedFlag()
                 }

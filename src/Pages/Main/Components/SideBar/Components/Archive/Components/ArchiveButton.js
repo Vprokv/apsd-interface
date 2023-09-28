@@ -3,13 +3,20 @@ import React, {
   useCallback,
   useContext,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
 import Tips from '@/Components/Tips'
-import { ContextArchiveContainerWidth } from '../constants'
+import {
+  ContextArchiveContainerWidth,
+  ContextArchiveLoading,
+} from '../constants'
+import Loading from '@/Components/Loading'
+import Icon from '@Components/Components/Icon'
+import angleIcon from '@/Icons/angleIcon'
 
-const ArchiveButton = ({ name, onClick }) => {
+const ArchiveButton = ({ name, onClick, key }) => {
   const RefFullWidthContainer = useRef()
   const RefVisibleTextContainerRef = useRef()
   const containerWidth = useContext(ContextArchiveContainerWidth)
@@ -24,7 +31,7 @@ const ArchiveButton = ({ name, onClick }) => {
 
   const Container = renderTips ? Tips : React.Fragment
   return (
-    <Container key={name} text={name} className="max-w-lg text-center">
+    <Container key={key} text={name} className="max-w-lg text-center">
       <button
         type="button"
         className="flex text-left overflow-hidden"
@@ -47,15 +54,19 @@ const ArchiveButton = ({ name, onClick }) => {
 
 ArchiveButton.propTypes = {
   name: PropTypes.string.isRequired,
+  key: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 }
 
-export const FirstLevelArchiveButton = ({ name, toggleChildrenRender }) => (
-  <ArchiveButton name={name} onClick={toggleChildrenRender} />
-)
+export const FirstLevelArchiveButton = ({
+  name,
+  toggleChildrenRender,
+  key,
+}) => <ArchiveButton name={name} onClick={toggleChildrenRender} key={key} />
 
 FirstLevelArchiveButton.propTypes = {
   name: PropTypes.string.isRequired,
+  key: PropTypes.string.isRequired,
   toggleChildrenRender: PropTypes.func.isRequired,
 }
 
@@ -64,6 +75,7 @@ export const SecondArchiveButton = ({
   onOpenNewTab,
   parentName,
   sectionId,
+  key,
 }) => {
   const handleClick = useCallback(() => {
     onOpenNewTab(
@@ -73,10 +85,11 @@ export const SecondArchiveButton = ({
       )}/${sectionId}`,
     )
   }, [onOpenNewTab, parentName, name, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} />
+  return <ArchiveButton name={name} onClick={handleClick} key={key} />
 }
 
 SecondArchiveButton.propTypes = {
+  key: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   parentName: PropTypes.string.isRequired,
   sectionId: PropTypes.string.isRequired,
@@ -89,6 +102,7 @@ export const OthersLevelsArchiveButton = ({
   parentName,
   id,
   sectionId,
+  key,
 }) => {
   const handleClick = useCallback(() => {
     onOpenNewTab(
@@ -98,7 +112,7 @@ export const OthersLevelsArchiveButton = ({
       )}/${id}${sectionId ? `/${sectionId}` : ''}`,
     )
   }, [onOpenNewTab, parentName, name, id, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} />
+  return <ArchiveButton name={name} onClick={handleClick} key={key} />
 }
 
 OthersLevelsArchiveButton.propTypes = {
@@ -107,6 +121,42 @@ OthersLevelsArchiveButton.propTypes = {
   id: PropTypes.string.isRequired,
   sectionId: PropTypes.string.isRequired,
   onOpenNewTab: PropTypes.func.isRequired,
+  key: PropTypes.string.isRequired,
 }
 
 export default ArchiveButton
+
+export const LevelToggleIcon = ({
+  toggleDisplayedFlag,
+  isDisplayed,
+  levelId,
+  key,
+}) => {
+  const { loading } = useContext(ContextArchiveLoading)
+  const isLoad = useMemo(() => loading === levelId, [levelId, loading])
+  return (
+    <button
+      className="pl-2 mr-2 "
+      type="button"
+      onClick={toggleDisplayedFlag}
+      key={key}
+    >
+      {isLoad ? (
+        <Loading width={'20px'} height={'20px'} />
+      ) : (
+        <Icon
+          icon={angleIcon}
+          size={10}
+          className={`color-text-secondary ${isDisplayed ? '' : 'rotate-180'}`}
+        />
+      )}
+    </button>
+  )
+}
+
+LevelToggleIcon.propTypes = {
+  key: PropTypes.string.isRequired,
+  levelId: PropTypes.string.isRequired,
+  isDisplayed: PropTypes.bool.isRequired,
+  toggleDisplayedFlag: PropTypes.func.isRequired,
+}
