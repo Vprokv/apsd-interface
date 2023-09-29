@@ -138,8 +138,8 @@ const loadFunctions = {
             },
           },
           {
-            cancelToken: source.token,
-            signal: controller.signal,
+            cancelToken: source?.token,
+            signal: controller?.signal,
           },
         )
         return content
@@ -167,8 +167,8 @@ const loadFunctions = {
             },
           },
           {
-            cancelToken: source.token,
-            signal: controller.signal,
+            cancelToken: source?.token,
+            signal: controller?.signal,
           },
         )
         return content
@@ -189,8 +189,8 @@ const loadFunctions = {
             ...filters,
           },
           {
-            cancelToken: source.token,
-            signal: controller.signal,
+            cancelToken: source?.token,
+            signal: controller?.signal,
           },
         )
         return data
