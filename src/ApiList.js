@@ -37,6 +37,10 @@ export const URL_SUBSCRIPTION_EVENTS = '/apsd/subscription/events'
 export const URL_SUBSCRIPTION_CREATE = '/apsd/subscription/create'
 export const URL_SUBSCRIPTION_DELETE = '/apsd/subscription/deleted'
 export const URL_SUBSCRIPTION_CHANNELS = '/apsd/subscription/channels'
+export const URL_SUBSCRIPTION_NOTIFICATION_DELETE =
+  '/apsd/subscription/user/notifications/delete'
+export const URL_SUBSCRIPTION_NOTIFICATION_WATCH =
+  '/apsd/subscription/user/notifications/watch'
 // SUBSCRIPTION USER
 export const URL_SUBSCRIPTION_NOTIFICATION_LIST =
   '/apsd/subscription/user/notifications'

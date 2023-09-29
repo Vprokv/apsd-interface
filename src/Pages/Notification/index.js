@@ -11,10 +11,12 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_EVENTS,
+  URL_SUBSCRIPTION_NOTIFICATION_DELETE,
   URL_SUBSCRIPTION_NOTIFICATION_LIST,
+  URL_SUBSCRIPTION_NOTIFICATION_WATCH,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
-import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
+import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
@@ -26,8 +28,24 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import DocumentTypeComponent from '@/Pages/Notification/Components/DocumentTypeComponent'
-import { useOpenNotification } from '@/Components/Notificator'
+import {
+  NOTIFICATION_TYPE_INFO,
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { LoadableSecondaryBlueButton } from '@/Components/Button'
+import styled from 'styled-components'
+import Form from '@Components/Components/Forms'
+import { TabStateManipulation } from '@Components/Logic/Tab'
+import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
+
+const FilterForm = styled(Form)`
+  --form--elements_height: 32px;
+  display: grid;
+  grid-template-columns: 200px 200px 200px 200px;
+  grid-column-gap: 0.5rem;
+`
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -93,6 +111,7 @@ const columns = [
 
 const Notification = () => {
   const api = useContext(ApiContext)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
@@ -115,6 +134,17 @@ const Notification = () => {
     setState: setTabState,
     defaultLimit: 10,
   })
+
+  const handleDoubleClick = useCallback(
+    ({ documentId, documentType, notificationId }) =>
+      async () => {
+        openTabOrCreateNewTab(`/document/${documentId}/${documentType}`)
+        await api.post(URL_SUBSCRIPTION_NOTIFICATION_WATCH, {
+          notificationIds: [notificationId],
+        })
+      },
+    [api, openTabOrCreateNewTab],
+  )
 
   const loadData = useCallback(async () => {
     try {
@@ -196,18 +226,67 @@ const Notification = () => {
     },
   ]
 
+  const onDelete = useCallback(async () => {
+    try {
+      await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE, {
+        notificationIds: selectState.map(({ id }) => id),
+      })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Уведомления удалены успешно',
+      })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, getNotification, selectState])
+
+  const onDeleteALL = useCallback(async () => {
+    try {
+      // await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE, {
+      //   notificationIds: selectState.map(({ id }) => id),
+      // })
+      getNotification({
+        type: NOTIFICATION_TYPE_INFO,
+        message: 'Функционал в разработке',
+      })
+    } catch (e) {
+      // const { response: { status, data } = {} } = e
+      // getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [getNotification])
+
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
-      <div className="flex items-center">
+      <div className="flex form-element-sizes-32">
         <FilterForm
           fields={filterFields}
           inputWrapper={emptyWrapper}
           value={filter}
           onInput={setFilter}
         />
+        <LoadableSecondaryBlueButton
+          disabled={!selectState.length}
+          onClick={onDelete}
+          className="ml-2"
+        >
+          {'Удалить'}
+        </LoadableSecondaryBlueButton>
+        <LoadableSecondaryBlueButton
+          disabled={total === 0}
+          className="ml-2"
+          onClick={onDeleteALL}
+        >
+          {'Удалить все'}
+        </LoadableSecondaryBlueButton>
       </div>
       <ListTable
         className="mt-2"
+        rowComponent={useMemo(
+          () => (props) =>
+            <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
+          [handleDoubleClick],
+        )}
         value={content}
         columns={columns}
         plugins={plugins}
@@ -216,6 +295,7 @@ const Notification = () => {
         onSelect={setSelectState}
         sortQuery={sortQuery}
         onSort={onSort}
+        returnOb={true}
       />
       <Pagination
         className="mt-2"
