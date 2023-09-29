@@ -21,7 +21,15 @@ const plugins = {
 
 const AddUserOptionsFullName = (v) => ({
   ...v,
-  fullNames: `${v.dss_first_name} ${v.department_name} ${v.dss_last_name}`,
+  firstName: v.dss_first_name,
+  lastName: v.dss_last_name,
+  middleName: v.dss_middle_name,
+  position: v.position_name,
+  department: v.department_name,
+  fullNames: `${v.dss_last_name} ${
+    v.dss_first_name ? v.dss_first_name[0] : ''
+  }.${v.dss_middle_name ? v.dss_middle_name[0] : ''}.`,
+  fullDescription: `${v.dss_last_name} ${v.dss_first_name} ${v.dss_middle_name}, ${v.position_name}, ${v.department_name}`,
 })
 
 const columns = [
@@ -116,7 +124,6 @@ const columns = [
 ]
 
 const History = () => {
-  const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [sortQuery, onSort] = useState({
@@ -167,10 +174,10 @@ const History = () => {
       multiple: true,
       valueKey: 'dss_name',
       labelKey: 'dss_label',
-      loadFunction: async () => {
+      loadFunction: async (query) => {
         const {
           data: { auditEventNames },
-        } = await api.post(`/sedo/audit/filters/${id}`)
+        } = await api.post(`/sedo/audit/filters/${documentId}`, { query })
         return auditEventNames
       },
     },
@@ -180,10 +187,13 @@ const History = () => {
       placeholder: 'Исполнитель',
       valueKey: 'r_object_id',
       labelKey: 'fullNames',
-      loadFunction: () => () => async () => {
+      loadFunction: () => () => async (query) => {
         const {
           data: { performerId },
-        } = await api.post(`/sedo/audit/filters/${id}`)
+        } = await api.post(`/sedo/audit/filters/${documentId}`, {
+          query,
+        })
+        console.log(performerId, 'performerId')
         return performerId.map(AddUserOptionsFullName)
       },
     },
