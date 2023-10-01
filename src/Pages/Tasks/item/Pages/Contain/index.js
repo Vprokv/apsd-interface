@@ -44,7 +44,6 @@ import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/Titl
 import Tips from '@/Components/Tips'
 import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
-import NewTitle from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
 import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 
 const customMessagesFuncMap = {
@@ -183,14 +182,12 @@ const Contain = () => {
           api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
         ),
       )
-      const removeDeletedDocs = (acc, { id, children, ...rest }) => {
+      const removeDeletedDocs = (acc, { id, childs, ...rest }) => {
         if (selectState.every((r) => r.id !== id)) {
           acc.push({
             id,
             ...rest,
-            children: children
-              ? children.reduce(removeDeletedDocs, [])
-              : undefined,
+            childs: childs ? childs.reduce(removeDeletedDocs, []) : undefined,
           })
         }
 
