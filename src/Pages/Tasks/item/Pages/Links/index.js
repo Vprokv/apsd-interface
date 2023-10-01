@@ -237,18 +237,12 @@ const Links = () => {
       {
         id: 'authorName',
         component: LinkOrgStructureComponent,
-        loadFunction: async (search) => {
+        loadFunction: async (query) => {
           const {
             data: { userModelList },
           } = await api.post(URL_LINK_USER_LIST, {
             parentId: id,
-            // sort: [
-            //   {
-            //     property: sortQuery.key,
-            //     direction: sortQuery.direction,
-            //   },
-            // ],
-            filter: { search },
+            filter: { query },
           })
           return userModelList.map(AddUserOptionsFullName)
         },
