@@ -14,11 +14,17 @@ import {
   visibleRules,
 } from './rules'
 import NoFieldType from '@/Components/NoFieldType'
-import { CustomValuesContext } from './constants'
+import { CustomValuesContext, PERMITS_SAVE } from './constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
-export const Requisites = ({ type: documentType, documentState }) => {
+export const Requisites = ({ permits }) => {
   const api = useContext(ApiContext)
+  const { type: documentType } = useParams()
+  const docContextType = useContext(DocumentTypeContext)
+
+  const documentState = useTabItem({
+    stateId: docContextType,
+  })
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
@@ -89,6 +95,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
             },
           },
         ) => {
+          const allowedSaveByPermits = permits.some((p) => p === PERMITS_SAVE)
           if (dss_visible_rule) {
             const { args, condition, disabled } = dss_visible_rule
               .match(/[^&|]+|(&|\||.)\b/gm)
@@ -121,7 +128,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
                 `return ${condition}`,
               ),
             )
-            if (disabled.length > 0) {
+            if (disabled.length > 0 && allowedSaveByPermits) {
               disabled.forEach((d) => acc.disabled.set(...d))
             }
           }
@@ -163,7 +170,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
             id: dss_attr_name,
             label: dss_attr_label,
             placeholder: dss_placeholder,
-            disabled: dsb_readonly,
+            disabled: !allowedSaveByPermits || dsb_readonly,
             ...transmission({
               fieldName: 'dss_attr_name',
               api,
@@ -190,7 +197,7 @@ export const Requisites = ({ type: documentType, documentState }) => {
           interceptors: new Map(),
         },
       ),
-    [api, data, documentType],
+    [api, data, documentType, permits],
   )
 
   const { fields, rules, interceptors } = useMemo(() => {
@@ -249,25 +256,10 @@ export const Requisites = ({ type: documentType, documentState }) => {
 }
 
 Requisites.defaultProps = {
-  documentState: {},
+  permits: [],
 }
 Requisites.propTypes = {
-  documentState: PropTypes.object,
-  type: PropTypes.string,
+  permits: PropTypes.arrayOf(PropTypes.string),
 }
 
-const RequisitesWrapper = () => {
-  const { type } = useParams()
-  const documentType = useContext(DocumentTypeContext)
-
-  const documentState = useTabItem({
-    stateId: documentType,
-  })
-
-  return <Requisites type={type} documentState={documentState} />
-}
-
-RequisitesWrapper.defaultProps = {}
-RequisitesWrapper.propTypes = {}
-
-export default RequisitesWrapper
+export default Requisites

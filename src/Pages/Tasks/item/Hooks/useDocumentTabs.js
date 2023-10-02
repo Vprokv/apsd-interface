@@ -10,7 +10,7 @@ const useDocumentTabs = (documentTabs, pages) =>
     }
 
     return documentTabs.reduce(
-      (acc, { name, caption }) => {
+      (acc, { name, caption, permits }) => {
         if (pages[name]) {
           const { path, Component } = pages[name]
           acc.headers.push(
@@ -19,7 +19,7 @@ const useDocumentTabs = (documentTabs, pages) =>
             </NavigationItem>,
           )
           acc.routes.push(
-            <Route key={path} path={path} element={<Component />} />,
+            <Route key={path} path={path} element={<Component permits={permits} />} />,
           )
         }
         return acc
