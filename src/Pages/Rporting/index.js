@@ -22,7 +22,10 @@ import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import {
+  defaultFunctionsMap,
+  NOTIFICATION_TYPE_SUCCESS,
+} from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import { Validation } from '@Components/Logic/Validator'
 
@@ -111,7 +114,8 @@ const Reporting = () => {
   const onBuild = useCallback(async () => {
     try {
       const {
-        data: { fileKey },
+        // data: response,
+        data: { fileKey, message, email },
       } = await api.post(URL_REPORTS_BUILD, {
         id: reportId,
         reportParameters: {
@@ -120,11 +124,16 @@ const Reporting = () => {
         },
       })
 
-      const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
-        responseType: 'blob',
-      })
+      if (email) {
+        return getNotification({ message, type: NOTIFICATION_TYPE_SUCCESS })
+      } else {
+        const { data } = await api.get(
+          `${URL_REPORTS_GET}${fileKey}:${token}`,
+          { responseType: 'blob' },
+        )
 
-      downloadFileWithReload(data, `${name}.${dss_def_format}`)
+        downloadFileWithReload(data, `${name}.${dss_def_format}`)
+      }
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
