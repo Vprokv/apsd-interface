@@ -71,6 +71,12 @@ const columns = [
     sizes: 300,
   },
   {
+    id: 'documentTitleDescription',
+    label: 'Титул',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
     id: 'documentDescription',
     label: 'Краткое содержание',
     component: BaseCell,
