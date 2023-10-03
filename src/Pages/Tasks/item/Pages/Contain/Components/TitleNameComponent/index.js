@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { TreeStateContext } from '@Components/Components/Tables/Plugins/constants'
 import {
@@ -30,6 +30,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 import Loading from '@/Components/Loading'
+import { length } from 'tailwindcss/lib/util/dataTypes'
 
 const customMessagesSendFuncMap = {
   ...defaultFunctionsMap,
@@ -76,6 +77,7 @@ const TitleNameComponent = ({
     state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
     onChange,
   } = useContext(TreeStateContext)
+
   const closeContextMenu = useCallback(() => {
     setOpen(false)
   }, [])
@@ -90,6 +92,24 @@ const TitleNameComponent = ({
   const [target, setTarget] = useState({})
 
   const updateTabStateUpdaterByName = useUpdateCurrentTabChildrenStates()
+
+  const parseArr = useCallback(({ status, childs, id, arr }) => {
+    if (status === 'Передан') {
+      arr.push(id)
+    }
+
+    if (childs?.length > 0) {
+      childs.forEach((val) => parseArr({ ...val, arr }))
+    }
+  }, [])
+
+  const approveIds = useMemo(() => {
+    const arr = []
+
+    parseArr({ ...ParentValue, arr })
+
+    return arr
+  }, [ParentValue, parseArr])
 
   const onSend = useCallback(async () => {
     try {
@@ -128,13 +148,9 @@ const TitleNameComponent = ({
       setLoading(true)
       closeContextMenu()
       const { status } = await api.post(URL_TITLE_CONTAIN_CREATE_APPROVE, {
-        partId: ParentValue.id,
+        partIds: approveIds,
       })
       getNotification(customMessagesApproveFuncMap[status]())
-      // const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      // if (!children || children.length === 0) {
-      //   onInput(await loadData(id, false), nestedDataKey)
-      // }
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
         loading: false,
         fetched: false,
@@ -146,8 +162,8 @@ const TitleNameComponent = ({
       setLoading(false)
     }
   }, [
-    ParentValue.id,
     api,
+    approveIds,
     closeContextMenu,
     getNotification,
     updateTabStateUpdaterByName,
@@ -226,7 +242,7 @@ const TitleNameComponent = ({
   }, [ParentValue, editLink, closeContextMenu])
 
   return (
-    <LeafContainer className="flex items-center h-14">
+    <LeafContainer className="flex items-center min-h-14">
       {send && (
         <Icon
           icon={sortIcons}
@@ -259,9 +275,12 @@ const TitleNameComponent = ({
               <StyledItem className="mb-3 font-size-12" onClick={onSend}>
                 Передать состав титула
               </StyledItem>
-              <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
-                Утвердить состав титула
-              </StyledItem>
+              {!!approveIds.length > 0 && (
+                <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
+                  Утвердить состав титула
+                </StyledItem>
+              )}
+
               <StyledItem className="mb-3 font-size-12">
                 Экспорт данных
               </StyledItem>
