@@ -11,7 +11,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_EVENTS,
-  URL_SUBSCRIPTION_NOTIFICATION_DELETE,
+  URL_SUBSCRIPTION_NOTIFICATION_DELETE, URL_SUBSCRIPTION_NOTIFICATION_DELETE_ALL,
   URL_SUBSCRIPTION_NOTIFICATION_LIST,
   URL_SUBSCRIPTION_NOTIFICATION_WATCH,
   URL_TYPE_CONFIG,
@@ -249,18 +249,16 @@ const Notification = () => {
 
   const onDeleteALL = useCallback(async () => {
     try {
-      // await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE, {
-      //   notificationIds: selectState.map(({ id }) => id),
-      // })
+      await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE_ALL)
       getNotification({
-        type: NOTIFICATION_TYPE_INFO,
-        message: 'Функционал в разработке',
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Уведомления удалены успешно',
       })
     } catch (e) {
-      // const { response: { status, data } = {} } = e
-      // getNotification(defaultFunctionsMap[status](data))
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
     }
-  }, [getNotification])
+  }, [api, getNotification])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
