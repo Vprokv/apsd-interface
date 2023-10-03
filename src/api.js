@@ -24,7 +24,7 @@ axios.defaults.baseURL = API_URL
 export default function ({ token, ...apiParams }) {
   const api = axios.create({
     baseURL: API_URL,
-    timeout: 120000000, //todo поднят по просьбе. Уточнить необходимость
+    timeout: 600000, //todo поднят по просьбе. Уточнить необходимость
     ...apiParams,
   })
 
