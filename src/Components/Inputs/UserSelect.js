@@ -58,10 +58,18 @@ const UserSelect = (props) => {
 
   const loadRefSelectFunc = useCallback(
     async (search) => {
-      const data = await loadFunction(api)(defaultFilter)(search)
+      const { branchId, ...otherFilterParams } = defaultFilter
+
+      const filter = baseFilter // В для поиска в селекте по всем филиалам через query
+        ? defaultFilter
+        : search.length > 0
+        ? otherFilterParams
+        : defaultFilter
+
+      const data = await loadFunction(api)(filter)(search)
       return data.map(AddUserOptionsFullName)
     },
-    [api, defaultFilter, loadFunction],
+    [api, baseFilter, defaultFilter, loadFunction],
   )
 
   return (
