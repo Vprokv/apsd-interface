@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
-import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import {
+  ApiContext,
+  TASK_ITEM_APPROVAL_SHEET,
+  TASK_ITEM_LINK,
+  TASK_LIST,
+} from '@/contants'
 import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -16,6 +21,8 @@ import { LoadTasks } from '@/Pages/Main/constants'
 import Input from '@/Components/Fields/Input'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import { ContainerContext } from '@Components/constants'
+import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
+import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 18%;
@@ -31,6 +38,7 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
   const navigate = useNavigate()
   const reloadSidebarTaskCounters = useContext(LoadTasks)
   const { id, type } = useParams()
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -45,10 +53,10 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
       onClose()
       closeCurrenTab()
       reloadSidebarTaskCounters()
-      // updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-      //   loading: false,
-      //   fetched: false,
-      // }) //TODO на случай если потребуется не закрывать окно, а перезагрузить таб
+      updateTabStateUpdaterByName([TASK_LIST], {
+        loading: false,
+        fetched: false,
+      })
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -63,6 +71,7 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
     onClose,
     reloadSidebarTaskCounters,
     signal,
+    updateTabStateUpdaterByName,
   ])
 
   const onRedirectTo = useCallback(() => {

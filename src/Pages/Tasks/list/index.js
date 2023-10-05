@@ -286,8 +286,7 @@ function TaskList({ loadFunctionRest }) {
       loadFunctionRest,
       search,
       filter,
-      sortQuery.direction,
-      sortQuery.key,
+      sortQuery,
       getNotification,
     ],
   )
