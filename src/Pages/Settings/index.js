@@ -6,12 +6,18 @@ import {
 import { Navigate, Route, Routes } from 'react-router-dom'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import NotificationItem from './Components/Notification'
+import Templates from '@/Pages/Settings/Components/Templates'
 
 const documentTabs = [
   {
     caption: 'Уведомления',
     Component: NotificationItem,
     path: 'notification',
+  },
+  {
+    caption: 'Шаблоны',
+    Component: Templates,
+    path: 'templates',
   },
 ]
 
