@@ -198,7 +198,7 @@ const Notification = () => {
     {
       id: 'documentType',
       component: LoadableSelect,
-      multiple: false,
+      multiple: true,
       placeholder: 'Тип документа',
       valueKey: 'typeName',
       labelKey: 'typeLabel',
@@ -210,7 +210,7 @@ const Notification = () => {
     {
       id: 'eventName',
       component: LoadableSelect,
-      multiple: false,
+      multiple: true,
       placeholder: 'Вид уведомления',
       valueKey: 'name',
       labelKey: 'label',
