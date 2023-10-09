@@ -22,11 +22,11 @@ export const SearchComponent = ({ multiple, setSelected, selected }) => {
 
   const pages = useMemo(
     () => [
-      {
-        label: 'По заданиям',
-        path: 'tasks',
-        Component: Tasks,
-      },
+      // {
+      //   label: 'По заданиям',
+      //   path: 'tasks',
+      //   Component: Tasks,
+      // }, TODO Скрыто в рамках задачи
       {
         label: 'По документам',
         path: 'documents',
@@ -63,7 +63,7 @@ export const SearchComponent = ({ multiple, setSelected, selected }) => {
         {!!routes?.length && (
           <Routes>
             {routes}
-            <Route path="*" element={<Navigate to={pages[1].path} replace />} />
+            <Route path="*" element={<Navigate to={pages[0].path} replace />} />
           </Routes>
         )}
       </div>
