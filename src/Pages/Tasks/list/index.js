@@ -43,7 +43,7 @@ import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import Filter from './Components/Filter'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -58,7 +58,7 @@ import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import LoadableSelect from '@/Components/Inputs/Select'
 import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
-import AppointedExecutor from "@/Pages/Tasks/list/Components/AppointedExecutor";
+import AppointedExecutor from '@/Pages/Tasks/list/Components/AppointedExecutor'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -479,9 +479,12 @@ function TaskList({ loadFunctionRest }) {
             </ButtonForIcon>
           </Tips>
           <Tips text="Выгрузить в Excel">
-            <ButtonForIcon className="color-green" onClick={onExportToExcel}>
+            <LoadableButtonForIcon
+              className="color-green"
+              onClick={onExportToExcel}
+            >
               <Icon icon={XlsIcon} />
-            </ButtonForIcon>
+            </LoadableButtonForIcon>
           </Tips>
         </div>
       </div>

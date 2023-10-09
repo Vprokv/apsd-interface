@@ -39,7 +39,7 @@ import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import Tips from '@/Components/Tips'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import sortIcon from '@/Pages/Tasks/list/icons/sortIcon'
 import XlsIcon from '@/Icons/XlsIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
@@ -457,9 +457,12 @@ const DeputyList = () => {
             </ButtonForIcon>
           </Tips>
           <Tips text="Выгрузить в Excel">
-            <ButtonForIcon className="color-green" onClick={onExportToExcel}>
+            <LoadableButtonForIcon
+              className="color-green"
+              onClick={onExportToExcel}
+            >
               <Icon icon={XlsIcon} />
-            </ButtonForIcon>
+            </LoadableButtonForIcon>
           </Tips>
         </div>
       </div>

@@ -44,7 +44,7 @@ import {
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -472,9 +472,12 @@ function StorageList() {
             </ButtonForIcon>
           </Tips>
           <Tips text="Выгрузить в Excel">
-            <ButtonForIcon className="color-green" onClick={onExportToExcel}>
+            <LoadableButtonForIcon
+              className="color-green"
+              onClick={onExportToExcel}
+            >
               <Icon icon={XlsIcon} />
-            </ButtonForIcon>
+            </LoadableButtonForIcon>
           </Tips>
         </div>
       </div>

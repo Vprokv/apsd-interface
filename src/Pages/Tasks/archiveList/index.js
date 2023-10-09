@@ -16,7 +16,7 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import { ButtonForIcon } from '@/Components/Button'
+import {ButtonForIcon, LoadableButtonForIcon} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
@@ -250,12 +250,12 @@ const ArchiveList = () => {
           </div>
           <div className="w-64 ml-auto">
             <Tips text="Выгрузить в Excel">
-              <ButtonForIcon
+              <LoadableButtonForIcon
                 className="color-green  ml-auto"
                 onClick={onExportToExcel}
               >
                 <Icon icon={XlsIcon} />
-              </ButtonForIcon>
+              </LoadableButtonForIcon>
             </Tips>
           </div>
         </div>

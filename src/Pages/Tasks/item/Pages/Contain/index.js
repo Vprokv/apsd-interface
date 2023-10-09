@@ -15,7 +15,7 @@ import { DeepSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ButtonForIcon } from '@/Components/Button'
+import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
@@ -403,9 +403,12 @@ const Contain = () => {
                 </ButtonForIcon>
               </Tips>
               <Tips text="Выгрузить в Excel">
-                <ButtonForIcon onClick={changeOpenState}>
+                <LoadableButtonForIcon
+                  className="color-green"
+                  onClick={changeOpenState}
+                >
                   <Icon icon={XlsIcon} />
-                </ButtonForIcon>
+                </LoadableButtonForIcon>
               </Tips>
             </div>
           </div>
