@@ -405,10 +405,11 @@ function TaskList({ loadFunctionRest }) {
         valueKey: 'dss_name',
         labelKey: 'dss_name',
         loadFunction: async () => {
+          const { stageNames: item, ...other } = filter
           const {
             data: { stageNames },
           } = await api.post(URL_TASK_LIST_FILTERS, {
-            filter,
+            ...other,
           })
 
           return stageNames.map((val) => {
@@ -424,10 +425,12 @@ function TaskList({ loadFunctionRest }) {
         valueKey: 'dss_name',
         labelKey: 'dss_name',
         loadFunction: async () => {
+          const { documentStatus: item, ...other } = filter
+
           const {
             data: { documentStatus },
           } = await api.post(URL_TASK_LIST_FILTERS, {
-            filter,
+            ...other,
           })
 
           return documentStatus.map((val) => {
