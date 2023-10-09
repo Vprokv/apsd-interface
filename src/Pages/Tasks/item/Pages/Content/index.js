@@ -329,10 +329,6 @@ const Content = () => {
               <Icon icon={EditIcon} />
             </ButtonForIcon>
           </Tips>
-          <ButtonForIcon className="ml-2">
-            <Icon icon={WarningIcon} />
-          </ButtonForIcon>
-
           <Tips text="Посмотреть файл">
             <ButtonForIcon
               onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
