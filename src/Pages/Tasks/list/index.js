@@ -58,6 +58,7 @@ import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import LoadableSelect from '@/Components/Inputs/Select'
 import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import AppointedExecutor from "@/Pages/Tasks/list/Components/AppointedExecutor";
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -156,6 +157,13 @@ const columns = [
     className: 'flex items-center',
     component: VolumeStatus,
     sizes: volumeStatusSize,
+  },
+  {
+    id: 'appointedExecutors',
+    label: 'Назначенный исполнитель',
+    className: 'flex items-center',
+    component: AppointedExecutor,
+    sizes: baseCellSize,
   },
   {
     id: 'fromWhomEmployee',
