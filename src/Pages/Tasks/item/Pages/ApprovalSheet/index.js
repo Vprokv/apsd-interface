@@ -4,20 +4,12 @@ import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_APPROVAL_SHEET, URL_BUSINESS_PERMIT } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
-import LoadableSelect from '@/Components/Inputs/Select'
-import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
-import PostponeIcon from './Components/icons/Postpone'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
-import {
-  PermitDisableContext,
-  responseData,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
+import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
@@ -55,7 +47,6 @@ const childrenKeyMap = {
 const ApprovalSheet = () => {
   const { type } = useParams()
   const api = useContext(ApiContext)
-  const [filterValue, setFilterValue] = useState({})
   const [permit, setPermit] = useState(false)
   const [toggleNavigationData, setToggleNavigationData] = useState({})
   const documentId = useContext(DocumentIdContext)
@@ -124,28 +115,6 @@ const ApprovalSheet = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const fields = useMemo(
-    () => [
-      {
-        id: '1',
-        component: LoadableSelect,
-        placeholder: 'Ждать первой визы',
-        valueKey: 'dss_name',
-        labelKey: 'dss_name',
-        // loadFunction: async () => {
-        //   const { data } = await api.post(`${URL_ENTITY_LIST}/${TASK_TYPE}`)
-        //   return data
-        // },
-      },
-      {
-        id: 'query',
-        component: SearchInput,
-        placeholder: 'Период доработки',
-      },
-    ],
-    [],
-  )
-
   const handleInput = useCallback((v) => {
     console.log(v)
   }, [])
@@ -175,22 +144,9 @@ const ApprovalSheet = () => {
     <PermitDisableContext.Provider value={!permit}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
         <div className="flex items-center py-4 form-element-sizes-32">
-          <FilterForm
-            className="mr-2"
-            value={filterValue}
-            onInput={setFilterValue}
-            fields={fields}
-            inputWrapper={EmptyInputWrapper}
-          />
           <div className="flex items-center ml-auto">
             <CreateTemplateWindow jsonData={data} />
             <ApplyTemplateWindow />
-            {/*<ButtonForIcon*/}
-            {/*  disabled={!permit}*/}
-            {/*  className="mx-2 color-text-secondary"*/}
-            {/*>*/}
-            {/*  <Icon icon={PostponeIcon} />*/}
-            {/*</ButtonForIcon>*/}
             <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
                 className="color-text-secondary"
