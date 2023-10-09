@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { useCallback, useContext, useMemo, useRef } from 'react'
-import { TokenContext } from '@/contants'
-import { URL_ENTITY_PDF_FILE } from '@/ApiList'
-import { API_URL } from '@/api'
+import ModalWindowWrapper from '@/Components/ModalWindow'
+import { useRef } from 'react'
+
+import styled from 'styled-components'
+
+export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
+  width: 65%;
+  height: 95%;
+  margin: auto;
+`
 
 const PreviewContentWindow = ({ url, ...props }) => {
   const iframe = useRef()
