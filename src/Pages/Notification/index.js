@@ -53,7 +53,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'key',
+    valueKey: 'notificationId',
   },
 }
 
@@ -148,8 +148,9 @@ const Notification = () => {
         await api.post(URL_SUBSCRIPTION_NOTIFICATION_WATCH, {
           notificationIds: [notificationId],
         })
+        setTabState({ loading: false, fetched: false })
       },
-    [api, openTabOrCreateNewTab],
+    [api, openTabOrCreateNewTab, setTabState],
   )
 
   const loadData = useCallback(async () => {
@@ -235,8 +236,9 @@ const Notification = () => {
   const onDelete = useCallback(async () => {
     try {
       await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE, {
-        notificationIds: selectState.map(({ id }) => id),
+        notificationIds: selectState,
       })
+      setTabState({ loading: false, fetched: false })
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Уведомления удалены успешно',
@@ -245,7 +247,7 @@ const Notification = () => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, getNotification, selectState])
+  }, [api, getNotification, selectState, setTabState])
 
   const onDeleteALL = useCallback(async () => {
     try {
