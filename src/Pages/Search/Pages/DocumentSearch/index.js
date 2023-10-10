@@ -473,10 +473,12 @@ const TableSearch = ({
   const [paginationStateComp, setPaginationStateComp] = useState({})
 
   const {
-    tabState: { defaultOperators },
+    tabState: { defaultOperators, searchState: { total = 0 } = {} },
   } = useTabItem({
     stateId: SEARCH_PAGE_DOCUMENT,
   })
+
+  console.log(total, 'total')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,
@@ -540,6 +542,9 @@ const TableSearch = ({
 
   useEffect(loadSearch, [paginationState])
 
+  console.log(paginationState, 'paginationState')
+  console.log(total, 'total')
+
   return (
     <>
       {children}
@@ -549,7 +554,11 @@ const TableSearch = ({
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
-        total={10000}
+        // total={10000}
+        total={
+          total === paginationState.limit ? 10000 : paginationState.endItemValue
+        }
+        disabled={true}
       />
     </>
   )
