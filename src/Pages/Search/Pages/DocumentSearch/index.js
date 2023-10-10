@@ -474,11 +474,10 @@ const TableSearch = ({
 
   const {
     tabState: { defaultOperators, searchState: { total = 0 } = {} },
+    setTabState,
   } = useTabItem({
     stateId: SEARCH_PAGE_DOCUMENT,
   })
-
-  console.log(total, 'total')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,
@@ -509,6 +508,7 @@ const TableSearch = ({
     )
 
     try {
+      setTabState({ loading: true })
       const { data } = await api.post(
         `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
         {
@@ -529,21 +529,21 @@ const TableSearch = ({
     } catch (e) {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
+    } finally {
+      setTabState({ loading: false })
     }
   }, [
     filter,
     paginationState,
     attributesComponent,
     defaultOperators,
+    setTabState,
     api,
     setSearchState,
     getNotification,
   ])
 
   useEffect(loadSearch, [paginationState])
-
-  console.log(paginationState, 'paginationState')
-  console.log(total, 'total')
 
   return (
     <>
@@ -554,7 +554,6 @@ const TableSearch = ({
         page={paginationState.page}
         setLimit={setLimit}
         setPage={setPage}
-        // total={10000}
         total={
           total === paginationState.limit ? 10000 : paginationState.endItemValue
         }
