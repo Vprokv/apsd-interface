@@ -93,23 +93,23 @@ const TitleNameComponent = ({
 
   const updateTabStateUpdaterByName = useUpdateCurrentTabChildrenStates()
 
-  const parseArr = useCallback(({ status, childs, id, arr }) => {
-    if (status === 'Передан') {
-      arr.push(id)
-    }
-
-    if (childs?.length > 0) {
-      childs.forEach((val) => parseArr({ ...val, arr }))
-    }
-  }, [])
-
-  const approveIds = useMemo(() => {
-    const arr = []
-
-    parseArr({ ...ParentValue, arr })
-
-    return arr
-  }, [ParentValue, parseArr])
+  // const parseArr = useCallback(({ status, childs, id, arr }) => {
+  //   if (status === 'Передан') {
+  //     arr.push(id)
+  //   }
+  //
+  //   if (childs?.length > 0) {
+  //     childs.forEach((val) => parseArr({ ...val, arr }))
+  //   }
+  // }, [])
+  //
+  // const approveIds = useMemo(() => {
+  //   const arr = []
+  //
+  //   parseArr({ ...ParentValue, arr })
+  //
+  //   return arr
+  // }, [ParentValue, parseArr])
 
   const onSend = useCallback(async () => {
     try {
@@ -148,7 +148,8 @@ const TitleNameComponent = ({
       setLoading(true)
       closeContextMenu()
       const { status } = await api.post(URL_TITLE_CONTAIN_CREATE_APPROVE, {
-        partIds: approveIds,
+        // partIds: approveIds,
+        partId: ParentValue.id,
       })
       getNotification(customMessagesApproveFuncMap[status]())
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
@@ -162,8 +163,8 @@ const TitleNameComponent = ({
       setLoading(false)
     }
   }, [
+    ParentValue.id,
     api,
-    approveIds,
     closeContextMenu,
     getNotification,
     updateTabStateUpdaterByName,
@@ -275,11 +276,11 @@ const TitleNameComponent = ({
               <StyledItem className="mb-3 font-size-12" onClick={onSend}>
                 Передать состав титула
               </StyledItem>
-              {!!approveIds.length > 0 && (
-                <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
-                  Утвердить состав титула
-                </StyledItem>
-              )}
+              {/*{!!approveIds.length > 0 && (*/}
+              <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
+                Утвердить состав титула
+              </StyledItem>
+              {/*)}*/}
 
               <StyledItem className="mb-3 font-size-12">
                 Экспорт данных
