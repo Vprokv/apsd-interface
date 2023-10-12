@@ -13,7 +13,6 @@ const map = {
       const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
         id: field.filter,
       })
-      console.log(123, data)
       return data
     },
     defaultFunc: (api, id) => [

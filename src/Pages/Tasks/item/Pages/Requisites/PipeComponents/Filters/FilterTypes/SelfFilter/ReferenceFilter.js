@@ -13,7 +13,6 @@ const WithFiltersUserSelect = (Component, filters, functions, type) => {
 
     // эта штука нужна для загрузки опций в модалку селекта
     // возможно, стоит перенести эту штку в функционал лодабл, с кэшем 10 мин или что-то такое.
-    //тупо дич дергать апи, к тому же оно всеровно перезагружается 
     useEffect(() => {
       ;(async () => {
         if (!cache.has(type)) {
@@ -47,7 +46,7 @@ const WithFiltersUserSelect = (Component, filters, functions, type) => {
         result.forEach((val, key) => {
           nextFilters[keys[key]] = val
         })
-console.log(nextFilters)
+
         setCustomOptions(nextFilters)
       })()
     }, [api])
