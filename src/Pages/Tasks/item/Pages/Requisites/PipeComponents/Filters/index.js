@@ -23,11 +23,15 @@ const wrappersMap = {
 const selectComponent = (conf) => {
   const {
     type,
-    backConfig: { filters },
+    backConfig: { filters, dss_attr_label },
     nextProps,
   } = conf
 
   const { [type]: wrapper = ReferenceFilterWrapper } = wrappersMap
+
+  if (type === "Orgstructure") {
+    console.log(dss_attr_label, filters)
+  }
 
   if (!filters) {
     if (nextProps.loadFunction) {

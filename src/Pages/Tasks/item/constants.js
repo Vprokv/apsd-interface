@@ -19,7 +19,6 @@ import SendToCheck from './Icons/SendToCheck.svg'
 import RejectWithRemarks from './Icons/RejectWithRemarks.svg'
 import Repeat from './Icons/Repeat.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
-import Requisites_New from '@/Parser/Requisites_New'
 import UploadDoc from './Icons/UploadDoc.svg'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
@@ -76,11 +75,6 @@ export const defaultPages = {
     path: 'remarks',
     key: 'remarks',
     Component: Remarks,
-  },
-  requisites_new: {
-    path: 'requisites_new',
-    key: 'requisites_new',
-    Component: Requisites_New,
   },
 }
 
