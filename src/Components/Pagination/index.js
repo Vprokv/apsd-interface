@@ -13,6 +13,7 @@ const Pagination = ({
   page,
   setPage,
   total,
+  disabled,//TODO в поиске нет лимита и нужно ограничить переход
 }) => {
   const onSetLimit = useCallback(
     (limit) => () => {
@@ -80,7 +81,7 @@ const Pagination = ({
         <button type="button" onClick={goToPage(1)}>
           <Icon icon={angleIcon} size={11} className="mr-1.5 rotate-270" />
         </button>
-        <button type="button" onClick={goToPage(10)}>
+        <button type="button" onClick={goToPage(10)} disabled={disabled}>
           <Icon icon={doubleAngleIcon} />
         </button>
       </div>
@@ -109,6 +110,7 @@ Pagination.defaultProps = {
   page: 1,
   limit: 10,
   total: 0,
+  disabled: false,
 }
 
 export default Pagination

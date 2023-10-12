@@ -42,7 +42,11 @@ const PageDocumentSelect = ({ props }) => {
 
   const {
     setTabState,
-    tabState: { filter = defaultFilter, searchState = defaultSearchState },
+    tabState: {
+      filter = defaultFilter,
+      searchState = defaultSearchState,
+      loading,
+    },
   } = tabItemState
 
   const rowComponent = useMemo(
@@ -77,6 +81,7 @@ const PageDocumentSelect = ({ props }) => {
           </div>
           <ScrollBar className=" ">
             <ListTable
+              loading={loading}
               rowComponent={rowComponent}
               headerCellComponent={HeaderCell}
               columns={tableConfig}
