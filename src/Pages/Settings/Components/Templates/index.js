@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   ApiContext,
-  NOTIFICATION,
+  ITEM_TASK,
   SETTINGS_TEMPLATES,
   TASK_LIST,
 } from '@/contants'
@@ -10,19 +10,21 @@ import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_SUBSCRIPTION_EVENTS, URL_TEMPLATE_LIST } from '@/ApiList'
-import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { URL_TEMPLATE_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import LoadableSelect, { Select } from '@/Components/Inputs/Select'
+import { Select } from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
-import { ButtonForIcon, LoadableSecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  LoadableSecondaryBlueButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
-import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
@@ -34,6 +36,12 @@ import Form from '@Components/Components/Forms'
 import Tips from '@/Components/Tips'
 import DeleteIcon from '@/Icons/deleteIcon'
 import EditIcon from '@/Icons/editIcon'
+import UserEmployeeTemplate from '@/Pages/Settings/Components/Templates/Components/UserTemplate'
+import SearchTemplate from '@/Pages/Settings/Components/Templates/Components/SearchTemplate'
+import { TabStateContext } from '@/Pages/Search/Pages/constans'
+import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
+import { useNavigate } from 'react-router-dom'
+import { TabStateManipulation } from '@Components/Logic/Tab'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -79,18 +87,28 @@ const FilterForm = styled(Form)`
   grid-column-gap: 0.5rem;
 `
 
+const windowMap = {
+  ddt_employee_template: UserEmployeeTemplate,
+  ddt_query_template: SearchTemplate,
+  default: UserEmployeeTemplate,
+}
+
 const Templates = (props) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
   const [selectState, setSelectState] = useState([])
+  const { onInput, values, tabs } = useContext(TemplateTabStateContext)
   const [filter, setFilter] = useState({ type: 'ddt_employee_template' })
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
     direction: 'DESC',
   })
 
-  console.log(filter, 'filter')
+  const [ActionComponent, setActionComponent] = useState(null)
+  const closeAction = useCallback(() => setActionComponent(null), [])
+  const navigate = useNavigate()
 
   const {
     tabState: { data: { content = [], total = 0 } = {} },
@@ -176,6 +194,15 @@ const Templates = (props) => {
     }
   }, [api, filter])
 
+  const onCreate = useCallback(
+    (type) => () => {
+      const { [type]: tab } = values
+      onInput((value) => [...value, tab])
+      navigate(`/settings/${tab.path}`)
+    },
+    [navigate, onInput, values],
+  )
+
   useAutoReload(loadData, tabItemState)
 
   return (
@@ -188,13 +215,13 @@ const Templates = (props) => {
           onInput={setFilter}
         />
         <div className="flex items-center color-text-secondary ml-auto">
-          <LoadableSecondaryBlueButton
-            // disabled={!selectState.length}
-            // onClick={onDelete}
+          <SecondaryBlueButton
+            disabled={tabs.length > 2}
+            onClick={onCreate(filter.type)}
             className="mr-2"
           >
             {'Создать'}
-          </LoadableSecondaryBlueButton>
+          </SecondaryBlueButton>
           <Tips text="Редактировать">
             <ButtonForIcon
               className="mr-2"
@@ -241,6 +268,13 @@ const Templates = (props) => {
       >
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
+      {ActionComponent && (
+        <ActionComponent.Component
+          open={true}
+          type={filter.type}
+          onClose={closeAction}
+        />
+      )}
     </div>
   )
 }

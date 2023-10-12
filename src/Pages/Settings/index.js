@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   NavigationContainer,
   NavigationItem,
@@ -7,6 +7,21 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import NotificationItem from './Components/Notification'
 import Templates from '@/Pages/Settings/Components/Templates'
+import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
+import UserTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/UserTemplateTab'
+
+const overTemplateMap = {
+  ddt_query_template: {
+    caption: 'Шаблон поиска',
+    Component: Templates,
+    path: 'search_template',
+  },
+  ddt_employee_template: {
+    caption: 'Шаблон пользователей',
+    Component: UserTemplateTab,
+    path: 'user_template',
+  },
+}
 
 const documentTabs = [
   {
@@ -23,10 +38,12 @@ const documentTabs = [
 
 const Settings = () => {
   useSetTabName(useCallback(() => 'Настройки', []))
+  const [tabs, setTabs] = useState(documentTabs)
+  console.log(tabs, 'tabs')
 
   const { routes, headers, defaultPath } = useMemo(
     () =>
-      documentTabs.reduce(
+      tabs.reduce(
         (acc, { caption, Component, path }) => {
           acc.headers.push(
             <NavigationItem to={path} key={path}>
@@ -44,21 +61,28 @@ const Settings = () => {
           defaultPath: 'notification',
         },
       ),
-    [],
+    [tabs],
   )
 
   return (
     <div>
       <div className="flex-container w-full overflow-hidden">
         <NavigationContainer>{headers}</NavigationContainer>
-        <div className="flex h-full w-full overflow-hidden">
-          {routes?.length > 0 && (
-            <Routes>
-              {routes}
-              <Route path="*" element={<Navigate to={defaultPath} replace />} />
-            </Routes>
-          )}
-        </div>
+        <TemplateTabStateContext.Provider
+          value={{ onInput: setTabs, values: overTemplateMap, tabs }}
+        >
+          <div className="flex h-full w-full overflow-hidden">
+            {routes?.length > 0 && (
+              <Routes>
+                {routes}
+                <Route
+                  path="*"
+                  element={<Navigate to={defaultPath} replace />}
+                />
+              </Routes>
+            )}
+          </div>
+        </TemplateTabStateContext.Provider>
       </div>
     </div>
   )
