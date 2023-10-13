@@ -45,7 +45,7 @@ const Reporting = () => {
       }
       return data
     } catch (e) {
-      const { response: { status } = {} } = e
+      const { response: { status = 500 } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
   }, [api, getNotification, id])
@@ -66,7 +66,7 @@ const Reporting = () => {
     try {
       const {
         // data: response,
-        data: { fileKey, message, email },
+        data: { fileKey, message, email, name: reportName },
       } = await api.post(URL_REPORTS_BUILD, {
         id: reportId,
         reportParameters: {
@@ -83,13 +83,13 @@ const Reporting = () => {
           { responseType: 'blob' },
         )
 
-        downloadFileWithReload(data, `${name}.${dss_def_format}`)
+        downloadFileWithReload(data, `${reportName}.${dss_def_format}`)
       }
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, dss_def_format, filter, getNotification, name, reportId, token])
+  }, [api, dss_def_format, filter, getNotification, reportId, token])
 
   return (
     <>
