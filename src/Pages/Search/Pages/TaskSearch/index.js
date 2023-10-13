@@ -1,19 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext, TokenContext } from '@/contants'
-import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
-import {
-  defaultOperator,
-  keyOperators,
-  operators,
-} from '@/Pages/Search/constans'
-import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import {
   URL_EXPORT,
   URL_EXPORT_FILE,
@@ -31,6 +18,10 @@ import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
+import useParseConfig from '@/Utils/Parser'
+import { searchParserStages } from '@/Pages/Search/Parser'
+import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
 
 const columnsMap = [
   {
@@ -101,88 +92,22 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
 
   useEffect(loadData, [loadData])
 
-  const fields = useMemo(
-    () =>
-      attributes.map(
-        ({
-          dss_attr_label,
-          dss_attr_name,
-          dss_component_type,
-          dss_component_reference,
-          dss_reference_attr_label,
-          dss_reference_attr,
-          dss_default_search_operator,
-          multiple,
-          range,
-          ...attributes
-        }) => {
-          const loadData = getLoadFunction(api)({
-            dss_component_reference,
-            dss_reference_attr_label,
-            dss_reference_attr,
-          })
-
-          const mappedOperators = keyOperators.reduce((acc, operator) => {
-            if (attributes[operator]) {
-              acc.push(operators[operator])
-            }
-            return acc
-          }, [])
-
-          return {
-            ...loadData,
-            component: SearchOperatorSelector(dss_component_type)(
-              getField(dss_component_type),
-            ),
-            id: dss_attr_name,
-            type: dss_attr_name,
-            placeholder: dss_attr_label,
-            label: dss_attr_label,
-            multiple,
-            range,
-            operatorOptions: {
-              options:
-                mappedOperators.length > 0
-                  ? mappedOperators
-                  : [defaultOperator],
-              defaultOption: dss_default_search_operator
-                ? operators[dss_default_search_operator].ID
-                : defaultOperator.ID,
-            },
-          }
-        },
-      ),
-    [api, attributes],
-  )
-
-  const defaultOperators = useMemo(
-    () =>
-      fields.reduce((acc, { id, operatorOptions: { defaultOption } = {} }) => {
-        acc[id] = defaultOption
-        return acc
-      }, {}),
-    [fields],
-  )
+  const { fields } = useParseConfig({
+    value: filter,
+    stages: searchParserStages,
+    fieldsDesign: useMemo(
+      () => attributes.map(attributesAdapter),
+      [attributes],
+    ),
+  })
 
   const onSearch = useCallback(async () => {
     const { type, ...filters } = filter
-    const queryItems = Object.entries(filters).reduce(
-      (acc, [key, { value, operator }]) => {
-        value.length &&
-          acc.push({
-            attr: key,
-            operator: operator || defaultOperators[key],
-            arguments: [value],
-          })
-        return acc
-      },
-      [],
-    )
     try {
       const { data } = await api.post(URL_SEARCH_LIST, {
         types: [type],
         inVersions: false,
-        queryItems,
+        queryItems: buildSearchQuery(filters),
       })
       setSearchState(data)
       setRenderTable(true)
@@ -190,7 +115,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, defaultOperators, filter, getNotification, setSearchState])
+  }, [api, filter, getNotification, setSearchState])
 
   const onRemove = useCallback(
     () => setFilter({ type: filter.type }),
@@ -204,18 +129,6 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
-    const queryItems = Object.entries(filters).reduce(
-      (acc, [key, { value, operator }]) => {
-        acc.push({
-          attr: key,
-          operator: operator || defaultOperators[key],
-          // arguments: [value],
-          arguments: value.length ? [value] : [],
-        })
-        return acc
-      },
-      [],
-    )
 
     try {
       const {
@@ -228,7 +141,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
         body: {
           types: [type],
           inVersions: false,
-          queryItems,
+          queryItems: buildSearchQuery(filters),
           token,
         },
       })
@@ -242,7 +155,7 @@ const TaskSearch = ({ setSearchState, filter, setFilter, children }) => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, defaultOperators, filter, getNotification, token])
+  }, [api, filter, getNotification, token])
 
   return (
     <div className="flex  w-full p-6 overflow-hidden">

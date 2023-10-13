@@ -7,7 +7,7 @@ import {
 } from '@/Utils/Parser/Stages/parseFieldProps'
 import customValuesStage from './customValuesStage'
 import addUserFullNameInOptionsStage from './addUserFullNameInOptionsStage'
-import addFilterSourceStage from './addFilterSourceStage'
+import orgstructureAddFilterSourceStage from './orgstructureAddFilterSourceStage'
 
 export const propsMap = {
   Combobox: [customValuesStage, ...comboboxProps],
@@ -15,7 +15,7 @@ export const propsMap = {
   Orgstructure: [
     customValuesStage,
     addUserFullNameInOptionsStage,
-    addFilterSourceStage,
+    orgstructureAddFilterSourceStage,
     ...orgstructureProps,
   ],
 }

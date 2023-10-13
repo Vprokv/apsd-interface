@@ -25,7 +25,7 @@ const defaultOptions = [
 
 const defaultSearchState = {}
 
-const PageDocumentSelect = ({ props }) => {
+const PageDocumentSelect = () => {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
   const navigate = useNavigate()

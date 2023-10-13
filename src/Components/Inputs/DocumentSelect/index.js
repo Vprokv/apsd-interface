@@ -19,7 +19,6 @@ import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
 import Input from '../../Fields/Input'
 import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
 import Tips from '@/Components/Tips'
-import log from 'tailwindcss/lib/util/log'
 
 const changeInput = () => {}
 

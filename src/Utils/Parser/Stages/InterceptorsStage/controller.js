@@ -13,7 +13,7 @@ const InterceptorsStage = (state) => {
       // функция вызываеться формой, сбрасывает значение каждого зависимового поля, находящегося в списке
       state.formProps.interceptors.set(field, (args) => {
         const { handleInput } = args
-        state.forEach(([targetKey, handler]) =>
+        depsList.forEach(([targetKey, handler]) =>
           handleInput(handler(args), targetKey),
         )
       })

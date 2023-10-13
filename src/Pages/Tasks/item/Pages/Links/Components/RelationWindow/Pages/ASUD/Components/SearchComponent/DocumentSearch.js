@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -14,22 +8,19 @@ import {
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext } from '@/contants'
-import { getField, getLoadFunction } from '@/Pages/Search/Pages/rules'
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
 import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
-import {
-  defaultOperator,
-  keyOperators,
-  operators,
-} from '@/Pages/Search/constans'
-import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useParseConfig from '@/Utils/Parser'
+import { searchParserStages } from '@/Pages/Search/Parser'
+import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
+import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
 
 export const tableConfig = [
   {
@@ -98,21 +89,13 @@ export const tableConfig = [
     id: 'Этап',
     label: 'Этап',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: () => <BaseCell />,
   },
   {
     id: 'Контрольный срок',
     label: 'Контрольный срок',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: () => <BaseCell />,
   },
   {
     id: 'Автор',
@@ -127,6 +110,7 @@ export const tableConfig = [
     }) => (
       <BaseCell
         value={
+          // eslint-disable-next-line react-hooks/rules-of-hooks
           (useMemo(() => `${lastName} ${firstName}.  ${middleName}. `),
           [lastName, middleName, firstName])
         }
@@ -147,6 +131,11 @@ const DocumentSearch = ({
   const [attributes, setAttributes] = useState([])
   const [renderTable, setRenderTable] = useState(false)
   const getNotification = useOpenNotification()
+  const { fields: parsedFields } = useParseConfig({
+    value: filter,
+    stages: searchParserStages,
+    fieldsDesign: useMemo(() => attributes.map(attributesAdapter), [attributes]),
+  })
 
   const fields = useMemo(
     () => [
@@ -160,66 +149,11 @@ const DocumentSearch = ({
         options,
         loadFunction: documentTypeLoadFunction(api),
       },
-      ...attributes.map(
-        ({
-          dss_attr_label,
-          dss_attr_name,
-          dss_component_type,
-          dss_component_reference,
-          dss_reference_attr_label,
-          dss_reference_attr,
-          dss_default_search_operator,
-          multiple,
-          range,
-          ...attributes
-        }) => {
-          const loadData = getLoadFunction(api)({
-            dss_component_reference,
-            dss_reference_attr_label,
-            dss_reference_attr,
-          })
-
-          const mappedOperators = keyOperators.reduce((acc, operator) => {
-            if (attributes[operator]) {
-              acc.push(operators[operator])
-            }
-            return acc
-          }, [])
-
-          return {
-            ...loadData,
-            component: SearchOperatorSelector(dss_component_type)(
-              getField(dss_component_type),
-            ),
-            id: dss_attr_name,
-            placeholder: dss_attr_label,
-            label: dss_attr_label,
-            multiple,
-            range,
-            operatorOptions: {
-              options:
-                mappedOperators.length > 0
-                  ? mappedOperators
-                  : [defaultOperator],
-              defaultOption: dss_default_search_operator
-                ? operators[dss_default_search_operator].ID
-                : defaultOperator.ID,
-            },
-          }
-        },
-      ),
+      ...parsedFields,
     ],
-    [api, attributes, documentTypeLoadFunction, options],
+    [api, documentTypeLoadFunction, options, parsedFields],
   )
 
-  const defaultOperators = useMemo(
-    () =>
-      fields.reduce((acc, { id, operatorOptions: { defaultOption } = {} }) => {
-        acc[id] = defaultOption
-        return acc
-      }, {}),
-    [fields],
-  )
   const loadData = useCallback(async () => {
     try {
       const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
@@ -235,25 +169,13 @@ const DocumentSearch = ({
 
   const onSearch = useCallback(async () => {
     try {
-      // eslint-disable-next-line react/prop-types
       const { type, ...filters } = filter
-      const queryItems = Object.entries(filters).reduce(
-        (acc, [key, { value, operator }]) => {
-          acc.push({
-            attr: key,
-            operator: operator || defaultOperators[key],
-            arguments: [value],
-          })
-          return acc
-        },
-        [],
-      )
 
       const { data } = await api.post(URL_SEARCH_LIST, {
         types: [type],
         sedoSearch: true,
         inVersions: false,
-        queryItems,
+        queryItems: buildSearchQuery(filters),
       })
       setSearchState(data)
       setRenderTable(true)
@@ -261,7 +183,7 @@ const DocumentSearch = ({
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, defaultOperators, filter, getNotification, setSearchState])
+  }, [api, filter, getNotification, setSearchState])
 
   const onRemove = useCallback(() => setFilter({}), [setFilter])
 

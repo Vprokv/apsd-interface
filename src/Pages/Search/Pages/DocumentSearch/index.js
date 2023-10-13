@@ -15,23 +15,11 @@ import {
   TokenContext,
 } from '@/contants'
 import {
-  getField,
-  getLoadFunction,
-  mapOfKeyRules,
-  parseQueryItemsRules,
-} from '@/Pages/Search/Pages/rules'
-import {
   LoadableSecondaryOverBlueButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
 import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
-import {
-  defaultOperator,
-  keyOperators,
-  operators,
-} from '@/Pages/Search/constans'
-import SearchOperatorSelector from '@/Pages/Search/Pages/Components/SearchOperatorSelector'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import { API_URL } from '@/api'
@@ -43,6 +31,10 @@ import { useOpenNotification } from '@/Components/Notificator'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import useParseConfig from '@/Utils/Parser'
+import { searchParserStages } from '@/Pages/Search/Parser'
+import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
+import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
 
 export const tableConfig = [
   {
@@ -111,21 +103,13 @@ export const tableConfig = [
     id: 'Этап',
     label: 'Этап',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: () => <BaseCell />,
   },
   {
     id: 'Контрольный срок',
     label: 'Контрольный срок',
     sizes: 200,
-    component: ({
-      ParentValue: {
-        values: {},
-      },
-    }) => <BaseCell />,
+    component: () => <BaseCell />,
   },
   {
     id: 'Автор',
@@ -201,12 +185,26 @@ const DocumentSearch = ({
   const [attributes, setAttributes] = useState([])
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
+  const [paginationStateComp, setPaginationStateComp] = useState({})
 
   const {
     setTabState,
-    tabState: { renderTable = false },
+    tabState: { renderTable = false, searchState: { total = 0 } = {} },
   } = useTabItem({
     stateId: SEARCH_PAGE_DOCUMENT,
+  })
+
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: SEARCH_PAGE,
+    state: paginationStateComp,
+    setState: setPaginationStateComp,
+    defaultLimit: 10,
+  })
+
+  const { fields: parsedFields } = useParseConfig({
+    value: filter,
+    stages: searchParserStages,
+    fieldsDesign: useMemo(() => attributes.map(attributesAdapter), [attributes]),
   })
 
   const fields = useMemo(
@@ -221,71 +219,9 @@ const DocumentSearch = ({
         options,
         loadFunction: documentTypeLoadFunction(api),
       },
-      ...attributes.map(
-        ({
-          dss_attr_label,
-          dss_attr_name,
-          dss_component_type,
-          dss_component_reference,
-          dss_reference_attr_label,
-          dss_reference_attr,
-          dss_default_search_operator,
-          multiple,
-          range,
-          ...attributes
-        }) => {
-          const loadData = getLoadFunction(api)({
-            dss_component_reference,
-            dss_reference_attr_label,
-            dss_reference_attr,
-          })
-
-          const mappedOperators = keyOperators.reduce((acc, operator) => {
-            if (attributes[operator]) {
-              acc.push(operators[operator])
-            }
-            return acc
-          }, [])
-
-          return {
-            ...loadData,
-            component: SearchOperatorSelector(dss_component_type)(
-              getField(dss_component_type),
-            ),
-            id: dss_attr_name,
-            dss_attr_name,
-            placeholder: dss_attr_label,
-            label: dss_attr_label,
-            multiple,
-            range,
-            operatorOptions: {
-              options:
-                mappedOperators.length > 0
-                  ? mappedOperators
-                  : [defaultOperator],
-              defaultOption: dss_default_search_operator
-                ? operators[dss_default_search_operator].ID
-                : defaultOperator.ID,
-            },
-          }
-        },
-      ),
+      ...parsedFields,
     ],
-    [api, attributes, documentTypeLoadFunction, options],
-  )
-
-  const defaultOperators = useMemo(
-    () =>
-      fields.reduce((acc, { id, operatorOptions: { defaultOption } = {} }) => {
-        acc[id] = defaultOption
-        return acc
-      }, {}),
-    [fields],
-  )
-
-  useEffect(
-    () => setTabState({ defaultOperators }),
-    [defaultOperators, setTabState],
+    [api, documentTypeLoadFunction, options, parsedFields],
   )
 
   const loadData = useCallback(async () => {
@@ -303,35 +239,45 @@ const DocumentSearch = ({
 
   const onSearch = useCallback(async () => {
     setTabState({ renderTable: true })
-  }, [setTabState])
+    const { type, ...filters } = filter
+    const { limit, offset } = paginationState
 
-  const attributesComponent = useMemo(
-    () =>
-      attributes.reduce((acc, { dss_attr_name, dss_component_type }) => {
-        acc[dss_attr_name] = dss_component_type
-        return acc
-      }, {}),
-    [attributes],
-  )
+    try {
+      setTabState({ loading: true })
+      const { data } = await api.post(
+        `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
+        {
+          types: [type],
+          inVersions: false,
+          queryItems: buildSearchQuery(filters),
+          // sort: [
+          //   {
+          //     property: 'dsdt_creation_date',
+          //     direction: 'DESC',
+          //   },
+          // ],
+          orderBy: 'values.dsdt_creation_date',
+          sortType: 'DESC',
+        },
+      )
+      setSearchState(data)
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    } finally {
+      setTabState({ loading: false })
+    }
+  }, [
+    api,
+    filter,
+    getNotification,
+    paginationState,
+    setSearchState,
+    setTabState,
+  ])
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
-    const queryItems = Object.entries(filters).reduce(
-      (acc, [key, { value, operator }]) => {
-        const {
-          [attributesComponent[key]]: rulePars = parseQueryItemsRules.default,
-        } = parseQueryItemsRules
-
-        const parseResult = rulePars({ key, value, operator, defaultOperators })
-        if (Array.isArray(value)) {
-          acc.splice(0, 0, ...parseResult)
-        } else {
-          acc.push(parseResult)
-        }
-        return acc
-      },
-      [],
-    )
 
     try {
       const {
@@ -344,7 +290,7 @@ const DocumentSearch = ({
         body: {
           types: [type],
           inVersions: false,
-          queryItems,
+          queryItems: buildSearchQuery(filters),
           token,
         },
       })
@@ -358,14 +304,7 @@ const DocumentSearch = ({
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [
-    api,
-    attributesComponent,
-    defaultOperators,
-    filter,
-    getNotification,
-    token,
-  ])
+  }, [api, filter, getNotification, token])
 
   const onRemove = useCallback(() => setFilter({}), [setFilter])
 
@@ -385,15 +324,22 @@ const DocumentSearch = ({
     <ExportContext.Provider value={'asas'}>
       <div className="flex flex-col w-full p-4 overflow-hidden">
         {renderTable ? (
-          <TableSearch
-            attributesComponent={attributesComponent}
-            defaultOperators={defaultOperators}
-            setSearchState={setSearchState}
-            filter={filter}
-            onExportToExcel={onExportToExcel}
-          >
+          <>
             {children(() => onCloseTable(), onExportToExcel)}
-          </TableSearch>
+            <Pagination
+              className="mt-2 w-full "
+              limit={paginationState.limit}
+              page={paginationState.page}
+              setLimit={setLimit}
+              setPage={setPage}
+              total={
+                total === paginationState.limit
+                  ? 10000
+                  : paginationState.endItemValue
+              }
+              disabled={true}
+            />
+          </>
         ) : (
           <div className="flex overflow-hidden">
             <ScrollBar className="w-full">
@@ -461,115 +407,3 @@ DocumentSearch.defaultProps = {
 }
 
 export default DocumentSearch
-
-const TableSearch = ({
-  children,
-  setSearchState,
-  filter,
-  attributesComponent,
-}) => {
-  const api = useContext(ApiContext)
-  const getNotification = useOpenNotification()
-  const [paginationStateComp, setPaginationStateComp] = useState({})
-
-  const {
-    tabState: { defaultOperators, searchState: { total = 0 } = {} },
-    setTabState,
-  } = useTabItem({
-    stateId: SEARCH_PAGE_DOCUMENT,
-  })
-
-  const { setLimit, setPage, paginationState } = usePagination({
-    stateId: SEARCH_PAGE,
-    state: paginationStateComp,
-    setState: setPaginationStateComp,
-    defaultLimit: 10,
-  })
-
-  const loadSearch = useCallback(async () => {
-    const { type, ...filters } = filter
-    const { limit, offset } = paginationState
-
-    const queryItems = Object.entries(filters).reduce(
-      (acc, [key, { value, operator }]) => {
-        const {
-          [attributesComponent[key]]: rulePars = parseQueryItemsRules.default,
-        } = parseQueryItemsRules
-
-        const parseResult = rulePars({ key, value, operator, defaultOperators })
-        if (Array.isArray(value)) {
-          acc.splice(0, 0, ...parseResult)
-        } else {
-          acc.push(parseResult)
-        }
-        return acc
-      },
-      [],
-    )
-
-    try {
-      setTabState({ loading: true })
-      const { data } = await api.post(
-        `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
-        {
-          types: [type],
-          inVersions: false,
-          queryItems,
-          // sort: [
-          //   {
-          //     property: 'dsdt_creation_date',
-          //     direction: 'DESC',
-          //   },
-          // ],
-          orderBy: 'values.dsdt_creation_date',
-          sortType: 'DESC',
-        },
-      )
-      setSearchState(data)
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    } finally {
-      setTabState({ loading: false })
-    }
-  }, [
-    filter,
-    paginationState,
-    attributesComponent,
-    defaultOperators,
-    setTabState,
-    api,
-    setSearchState,
-    getNotification,
-  ])
-
-  useEffect(loadSearch, [paginationState])
-
-  return (
-    <>
-      {children}
-      <Pagination
-        className="mt-2 w-full "
-        limit={paginationState.limit}
-        page={paginationState.page}
-        setLimit={setLimit}
-        setPage={setPage}
-        total={
-          total === paginationState.limit ? 10000 : paginationState.endItemValue
-        }
-        disabled={true}
-      />
-    </>
-  )
-}
-
-TableSearch.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
-  filter: PropTypes.object,
-  setSearchState: PropTypes.func,
-  defaultOperators: PropTypes.object,
-  attributesComponent: PropTypes.object,
-}

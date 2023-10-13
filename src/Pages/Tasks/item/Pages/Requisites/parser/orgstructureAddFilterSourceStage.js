@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-
-const addFilterSourceStage =
+// Orgstructure имеет дополнительный фильтр в реквизитах
+const orgstructureAddFilterSourceStage =
   () =>
   (fieldState) =>
   ({ attr: { dss_attr_name } }) => {
@@ -20,4 +20,4 @@ const addFilterSourceStage =
     })
   }
 
-export default addFilterSourceStage
+export default orgstructureAddFilterSourceStage

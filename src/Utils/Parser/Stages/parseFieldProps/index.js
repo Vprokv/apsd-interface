@@ -1,4 +1,4 @@
-import baseConfiguredParseVisiblePros, { parseFieldProps } from './controller'
+import parseFieldProps from './controller'
 import { componentsMap, propsMap } from './constants'
 import parsePlainProps from './Stages/parsePlainProps'
 import comboboxProps from './Combobox'
@@ -14,4 +14,4 @@ export {
   documentPickerProps,
   orgstructureProps,
 }
-export default baseConfiguredParseVisiblePros
+export default parseFieldProps(propsMap, componentsMap)

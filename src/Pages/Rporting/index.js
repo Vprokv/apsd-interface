@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING, TokenContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -13,13 +6,8 @@ import { URL_REPORTS_BUILD, URL_REPORTS_GET, URL_REPORTS_ITEM } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
-import { propsTransmission } from '@/Pages/Rporting/rules'
-import { useRecoilValue } from 'recoil'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LoadableSecondaryOverBlueButton } from '@/Components/Button'
-import NoFieldType from '@/Components/NoFieldType'
-import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import {
@@ -28,8 +16,9 @@ import {
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import { Validation } from '@Components/Logic/Validator'
-
-export const UserContext = createContext({})
+import useParseConfig from '@/Utils/Parser'
+import reportParserStages from './Parser'
+import attrubutesAdapter from './Parser/attrubutesAdapter'
 
 const Reporting = () => {
   const api = useContext(ApiContext)
@@ -37,7 +26,6 @@ const Reporting = () => {
   const tabItemState = useTabItem({ stateId: REPORTING })
   const [filter, setFilter] = useState({})
   const { token } = useContext(TokenContext)
-  const user = useRecoilValue(userAtom)
   const getNotification = useOpenNotification()
 
   const {
@@ -51,6 +39,10 @@ const Reporting = () => {
       const { data } = await api.post(URL_REPORTS_ITEM, {
         id,
       })
+      // todo убрать харды , надо для отоброжения, ког
+      if (data.parameters.some(({ name }) => name === 'only_original')) {
+        setFilter({ only_original: true })
+      }
       return data
     } catch (e) {
       const { response: { status } = {} } = e
@@ -61,55 +53,14 @@ const Reporting = () => {
   useSetTabName(useCallback(() => name, [name]))
   useAutoReload(loadData, tabItemState)
 
-  const parsedDesign = useMemo(
-    () =>
-      parameters.reduce(
-        (acc, attr) => {
-          const { label, name, type, required } = attr
-          const { [type]: transmission = () => ({ component: NoFieldType }) } =
-            propsTransmission
-
-          if (required) {
-            acc.rules[name] = [{ name: VALIDATION_RULE_REQUIRED }]
-          }
-
-          acc.fields.push({
-            label,
-            id: name,
-            ...transmission({
-              api,
-              fieldName: 'name',
-              backConfig: attr,
-              nextProps: {},
-              type,
-              user,
-              interceptors: acc.interceptors,
-            }),
-          })
-
-          return acc
-        },
-        { rules: {}, fields: [], interceptors: new Map() },
-      ),
-    [api, parameters, user],
-  )
-
-  const { fields, rules, interceptors } = useMemo(() => {
-    const { fields, rules, interceptors } = parsedDesign
-    const interceptorsFunctions = new Map()
-
-    interceptors.forEach((deps, key) => {
-      interceptorsFunctions.set(key, ({ handleInput }) =>
-        deps.forEach((key) => handleInput(undefined, key)),
-      )
-    })
-
-    return {
-      fields,
-      rules,
-      interceptors: interceptorsFunctions,
-    }
-  }, [parsedDesign])
+  const formProps = useParseConfig({
+    value: filter,
+    fieldsDesign: useMemo(
+      () => parameters.map(attrubutesAdapter),
+      [parameters],
+    ),
+    stages: reportParserStages,
+  })
 
   const onBuild = useCallback(async () => {
     try {
@@ -147,13 +98,11 @@ const Reporting = () => {
       </div>
       <ScrollBar className="m-4">
         <Validation
-          fields={fields}
           value={filter}
           onInput={setFilter}
-          rules={rules}
           onSubmit={onBuild}
           inputWrapper={DefaultWrapper}
-          interceptors={interceptors}
+          {...formProps}
         >
           {(validationProps) => (
             <>

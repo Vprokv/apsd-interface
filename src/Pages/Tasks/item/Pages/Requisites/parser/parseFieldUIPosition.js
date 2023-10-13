@@ -1,5 +1,5 @@
 import CreateFieldStage from '@/Utils/Parser/Stages/CreateFieldStage'
-
+// парсим style по дизайну заданному на конфиге бэка
 const parseFieldUIPosition = (state) => (args) => {
   const { col, row, width, height } = args
   const field = CreateFieldStage(state)(args)

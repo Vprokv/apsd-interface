@@ -9,7 +9,6 @@ import {
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Documents from '@/Pages/Search/Pages/DocumentSearch/PageDocumentSelect'
 
-import Tasks from '@/Pages/Search/Pages/TaskSearch/PageTaskSelect'
 import { MultipleContext } from '@/Pages/Search/constans'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 

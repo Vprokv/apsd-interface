@@ -8,7 +8,6 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
   const {
     attr: {
       dss_component_reference,
-      dss_attr_name,
       dss_reference_attr_label,
       dss_reference_attr,
     },
@@ -23,18 +22,24 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
       const api = useContext(ApiContext)
       return useMemo(
         () => ({
-          loadFunction: async (query) => {
-            const { data } = await api.post(URL_ENTITY_LIST, {
-              id: dss_attr_name,
-              type: dss_component_reference,
-              query,
-              // filter: query
-              // ? {
-              //     query,
-              //   }
-              // : {}, //TODO тут непонятно как передавать query корректно, оставила как работает
-              filters,
-            })
+          loadFunction: async (query, { source, controller } = {}) => {
+            const { data } = await api.post(
+              URL_ENTITY_LIST,
+              {
+                type: dss_component_reference,
+                query,
+                // filter: query
+                // ? {
+                //     query,
+                //   }
+                // : {}, // TODO тут непонятно как передавать query корректно, оставила как работает
+                filters,
+              },
+              {
+                cancelToken: source?.token,
+                signal: controller?.signal,
+              },
+            )
             return data
           },
         }),
