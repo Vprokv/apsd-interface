@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
-import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import { ApiContext, TASK_ITEM_APPROVAL_SHEET, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -16,6 +16,7 @@ import { LoadTasks } from '@/Pages/Main/constants'
 import Input from '@/Components/Fields/Input'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import { ContainerContext } from '@Components/constants'
+import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -32,6 +33,7 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
   const context = useContext(ContainerContext)
   const { id } = useParams()
   const [selected, setSelected] = useState({})
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -50,13 +52,13 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
       onClose()
       closeCurrenTab()
       reloadSidebarTaskCounters()
-      // updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-      //   loading: false,
-      //   fetched: false,
-      // }) //TODO на случай если потребуется не закрывать окно, а перезагрузить таб
+      updateTabStateUpdaterByName([TASK_LIST], {
+        loading: false,
+        fetched: false,
+      })
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 500, data = '' } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
   }, [
@@ -69,6 +71,7 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
     selected.files,
     selected.reportText,
     signal,
+    updateTabStateUpdaterByName,
   ])
 
   const rules = {
