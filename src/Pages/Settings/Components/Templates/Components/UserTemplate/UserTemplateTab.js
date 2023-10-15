@@ -1,18 +1,26 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
-  SecondaryBlueButton,
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
 import { useNavigate } from 'react-router-dom'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
+import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
 const UserTemplateTab = (props) => {
-  const [value, onInputUser] = useState()
+  const [value, onInputUser] = useState([])
+
   const { onInput } = useContext(TemplateTabStateContext)
+  const [open, setOpenState] = useState(false)
   const navigate = useNavigate()
+  const changeModalState = useCallback(
+    (nextState) => () => {
+      setOpenState(nextState)
+    },
+    [],
+  )
 
   const onReverse = useCallback(() => {
     navigate('/settings/templates')
@@ -27,13 +35,22 @@ const UserTemplateTab = (props) => {
     <div className="m-4 w-3/5">
       <UserSelect value={value} onInput={onInputUser} multiple={true} />
       <div className="flex justify-start form-element-sizes-40 mt-4">
-        <SecondaryOverBlueButton disabled={!value} className=" w-64">
+        <SecondaryOverBlueButton
+          disabled={!value.length}
+          className=" w-64"
+          onClick={changeModalState(true)}
+        >
           Сохранить шаблон
         </SecondaryOverBlueButton>
         <SecondaryGreyButton className="ml-2 w-64" onClick={onReverse}>
           Отменить
         </SecondaryGreyButton>
       </div>
+      <CreateWindow
+        open={open}
+        changeModalState={changeModalState}
+        value={value}
+      />
     </div>
   )
 }
