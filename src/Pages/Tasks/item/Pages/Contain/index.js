@@ -45,6 +45,7 @@ import Tips from '@/Components/Tips'
 import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
+import ReloadIcon from '@/Icons/ReloadIcon'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -357,6 +358,10 @@ const Contain = () => {
 
   const changeOpenState = useCallback(() => setDefaultOpen((prev) => !prev), [])
 
+  const onReload = useCallback(() => {
+    setTabState({ loading: false, fetched: false })
+  }, [setTabState])
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -408,6 +413,11 @@ const Contain = () => {
                   onClick={changeOpenState}
                 >
                   <Icon icon={XlsIcon} />
+                </LoadableButtonForIcon>
+              </Tips>
+              <Tips text="Обновить">
+                <LoadableButtonForIcon className="ml-2" onClick={onReload}>
+                  <Icon icon={ReloadIcon} />
                 </LoadableButtonForIcon>
               </Tips>
             </div>
