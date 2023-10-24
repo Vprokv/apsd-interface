@@ -1,11 +1,12 @@
 const defaultQueryParser =
   (query) =>
   ({ value, operator, key }) => {
-    query.push({
-      attr: key,
-      operator,
-      arguments: [value],
-    })
+    value &&
+      query.push({
+        attr: key,
+        operator,
+        arguments: [value],
+      })
   }
 
 const dateQueryBuilder =
