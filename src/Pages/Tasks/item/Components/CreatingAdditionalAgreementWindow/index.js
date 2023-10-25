@@ -5,7 +5,10 @@ import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
 import { ApiContext, ITEM_TASK, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '../../../../../ApiList'
+import {
+  URL_ADDITIONAL_AGREEMENT_USER_LIST,
+  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
+} from '../../../../../ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -59,7 +62,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
     stateId: ITEM_TASK,
   })
   const {
-    tabState: { data: { approverId } = {} },
+    tabState: { data: { approverId, approverParentId } = {} },
   } = tabItemState
 
   const fieldMap = useMemo(() => {
@@ -68,6 +71,20 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         label: 'Доп. согласующий',
         id: 'performersEmpls',
         component: UserSelect,
+        loadFunction: (api) => (filter) => async (query) => {
+          const {
+            data,
+            data: { content },
+          } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
+            approverParentId,
+            filter: {
+              ...filter,
+              query,
+            },
+          })
+          console.log(data, 'data')
+          return content
+        },
         placeholder: 'Введите данные',
         multiple: true,
       },
@@ -78,7 +95,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         placeholder: 'Введите данные',
       },
     ]
-  }, [])
+  }, [approverParentId])
 
   const onSave = useCallback(async () => {
     try {
