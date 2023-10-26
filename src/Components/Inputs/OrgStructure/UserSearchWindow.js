@@ -76,7 +76,7 @@ const columns = [
 
 const emptyWrapper = ({ children }) => children
 
-const OrgStructureWindow = (props) => {
+export const OrgStructureWindow = (props) => {
   const {
     onClose,
     value,

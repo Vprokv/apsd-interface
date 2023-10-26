@@ -33,6 +33,8 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { WithValidationForm } from '@Components/Components/Forms'
+import AdditionalAgreementOrgStructureComponent
+  from "@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -156,7 +158,7 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
         },
         {
           id: 'approvers',
-          component: UserSelect,
+          component: AdditionalAgreementOrgStructureComponent,
           multiple: true,
           returnOption: false,
           className: 'font-size-12',

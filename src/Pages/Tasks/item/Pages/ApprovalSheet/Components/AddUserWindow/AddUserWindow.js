@@ -4,7 +4,7 @@ import Icon from '@Components/Components/Icon'
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
-import { URL_APPROVAL_CREATE } from '@/ApiList'
+import {URL_ADDITIONAL_AGREEMENT_USER_LIST, URL_APPROVAL_CREATE} from '@/ApiList'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -18,6 +18,8 @@ import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
+import AdditionalAgreementOrgStructureComponent
+  from "@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -29,22 +31,13 @@ const customMessagesFuncMap = {
   },
 }
 
-const fieldMap = [
-  {
-    id: 'user',
-    label: 'Участник этапа',
-    component: UserSelect,
-    placeholder: 'Выберите участников',
-    multiple: true,
-  },
-]
+
 
 const rules = {}
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 41.6%;
-  //min-height: 42.65%;
-  margin: auto; 
+  margin: auto;
   z-index: 10;
 `
 
@@ -65,6 +58,26 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
     },
     [],
   )
+
+  const fieldMap = [
+    {
+      id: 'user',
+      label: 'Участник этапа',
+      component: AdditionalAgreementOrgStructureComponent,
+      loadFunction: (api) => (filter) => async (query) => {
+        const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
+          stageId,
+          filter: {
+            ...filter,
+            ...query,
+          },
+        })
+        return data
+      },
+      placeholder: 'Выберите участников',
+      multiple: true,
+    },
+  ]
 
   const onSave = useCallback(async () => {
     try {

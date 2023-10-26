@@ -5,19 +5,24 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
-import { ApiContext,  TASK_ITEM_APPROVAL_SHEET } from '@/contants'
+import { ApiContext, ITEM_TASK, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import { useOpenNotification } from '@/Components/Notificator'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import InputComponent from '@Components/Components/Inputs/Input'
-import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '@/ApiList'
+import {
+  URL_ADDITIONAL_AGREEMENT_USER_LIST,
+  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
+} from '@/ApiList'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Form from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import PropTypes from 'prop-types'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -38,7 +43,7 @@ const customMessagesFuncMap = {
   },
 }
 
-const CreatingAdditionalAgreementWindow = ({ onClose, selected , open}) => {
+const CreatingAdditionalAgreementWindow = ({ onClose, selected }) => {
   const api = useContext(ApiContext)
   const documentId = useContext(DocumentIdContext)
   const { type: documentType } = useParams()
@@ -47,12 +52,28 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected , open}) => {
 
   const getNotification = useOpenNotification()
 
+  const {
+    tabState: { data: { approverParentId } = {} },
+  } = useTabItem({
+    stateId: ITEM_TASK,
+  })
+
   const fieldMap = useMemo(() => {
     return [
       {
         label: 'Доп. согласующий',
         id: 'performersEmpls',
-        component: UserSelect,
+        component: AdditionalAgreementOrgStructureComponent,
+        loadFunction: (api) => (filter) => async (query) => {
+          const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
+            approverParentId,
+            filter: {
+              ...filter,
+              ...query,
+            },
+          })
+          return data
+        },
         placeholder: 'Введите данные',
         multiple: true,
       },
@@ -63,7 +84,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected , open}) => {
         placeholder: 'Введите данные',
       },
     ]
-  }, [])
+  }, [approverParentId])
 
   const onSave = useCallback(async () => {
     try {
@@ -122,6 +143,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected , open}) => {
 
 CreatingAdditionalAgreementWindow.propTypes = {
   onClose: PropTypes.func,
+  selected: PropTypes.object,
 }
 CreatingAdditionalAgreementWindow.defaultProps = {
   onClose: () => null,

@@ -24,6 +24,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 
 import styled from 'styled-components'
 import ModalWindowWrapper from '../../../../../Components/ModalWindow'
+import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -70,20 +71,16 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
       {
         label: 'Доп. согласующий',
         id: 'performersEmpls',
-        component: UserSelect,
+        component: AdditionalAgreementOrgStructureComponent,
         loadFunction: (api) => (filter) => async (query) => {
-          const {
-            data,
-            data: { content },
-          } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
+          const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
             approverParentId,
             filter: {
               ...filter,
-              query,
+              ...query,
             },
           })
-          console.log(data, 'data')
-          return content
+          return data
         },
         placeholder: 'Введите данные',
         multiple: true,
