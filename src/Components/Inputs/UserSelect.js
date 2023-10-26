@@ -58,9 +58,9 @@ const UserSelect = (props) => {
 
   const loadRefSelectFunc = useCallback(
     async (search) => {
+      // eslint-disable-next-line no-unused-vars
       const { branchId, ...otherFilterParams } = defaultFilter
-
-      const filter = baseFilter // В для поиска в селекте по всем филиалам через query
+      const filter = baseFilter?.branchId // В для поиска в селекте по всем филиалам через query
         ? defaultFilter
         : search.length > 0
         ? otherFilterParams
