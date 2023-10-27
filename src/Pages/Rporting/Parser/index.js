@@ -23,6 +23,7 @@ import parseReadOnlyRule from '@/Utils/Parser/Stages/parseReadOnlyRule'
 import parseVisibilityRule from '@/Utils/Parser/Stages/parseVisibilityRule'
 import parseValidationRules from '@/Utils/Parser/Stages/parseValidationRules'
 import { parseFieldProps } from '@/Utils/Parser/Stages/parseFieldProps'
+import TitleDocument from "@/Pages/Rporting/Components/TitleDocument";
 
 const fields = {
   Combobox: Select,
@@ -32,7 +33,7 @@ const fields = {
   Orgstructure: UserSelect,
   Branch: Select,
   Department: Select,
-  TitleDocument: Select,
+  TitleDocument: TitleDocument,
   UserSelect: BaseUserSelect,
   Text: Input,
   TextArea: TextArea,
