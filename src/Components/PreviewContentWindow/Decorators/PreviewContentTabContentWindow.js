@@ -15,7 +15,7 @@ const PreviewContentTabContentWindow = (Component) => {
       return url
     }, [value, token])
 
-    return <Component url={url} ref={ref} {...props} />
+    return <Component url={url} ref={ref} {...props} value={value[0]?.id} />
   })
   WindowContent.propTypes = {
     value: PropTypes.object.isRequired,
