@@ -93,7 +93,7 @@ const columns = [
     component: ({ ParentValue: { delayDevelopmentDay, delayApprovalDay } }) => {
       return (
         <BaseCell
-          className={`flex items-center h-full ${
+          className={`flex items-center h-full w-full ${
             (delayDevelopmentDay || delayApprovalDay) &&
             (delayDevelopmentDay || delayApprovalDay) > 0
               ? 'bg-light-red'
