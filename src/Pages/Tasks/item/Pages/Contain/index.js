@@ -114,7 +114,7 @@ const columns = [
   },
   {
     id: 'delayDevelopmentDay',
-    label: 'Просрочка разработки',
+    label: 'Просрочка проектировщика',
     className: 'flex font-size-12',
     sizes: 180,
   },
