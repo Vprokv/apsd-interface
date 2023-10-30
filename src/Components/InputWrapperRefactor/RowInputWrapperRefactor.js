@@ -31,7 +31,7 @@ const InputWrapper = React.forwardRef(
   ) => {
     return (
       <InputWrapperContainer
-        className={`${className} flex`}
+        className={`${className} flex items-center`}
         style={style}
         ref={ref}
       >
