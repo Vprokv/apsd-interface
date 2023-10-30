@@ -46,6 +46,7 @@ import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 import ReloadIcon from '@/Icons/ReloadIcon'
+import BaseCell from '@/Components/ListTableComponents/BaseCell'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -89,6 +90,18 @@ const columns = [
   {
     id: 'result',
     label: 'Результат',
+    component: ({ ParentValue: { delayDevelopmentDay, delayApprovalDay } }) => {
+      return (
+        <BaseCell
+          className={`flex items-center h-full ${
+            (delayDevelopmentDay || delayApprovalDay) &&
+            (delayDevelopmentDay || delayApprovalDay) > 0
+              ? 'bg-light-red'
+              : ''
+          }`}
+        />
+      )
+    },
     className: 'flex font-size-12',
   },
   {
