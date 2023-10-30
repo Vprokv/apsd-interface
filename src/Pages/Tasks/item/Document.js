@@ -111,12 +111,12 @@ const Document = () => {
   } = tabItemState
 
   const documentId = useMemo(() => {
-    let v
+    let v = 'Документ'
     if (values) {
       v = type === titleName ? values.dss_code : values.dss_reg_number
     }
 
-    return v || 'Документ'
+    return v
   }, [type, values])
 
   const updateCurrentTabChildrenStates = updateTabChildrenStates()

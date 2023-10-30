@@ -3,11 +3,19 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
   URL_ENTITY_LIST,
+  URL_EXPORT,
+  URL_EXPORT_FILE,
+  URL_STORAGE_DOCUMENT,
   URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_DELETE,
 } from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
-import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
+import {
+  ApiContext,
+  ITEM_DOCUMENT,
+  TASK_ITEM_STRUCTURE,
+  TokenContext,
+} from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
@@ -25,6 +33,7 @@ import { useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
 import {
+  columnMap,
   LoadContainChildrenContext,
   ShowContentByTypeButtonContext,
 } from '@/Pages/Tasks/item/Pages/Contain/constants'
@@ -49,6 +58,8 @@ import ReloadIcon from '@/Icons/ReloadIcon'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { useRecoilState } from 'recoil'
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
+import { API_URL } from '@/api'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -156,9 +167,16 @@ const Contain = () => {
   const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
+  const { token } = useContext(TokenContext)
   const [defaultOpen, setDefaultOpen] = useRecoilState(
     cachedLocalStorageValue('id'),
   )
+
+  const {
+    tabState: { data: { values: { dss_code = '' } = {} } = {} },
+  } = useTabItem({
+    stateId: ITEM_DOCUMENT,
+  })
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
@@ -379,6 +397,29 @@ const Contain = () => {
     setTabState({ loading: false, fetched: false })
   }, [setTabState])
 
+  const onExportToExcel = useCallback(async () => {
+    const {
+      data: { id: dataId },
+    } = await api.post(URL_EXPORT, {
+      url: `${API_URL}/${URL_TITLE_CONTAIN}`,
+      label: `Состав титула "${dss_code}"`,
+      sheetName: `Состав титула "${dss_code}"`,
+      columns: columnMap,
+      body: {
+        expand: true,
+        titleId: id,
+        partId: null,
+        token,
+      },
+    })
+
+    const { data } = await api.get(`${URL_EXPORT_FILE}${dataId}:${token}`, {
+      responseType: 'blob',
+    })
+
+    downloadFileWithReload(data, `Состав титула ${dss_code}.xlsx`)
+  }, [api, dss_code, id, token])
+
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
       <div className="flex-container p-4 w-full overflow-hidden">
@@ -427,7 +468,7 @@ const Contain = () => {
               <Tips text="Выгрузить в Excel">
                 <LoadableButtonForIcon
                   className="color-green"
-                  onClick={changeOpenState}
+                  onClick={onExportToExcel}
                 >
                   <Icon icon={XlsIcon} />
                 </LoadableButtonForIcon>
