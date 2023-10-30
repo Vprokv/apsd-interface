@@ -47,6 +47,8 @@ import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorato
 import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 import ReloadIcon from '@/Icons/ReloadIcon'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
+import { useRecoilState } from 'recoil'
+import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -154,7 +156,9 @@ const Contain = () => {
   const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
-  const [defaultOpen, setDefaultOpen] = useState(false)
+  const [defaultOpen, setDefaultOpen] = useRecoilState(
+    cachedLocalStorageValue('id'),
+  )
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
