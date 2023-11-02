@@ -8,7 +8,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
   getFilters(state)(fieldState)(config) // задаем очередность хуков, сначала хуки фильтров,
   // потом мы закидываем свои хуки
   // всегда возвращаем хук, для получения контекста API и фильтров
-  fieldState.hooks.push(({ filters }) => {
+  fieldState.hooks.push(({ filter }) => {
     const api = useContext(ApiContext)
     return useMemo(
       () => ({
@@ -17,7 +17,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
             URL_TITLE_LIST,
             {
               query,
-              ...filters,
+              ...filter,
             },
             {
               cancelToken: source?.token,
@@ -27,7 +27,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
           return data
         },
       }),
-      [filters, api],
+      [filter, api],
     )
   })
   fieldState.props.valueKey = 'id' // Ключ выбираемых данных

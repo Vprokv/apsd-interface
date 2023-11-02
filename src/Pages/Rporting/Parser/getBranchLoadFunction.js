@@ -8,7 +8,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
   getFilters(state)(fieldState)(config) // задаем очередность хуков, сначала хуки фильтров,
   // потом мы закидываем свои хуки
   // всегда возвращаем хук, для получения контекста API и фильтров
-  fieldState.hooks.push(({ filters }) => {
+  fieldState.hooks.push(({ filter }) => {
     const api = useContext(ApiContext)
     return useMemo(
       () => ({
@@ -20,7 +20,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
             {
               type: 'branch_list',
               filter: {
-                ...filters,
+                ...filter,
                 query,
                 useAllFilter: true,
               },
@@ -33,7 +33,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
           return content
         },
       }),
-      [filters, api],
+      [filter, api],
     )
   })
   fieldState.props.valueKey = 'id' // Ключ выбираемых данных

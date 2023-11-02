@@ -4,10 +4,10 @@ import InterceptorsStage from '../../../InterceptorsStage'
 const dependsOnFilter =
   (state) =>
   (fieldState) =>
-  (filters, { attr, fieldName }) => {
+  (filters, { attr }) => {
     const interceptors = InterceptorsStage(state)
     filters.forEach(({ field }) =>
-      interceptors({ field, targetKey: attr[fieldName] }),
+      interceptors({ field, targetKey: attr.dss_attr_name }),
     )
 
     const filtersMap = filters.reduce(

@@ -6,8 +6,8 @@ export const DocumentPickerProps =
   () =>
   (fieldState) =>
   ({ attr: { dss_component_reference, dss_display_template } }) => {
-    fieldState.props.filters = {
-      ...fieldState.props.filters,
+    fieldState.props.filter = {
+      ...fieldState.props.filter,
       type: dss_component_reference[0],
     }
     fieldState.props.displayName = dss_display_template

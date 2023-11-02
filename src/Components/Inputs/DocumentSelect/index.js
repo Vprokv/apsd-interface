@@ -24,7 +24,7 @@ const changeInput = () => {}
 
 const DocumentSelect = ({
   className,
-  filters,
+  filter,
   options,
   displayName,
   ...props
@@ -33,7 +33,7 @@ const DocumentSelect = ({
   const [open, setOpen] = useState(false)
   const [searchState, setSearchState] = useState({})
   const [selectedState, setSelectedState] = useState(value)
-  const [filter, setFilter] = useState(filters)
+  const [filterState, setFilterState] = useState(filter)
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpen(nextState)
@@ -85,11 +85,11 @@ const DocumentSelect = ({
   const loadDocType = useCallback(
     (api) => async () => {
       const { data } = await api.post(URL_TYPE_CONFIG, {
-        typeConfig: filters.type,
+        typeConfig: filter.type,
       })
       return data
     },
-    [filters],
+    [filter],
   )
 
   const handleSelectClick = useCallback(
@@ -202,8 +202,8 @@ const DocumentSelect = ({
             <Documents
               documentTypeLoadFunction={loadDocType}
               setSearchState={setSearchState}
-              filter={filter}
-              setFilter={setFilter}
+              filter={filterState}
+              setFilter={setFilterState}
             >
               {(closeTable) => (
                 <>
@@ -249,7 +249,7 @@ const DocumentSelect = ({
 
 DocumentSelect.propTypes = {
   className: PropTypes.string,
-  filters: PropTypes.object,
+  filter: PropTypes.object,
   displayName: PropTypes.string,
   onInput: PropTypes.func,
   id: PropTypes.string,
@@ -262,7 +262,7 @@ DocumentSelect.propTypes = {
 
 DocumentSelect.defaultProps = {
   className: '',
-  filters: { type: 'ddt_startup_complex_type_doc' },
+  filter: { type: 'ddt_startup_complex_type_doc' },
   onInput: () => null,
   displayName: '',
   valueKey: '',

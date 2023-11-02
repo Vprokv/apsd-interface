@@ -3,8 +3,8 @@ export const parseDocumentPickerProps =
   () =>
   (fieldState) =>
   ({ attr: { dss_component_reference } }) => {
-    fieldState.props.filters = {
-      ...fieldState.props.filters,
+    fieldState.props.filter = {
+      ...fieldState.props.filter,
       type: dss_component_reference,
     }
     fieldState.props.displayName = '${dss_description}'

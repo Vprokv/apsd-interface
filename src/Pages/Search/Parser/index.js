@@ -16,7 +16,6 @@ import setOrgstructureValueKey from '@/Pages/Search/Parser/setOrgstructureValueK
 import getFilters from '@/Utils/Parser/Stages/parseFieldProps/Stages/FilterStage'
 import { setOrgstructureRefKey } from '@/Utils/Parser/Stages/parseFieldProps/Orgstructure'
 import setDataPickerRangeStage from '@/Pages/Search/Parser/setDataPickerRangeStage'
-import parseReadOnlyRule from '@/Utils/Parser/Stages/parseReadOnlyRule'
 import parseVisibilityRule from '@/Utils/Parser/Stages/parseVisibilityRule'
 
 const fields = {
@@ -75,6 +74,5 @@ const searchParseFieldProps = parseFieldProps(propsMap, fields)
 
 export const searchParserStages = [
   parseVisibilityRule,
-  parseReadOnlyRule,
   searchParseFieldProps,
 ]

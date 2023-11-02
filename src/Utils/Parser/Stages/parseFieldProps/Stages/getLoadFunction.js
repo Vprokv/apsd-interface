@@ -18,7 +18,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
     getFilters(state)(fieldState)(config) // задаем очередность хуков, сначала хуки фильтров,
     // потом мы закидываем свои хуки
     // всегда возвращаем хук, для получения контекста API и фильтров
-    fieldState.hooks.push(({ filters }) => {
+    fieldState.hooks.push(({ filter }) => {
       const api = useContext(ApiContext)
       return useMemo(
         () => ({
@@ -33,7 +33,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
                 //     query,
                 //   }
                 // : {}, // TODO тут непонятно как передавать query корректно, оставила как работает
-                filters,
+                filters: filter,
               },
               {
                 cancelToken: source?.token,
@@ -43,7 +43,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
             return data
           },
         }),
-        [filters, api],
+        [filter, api],
       )
     })
     fieldState.props.valueKey = dss_reference_attr || 'r_object_id' // Ключ выбираемых данных
