@@ -9,10 +9,15 @@ import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE, SEARCH_PAGE_DOCUMENT } from '@/contants'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  LoadableButtonForIcon,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import { ExportContext } from '@/Pages/Search/Pages/constans'
+import Tips from '@/Components/Tips'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
@@ -75,9 +80,14 @@ const PageDocumentSelect = () => {
             >
               Изменить условие
             </SecondaryBlueButton>
-            <ButtonForIcon onClick={onExport} className="color-green ml-2">
-              <Icon icon={XlsIcon} />
-            </ButtonForIcon>
+            <Tips text="Выгрузить в Excel">
+              <LoadableButtonForIcon
+                className="color-green ml-2"
+                onClick={onExport}
+              >
+                <Icon icon={XlsIcon} />
+              </LoadableButtonForIcon>
+            </Tips>
           </div>
           <ScrollBar className=" ">
             <ListTable
