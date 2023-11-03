@@ -33,10 +33,15 @@ const UserTemplateTab = (props) => {
 
   return (
     <div className="m-4 w-3/5">
-      <UserSelect value={value} onInput={onInputUser} multiple={true} />
+      <UserSelect
+        value={value}
+        onInput={onInputUser}
+        multiple={true}
+        returnObjects={true}
+      />
       <div className="flex justify-start form-element-sizes-40 mt-4">
         <SecondaryOverBlueButton
-          disabled={!value.length}
+          disabled={!value?.length}
           className=" w-64"
           onClick={changeModalState(true)}
         >
@@ -48,6 +53,7 @@ const UserTemplateTab = (props) => {
       </div>
       <CreateWindow
         open={open}
+        onReverse={onReverse}
         changeModalState={changeModalState}
         value={value}
       />

@@ -152,7 +152,7 @@ const EditLinksWindow = ({ value }) => {
         <Tips text="Обновить связи">
           <ButtonForIcon
             onClick={changeModalState(true)}
-            disabled={!value.length}
+            disabled={!value?.length}
             className="mr-2 color-text-secondary"
           >
             <Icon size={20} icon={EditIcon} />
