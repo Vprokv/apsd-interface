@@ -1,12 +1,11 @@
 const selfFilter = () => (fieldState) => (filters) => {
-  filters.forEach((acc, { filter, field }) => {
+  filters.forEach(({ filter, field }) => {
     if (filter) {
       fieldState.props.filter = {
         ...fieldState.props.filter,
         [field]: filter,
       }
     }
-    return acc
   })
 }
 
