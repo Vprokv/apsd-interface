@@ -203,6 +203,10 @@ const Templates = (props) => {
     [navigate, onInput, values],
   )
 
+  const onDelete = useCallback(async () => {
+    const data = await api.post({ ids: selectState, type: filter.type })
+  }, [api, filter.type, selectState])
+
   useAutoReload(loadData, tabItemState)
 
   return (

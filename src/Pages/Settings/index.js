@@ -14,12 +14,12 @@ const overTemplateMap = {
   ddt_query_template: {
     caption: 'Шаблон поиска',
     Component: Templates,
-    path: 'search_template',
+    path: 'ddt_query_template',
   },
   ddt_employee_template: {
     caption: 'Шаблон пользователей',
     Component: UserTemplateTab,
-    path: 'user_template',
+    path: 'ddt_employee_template',
   },
 }
 
@@ -39,7 +39,6 @@ const documentTabs = [
 const Settings = () => {
   useSetTabName(useCallback(() => 'Настройки', []))
   const [tabs, setTabs] = useState(documentTabs)
-  console.log(tabs, 'tabs')
 
   const { routes, headers, defaultPath } = useMemo(
     () =>

@@ -2,107 +2,162 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithValidationForm } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import Icon from '@Components/Components/Icon'
-import searchIcon from '@/Icons/searchIcon'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import Input from '@/Components/Fields/Input'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import {URL_ENTITY_LIST, URL_REPORTS_BRANCH} from '@/ApiList'
+import ModalWindowWrapper from '@/Components/ModalWindow'
+import { URL_CREATE_TEMPLATE, URL_REPORTS_BRANCH } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import UserSelect from '@/Components/Inputs/UserSelect'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { useParams } from 'react-router-dom'
+import styled from 'styled-components'
+
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Шаблон создан успешно',
+    }
+  },
+}
 
 const rules = {
   dssName: [{ name: VALIDATION_RULE_REQUIRED }],
   privateAccess: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const CreateWindow = ({ changeModalState, open, value }) => {
+const funcMap = {
+  user: () => ({ privateAccess: false }),
+  organization: () => ({ privateAccess: true }),
+  department: ({ branchesAccess }) => ({ branchesAccess }),
+  employee: ({ usersAccess }) => ({
+    usersAccess: usersAccess?.map((val) => ({ emplId: val, val })),
+  }),
+}
+
+export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
+  width: 61.6%;
+  //height: 72.65%;
+  margin: auto;
+`
+
+const CreateWindow = ({ changeModalState, open, value, onReverse }) => {
   const [filter, setFilter] = useState({})
   const api = useContext(ApiContext)
+  const getNotification = useOpenNotification()
+  const { ['*']: type } = useParams()
 
   const fields = useMemo(
-    () => [
-      {
-        id: 'dssName',
-        component: Input,
-        label: 'Поиск',
-        children: (
-          <Icon
-            icon={searchIcon}
-            size={10}
-            className="color-text-secondary mr-2.5"
-          />
-        ),
-      },
-      {
-        id: 'dssNote',
-        component: Input,
-        label: 'Примечание',
-        children: (
-          <Icon
-            icon={searchIcon}
-            size={10}
-            className="color-text-secondary mr-2.5"
-          />
-        ),
-      },
-      {
-        id: 'privateAccess',
-        component: Select,
-        multiple: false,
-        label: 'Доступ к шаблону',
-        valueKey: 'typeName',
-        labelKey: 'typeLabel',
-        options: [
-          {
-            typeName: 'false',
-            typeLabel: 'Только для автора',
-          },
-          {
-            typeName: 'true',
-            typeLabel: 'Всей организации',
-          },
-        ],
-      },
-      {
-        label: 'Филиал',
-        id: 'branchesAccess',
-        component: LoadableSelect,
-        valueKey: 'id',
-        labelKey: 'name',
-        placeholder: 'Тип файла',
-        multiple: true,
-        loadFunction: async (query) => {
-          const {
-            data: { content },
-          } = await api.post(URL_REPORTS_BRANCH, {
-            type: 'branch_list',
-            filter: {
-              query,
-              useAllFilter: true,
-            },
-          })
-          return content
+    () =>
+      [
+        {
+          id: 'dssName',
+          component: Input,
+          label: 'Наименование',
+          show: true,
         },
-      },
-      {
-        id: 'approvers',
-        component: UserSelect,
-        multiple: true,
-        returnOption: false,
-        className: 'font-size-12',
-        placeholder: 'Выборите сотрудников',
-        label: 'Выбор сотрудников',
-      },
-    ],
-    [api],
+        {
+          id: 'dssNote',
+          component: Input,
+          label: 'Примечание',
+          show: true,
+        },
+        {
+          id: 'privateAccess',
+          component: Select,
+          multiple: false,
+          label: 'Доступ к шаблону',
+          valueKey: 'typeName',
+          labelKey: 'typeLabel',
+          show: true,
+          options: [
+            {
+              typeName: 'user',
+              typeLabel: 'Только для автора',
+            },
+            {
+              typeName: 'organization',
+              typeLabel: 'Всей организации',
+            },
+            {
+              typeName: 'department',
+              typeLabel: 'Филиалу',
+            },
+            {
+              typeName: 'employee',
+              typeLabel: 'Сотруднику',
+            },
+          ],
+        },
+        {
+          label: 'Филиал',
+          id: 'branchesAccess',
+          component: LoadableSelect,
+          valueKey: 'id',
+          labelKey: 'name',
+          placeholder: 'Тип файла',
+          multiple: true,
+          loadFunction: async (query) => {
+            const {
+              data: { content },
+            } = await api.post(URL_REPORTS_BRANCH, {
+              type: 'branch_list',
+              filter: {
+                query,
+                useAllFilter: true,
+              },
+            })
+            return content
+          },
+          show: filter?.privateAccess === 'department',
+        },
+        {
+          id: 'usersAccess',
+          component: UserSelect,
+          multiple: true,
+          className: 'font-size-12',
+          placeholder: 'Выборите сотрудников',
+          label: 'Выбор сотрудников',
+          show: filter?.privateAccess === 'employee',
+        },
+      ].filter(({ show }) => show),
+    [api, filter],
   )
 
-  const onCreate = useCallback(() => {}, [])
+  const onCreate = useCallback(async () => {
+    try {
+      const { privateAccess, dssName, dssNote } = filter
+      const { [privateAccess]: func } = funcMap
+      const parseResult = func(filter)
+      const data = await api.post(URL_CREATE_TEMPLATE, {
+        template: {
+          dssName,
+          dssNote,
+          ...parseResult,
+          json: value,
+        },
+        type,
+      })
 
-  const handleClick = useCallback(() => null, [])
+      getNotification(customMessagesFuncMap[data.status]())
+      onReverse()
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [api, filter, getNotification, onReverse, type, value])
+
+  const handleClick = useCallback(() => {
+    changeModalState(false)()
+    setFilter({})
+  }, [changeModalState])
 
   return (
     <div>
@@ -118,15 +173,16 @@ const CreateWindow = ({ changeModalState, open, value }) => {
             fields={fields}
             inputWrapper={InputWrapper}
             rules={rules}
-            onSubmit={handleClick}
+            // onSubmit={handleClick}
           >
             <UnderButtons
               // className="justify-around w-full"
               leftStyle="width-min mr-2"
               rightStyle="width-min"
-              leftFunc={changeModalState(false)}
+              leftFunc={handleClick}
               leftLabel="Отменить"
               rightLabel="Сохранить"
+              rightFunc={onCreate}
             />
           </WithValidationForm>
         </>
