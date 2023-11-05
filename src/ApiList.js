@@ -171,6 +171,8 @@ export const URL_TEMPLATE_LIST = '/sedo/template/list'
 export const URL_TEMPLATE = '/sedo/template/get'
 export const URL_CREATE_STAGE = '/sedo/approve/template'
 export const URL_CREATE_TEMPLATE = '/sedo/template/create'
+export const URL_CREATE_DELETE = '/sedo/template/delete'
+export const URL_CREATE_UPDATE = '/sedo/template/update'
 
 // REPORT
 export const URL_REPORTS_LIST = '/apsd/reporting/list'
