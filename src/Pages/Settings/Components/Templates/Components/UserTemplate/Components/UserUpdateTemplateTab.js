@@ -54,12 +54,12 @@ const UserUpdateTemplateTab = ({
     } else if (branchesAccess.length > 0) {
       return {
         privateAccess: 'department',
-        branchesAccess,
+        branchesAccess: branchesAccess.map(({ dsid_branch }) => dsid_branch),
       }
     } else if (usersAccess.length > 0) {
       return {
         privateAccess: 'employee',
-        usersAccess,
+        usersAccess: usersAccess.map(({ usersAccess }) => usersAccess),
       }
     } else {
       return { privateAccess: 'organization' }
