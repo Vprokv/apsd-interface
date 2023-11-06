@@ -52,6 +52,11 @@ const FilterForm = styled(Form)`
   grid-column-gap: 0.5rem;
 `
 
+const WindowContainer = styled.div`
+  height: inherit;
+  width: 100%;
+`
+
 const columns = [
   {
     id: 'dss_name',
@@ -180,55 +185,57 @@ const SearchTemplateWindowList = ({
 
   return (
     <StandardSizeModalWindow
-      title="Применить шаблон"
+      title="Выберите шаблон поиска"
       open={open}
       onClose={changeModalState(false)}
     >
-      <div className="m-4 w-full">
-        <div className="flex form-element-sizes-32">
-          <FilterForm
-            fields={filterFields}
-            inputWrapper={emptyWrapper}
-            value={filter}
-            onInput={setFilter}
+      <WindowContainer>
+        <div className="h-full">
+          <div className="flex form-element-sizes-32">
+            <FilterForm
+              fields={filterFields}
+              inputWrapper={emptyWrapper}
+              value={filter}
+              onInput={setFilter}
+            />
+          </div>
+          <ListTable
+            className="mt-2  h-full"
+            // rowComponent={useMemo(
+            //   () => (props) => <RowComponent onClick={onOpen} {...props} />,
+            //   [onOpen],
+            // )}
+            value={content}
+            columns={columns}
+            plugins={plugins}
+            headerCellComponent={HeaderCell}
+            selectState={selectState}
+            onSelect={setSelectState}
+            sortQuery={sortQuery}
+            onSort={onSort}
+            loading={loading}
           />
+          <Pagination
+            className="mt-2"
+            limit={paginationState.limit}
+            page={paginationState.page}
+            setLimit={setLimit}
+            setPage={setPage}
+            total={total}
+          >
+            <UnderButtons
+              leftStyle="width-min mr-2"
+              rightStyle="width-min"
+              leftFunc={changeModalState(false)}
+              leftLabel="Закрыть"
+              rightLabel="Выбрать"
+              disabled={Object.keys(selectState).length < 1}
+              rightFunc={onCreate}
+            />
+            {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
+          </Pagination>
         </div>
-        <ListTable
-          className="mt-2  h-full"
-          // rowComponent={useMemo(
-          //   () => (props) => <RowComponent onClick={onOpen} {...props} />,
-          //   [onOpen],
-          // )}
-          value={content}
-          columns={columns}
-          plugins={plugins}
-          headerCellComponent={HeaderCell}
-          selectState={selectState}
-          onSelect={setSelectState}
-          sortQuery={sortQuery}
-          onSort={onSort}
-          loading={loading}
-        />
-        <Pagination
-          className="mt-2"
-          limit={paginationState.limit}
-          page={paginationState.page}
-          setLimit={setLimit}
-          setPage={setPage}
-          total={total}
-        >
-          <UnderButtons
-            leftStyle="width-min mr-2"
-            rightStyle="width-min"
-            leftFunc={changeModalState(false)}
-            leftLabel="Закрыть"
-            rightLabel="Выбрать"
-            disabled={Object.keys(selectState).length < 1}
-            rightFunc={onCreate}
-          />
-          {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
-        </Pagination>
-      </div>
+      </WindowContainer>
     </StandardSizeModalWindow>
   )
 }

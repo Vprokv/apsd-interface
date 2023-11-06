@@ -43,7 +43,7 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 `
 
 const UserSelect = (props) => {
-  const { loadFunction, filter: baseFilter, disabled } = props
+  const { loadFunction, filter: baseFilter, disabled, SelectComponent } = props
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter })
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
@@ -62,7 +62,7 @@ const UserSelect = (props) => {
       const { branchId, ...otherFilterParams } = defaultFilter
       const filter = baseFilter?.branchId // В для поиска в селекте по всем филиалам через query
         ? defaultFilter
-        : search.length > 0
+        : search?.length > 0
         ? otherFilterParams
         : defaultFilter
 
@@ -74,7 +74,7 @@ const UserSelect = (props) => {
 
   return (
     <div className="flex items-center w-full">
-      <LoadableAlwaysRenderValuesSelect
+      <SelectComponent
         {...props}
         loadFunction={loadRefSelectFunc}
         className="mr-0"
@@ -99,6 +99,7 @@ const UserSelect = (props) => {
 
 UserSelect.propTypes = {
   loadFunction: PropTypes.func,
+  SelectComponent: PropTypes.node,
   source: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   valueKey: PropTypes.string,
@@ -112,5 +113,6 @@ UserSelect.defaultProps = {
   options: [],
   disabled: false,
   source: '',
+  SelectComponent: LoadableAlwaysRenderValuesSelect,
 }
 export default UserSelect

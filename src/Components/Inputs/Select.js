@@ -85,6 +85,9 @@ const LoadableAlwaysRenderValuesSelect = Loadable((props) => (
 // добавлем автолодабл версию(load on render once) к LoadableSelect
 const AutoLoadableMultipleSelect = AutoLoadable(LoadableMultiSelect)
 const WithAutoLoadableSelect = AutoLoadable(LoadableSelectComponent)
+const WithAutoLoadableAlwaysRenderValuesSelect = AutoLoadable(
+  LoadableAlwaysRenderValuesSelect,
+)
 
 // подключаем контроллер loadable
 const AutoLoadableSelect = Loadable((props) => (
@@ -95,6 +98,11 @@ const AutoLoadableSelect = Loadable((props) => (
   />
 ))
 
-export { Select, LoadableAlwaysRenderValuesSelect, AutoLoadableSelect }
+export {
+  Select,
+  LoadableAlwaysRenderValuesSelect,
+  AutoLoadableSelect,
+  WithAutoLoadableAlwaysRenderValuesSelect,
+}
 
 export default LoadableSelect

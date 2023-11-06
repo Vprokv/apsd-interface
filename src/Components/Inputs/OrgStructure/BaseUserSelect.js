@@ -14,18 +14,10 @@ export const AddUserOptionsFullName = (v = {}) => ({
     : `${v.firstName} ${v.middleName} ${v.lastName}, ${v.position}, ${v.department}`,
 })
 
-const UserSelect = ({ loadFunction, filter, ...props }) => {
+const UserSelect = ({ loadFunction, filter, SelectComponent, ...props }) => {
   const api = useContext(ApiContext)
   const {
-    organization: [
-      {
-        r_object_id: organization = '',
-        branches,
-        // branches: [{ r_object_id: branchId = '' }] = [
-        //   { r_object_id: '', branches: [{ r_object_id: '' }] },
-        // ],
-      },
-    ] = [{}],
+    organization: [{ r_object_id: organization = '', branches }] = [{}],
   } = useRecoilValue(userAtom)
 
   const customSelectFilter = useMemo(() => {
@@ -39,12 +31,13 @@ const UserSelect = ({ loadFunction, filter, ...props }) => {
     },
     [api, customSelectFilter, loadFunction],
   )
-  return <Select {...props} loadFunction={loadRefSelectFunc} />
+  return <SelectComponent {...props} loadFunction={loadRefSelectFunc} />
 }
 
 UserSelect.propTypes = {
   filter: PropTypes.object,
   loadFunction: PropTypes.func,
+  SelectComponent: PropTypes.node,
 }
 UserSelect.defaultProps = {
   loadFunction: (api) => (filter) => async (search) => {
@@ -59,6 +52,7 @@ UserSelect.defaultProps = {
   labelKey: 'fullDescription',
   widthButton: true,
   filter: {},
+  SelectComponent: Select,
 }
 
 export default UserSelect

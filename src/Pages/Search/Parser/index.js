@@ -4,7 +4,10 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import { AutoLoadableSelect } from '@/Components/Inputs/Select'
+import {
+  AutoLoadableSelect,
+  WithAutoLoadableAlwaysRenderValuesSelect,
+} from '@/Components/Inputs/Select'
 import Input from '@Components/Components/Inputs/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import parseFieldProps from '@/Utils/Parser/Stages/parseFieldProps/controller'
@@ -23,8 +26,16 @@ const fields = {
   Combobox: AutoLoadableSelect,
   TextualCombobox: AutoLoadableSelect,
   DocStatus: NoFieldType,
-  Orgstructure: UserSelect,
-  UserSelect: BaseUserSelect,
+  Orgstructure: (props) => (
+    <UserSelect
+      // SelectComponent={WithAutoLoadableAlwaysRenderValuesSelect} //TODO разобраться почему не работает
+      SelectComponent={AutoLoadableSelect}
+      {...props}
+    />
+  ),
+  UserSelect: (props) => (
+    <BaseUserSelect SelectComponent={AutoLoadableSelect} {...props} />
+  ),
   Text: Input,
   TextArea: TextArea,
   Date: DatePicker,

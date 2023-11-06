@@ -236,8 +236,6 @@ const DocumentSearch = ({
     [],
   )
 
-  console.log(filter, 'filter')
-
   const fields = useMemo(
     () => [
       {
