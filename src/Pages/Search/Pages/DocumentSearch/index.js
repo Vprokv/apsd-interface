@@ -24,6 +24,7 @@ import {
   LoadableSecondaryOverBlueButton,
   SecondaryBlueButton,
   SecondaryGreyButton,
+  SecondaryOverBlueButton,
 } from '@/Components/Button'
 import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
@@ -42,6 +43,7 @@ import { searchParserStages } from '@/Pages/Search/Parser'
 import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
 import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
+import SearchTemplateWindowList from '@/Pages/Search/Pages/DocumentSearch/Components/SearchTemplateWindowList'
 
 export const tableConfig = [
   {
@@ -217,10 +219,19 @@ const DocumentSearch = ({
     ),
   })
 
-  const [open, setOpenState] = useState(false)
-  const changeModalState = useCallback(
+  const [openCreateTemplateWindow, setOpenCreateTemplateWindowState] =
+    useState(false)
+  const [openUseTemplateWindowState, setOpenUseTemplateWindowState] =
+    useState(false)
+  const changeCreateTemplateWindowState = useCallback(
     (nextState) => () => {
-      setOpenState(nextState)
+      setOpenCreateTemplateWindowState(nextState)
+    },
+    [],
+  )
+  const changeUseTemplateWindowState = useCallback(
+    (nextState) => () => {
+      setOpenUseTemplateWindowState(nextState)
     },
     [],
   )
@@ -340,8 +351,6 @@ const DocumentSearch = ({
     setSearchState([])
   }, [setSearchState, setTabState])
 
-  console.log(Object.keys(filter).length, 'Object.keys(filter) < ')
-
   return (
     <ExportContext.Provider value={'asas'}>
       <div className="flex flex-col w-full p-4 overflow-hidden">
@@ -381,16 +390,19 @@ const DocumentSearch = ({
               >
                 Искать
               </LoadableSecondaryOverBlueButton>
-              <SecondaryBlueButton className="mb-5 w-64" disabled>
-                Применить шаблон
-              </SecondaryBlueButton>
-              <SecondaryBlueButton
+              <SecondaryOverBlueButton
                 className="mb-5 w-64"
-                onClick={changeModalState(true)}
+                onClick={changeUseTemplateWindowState(true)}
+              >
+                Применить шаблон
+              </SecondaryOverBlueButton>
+              <SecondaryOverBlueButton
+                className="mb-5 w-64"
+                onClick={changeCreateTemplateWindowState(true)}
                 disabled={Object.keys(filter).length < 2}
               >
                 Сохранить шаблон
-              </SecondaryBlueButton>
+              </SecondaryOverBlueButton>
               <SecondaryGreyButton className="mb-5 w-64" onClick={onRemove}>
                 Очистить
               </SecondaryGreyButton>
@@ -401,11 +413,16 @@ const DocumentSearch = ({
           </div>
         )}
         <CreateWindow
-          open={open}
-          onReverse={changeModalState(false)}
-          changeModalState={changeModalState}
+          open={openCreateTemplateWindow}
+          onReverse={changeCreateTemplateWindowState(false)}
+          changeModalState={changeCreateTemplateWindowState}
           value={filter}
           type={'ddt_query_template'}
+        />
+        <SearchTemplateWindowList
+          open={openUseTemplateWindowState}
+          changeModalState={changeUseTemplateWindowState}
+          setGlobalFilter={setFilter}
         />
       </div>
     </ExportContext.Provider>

@@ -15,7 +15,6 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 const customMessagesFuncMap = {
