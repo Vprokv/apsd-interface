@@ -1,4 +1,10 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
 import {
@@ -35,6 +41,7 @@ import useParseConfig from '@/Utils/Parser'
 import { searchParserStages } from '@/Pages/Search/Parser'
 import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
 import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
+import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
 export const tableConfig = [
   {
@@ -204,8 +211,21 @@ const DocumentSearch = ({
   const { fields: parsedFields } = useParseConfig({
     value: filter,
     stages: searchParserStages,
-    fieldsDesign: useMemo(() => attributes.map(attributesAdapter), [attributes]),
+    fieldsDesign: useMemo(
+      () => attributes.map(attributesAdapter),
+      [attributes],
+    ),
   })
+
+  const [open, setOpenState] = useState(false)
+  const changeModalState = useCallback(
+    (nextState) => () => {
+      setOpenState(nextState)
+    },
+    [],
+  )
+
+  console.log(filter, 'filter')
 
   const fields = useMemo(
     () => [
@@ -320,6 +340,8 @@ const DocumentSearch = ({
     setSearchState([])
   }, [setSearchState, setTabState])
 
+  console.log(Object.keys(filter).length, 'Object.keys(filter) < ')
+
   return (
     <ExportContext.Provider value={'asas'}>
       <div className="flex flex-col w-full p-4 overflow-hidden">
@@ -362,7 +384,11 @@ const DocumentSearch = ({
               <SecondaryBlueButton className="mb-5 w-64" disabled>
                 Применить шаблон
               </SecondaryBlueButton>
-              <SecondaryBlueButton className="mb-5 w-64" disabled>
+              <SecondaryBlueButton
+                className="mb-5 w-64"
+                onClick={changeModalState(true)}
+                disabled={Object.keys(filter).length < 2}
+              >
                 Сохранить шаблон
               </SecondaryBlueButton>
               <SecondaryGreyButton className="mb-5 w-64" onClick={onRemove}>
@@ -374,6 +400,13 @@ const DocumentSearch = ({
             </div>
           </div>
         )}
+        <CreateWindow
+          open={open}
+          onReverse={changeModalState(false)}
+          changeModalState={changeModalState}
+          value={filter}
+          type={'ddt_query_template'}
+        />
       </div>
     </ExportContext.Provider>
   )

@@ -43,13 +43,13 @@ import DeleteIcon from '@/Icons/deleteIcon'
 import EditIcon from '@/Icons/editIcon'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import { useNavigate } from 'react-router-dom'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import dayjs from 'dayjs'
 import BaseCellName from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/BaseCellName'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import UpdateSettingsWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UpdateSettingsWindow'
+import UpdateSettingsWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UpdateUserSettingsWindow'
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import UserUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UserUpdateTemplateTab'
+import SearchUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchUpdateTemplateTab'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -108,13 +108,18 @@ const FilterForm = styled(Form)`
   grid-column-gap: 0.5rem;
 `
 
+const updateTabsMap = {
+  ddt_employee_template: UserUpdateTemplateTab,
+  ddt_query_template: SearchUpdateTemplateTab,
+  default: UserUpdateTemplateTab,
+}
+
 const Templates = (props) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
   const [selectState, setSelectState] = useState([])
   const { onInput, values, tabs } = useContext(TemplateTabStateContext)
   const [filter, setFilter] = useState({ type: 'ddt_employee_template' })
-  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
@@ -225,12 +230,15 @@ const Templates = (props) => {
 
   const onOpen = useCallback(
     (selectedState) => () => {
+      const { [filter.type]: TabComponent = updateTabsMap.default } =
+        updateTabsMap
+
       onInput((value) => [
         ...value,
         {
           caption: selectedState['dss_name'],
           Component: () => (
-            <UserUpdateTemplateTab {...selectedState} type={filter.type} />
+            <TabComponent {...selectedState} type={filter.type} />
           ),
           path: selectedState['dsid_template'],
         },

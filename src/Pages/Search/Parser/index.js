@@ -4,7 +4,7 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import Select from '@/Components/Inputs/Select'
+import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import Input from '@Components/Components/Inputs/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import parseFieldProps from '@/Utils/Parser/Stages/parseFieldProps/controller'
@@ -20,8 +20,8 @@ import parseVisibilityRule from '@/Utils/Parser/Stages/parseVisibilityRule'
 
 const fields = {
   Classification: Classification,
-  Combobox: Select,
-  TextualCombobox: Select,
+  Combobox: AutoLoadableSelect,
+  TextualCombobox: AutoLoadableSelect,
   DocStatus: NoFieldType,
   Orgstructure: UserSelect,
   UserSelect: BaseUserSelect,
@@ -72,7 +72,4 @@ const propsMap = {
 
 const searchParseFieldProps = parseFieldProps(propsMap, fields)
 
-export const searchParserStages = [
-  parseVisibilityRule,
-  searchParseFieldProps,
-]
+export const searchParserStages = [parseVisibilityRule, searchParseFieldProps]

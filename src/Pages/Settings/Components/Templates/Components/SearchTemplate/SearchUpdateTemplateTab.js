@@ -6,12 +6,19 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, TokenContext } from '@/contants'
-import { useOpenNotification } from '@/Components/Notificator'
+import { ApiContext, SETTINGS_TEMPLATES, TokenContext } from '@/contants'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 import useParseConfig from '@/Utils/Parser'
 import { searchParserStages } from '@/Pages/Search/Parser'
 import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
-import { URL_SEARCH_ATTRIBUTES, URL_TYPE_CONFIG } from '@/ApiList'
+import {
+  URL_CREATE_UPDATE,
+  URL_SEARCH_ATTRIBUTES,
+  URL_TYPE_CONFIG,
+} from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import ScrollBar from '@Components/Components/ScrollBar'
@@ -21,11 +28,14 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
-import {useNavigate, useParams} from 'react-router-dom'
+import {
+  parseSettingsFuncMap,
+  TemplateTabStateContext,
+} from '@/Pages/Settings/Components/Templates/constans'
+import { useNavigate } from 'react-router-dom'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
-
-const defaultFilter = { type: 'ddt_project_calc_type_doc' }
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import { AddUserOptionsFullName } from '@/Components/Inputs/UserSelect'
 
 const defaultOptions = [
   {
@@ -34,21 +44,20 @@ const defaultOptions = [
   },
 ]
 
-const SearchTemplateTab = (props) => {
-  const [filter, setFilter] = useState(defaultFilter)
+const SearchUpdateTemplateTab = ({
+  dss_name,
+  dss_json,
+  dsid_template,
+  type,
+  ...other
+}) => {
+  const [filter, setFilter] = useState(JSON.parse(dss_json))
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const { onInput } = useContext(TemplateTabStateContext)
+  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
   const navigate = useNavigate()
   const getNotification = useOpenNotification()
-  const [open, setOpenState] = useState(false)
-  const { ['*']: type } = useParams()
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenState(nextState)
-    },
-    [],
-  )
 
   const onReverse = useCallback(() => {
     navigate('/settings/templates')
@@ -109,6 +118,60 @@ const SearchTemplateTab = (props) => {
     }
   }, [api, filter.type, getNotification])
 
+  const reverseParseFromBackend = useMemo(() => {
+    const { branchesAccess, usersAccess, dsb_private } = other
+    if (dsb_private) {
+      return { privateAccess: 'user' }
+    } else if (branchesAccess.length > 0) {
+      return {
+        privateAccess: 'department',
+        branchesAccess: branchesAccess.map(({ dsid_branch }) => dsid_branch),
+      }
+    } else if (usersAccess.length > 0) {
+      return {
+        privateAccess: 'employee',
+        usersAccess: usersAccess.map(({ usersAccess }) => usersAccess),
+      }
+    } else {
+      return { privateAccess: 'organization' }
+    }
+  }, [other])
+
+  const onUpdate = useCallback(async () => {
+    try {
+      const { privateAccess } = reverseParseFromBackend
+      const { [privateAccess]: func } = parseSettingsFuncMap
+      const parseResult = func(other)
+      await api.post(URL_CREATE_UPDATE, {
+        template: {
+          json: filter,
+          ...parseResult,
+        },
+        type,
+        id: dsid_template,
+      })
+      setTabState({ loading: false, fetched: false })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Шаблон обновлен успешно',
+      })
+      onReverse()
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [
+    api,
+    dsid_template,
+    filter,
+    getNotification,
+    onReverse,
+    other,
+    reverseParseFromBackend,
+    setTabState,
+    type,
+  ])
+
   useEffect(loadData, [loadData])
 
   return (
@@ -125,9 +188,9 @@ const SearchTemplateTab = (props) => {
         </ScrollBar>
         <div className="flex items-start h-32">
           <SecondaryOverBlueButton
-            disabled={Object.keys(filter).length < 2}
+            disabled={dss_json === JSON.stringify(filter)}
             className=" w-64"
-            onClick={changeModalState(true)}
+            onClick={onUpdate}
           >
             Сохранить шаблон
           </SecondaryOverBlueButton>
@@ -136,17 +199,10 @@ const SearchTemplateTab = (props) => {
           </SecondaryGreyButton>
         </div>
       </div>
-      <CreateWindow
-        open={open}
-        onReverse={onReverse}
-        changeModalState={changeModalState}
-        value={filter}
-        type={type}
-      />
     </div>
   )
 }
 
-SearchTemplateTab.propTypes = {}
+SearchUpdateTemplateTab.propTypes = {}
 
-export default SearchTemplateTab
+export default SearchUpdateTemplateTab
