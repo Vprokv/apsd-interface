@@ -431,8 +431,6 @@ OrgStructureWindow.defaultProps = {
 const OrgStructureWindowWrapper = ({
   onClose,
   open,
-  // type, //TODO параметры упоминались в старых задачах,но не были описаны в новых, пока отключен
-  // docId,
   filter: baseFilter,
   ...props
 }) => {

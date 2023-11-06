@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import { SingleSelect } from '@Components/Components/Tables/Plugins/selectable'
+import {FlatSelect, SingleSelect} from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell, {
   sizes as baseCellSize,
@@ -37,7 +37,7 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
-    driver: SingleSelect,
+    driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'dsid_template',
@@ -53,7 +53,6 @@ const FilterForm = styled(Form)`
 `
 
 const WindowContainer = styled.div`
-  height: inherit;
   width: 100%;
 `
 
@@ -89,7 +88,7 @@ const columns = [
             PRESENT_DATE_FORMAT,
           )
         }
-        className="flex items-center"
+        className="flex items-center h-10"
       />
     ),
     sizes: baseCellSize,
@@ -97,13 +96,14 @@ const columns = [
 ]
 
 const SearchTemplateWindowList = ({
-  open,
-  changeModalState,
-  setGlobalFilter,
+  onClose,
+  onInput,
+  id,
+  setModalWindowOptions,
 }) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
-  const [selectState, setSelectState] = useState({})
+  const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
@@ -119,7 +119,7 @@ const SearchTemplateWindowList = ({
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_LIST,
+    stateId: SETTINGS_TEMPLATES,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -161,7 +161,7 @@ const SearchTemplateWindowList = ({
     try {
       const { data } = await api.post(URL_TEMPLATE_LIST, {
         ...filter,
-        type: 'ddt_query_template',
+        type: 'ddt_employee_template',
         sort: [
           {
             key: 'r_creation_date',
@@ -178,65 +178,60 @@ const SearchTemplateWindowList = ({
 
   useAutoReload(loadData, tabItemState)
 
-  const onCreate = useCallback(() => {
-    setGlobalFilter(selectState.dss_json)
-    changeModalState(false)()
-  }, [changeModalState, selectState.dss_json, setGlobalFilter])
+  const handleClick = useCallback(() => {
+    onInput(selectState, id)
+    // sendValue({ valueKeys, cache })
+    onClose()
+  }, [onInput, selectState, id, onClose])
 
   return (
-    <StandardSizeModalWindow
-      title="Выберите шаблон поиска"
-      open={open}
-      onClose={changeModalState(false)}
-    >
-      <WindowContainer>
-        <div className="h-full">
-          <div className="flex form-element-sizes-32">
-            <FilterForm
-              fields={filterFields}
-              inputWrapper={emptyWrapper}
-              value={filter}
-              onInput={setFilter}
-            />
-          </div>
-          <ListTable
-            className="mt-2  h-full"
-            // rowComponent={useMemo(
-            //   () => (props) => <RowComponent onClick={onOpen} {...props} />,
-            //   [onOpen],
-            // )}
-            value={content}
-            columns={columns}
-            plugins={plugins}
-            headerCellComponent={HeaderCell}
-            selectState={selectState}
-            onSelect={setSelectState}
-            sortQuery={sortQuery}
-            onSort={onSort}
-            loading={loading}
+    <WindowContainer className="p-4 w-full">
+      <div className="h-full w-full">
+        <div className="flex form-element-sizes-32">
+          <FilterForm
+            fields={filterFields}
+            inputWrapper={emptyWrapper}
+            value={filter}
+            onInput={setFilter}
           />
-          <Pagination
-            className="mt-2"
-            limit={paginationState.limit}
-            page={paginationState.page}
-            setLimit={setLimit}
-            setPage={setPage}
-            total={total}
-          >
-            <UnderButtons
-              leftStyle="width-min mr-2"
-              rightStyle="width-min"
-              leftFunc={changeModalState(false)}
-              leftLabel="Закрыть"
-              rightLabel="Выбрать"
-              disabled={Object.keys(selectState).length < 1}
-              rightFunc={onCreate}
-            />
-            {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
-          </Pagination>
         </div>
-      </WindowContainer>
-    </StandardSizeModalWindow>
+        <ListTable
+          className="mt-2  h-full"
+          // rowComponent={useMemo(
+          //   () => (props) => <RowComponent onClick={onOpen} {...props} />,
+          //   [onOpen],
+          // )}
+          value={content}
+          columns={columns}
+          plugins={plugins}
+          headerCellComponent={HeaderCell}
+          selectState={selectState}
+          onSelect={setSelectState}
+          sortQuery={sortQuery}
+          onSort={onSort}
+          loading={loading}
+        />
+        <Pagination
+          className="mt-2"
+          limit={paginationState.limit}
+          page={paginationState.page}
+          setLimit={setLimit}
+          setPage={setPage}
+          total={total}
+        >
+          <UnderButtons
+            leftStyle="width-min mr-2"
+            rightStyle="width-min"
+            leftFunc={onClose}
+            leftLabel="Закрыть"
+            rightLabel="Выбрать"
+            disabled={Object.keys(selectState).length < 1}
+            rightFunc={handleClick}
+          />
+          {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
+        </Pagination>
+      </div>
+    </WindowContainer>
   )
 }
 

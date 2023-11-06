@@ -5,9 +5,10 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import {useNavigate, useParams} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
+import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
 
 const UserTemplateTab = (props) => {
   const [value, onInputUser] = useState([])
@@ -34,6 +35,7 @@ const UserTemplateTab = (props) => {
   return (
     <div className="m-4 w-3/5">
       <UserSelect
+        WindowComponent={OrgStructureComponentWithTemplateWindowWrapper}
         value={value}
         onInput={onInputUser}
         multiple={true}

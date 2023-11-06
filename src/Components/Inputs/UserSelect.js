@@ -43,7 +43,13 @@ export const SearchButton = styled.button.attrs({ type: 'button' })`
 `
 
 const UserSelect = (props) => {
-  const { loadFunction, filter: baseFilter, disabled, SelectComponent } = props
+  const {
+    loadFunction,
+    filter: baseFilter,
+    disabled,
+    SelectComponent,
+    WindowComponent,
+  } = props
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter })
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
@@ -87,7 +93,7 @@ const UserSelect = (props) => {
         >
           <Icon icon={searchIcon} />
         </SearchButton>
-        <AddEmployee
+        <WindowComponent
           {...props}
           open={addEmployeeWindow}
           onClose={closeEmployeeWindow}
@@ -100,6 +106,7 @@ const UserSelect = (props) => {
 UserSelect.propTypes = {
   loadFunction: PropTypes.func,
   SelectComponent: PropTypes.node,
+  WindowComponent: PropTypes.node,
   source: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   valueKey: PropTypes.string,
@@ -114,5 +121,6 @@ UserSelect.defaultProps = {
   disabled: false,
   source: '',
   SelectComponent: LoadableAlwaysRenderValuesSelect,
+  WindowComponent: AddEmployee,
 }
 export default UserSelect
