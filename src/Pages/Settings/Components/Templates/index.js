@@ -2,7 +2,9 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   ApiContext,
+  DEFAULT_DATE_FORMAT,
   ITEM_TASK,
+  PRESENT_DATE_FORMAT,
   SETTINGS_TEMPLATES,
   TASK_LIST,
 } from '@/contants'
@@ -10,7 +12,7 @@ import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_TEMPLATE_LIST } from '@/ApiList'
+import { URL_CREATE_DELETE, URL_TEMPLATE, URL_TEMPLATE_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { Select } from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -30,18 +32,24 @@ import Pagination from '@/Components/Pagination'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import usePagination from '@Components/Logic/usePagination'
-import { useOpenNotification } from '@/Components/Notificator'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import Tips from '@/Components/Tips'
 import DeleteIcon from '@/Icons/deleteIcon'
 import EditIcon from '@/Icons/editIcon'
-import UserEmployeeTemplate from '@/Pages/Settings/Components/Templates/Components/UserTemplate'
-import SearchTemplate from '@/Pages/Settings/Components/Templates/Components/SearchTemplate'
-import { TabStateContext } from '@/Pages/Search/Pages/constans'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import { useNavigate } from 'react-router-dom'
-import { TabStateManipulation } from '@Components/Logic/Tab'
+import dayjs from 'dayjs'
+import BaseCellName from '@/Pages/Tasks/item/Pages/Subscription/Components/CreateSubscriptionWindow/Components/BaseCellName'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import UpdateSettingsWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UpdateUserSettingsWindow'
+import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
+import UserUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UserUpdateTemplateTab'
+import SearchUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchUpdateTemplateTab'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -49,7 +57,8 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'key',
+    valueKey: 'dsid_template',
+    returnObjects: true,
   },
 }
 
@@ -64,18 +73,30 @@ const columns = [
     id: 'dss_note',
     label: 'Примечание',
     component: BaseCell,
-    sizes: baseCellSize,
+    sizes: 400,
   },
   {
     id: 'eventName',
     label: 'Автор',
-    component: BaseCell,
+    component: ({ ParentValue: { author } }) => (
+      <BaseCellName value={author} className="font-size-12" />
+    ),
     sizes: baseCellSize,
   },
   {
     id: 'eventName',
     label: 'Дата создания',
-    component: BaseCell,
+    component: ({ ParentValue: { r_creation_date } }) => (
+      <BaseCell
+        value={
+          r_creation_date &&
+          dayjs(r_creation_date, DEFAULT_DATE_FORMAT).format(
+            PRESENT_DATE_FORMAT,
+          )
+        }
+        className="flex items-center"
+      />
+    ),
     sizes: baseCellSize,
   },
 ]
@@ -87,10 +108,10 @@ const FilterForm = styled(Form)`
   grid-column-gap: 0.5rem;
 `
 
-const windowMap = {
-  ddt_employee_template: UserEmployeeTemplate,
-  ddt_query_template: SearchTemplate,
-  default: UserEmployeeTemplate,
+const updateTabsMap = {
+  ddt_employee_template: UserUpdateTemplateTab,
+  ddt_query_template: SearchUpdateTemplateTab,
+  default: UserUpdateTemplateTab,
 }
 
 const Templates = (props) => {
@@ -99,7 +120,6 @@ const Templates = (props) => {
   const [selectState, setSelectState] = useState([])
   const { onInput, values, tabs } = useContext(TemplateTabStateContext)
   const [filter, setFilter] = useState({ type: 'ddt_employee_template' })
-  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
@@ -111,7 +131,8 @@ const Templates = (props) => {
   const navigate = useNavigate()
 
   const {
-    tabState: { data: { content = [], total = 0 } = {} },
+    // tabState: { data: { content = [], total = 0 } = {} },
+    tabState: { data: content, total = 0, loading },
     tabState,
     setTabState,
   } = tabItemState
@@ -184,15 +205,19 @@ const Templates = (props) => {
     try {
       const { data } = await api.post(URL_TEMPLATE_LIST, {
         ...filter,
+        sort: [
+          {
+            key: 'r_creation_date',
+            direction: 'DESC',
+          },
+        ],
       })
-      // changeModalState(true)()
-      // setListTemplates(data)
       return data
     } catch (e) {
       const { response: { status, data } = {} } = e
-      // getNotification(defaultFunctionsMap[status](data))
+      getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter])
+  }, [api, filter, getNotification])
 
   const onCreate = useCallback(
     (type) => () => {
@@ -203,9 +228,50 @@ const Templates = (props) => {
     [navigate, onInput, values],
   )
 
+  const onOpen = useCallback(
+    (selectedState) => () => {
+      const { [filter.type]: TabComponent = updateTabsMap.default } =
+        updateTabsMap
+
+      onInput((value) => [
+        ...value,
+        {
+          caption: selectedState['dss_name'],
+          Component: () => (
+            <TabComponent {...selectedState} type={filter.type} />
+          ),
+          path: selectedState['dsid_template'],
+        },
+      ])
+      navigate(`/settings/${selectedState['dsid_template']}`)
+    },
+    [filter.type, navigate, onInput],
+  )
+
   const onDelete = useCallback(async () => {
-    const data = await api.post({ ids: selectState, type: filter.type })
-  }, [api, filter.type, selectState])
+    try {
+      await api.post(URL_CREATE_DELETE, {
+        ids: selectState.map(({ dsid_template }) => dsid_template),
+        type: filter.type,
+      })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Шаблон удален успешно',
+      })
+      setTabState({ loading: false, fetched: false })
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter.type, getNotification, selectState, setTabState])
+
+  const onEdit = useCallback(() => {
+    setActionComponent({
+      Component: (props) => (
+        <UpdateSettingsWindow data={selectState[0]} {...props} />
+      ),
+    })
+  }, [selectState])
 
   useAutoReload(loadData, tabItemState)
 
@@ -229,17 +295,14 @@ const Templates = (props) => {
           <Tips text="Редактировать">
             <ButtonForIcon
               className="mr-2"
-              // onClick={onDelete}
-              // disabled={!selectState.length}
+              onClick={onEdit}
+              disabled={selectState.length !== 1}
             >
               <Icon icon={EditIcon} />
             </ButtonForIcon>
           </Tips>
           <Tips text="Удалить">
-            <ButtonForIcon
-            // onClick={onDelete}
-            // disabled={!selectState.length}
-            >
+            <ButtonForIcon onClick={onDelete} disabled={!selectState.length}>
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
@@ -247,11 +310,10 @@ const Templates = (props) => {
       </div>
       <ListTable
         className="mt-2"
-        // rowComponent={useMemo(
-        //   () => (props) =>
-        //     <RowComponent onDoubleClick={handleDoubleClick} {...props} />,
-        //   [handleDoubleClick],
-        // )}
+        rowComponent={useMemo(
+          () => (props) => <RowComponent onClick={onOpen} {...props} />,
+          [onOpen],
+        )}
         value={content}
         columns={columns}
         plugins={plugins}
@@ -260,7 +322,7 @@ const Templates = (props) => {
         onSelect={setSelectState}
         sortQuery={sortQuery}
         onSort={onSort}
-        returnOb={true}
+        loading={loading}
       />
       <Pagination
         className="mt-2"

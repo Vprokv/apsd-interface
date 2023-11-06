@@ -8,15 +8,10 @@ import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { SEARCH_PAGE, SEARCH_PAGE_DOCUMENT } from '@/contants'
-import {
-  ButtonForIcon,
-  LoadableButtonForIcon,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import { SEARCH_PAGE_DOCUMENT } from '@/contants'
+import { LoadableButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
-import { ExportContext } from '@/Pages/Search/Pages/constans'
 import Tips from '@/Components/Tips'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }

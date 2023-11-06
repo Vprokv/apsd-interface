@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { WithValidationForm } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -7,9 +13,15 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import Input from '@/Components/Fields/Input'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { URL_CREATE_TEMPLATE, URL_REPORTS_BRANCH } from '@/ApiList'
-import { ApiContext } from '@/contants'
-import UserSelect from '@/Components/Inputs/UserSelect'
+import {
+  URL_CREATE_TEMPLATE,
+  URL_CREATE_UPDATE,
+  URL_REPORTS_BRANCH,
+} from '@/ApiList'
+import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
+import UserSelect, {
+  AddUserOptionsFullName,
+} from '@/Components/Inputs/UserSelect'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -17,13 +29,16 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import { parseSettingsFuncMap } from '@/Pages/Settings/Components/Templates/constans'
+import { LOGIN_PAGE_PATH } from '@/routePaths'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
   200: () => {
     return {
       type: NOTIFICATION_TYPE_SUCCESS,
-      message: 'Шаблон создан успешно',
+      message: 'Шаблон обновлен успешно',
     }
   },
 }
@@ -33,25 +48,44 @@ const rules = {
   privateAccess: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const funcMap = {
-  user: () => ({ privateAccess: true }),
-  organization: () => ({ allAccess: true }),
-  department: ({ branchesAccess }) => ({ branchesAccess }),
-  employee: ({ usersAccess }) => ({
-    usersAccess: usersAccess?.map((val) => ({ emplId: val, val })),
-  }),
-}
-
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;
   //height: 72.65%;
   margin: auto;
 `
 
-const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
-  const [filter, setFilter] = useState({})
+const UpdateSettingsWindow = ({ onClose, open, type, data }) => {
+  const { dss_name, dss_note, branchesAccess, usersAccess, dsid_template } =
+    data
+
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
+  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
+
+  const reverseParseFromBackend = useMemo(() => {
+    const { branchesAccess, usersAccess, dsb_private } = data
+    if (dsb_private) {
+      return { privateAccess: 'user' }
+    } else if (branchesAccess.length > 0) {
+      return {
+        privateAccess: 'department',
+        branchesAccess: branchesAccess?.map(({ dsid_branch }) => dsid_branch),
+      }
+    } else if (usersAccess.length > 0) {
+      return {
+        privateAccess: 'employee',
+        usersAccess: usersAccess.map(({ emplId }) => emplId),
+      }
+    } else {
+      return { privateAccess: 'organization' }
+    }
+  }, [data])
+
+  const [filter, setFilter] = useState({
+    dssName: dss_name,
+    dssNote: dss_note,
+    ...reverseParseFromBackend,
+  })
 
   const fields = useMemo(
     () =>
@@ -103,6 +137,10 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
           labelKey: 'name',
           placeholder: 'Тип файла',
           multiple: true,
+          options: branchesAccess.map(({ dsid_branch, dss_branch_name }) => ({
+            id: dsid_branch,
+            name: dss_branch_name,
+          })),
           loadFunction: async (query) => {
             const {
               data: { content },
@@ -120,6 +158,7 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
         {
           id: 'usersAccess',
           component: UserSelect,
+          options: usersAccess.map(AddUserOptionsFullName),
           multiple: true,
           className: 'font-size-12',
           placeholder: 'Выборите сотрудников',
@@ -127,43 +166,42 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
           show: filter?.privateAccess === 'employee',
         },
       ].filter(({ show }) => show),
-    [api, filter],
+    [api, branchesAccess, filter, usersAccess],
   )
 
-  const onCreate = useCallback(async () => {
+  const onUpdate = useCallback(async () => {
     try {
       const { privateAccess, dssName, dssNote } = filter
-      const { [privateAccess]: func } = funcMap
+      const { [privateAccess]: func } = parseSettingsFuncMap
       const parseResult = func(filter)
-      const data = await api.post(URL_CREATE_TEMPLATE, {
+      const data = await api.post(URL_CREATE_UPDATE, {
         template: {
           dssName,
           dssNote,
           ...parseResult,
-          json: value,
         },
         type,
+        id: dsid_template,
       })
-
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[data.status]())
-      onReverse()
+      onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, filter, getNotification, onReverse, type, value])
+  }, [api, dsid_template, filter, getNotification, onClose, setTabState, type])
 
   const handleClick = useCallback(() => {
-    changeModalState(false)()
-    setFilter({})
-  }, [changeModalState])
+    onClose()
+  }, [onClose])
 
   return (
     <div>
       <StandardSizeModalWindow
-        title="Сохранить шаблон"
+        title={`Редактирование шаблона "${dss_name}"`}
         open={open}
-        onClose={changeModalState(false)}
+        onClose={onClose}
       >
         <>
           <WithValidationForm
@@ -181,7 +219,7 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
               leftFunc={handleClick}
               leftLabel="Отменить"
               rightLabel="Сохранить"
-              rightFunc={onCreate}
+              rightFunc={onUpdate}
             />
           </WithValidationForm>
         </>
@@ -190,6 +228,6 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
   )
 }
 
-CreateWindow.propTypes = {}
+UpdateSettingsWindow.propTypes = {}
 
-export default CreateWindow
+export default UpdateSettingsWindow

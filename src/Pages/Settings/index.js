@@ -9,11 +9,12 @@ import NotificationItem from './Components/Notification'
 import Templates from '@/Pages/Settings/Components/Templates'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import UserTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/UserTemplateTab'
+import SearchTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchTemplateTab'
 
 const overTemplateMap = {
   ddt_query_template: {
     caption: 'Шаблон поиска',
-    Component: Templates,
+    Component: SearchTemplateTab,
     path: 'ddt_query_template',
   },
   ddt_employee_template: {
@@ -64,8 +65,8 @@ const Settings = () => {
   )
 
   return (
-    <div>
-      <div className="flex-container w-full overflow-hidden">
+    <div className="h-full">
+      <div className="flex-container w-full overflow-hidden h-full">
         <NavigationContainer>{headers}</NavigationContainer>
         <TemplateTabStateContext.Provider
           value={{ onInput: setTabs, values: overTemplateMap, tabs }}

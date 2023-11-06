@@ -5,13 +5,13 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import { useNavigate } from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
 const UserTemplateTab = (props) => {
   const [value, onInputUser] = useState([])
-
+  const { ['*']: type } = useParams()
   const { onInput } = useContext(TemplateTabStateContext)
   const [open, setOpenState] = useState(false)
   const navigate = useNavigate()
@@ -56,6 +56,7 @@ const UserTemplateTab = (props) => {
         onReverse={onReverse}
         changeModalState={changeModalState}
         value={value}
+        type={type}
       />
     </div>
   )
