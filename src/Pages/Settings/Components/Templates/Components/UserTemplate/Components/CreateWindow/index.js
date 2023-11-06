@@ -48,11 +48,10 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const CreateWindow = ({ changeModalState, open, value, onReverse }) => {
+const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
   const [filter, setFilter] = useState({})
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
-  const { ['*']: type } = useParams()
 
   const fields = useMemo(
     () =>
