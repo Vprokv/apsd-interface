@@ -60,6 +60,7 @@ import { useRecoilState } from 'recoil'
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import ResultCell from '@/Pages/Tasks/item/Pages/Contain/Components/ResultCell'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -103,18 +104,7 @@ const columns = [
   {
     id: 'result',
     label: 'Результат',
-    component: ({ ParentValue: { delayDevelopmentDay, delayApprovalDay } }) => {
-      return (
-        <BaseCell
-          className={`flex items-center h-full w-full ${
-            (delayDevelopmentDay || delayApprovalDay) &&
-            (delayDevelopmentDay || delayApprovalDay) > 0
-              ? 'bg-light-red'
-              : ''
-          }`}
-        />
-      )
-    },
+    component: ResultCell,
     className: 'flex font-size-12',
   },
   {

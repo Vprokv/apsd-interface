@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   ContHover,
@@ -23,7 +23,7 @@ const MoreActionComponent = ({ ParentValue: { type, id } }) => {
 
   return (
     <div className="flex items-center w-full justify-center">
-      <ContHover>
+      <ContHover opacity={show ? 1 : undefined}>
         <ThreeDotButton
         // loading={loading}
         // disabled={loading}
@@ -55,6 +55,8 @@ const MoreActionComponent = ({ ParentValue: { type, id } }) => {
   )
 }
 
-MoreActionComponent.propTypes = {}
+MoreActionComponent.propTypes = {
+  ParentValue: PropTypes.object,
+}
 
 export default MoreActionComponent

@@ -26,10 +26,14 @@ export const ContHover = styled.div`
   //z-index: 4;
   display: flex;
   height: 100%;
-  opacity: 0;
+  transition: opacity ease-in-out 250ms;
   //border: 2px solid red;
+  opacity: var(--cont-hover-opacity, 0);
+  :not(&:hover) {
+    --cont-hover-opacity: ${({ opacity = 0 }) => opacity};
+  }
   &:hover {
-    opacity: 1;
+    --cont-hover-opacity: 1;
   }
 `
 

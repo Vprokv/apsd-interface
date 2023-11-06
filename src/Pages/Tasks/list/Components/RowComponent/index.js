@@ -5,7 +5,7 @@ import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTable
 const RowTableComponent = styled.div`
   &:hover {
     ${ContHover} {
-      opacity: 1;
+      --cont-hover-opacity: 1;
     }
 
     background-color: #e3e9f8;
