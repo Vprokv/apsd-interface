@@ -31,7 +31,7 @@ export const useCreateSubscription = ({
 }) => {
   const getNotification = useOpenNotification()
   const subscribers = useMemo(() => {
-    return ids.reduce((acc, val) => {
+    return ids?.reduce((acc, val) => {
       const obj = { id: val, channels: [] }
       if (sedo.includes(val)) {
         obj.channels.push('sedo')

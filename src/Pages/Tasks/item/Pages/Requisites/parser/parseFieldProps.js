@@ -8,6 +8,7 @@ import {
 import customValuesStage from './customValuesStage'
 import addUserFullNameInOptionsStage from './addUserFullNameInOptionsStage'
 import orgstructureAddFilterSourceStage from './orgstructureAddFilterSourceStage'
+import parsePropsRequisites from '@/Pages/Tasks/item/Pages/Requisites/parser/parsePropsComponent'
 
 export const propsMap = {
   Combobox: [customValuesStage, ...comboboxProps],
@@ -16,6 +17,7 @@ export const propsMap = {
     customValuesStage,
     addUserFullNameInOptionsStage,
     orgstructureAddFilterSourceStage,
+    parsePropsRequisites,
     ...orgstructureProps,
   ],
 }

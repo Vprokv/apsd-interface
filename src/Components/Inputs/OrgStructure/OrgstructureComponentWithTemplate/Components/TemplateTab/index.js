@@ -39,6 +39,7 @@ import ShowTemplate from '@/Components/Inputs/OrgStructure/OrgstructureComponent
 import { TemplateContext } from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/constans'
 import ShowTemplateButtonComponent from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/Components/TemplateTab/ShowTemplate/ShowTemplateButtonComponent'
 import Button from '@/Components/Button'
+import ScrollBar from '@Components/Components/ScrollBar'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -316,8 +317,8 @@ const SearchTemplateWindowList = ({
 
   return (
     <TemplateContext.Provider value={onShowComponent}>
-      <WindowContainer className="p-4 w-full">
-        <div className="h-full w-full">
+      <div className=" p-4 overflow-hidden">
+        <div className="flex flex-container h-full overflow-hidden">
           <div className="flex form-element-sizes-32">
             <FilterForm
               fields={filterFields}
@@ -326,23 +327,26 @@ const SearchTemplateWindowList = ({
               onInput={setFilter}
             />
           </div>
-          <ListTable
-            className="mt-2  h-full"
-            rowComponent={useMemo(
-              () => (props) =>
-                <RowComponent onClick={onSelectRow} {...props} />,
-              [onSelectRow],
-            )}
-            value={content}
-            columns={columns}
-            plugins={plugins}
-            headerCellComponent={HeaderCell}
-            selectState={selectTemplateState}
-            onSelect={onSelectRow}
-            sortQuery={sortQuery}
-            onSort={onSort}
-            loading={loading}
-          />
+          <ScrollBar>
+            <ListTable
+              className="mt-2  h-full"
+              rowComponent={useMemo(
+                () => (props) =>
+                  <RowComponent onClick={onSelectRow} {...props} />,
+                [onSelectRow],
+              )}
+              value={content}
+              columns={columns}
+              plugins={plugins}
+              headerCellComponent={HeaderCell}
+              selectState={selectTemplateState}
+              onSelect={onSelectRow}
+              sortQuery={sortQuery}
+              onSort={onSort}
+              loading={loading}
+            />
+          </ScrollBar>
+
           <div className="flex items-center">
             <Pagination
               className="mt-2 w-full "
@@ -351,7 +355,7 @@ const SearchTemplateWindowList = ({
               setLimit={setLimit}
               setPage={setPage}
             />
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end mt-auto mt-auto">
               <Button
                 className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
                 onClick={onClose}
@@ -372,7 +376,7 @@ const SearchTemplateWindowList = ({
           onClose={() => setShowTemplateWindowState(false)}
           showTemplate={showTemplate}
         />
-      </WindowContainer>
+      </div>
     </TemplateContext.Provider>
   )
 }

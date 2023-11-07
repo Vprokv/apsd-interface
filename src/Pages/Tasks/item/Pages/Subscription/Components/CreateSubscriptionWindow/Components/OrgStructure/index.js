@@ -2,9 +2,11 @@ import { useCallback, useState } from 'react'
 import Button from '../../../../../../../../../Components/Button'
 import AddEmployee from '../../../../../../../../../Components/Inputs/OrgStructure/UserSearchWindow'
 import { useParams } from 'react-router-dom'
+import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
 
 const OrgStructure = (props) => {
   const { id } = useParams()
+  const { sendValue } = props
   const [addEmployeeWindow, setAddEmployeeWindowState] = useState(false)
   const openEmployeeWindow = useCallback(
     () => setAddEmployeeWindowState(true),
@@ -23,13 +25,15 @@ const OrgStructure = (props) => {
       >
         Добавить пользователей
       </Button>
-      <AddEmployee
+      <OrgStructureComponentWithTemplateWindowWrapper
         {...props}
         multiple={true}
         valueKey={'emplId'}
+        // WindowComponent={OrgStructureComponentWithTemplateWindowWrapper}
         open={addEmployeeWindow}
         onClose={closeEmployeeWindow}
         docId={id}
+        onInput={sendValue}
       />
     </>
   )
