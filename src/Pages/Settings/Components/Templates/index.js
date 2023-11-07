@@ -79,7 +79,10 @@ const columns = [
     id: 'eventName',
     label: 'Автор',
     component: ({ ParentValue: { author } }) => (
-      <BaseCellName value={author} className="font-size-12" />
+      <BaseCellName
+        value={author}
+        className="font-size-12 h-10 flex items-center"
+      />
     ),
     sizes: baseCellSize,
   },

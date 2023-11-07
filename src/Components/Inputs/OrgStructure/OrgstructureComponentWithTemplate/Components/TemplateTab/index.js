@@ -2,7 +2,10 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import {FlatSelect, SingleSelect} from '@Components/Components/Tables/Plugins/selectable'
+import {
+  FlatSelect,
+  SingleSelect,
+} from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell, {
   sizes as baseCellSize,
@@ -14,12 +17,10 @@ import {
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
   SETTINGS_TEMPLATES,
-  TASK_LIST,
 } from '@/contants'
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -33,6 +34,11 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
+import ShowTemplate from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/Components/TemplateTab/ShowTemplate'
+import { TemplateContext } from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/constans'
+import ShowTemplateButtonComponent from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/Components/TemplateTab/ShowTemplate/ShowTemplateButtonComponent'
+import Button from '@/Components/Button'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -93,18 +99,30 @@ const columns = [
     ),
     sizes: baseCellSize,
   },
+  {
+    id: 'view',
+    label: '',
+    component: ShowTemplateButtonComponent,
+  },
 ]
 
 const SearchTemplateWindowList = ({
   onClose,
   onInput,
   id,
+  valueKey,
+  // modalWindowOptions,
   setModalWindowOptions,
+  selectState,
+  setSelectState,
+  returnObjects,
 }) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
-  const [selectState, setSelectState] = useState([])
+  const [selectTemplateState, setSelectTemplateState] = useState([])
   const [filter, setFilter] = useState({})
+  const [showTemplateWindowState, setShowTemplateWindowState] = useState(false)
+  const [showTemplate, setShowTemplate] = useState({})
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
     key: 'creationDate',
@@ -178,60 +196,184 @@ const SearchTemplateWindowList = ({
 
   useAutoReload(loadData, tabItemState)
 
+  const onSelectRow = useCallback(
+    (val) => () => {
+      const { dsid_template: valKey, dss_json } = val
+      const includesValue = selectTemplateState.find(({ dsid_template }) => {
+        return dsid_template === valKey
+      })
+
+      const checkIncludesFunc = ({ acc, obj }) =>
+        acc?.find(
+          ({ [valueKey]: searchValue }) => searchValue === obj[valueKey],
+        )
+
+      const addNewValue = (json) => {
+        setModalWindowOptions((modalVal) => {
+          return json.reduce(
+            (acc, obj) => {
+              if (!checkIncludesFunc({ acc, obj })) {
+                acc.splice(0, 0, obj)
+              }
+              return acc
+            },
+            [...modalVal],
+          )
+        })
+
+        setSelectState((selectVal) => {
+          const valueFunc = (addObj) =>
+            returnObjects ? addObj : addObj[valueKey]
+
+          return json.reduce(
+            (acc, obj) => {
+              if (!checkIncludesFunc({ acc, obj })) {
+                acc.splice(0, 0, valueFunc(obj))
+              }
+              return acc
+            },
+            [...selectVal],
+          )
+        })
+
+        setSelectTemplateState((prev) => {
+          const nextValue = prev.length ? [...prev] : []
+          nextValue.splice(0, 0, val)
+          return nextValue
+        })
+      }
+
+      const deleteFilterValue = (json) => {
+        setModalWindowOptions((val) => {
+          return json.reduce(
+            (acc, obj) => {
+              if (checkIncludesFunc({ acc, obj })) {
+                acc.splice(
+                  acc.findIndex(({ [valueKey]: key }) => key === obj[valueKey]),
+                  1,
+                )
+              }
+              return acc
+            },
+            [...val],
+          )
+        })
+
+        setSelectState((val) => {
+          const parseFunc = returnObjects
+            ? (val) => val[valueKey]
+            : (val) => val
+          return json.reduce(
+            (acc, obj) => {
+              if (checkIncludesFunc({ acc, obj })) {
+                acc.splice(
+                  acc.findIndex((val) => parseFunc(val) === obj[valueKey]),
+                  1,
+                )
+              }
+              return acc
+            },
+            [...val],
+          )
+        })
+
+        setSelectTemplateState((prev) => {
+          const prevVal = [...prev]
+
+          prevVal.splice(
+            prevVal.findIndex(({ [valueKey]: key }) => key === val[valueKey]),
+            1,
+          )
+          return prevVal
+        })
+      }
+
+      return includesValue
+        ? deleteFilterValue(JSON.parse(dss_json))
+        : addNewValue(JSON.parse(dss_json))
+    },
+    [
+      returnObjects,
+      selectTemplateState,
+      setModalWindowOptions,
+      setSelectState,
+      valueKey,
+    ],
+  )
+
   const handleClick = useCallback(() => {
     onInput(selectState, id)
-    // sendValue({ valueKeys, cache })
     onClose()
   }, [onInput, selectState, id, onClose])
 
+  const onShowComponent = useCallback(
+    (val) => () => {
+      setShowTemplate(val)
+      setShowTemplateWindowState(true)
+    },
+    [],
+  )
+
   return (
-    <WindowContainer className="p-4 w-full">
-      <div className="h-full w-full">
-        <div className="flex form-element-sizes-32">
-          <FilterForm
-            fields={filterFields}
-            inputWrapper={emptyWrapper}
-            value={filter}
-            onInput={setFilter}
+    <TemplateContext.Provider value={onShowComponent}>
+      <WindowContainer className="p-4 w-full">
+        <div className="h-full w-full">
+          <div className="flex form-element-sizes-32">
+            <FilterForm
+              fields={filterFields}
+              inputWrapper={emptyWrapper}
+              value={filter}
+              onInput={setFilter}
+            />
+          </div>
+          <ListTable
+            className="mt-2  h-full"
+            rowComponent={useMemo(
+              () => (props) =>
+                <RowComponent onClick={onSelectRow} {...props} />,
+              [onSelectRow],
+            )}
+            value={content}
+            columns={columns}
+            plugins={plugins}
+            headerCellComponent={HeaderCell}
+            selectState={selectTemplateState}
+            onSelect={onSelectRow}
+            sortQuery={sortQuery}
+            onSort={onSort}
+            loading={loading}
           />
+          <div className="flex items-center">
+            <Pagination
+              className="mt-2 w-full "
+              limit={paginationState.limit}
+              page={paginationState.page}
+              setLimit={setLimit}
+              setPage={setPage}
+            />
+            <div className="flex items-center justify-end">
+              <Button
+                className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
+                onClick={onClose}
+              >
+                Закрыть
+              </Button>
+              <Button
+                className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center"
+                onClick={handleClick}
+              >
+                Выбрать
+              </Button>
+            </div>
+          </div>
         </div>
-        <ListTable
-          className="mt-2  h-full"
-          // rowComponent={useMemo(
-          //   () => (props) => <RowComponent onClick={onOpen} {...props} />,
-          //   [onOpen],
-          // )}
-          value={content}
-          columns={columns}
-          plugins={plugins}
-          headerCellComponent={HeaderCell}
-          selectState={selectState}
-          onSelect={setSelectState}
-          sortQuery={sortQuery}
-          onSort={onSort}
-          loading={loading}
+        <ShowTemplate
+          open={showTemplateWindowState}
+          onClose={() => setShowTemplateWindowState(false)}
+          showTemplate={showTemplate}
         />
-        <Pagination
-          className="mt-2"
-          limit={paginationState.limit}
-          page={paginationState.page}
-          setLimit={setLimit}
-          setPage={setPage}
-          total={total}
-        >
-          <UnderButtons
-            leftStyle="width-min mr-2"
-            rightStyle="width-min"
-            leftFunc={onClose}
-            leftLabel="Закрыть"
-            rightLabel="Выбрать"
-            disabled={Object.keys(selectState).length < 1}
-            rightFunc={handleClick}
-          />
-          {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
-        </Pagination>
-      </div>
-    </WindowContainer>
+      </WindowContainer>
+    </TemplateContext.Provider>
   )
 }
 

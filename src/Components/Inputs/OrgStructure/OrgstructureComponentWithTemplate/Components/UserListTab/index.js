@@ -322,8 +322,6 @@ const UserListTab = (props) => {
     [multiple, setSelectState],
   )
 
-  console.log(returnObjects, 'returnObjects')
-
   const handleSelectClick = useCallback(
     (obj) => () =>
       returnObjects ? withOptions(obj) : withoutOptions(obj[valueKey]),

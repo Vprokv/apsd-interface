@@ -1,6 +1,3 @@
-import React from "react";
+import React from 'react'
 
-export const OrgStructureWindowTabStateContext = React.createContext({
-  oninput: () => null,
-  values: {},
-})
+export const TemplateContext = React.createContext(() => null)

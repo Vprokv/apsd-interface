@@ -39,7 +39,8 @@ const OrgStructureComponentWithTemplateWindowWrapper = (props) => {
   useEffect(
     () =>
       setSelectState((val) => {
-        if (Object.keys(val)?.length < 1) {
+        console.log(val, 'val')
+        if (val && Object.keys(val)?.length < 1) {
           return value
         } else {
           return val

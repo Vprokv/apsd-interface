@@ -8,7 +8,7 @@ import Input from '@/Components/Fields/Input'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import { URL_CREATE_TEMPLATE, URL_REPORTS_BRANCH } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -16,6 +16,9 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import styled from 'styled-components'
+import useTabItem from '@Components/Logic/Tab/TabItem'
+import OrgStructureComponentWithTemplateWindowWrapper
+  from "@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -51,6 +54,8 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
   const [filter, setFilter] = useState({})
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
+
+  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
 
   const fields = useMemo(
     () =>
@@ -119,6 +124,7 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
         {
           id: 'usersAccess',
           component: UserSelect,
+          // WindowComponent: OrgStructureComponentWithTemplateWindowWrapper, //todo
           multiple: true,
           className: 'font-size-12',
           placeholder: 'Выборите сотрудников',
@@ -143,14 +149,14 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
         },
         type,
       })
-
+      setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[data.status]())
       onReverse()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, filter, getNotification, onReverse, type, value])
+  }, [api, filter, getNotification, onReverse, setTabState, type, value])
 
   const handleClick = useCallback(() => {
     changeModalState(false)()

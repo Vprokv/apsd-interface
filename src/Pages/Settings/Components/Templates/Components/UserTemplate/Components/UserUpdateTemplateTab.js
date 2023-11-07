@@ -22,6 +22,7 @@ import {
 } from '@/Components/Notificator'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
 
 const UserUpdateTemplateTab = ({
   dss_name,
@@ -115,6 +116,7 @@ const UserUpdateTemplateTab = ({
       <div className="font-medium mb-4">{`Шаблон ${dss_name}`}</div>
       <UserSelect
         options={JSON.parse(dss_json).map(AddUserOptionsFullName)}
+        WindowComponent={OrgStructureComponentWithTemplateWindowWrapper}
         value={value}
         onInput={onInputUser}
         multiple={true}

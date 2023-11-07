@@ -32,6 +32,8 @@ import styled from 'styled-components'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { parseSettingsFuncMap } from '@/Pages/Settings/Components/Templates/constans'
 import { LOGIN_PAGE_PATH } from '@/routePaths'
+import OrgStructureComponentWithTemplateWindowWrapper
+  from "@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -158,6 +160,7 @@ const UpdateSettingsWindow = ({ onClose, open, type, data }) => {
         {
           id: 'usersAccess',
           component: UserSelect,
+          // WindowComponent: OrgStructureComponentWithTemplateWindowWrapper,//todo
           options: usersAccess.map(AddUserOptionsFullName),
           multiple: true,
           className: 'font-size-12',
