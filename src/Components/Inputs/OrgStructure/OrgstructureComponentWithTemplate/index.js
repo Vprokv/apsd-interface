@@ -33,8 +33,10 @@ export const NavigationButton = styled(Button)`
 const OrgStructureComponentWithTemplateWindowWrapper = (props) => {
   const { onClose, open, value, multiple, valueKey, returnObjects } = props
   const [navigation, setNavigation] = useState('user_list')
-  const [selectState, setSelectState] = useState(value)
+  const [selectState, setSelectState] = useState(value ? value : [])
   const [modalWindowOptions, setModalWindowOptions] = useState([])
+
+  console.log(selectState, 'selectState')
 
   useEffect(
     () =>

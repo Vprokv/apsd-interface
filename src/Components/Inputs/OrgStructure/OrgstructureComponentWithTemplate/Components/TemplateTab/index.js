@@ -223,18 +223,17 @@ const SearchTemplateWindowList = ({
         })
 
         setSelectState((selectVal) => {
+          const initVal = selectVal ? [...selectVal] : []
+          console.log(selectVal, 'selectVal')
           const valueFunc = (addObj) =>
             returnObjects ? addObj : addObj[valueKey]
 
-          return json.reduce(
-            (acc, obj) => {
-              if (!checkIncludesFunc({ acc, obj })) {
-                acc.splice(0, 0, valueFunc(obj))
-              }
-              return acc
-            },
-            [...selectVal],
-          )
+          return json.reduce((acc, obj) => {
+            if (!checkIncludesFunc({ acc, obj })) {
+              acc.splice(0, 0, valueFunc(obj))
+            }
+            return acc
+          }, initVal)
         })
 
         setSelectTemplateState((prev) => {

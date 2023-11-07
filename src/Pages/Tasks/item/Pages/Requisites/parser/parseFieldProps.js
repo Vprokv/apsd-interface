@@ -17,7 +17,7 @@ export const propsMap = {
     customValuesStage,
     addUserFullNameInOptionsStage,
     orgstructureAddFilterSourceStage,
-    // parsePropsRequisites,
+    parsePropsRequisites,
     ...orgstructureProps,
   ],
 }
