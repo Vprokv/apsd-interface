@@ -104,6 +104,8 @@ export const OrgStructureWindow = (props) => {
     organization: [{ branches, ...organizationOptions }],
   } = useRecoilValue(userAtom)
 
+  console.log(options, 'options')
+
   const { valueKeys, cache } = useLoadableCache({
     ...props,
     optionsMap: useMemo(

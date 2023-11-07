@@ -82,6 +82,7 @@ const UserListTab = (props) => {
     setModalWindowOptions,
     valueKey,
     multiple,
+    value,
     returnObjects,
     id,
     // sendValue,
@@ -92,15 +93,17 @@ const UserListTab = (props) => {
 
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter })
-  const [filter, setFilter] = useState({})
+  const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
   const getNotification = useOpenNotification()
   const [paginationStateComp, setPaginationStateComp] = useState({})
+  const filterRef = useRef(filter)
 
   useEffect(
     () =>
       setFilter((val) => {
-        if (Object.keys(val).length < 1) {
+        if (Object.keys(val)?.length < 1) {
+          filterRef.current = defaultFilter
           return defaultFilter
         } else {
           return val
@@ -133,8 +136,6 @@ const UserListTab = (props) => {
     value: selectState,
   })
 
-  const filterRef = useRef(filter)
-
   const sort = useMemo(() => {
     const { key, direction } = sortQuery
     if (!key || !direction) {
@@ -152,7 +153,6 @@ const UserListTab = (props) => {
   const loadRef = useCallback(async () => {
     try {
       const { limit, offset } = paginationState
-      console.log(filter, 'filter')
       const {
         data: { content },
       } = await api.post(URL_EMPLOYEE_LIST, {
@@ -180,8 +180,9 @@ const UserListTab = (props) => {
 
   const closeFunc = useCallback(() => {
     onClose()
+    setSelectState(value)
     setFilter({ ...defaultFilter, ...baseFilter })
-  }, [onClose, defaultFilter, baseFilter])
+  }, [onClose, setSelectState, value, defaultFilter, baseFilter])
 
   useEffect(() => loadRef(), [loadRef])
 
@@ -190,7 +191,7 @@ const UserListTab = (props) => {
       (!filter.branchId && filter.branchId?.length < 2) ||
       filterRef.current.branchId !== filter.branchId
     ) {
-      // const { departmentId, ...item } = { ...filter }
+      // eslint-disable-next-line no-unused-vars
       setFilter(({ departmentId, ...item }) => item)
     }
   }, [filter.branchId])
@@ -200,6 +201,7 @@ const UserListTab = (props) => {
       !filter.organization ||
       filterRef.current.organization !== filter.organization
     ) {
+      // eslint-disable-next-line no-unused-vars
       setFilter(({ branchId, ...item }) => item)
     }
   }, [filter.organization, filterRef])
@@ -238,7 +240,6 @@ const UserListTab = (props) => {
         disabled: !filter.organization,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
-        // options: [...(filterOptions?.branchId || []), ...branches],
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
             id: filter.organization,
@@ -263,12 +264,11 @@ const UserListTab = (props) => {
         },
       },
     ],
-    [api, branches, filter.branchId, filter.organization, organizationOptions],
+    [api, filter.branchId, filter.organization],
   )
 
   const handleClick = useCallback(() => {
     onInput(selectState, id)
-    // sendValue({ valueKeys, cache })
     onClose()
   }, [onInput, selectState, id, onClose])
 
@@ -277,9 +277,11 @@ const UserListTab = (props) => {
       setSelectState((selectState) => {
         if (multiple) {
           const nextValue = selectState ? [...selectState] : []
+
           const valIncl = nextValue.find(
             ({ [valueKey]: key }) => key === obj[valueKey],
           )
+
           if (valIncl) {
             nextValue.splice(
               nextValue.findIndex(
@@ -290,6 +292,7 @@ const UserListTab = (props) => {
           } else {
             nextValue.push(obj)
           }
+          return nextValue
         } else {
           return obj
         }
@@ -318,6 +321,8 @@ const UserListTab = (props) => {
       }),
     [multiple, setSelectState],
   )
+
+  console.log(returnObjects, 'returnObjects')
 
   const handleSelectClick = useCallback(
     (obj) => () =>
@@ -385,7 +390,7 @@ const UserListTab = (props) => {
         <div className="flex items-center justify-end">
           <Button
             className="bg-light-gray flex items-center w-60 rounded-lg mr-4 justify-center"
-            onClick={onClose}
+            onClick={closeFunc}
           >
             Закрыть
           </Button>

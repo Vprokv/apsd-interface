@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import {
@@ -11,9 +11,9 @@ import styled from 'styled-components'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { Button } from '@Components/Components/Button'
 import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
-import UserCard from "@/Components/Inputs/OrgStructure/Components/UserCard";
-import Icon from "@Components/Components/Icon";
-import closeIcon from "@/Icons/closeIcon";
+import UserCard from '@/Components/Inputs/OrgStructure/Components/UserCard'
+import Icon from '@Components/Components/Icon'
+import closeIcon from '@/Icons/closeIcon'
 
 const windowTabs = {
   user_list: UserListTab,
@@ -31,10 +31,22 @@ export const NavigationButton = styled(Button)`
 `
 
 const OrgStructureComponentWithTemplateWindowWrapper = (props) => {
-  const { onClose, open, value, multiple, valueKey, returnOption } = props
+  const { onClose, open, value, multiple, valueKey, returnObjects } = props
   const [navigation, setNavigation] = useState('user_list')
   const [selectState, setSelectState] = useState(value)
   const [modalWindowOptions, setModalWindowOptions] = useState([])
+
+  useEffect(
+    () =>
+      setSelectState((val) => {
+        if (Object.keys(val)?.length < 1) {
+          return value
+        } else {
+          return val
+        }
+      }),
+    [value],
+  )
 
   const { valueKeys, cache } = useLoadableCache({
     ...props,
@@ -58,8 +70,8 @@ const OrgStructureComponentWithTemplateWindowWrapper = (props) => {
     (id) => () =>
       setSelectState((prevValue) => {
         if (multiple) {
-          const nextValue = Array.isArray(prevValue) ? [...prevValue] : []
-          const findIndexFunc = returnOption
+          const nextValue = prevValue ? [...prevValue] : []
+          const findIndexFunc = returnObjects
             ? ({ [valueKey]: objValueKey }) => objValueKey === id
             : (objValueKey) => objValueKey === id
           nextValue.splice(nextValue.findIndex(findIndexFunc), 1)
@@ -67,7 +79,7 @@ const OrgStructureComponentWithTemplateWindowWrapper = (props) => {
         }
         return undefined
       }),
-    [multiple, returnOption, valueKey],
+    [multiple, returnObjects, valueKey],
   )
 
   const renderEmployee = useMemo(
