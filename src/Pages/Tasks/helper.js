@@ -40,7 +40,7 @@ export const useStatistic = (stat) =>
     return {
       '': `${allUnread}/${all}`,
       [EXPIRED]: `${deadlineUnread}/${deadline}`,
-      [EXPIRED_TODAY]: { unread: deadline13Unread, all: deadline13 },
+      [EXPIRED_TODAY]: { unread: deadlineTodayUnread, all: deadlineToday },
       [EXPIRED_1_3]: { unread: deadline13Unread, all: deadline13 },
       [EXPIRED_4_7]: { unread: deadline37Unread, all: deadline37 },
       [EXPIRED_8]: { unread: termMoreThanWeakUnread, all: termMoreThanWeak },
