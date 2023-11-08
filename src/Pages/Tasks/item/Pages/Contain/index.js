@@ -294,7 +294,7 @@ const Contain = () => {
             id,
           })
         }),
-      editLink: (id) =>
+      editLink: (document) =>
         new Promise((resolve, reject) => {
           setEditLinkState({
             onCreate: () => {
@@ -305,7 +305,7 @@ const Contain = () => {
               reject()
               setEditLinkState({})
             },
-            id,
+            document,
           })
         }),
       // TODO: сделать нормальный bypass контроллера и параметров. Вызов без контроллера. Но с параметрами

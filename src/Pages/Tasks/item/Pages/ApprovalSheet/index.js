@@ -73,8 +73,9 @@ const ApprovalSheet = () => {
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const {
-    tabState: { data = [], loading },
+    tabState: { data = [], loading, selectedState },
     shouldReloadDataFlag,
+    setTabState,
   } = tabItemState
 
   const loadData = useCallback(async () => {
@@ -115,9 +116,12 @@ const ApprovalSheet = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleInput = useCallback((v) => {
-    console.log(v)
-  }, [])
+  const handleInput = useCallback(
+    (selectedState) => {
+      setTabState({ selectedState })
+    },
+    [setTabState],
+  )
 
   const openAllStages = useCallback(() => {
     for (let key in toggleNavigationData) {
@@ -195,6 +199,7 @@ const ApprovalSheet = () => {
                     key={key}
                     defaultExpandAll={true}
                     valueKey="id"
+                    value={selectedState}
                     options={stages}
                     rowComponent={RowSelector}
                     onUpdateOptions={() => null}

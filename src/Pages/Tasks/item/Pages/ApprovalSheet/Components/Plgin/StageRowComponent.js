@@ -6,7 +6,6 @@ import AddUserWindow from '../AddUserWindow/AddUserWindow'
 import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
 import EditStageWindow from '../EditStageWindow'
 import PopUp from '../PopUp'
-import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import dayjs from 'dayjs'
 import {
@@ -20,7 +19,6 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import log from 'tailwindcss/lib/util/log'
 
 const Row = styled.div`
   height: 48px;
@@ -28,43 +26,55 @@ const Row = styled.div`
   font-size: 12px;
   display: flex;
   flex-direction: column;
-  //border-bottom: 1px solid var(--separator);
   align-content: center;
-  //border-top: 1px solid var(--separator);
 `
 
-const StageRowComponent = ({ node }) => {
-  const api = useContext(ApiContext)
-  const {
-    // term,
-    id,
-    name,
-    documentId,
-    finishDate,
-    editable,
-    deletable,
+const StageRowComponent = ({
+  node: {
+    valueKey,
+    childrenKey,
+    options: {
+      id,
+      name,
+      documentId,
+      finishDate,
+      editable,
+      deletable,
+      stageType,
+      reworkInfo,
+    },
     selectedState,
-    stageType,
-    reworkInfo,
-  } = node.options
+    options,
+  },
+}) => {
+  const api = useContext(ApiContext)
 
-  const permit = useContext(PermitDisableContext)
   const getNotification = useOpenNotification()
   const { setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
+  const mySelectedChildrenIds = useMemo(
+    () =>
+      options[childrenKey].reduce((acc, { [valueKey]: optValue }) => {
+        if (selectedState.has(optValue)) {
+          acc.push(optValue)
+        }
+        return acc
+      }, []),
+    [childrenKey, options, selectedState, valueKey],
+  )
 
   const onDelete = useCallback(async () => {
     try {
       await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
-        performersIds: Object.keys(Object.fromEntries(selectedState.entries())),
+        performersIds: mySelectedChildrenIds,
       })
       setTabState({ loading: false, fetched: false })
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, getNotification, selectedState, setTabState])
+  }, [api, getNotification, mySelectedChildrenIds, setTabState])
 
   const info = useMemo(() => {
     if (!reworkInfo) {
@@ -83,12 +93,11 @@ const StageRowComponent = ({ node }) => {
   }, [reworkInfo])
 
   // const includeApprove = approvers.some(({ id }) => selectedState.has(id))
-
   return (
     <Row>
       <div className="flex h-full items-center">
         <div className="mr-12 font-medium w-32 ml-2">{name}</div>
-        {/*<div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>*/}
+        {/* <div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>*/}
         <div>{`Дата завершения: ${
           finishDate === null
             ? ''
@@ -109,15 +118,16 @@ const StageRowComponent = ({ node }) => {
                 <CustomButtonForIcon
                   className="color-blue-1"
                   onClick={onDelete}
+                  disabled={mySelectedChildrenIds.length === 0}
                   // disabled={!permit && !includeApprove}
                 >
                   <Icon icon={DeleteUserIcon} />
                 </CustomButtonForIcon>
               </Tips>
-              <EditStageWindow {...node.options} />
+              <EditStageWindow {...options} />
             </>
           )}
-          {deletable && <PopUp node={node.options} />}
+          {deletable && <PopUp node={options} />}
         </div>
       </div>
     </Row>

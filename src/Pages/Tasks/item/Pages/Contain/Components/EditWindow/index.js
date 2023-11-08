@@ -52,7 +52,7 @@ const rules = {
   code: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const EditLink = ({ addEditLinkState }) => {
+const EditLink = ({ addEditLinkState: { onCancel, onCreate, document } }) => {
   const [open, setOpenState] = useState(false)
   const api = useContext(ApiContext)
   const [value, onInput] = useState({})
@@ -63,38 +63,32 @@ const EditLink = ({ addEditLinkState }) => {
   })
 
   const handleCancel = useCallback(() => {
-    addEditLinkState.onCancel()
+    onCancel()
     onInput({})
     setOpenState(false)
-  }, [addEditLinkState])
+  }, [onCancel])
 
   const handleClose = useCallback(
     (data) => {
-      if (addEditLinkState.onCreate) {
+      if (onCreate) {
         onInput({})
-        addEditLinkState.onCreate(data)
+        onCreate(data)
       }
       setOpenState(false)
     },
-    [addEditLinkState],
+    [onCreate],
   )
 
   useEffect(() => {
-    if (addEditLinkState.id) {
-      onInput({ name: addEditLinkState.id.name })
+    if (document) {
+      onInput({ ...document })
       setOpenState(true)
     }
-  }, [addEditLinkState])
+  }, [document])
 
   const handleClick = useCallback(async () => {
     try {
-      const { id: { id, titleId, parentId } = {} } = addEditLinkState
-      const response = await api.post(URL_TITLE_CONTAIN_SAVE, {
-        id,
-        titleId,
-        parentId,
-        ...value,
-      })
+      const response = await api.post(URL_TITLE_CONTAIN_SAVE, value)
       setTabState({ loading: false, fetched: false })
       getNotification(customMessagesFuncMap[response.status]())
       handleClose()
@@ -102,7 +96,7 @@ const EditLink = ({ addEditLinkState }) => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [addEditLinkState, api, value, setTabState, getNotification, handleClose])
+  }, [api, value, setTabState, getNotification, handleClose])
 
   return (
     <MiniModalWindow

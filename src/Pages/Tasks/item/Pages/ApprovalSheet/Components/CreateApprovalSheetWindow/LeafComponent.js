@@ -243,7 +243,7 @@ const Leaf = (props) => {
           draggable={draggable}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
-          node={{ options, selectedState }}
+          node={{ options, selectedState, childrenKey: rowKey, valueKey }}
           parent={parent}
           rowComponent={rowComponent}
           onInput={onUpdateLeafOption}
