@@ -179,7 +179,7 @@ const SearchTemplateWindowList = ({
   useAutoReload(loadData, tabItemState)
 
   const onCreate = useCallback(() => {
-    setGlobalFilter(selectState.dss_json)
+    setGlobalFilter(JSON.parse(selectState.dss_json))
     changeModalState(false)()
   }, [changeModalState, selectState.dss_json, setGlobalFilter])
 
