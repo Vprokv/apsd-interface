@@ -305,6 +305,8 @@ const DocumentSearch = ({
     setTabState,
   ])
 
+  useEffect(onSearch, [paginationState])
+
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
 
