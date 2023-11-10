@@ -12,15 +12,6 @@ const ResultCell = ({
   } = {},
   className = 'min-h-10',
 }) => {
-  // console.log(delayDevelopmentDay, 'delayyDevelopmentDay')
-  console.log(
-    delayApprovalDay,
-    'delayApprovalDay',
-    (delayDevelopmentDay.length || delayApprovalDay.length) > 0
-      ? 'bg-light-red'
-      : '',
-  )
-
   const colorMemo = useMemo(
     () =>
       (delayDevelopmentDay.length || delayApprovalDay.length) > 0
@@ -28,7 +19,7 @@ const ResultCell = ({
         : '',
     [delayApprovalDay, delayDevelopmentDay],
   )
-  console.log(colorMemo, 'colorMemo')
+
   return (
     <div
       className={`${className} h-full w-full flex flex-col word-wrap-anywhere font-size-12 break-all ${colorMemo}`}
