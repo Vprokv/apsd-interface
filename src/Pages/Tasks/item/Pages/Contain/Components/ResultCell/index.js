@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 const ResultCell = ({
-  ParentValue,
   ParentValue: {
     statusResult,
     tomStageResult,
@@ -14,7 +13,7 @@ const ResultCell = ({
 }) => {
   const colorMemo = useMemo(
     () =>
-      (delayDevelopmentDay.length || delayApprovalDay.length) > 0
+      (delayDevelopmentDay?.length || delayApprovalDay?.length) > 0
         ? 'bg-light-red'
         : '',
     [delayApprovalDay, delayDevelopmentDay],
