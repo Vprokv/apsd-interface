@@ -174,8 +174,15 @@ const Files = (props) => {
         },
         sizes: 250,
       },
+      {
+        id: 'comment',
+        label: '',
+        component: (p) => <RowComponent {...p} onDeleteFile={onDeleteFile} />,
+        onDeleteFile,
+        sizes: 60,
+      },
     ],
-    [api],
+    [api, onDeleteFile],
   )
   return (
     <>
@@ -190,11 +197,6 @@ const Files = (props) => {
           <ScrollBar className="mt-8">
             <FieldValidationStateContext.Provider value={getErrors}>
               <ListTable
-                rowComponent={useMemo(
-                  () => (props) =>
-                    <RowComponent onDeleteFile={onDeleteFile} {...props} />,
-                  [onDeleteFile],
-                )}
                 rules={rules}
                 columns={columns}
                 onInput={setFiles}

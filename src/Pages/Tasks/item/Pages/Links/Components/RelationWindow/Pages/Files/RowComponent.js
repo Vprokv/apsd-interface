@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
 import Icon from '@Components/Components/Icon'
 import closeIcon from '@/Icons/closeIcon'
 import { DocumentButton } from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 
-const RowComponent = ({ children, onDeleteFile, id, ...props }) => {
+const RowComponent = ({ children, onDeleteFile, id }) => {
   return (
     <div className="flex mt-2">
       {children}
