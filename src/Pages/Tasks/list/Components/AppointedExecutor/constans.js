@@ -19,7 +19,7 @@ export const StatusMap = {
 export const colorsMap = {
   [STAND_IDLE_STATUS]: 'bg-blue-2',
   [NEW_STATUS]: 'bg-text-secondary',
-  [ACQUIRED_STATUS]: 'Принято к исполнению',
+  [ACQUIRED_STATUS]: 'bg-blue-1',
   [CONSIDERED_WITH_REMARKS_STATUS]: 'bg-blue-1',
   [CONSIDERED_STATUS]: 'bg-green',
   [NOT_APPROVED_STATUS]: 'bg-color-red',
