@@ -281,7 +281,7 @@ const Task = () => {
             const { status } = await api.post(URL_DOCUMENT_UPDATE, {
               values: refValues.current,
               type,
-              id,
+              id: documentId,
             })
             getNotification(customMessagesFuncMap[status]())
             setTabState({ loading: false, fetched: false })
