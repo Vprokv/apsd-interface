@@ -13,6 +13,7 @@ import {
   VALIDATION_RULE_REGEX,
   VALIDATION_RULE_REQUIRED,
   VALIDATION_RULE_REQUIRED_IF,
+  VALIDATION_RULE_REQUIRED_IF_EVERY,
   VALIDATION_RULE_REQUIRED_WITH_ALL,
   VALIDATION_RULE_REQUIRED_WITHOUT,
   VALIDATION_RULE_REQUIRED_WITHOUT_ALL,
@@ -73,6 +74,18 @@ export const required_without = (...fieldsKeys) => ({
   args: { fieldsKeys },
 })
 
+export const required_if_every = (...fieldsKeys) => {
+  const fieldKeysCopy = [...fieldsKeys]
+  const params = fieldKeysCopy.splice(-2, 2) // отрезаем название функции и значение
+  return {
+    name: VALIDATION_RULE_REQUIRED_IF_EVERY,
+    args: {
+      fieldsKeys: fieldKeysCopy,
+      targetValue: params[0] === 'empty' ? '' : params[0],
+    },
+  }
+}
+
 export const defaultForJson = (values) => {
   const { attribute, filter } = (values && JSON.parse(values)) || {}
 
@@ -101,6 +114,7 @@ const validationRules = {
   required_with_all,
   required_without_all,
   required_without,
+  required_if_every,
   defaultForJson,
 }
 

@@ -15,7 +15,7 @@ const parseValidationRules = (state) => {
             ? rule.split(':')
             : rule.startsWith('{')
             ? rule.split()
-            : rule.split(/([,:])/gm)
+            : rule.split(/[,:]/gm)
 
           const {
             [ruleName]: validationRule = validationRules.defaultForJson,
