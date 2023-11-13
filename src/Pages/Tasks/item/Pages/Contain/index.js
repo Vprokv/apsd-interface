@@ -156,11 +156,9 @@ const Contain = () => {
   const [addLinkState, setAddLinkState] = useState({})
   const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const [state, setState] = useState(false)
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
-  const [defaultOpen, setDefaultOpen] = useRecoilState(
-    cachedLocalStorageValue('id'),
-  )
 
   const {
     tabState: { data: { values: { dss_code = '' } = {} } = {} },
@@ -173,8 +171,10 @@ const Contain = () => {
   })
   const {
     setTabState,
-    tabState: { data, loading },
+    tabState: { data, loading, defaultOpen = state },
   } = tabItemState
+
+  console.log(defaultOpen, 'defaultOpen')
 
   const loadData = useCallback(
     ({ source = {}, controller = {} } = {}) =>
@@ -381,7 +381,12 @@ const Contain = () => {
     setRenderPreviewWindowState(false)
   }, [])
 
-  const changeOpenState = useCallback(() => setDefaultOpen((prev) => !prev), [])
+  const changeOpenState = useCallback(() => {
+    setTabState(({ defaultOpen = false }) => {
+      return { defaultOpen: !defaultOpen }
+    })
+    setState((v) => !v)
+  }, [setTabState])
 
   const onReload = useCallback(() => {
     setTabState({ loading: false, fetched: false })
