@@ -10,7 +10,7 @@ import TemplateTab from '@/Components/Inputs/OrgStructure/OrgstructureComponentW
 import styled from 'styled-components'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { Button } from '@Components/Components/Button'
-import { useLoadableCache } from '@Components/Components/Inputs/Loadable'
+import { useLoadableCache } from '@Components/Components/Inputs/Plugins/Loadable'
 import UserCard from '@/Components/Inputs/OrgStructure/Components/UserCard'
 import Icon from '@Components/Components/Icon'
 import closeIcon from '@/Icons/closeIcon'
@@ -36,12 +36,9 @@ const OrgStructureComponentWithTemplateWindowWrapper = (props) => {
   const [selectState, setSelectState] = useState(value ? value : [])
   const [modalWindowOptions, setModalWindowOptions] = useState([])
 
-  console.log(selectState, 'selectState')
-
   useEffect(
     () =>
       setSelectState((val) => {
-        console.log(val, 'val')
         if (val && Object.keys(val)?.length < 1) {
           return value
         } else {

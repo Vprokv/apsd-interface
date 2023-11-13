@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import { LoadableAlwaysRenderValuesSelect } from '@/Components/Inputs/Select'
+import LoadableSelect from '@/Components/Inputs/Select'
 import {
   AddUserOptionsFullName,
   SearchButton,
@@ -11,6 +11,7 @@ import UserAggrementSearchWindowWrapper from '@/Components/Inputs/OrgStructure/A
 import { ApiContext } from '@/contants'
 import useDefaultFilter from '@/Components/Inputs/OrgStructure/useDefaultFilter'
 import { URL_ADDITIONAL_AGREEMENT_USER_LIST } from '@/ApiList'
+import { RenderMultipleValueSelectInput } from '@Components/Components/Inputs/Select'
 
 const baseLoadFunction = async ({ api, filter, query }) => {
   const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
@@ -47,9 +48,10 @@ const AdditionalAgreementOrgStructureComponent = (props) => {
 
   return (
     <div className="flex items-center w-full">
-      <LoadableAlwaysRenderValuesSelect
+      <LoadableSelect
         {...props}
         loadFunction={loadRefSelectFunc}
+        multipleInputComponent={RenderMultipleValueSelectInput}
         className="mr-0"
       />
       <>

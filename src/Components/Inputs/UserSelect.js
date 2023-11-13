@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import { LoadableAlwaysRenderValuesSelect } from './Select'
+import LoadableSelect from './Select'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import styled from 'styled-components'
@@ -8,6 +8,7 @@ import AddEmployee from './OrgStructure/UserSearchWindow'
 import { ApiContext } from '@/contants'
 import { URL_EMPLOYEE_LIST } from '@/ApiList'
 import useDefaultFilter from './OrgStructure/useDefaultFilter'
+import { RenderMultipleValueSelectInput } from '@Components/Components/Inputs/Select'
 
 export const AddUserOptionsFullName = (v = {}) => ({
   ...v,
@@ -120,7 +121,7 @@ UserSelect.defaultProps = {
   options: [],
   disabled: false,
   source: '',
-  SelectComponent: LoadableAlwaysRenderValuesSelect,
+  SelectComponent: (props) => <LoadableSelect multipleInputComponent={RenderMultipleValueSelectInput} {...props} />,
   WindowComponent: AddEmployee,
 }
 export default UserSelect

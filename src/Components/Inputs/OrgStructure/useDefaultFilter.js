@@ -40,7 +40,7 @@ const useCustomFilterFunc = {
   [BRANCH_FIELD]: true,
 }
 
-const useDefaultFilter = ({ baseFilter = {} }) => {
+const useDefaultFilter = ({ baseFilter}) => {
   const {
     organization: [{ r_object_id: organization = '', branches }] = [{}],
   } = useRecoilValue(userAtom)
@@ -55,7 +55,7 @@ const useDefaultFilter = ({ baseFilter = {} }) => {
   return useMemo(
     () =>
       filterFieldsMap.reduce((acc, key) => {
-        const { [key]: value } = baseFilter
+        const { [key]: value } = baseFilter || {}
 
         return value || useCustomFilterFunc[key]
           ? filterPrepMap[key]({
