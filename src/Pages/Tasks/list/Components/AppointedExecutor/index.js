@@ -16,7 +16,7 @@ const AppointedExecutor = ({ value }) => {
 
           return (
             <Tips key={approverName} text={StatusMap[statusName]}>
-              <div className="display flex  justify-start">
+              <div className="display  items-center flex justify-start">
                 <StatusDot className={`${colorsMap[statusName]} mr-2`} />
                 <div className="font-size-12">{`${lastName} ${firstName[0]}. ${surName[0]}.`}</div>
               </div>
@@ -27,11 +27,7 @@ const AppointedExecutor = ({ value }) => {
     [value],
   )
 
-  return (
-    <div className="flex-container flex items-center h-full">
-      {renderApprovers}
-    </div>
-  )
+  return <div className="flex-container flex  h-full">{renderApprovers}</div>
 }
 
 AppointedExecutor.propTypes = {
