@@ -174,7 +174,6 @@ const Contain = () => {
     tabState: { data, loading, defaultOpen = state },
   } = tabItemState
 
-  console.log(defaultOpen, 'defaultOpen')
 
   const loadData = useCallback(
     ({ source = {}, controller = {} } = {}) =>

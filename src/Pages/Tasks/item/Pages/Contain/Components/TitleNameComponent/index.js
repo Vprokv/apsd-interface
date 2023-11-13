@@ -265,7 +265,7 @@ const TitleNameComponent = ({
             <Icon
               icon={ThreeDotIcon}
               size={14}
-              className="ml-1 color-blue-1 cursor-pointer "
+              className="color-white cursor-pointer "
               onClick={openContextMenu}
             />
           </ThreeDotButton>
