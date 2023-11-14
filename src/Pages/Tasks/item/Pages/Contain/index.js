@@ -174,7 +174,6 @@ const Contain = () => {
     tabState: { data, loading, defaultOpen = state },
   } = tabItemState
 
-
   const loadData = useCallback(
     ({ source = {}, controller = {} } = {}) =>
       async (partId = null, expand = true) => {

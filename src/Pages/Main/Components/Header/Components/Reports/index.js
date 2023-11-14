@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { ApiContext } from '@/contants'
@@ -10,6 +10,7 @@ import { LeafContainer } from '@/Pages/Rporting/styled'
 import Tips from '@/Components/Tips'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import OpenedTaskWindow from '@/Pages/Rporting/Components/OpendedTaskWindow'
 
 const Reports = () => {
   const [open, setOpenState] = useState(false)
@@ -85,6 +86,7 @@ const Reports = () => {
         onClose={changeModalState(false)}
       >
         <ScrollBar className="pr-6 font-size-14">{renderedEntities}</ScrollBar>
+        <OpenedTaskWindow />
       </StandardSizeModalWindow>
     </LeafContainer>
   )
