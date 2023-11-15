@@ -160,7 +160,6 @@ const Contain = () => {
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
-x
   const {
     tabState: { data: { values: { dss_code = '' } = {} } = {} },
   } = useTabItem({
