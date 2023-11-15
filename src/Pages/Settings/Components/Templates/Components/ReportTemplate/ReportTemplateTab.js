@@ -43,9 +43,7 @@ const ReportTemplateTab = (props) => {
   )
 
   const {
-    tabState: {
-      data: { name, parameters = [], id: reportId, dss_def_format } = {},
-    },
+    tabState: { data: { parameters = [] } = {} },
   } = tabItemState
 
   const loadData = useCallback(async () => {
