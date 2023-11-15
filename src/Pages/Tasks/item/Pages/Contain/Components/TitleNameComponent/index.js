@@ -70,13 +70,7 @@ const TitleNameComponent = ({
   ParentValue: { tomId, type, expand, send, name },
   ParentValue,
 }) => {
-  const {
-    valueKey,
-    defaultExpandAll,
-    nestedDataKey,
-    state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
-    onChange,
-  } = useContext(TreeStateContext)
+  const { valueKey, nestedDataKey, onChange } = useContext(TreeStateContext)
 
   const closeContextMenu = useCallback(() => {
     setOpen(false)

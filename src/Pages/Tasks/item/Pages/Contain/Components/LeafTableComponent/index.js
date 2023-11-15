@@ -8,6 +8,7 @@ import {
 import angleIcon from '@/Icons/angleIcon'
 import { LoadContainChildrenContext } from '../../constants'
 import { LeafContainer } from './style'
+import log from 'tailwindcss/lib/util/log'
 
 const Leaf = ({ ParentValue, className, onInput, ParentValue: { expand } }) => {
   const {
@@ -15,7 +16,7 @@ const Leaf = ({ ParentValue, className, onInput, ParentValue: { expand } }) => {
     defaultOpen,
     nestedDataKey,
     state,
-    state: { [ParentValue[valueKey]]: expanded = defaultOpen },
+    state: { [ParentValue[valueKey]]: expanded = defaultOpen } = {},
     onChange,
   } = useContext(TreeStateContext)
   const { loadData } = useContext(LoadContainChildrenContext)
