@@ -1,5 +1,5 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import { SidebarEntity } from '@/Pages/Tasks/item/styles'
 
 const ProjectCalcTypeComponent = ({
   dsid_startup_complex: {
@@ -9,7 +9,7 @@ const ProjectCalcTypeComponent = ({
   dss_reg_number,
 }) => {
   return (
-    <div className="flex flex-col m-4 break-words font-size-12">
+    <SidebarEntity className="flex flex-col m-4 break-words font-size-12">
       <div className="mb-2">
         <span className="font-medium">Том: </span>
         <span>{dss_description}</span>
@@ -22,7 +22,7 @@ const ProjectCalcTypeComponent = ({
         <span className="font-medium">Титул: </span>
         <span>{titleDescription}</span>
       </div>
-    </div>
+    </SidebarEntity>
   )
 }
 

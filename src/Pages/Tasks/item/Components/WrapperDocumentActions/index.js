@@ -1,4 +1,3 @@
-import React from 'react'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import PropTypes from 'prop-types'
 

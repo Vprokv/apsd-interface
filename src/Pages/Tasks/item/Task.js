@@ -67,6 +67,7 @@ import CancelWindow from '@/Pages/Tasks/item/Components/CancelWindow'
 import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWindow'
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
 import ScrollBar from '@Components/Components/ScrollBar'
+import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -478,7 +479,7 @@ const Task = () => {
     <DocumentTypeContext.Provider value={ITEM_TASK}>
       <DocumentIdContext.Provider value={documentId}>
         <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
-          <SidebarContainer>
+          <SideBar>
             <ScrollBar>
               {data && <DocumentInfoComponent {...data} />}
               <Report previousTaskReport={previousTaskReport} />
@@ -487,7 +488,7 @@ const Task = () => {
                 documentActions={wrappedDocumentActions}
               />
             </ScrollBar>
-          </SidebarContainer>
+          </SideBar>
         </Document>
         {ActionComponent && (
           <ActionComponent.Component

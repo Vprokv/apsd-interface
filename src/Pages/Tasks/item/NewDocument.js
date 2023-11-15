@@ -20,6 +20,7 @@ import {
 } from '@/Components/Notificator'
 import { useTabStateUpdaterByName } from '@/Utils/TabStateUpdaters'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -139,9 +140,9 @@ export const NewTaskItem = ({ classificationId, type }) => {
   return (
     <DocumentTypeContext.Provider value={TASK_ITEM_NEW_DOCUMENT}>
       <Document documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
-        <SidebarContainer>
+        <SideBar>
           <DocumentActions documentActions={wrappedDocumentActions} />
-        </SidebarContainer>
+        </SideBar>
       </Document>
     </DocumentTypeContext.Provider>
   )

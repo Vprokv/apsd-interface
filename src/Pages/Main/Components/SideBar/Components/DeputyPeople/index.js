@@ -14,8 +14,10 @@ import { TASK_LIST_PATH } from '@/routePaths'
 import { EXPIRED_TODAY, TabNames } from '@/Pages/Tasks/list/constants'
 import { NavigationHeaderIcon } from '@/Pages/Main/Components/SideBar/style'
 import NavigationDocumentIcon from '@/Pages/Main/Components/SideBar/icons/NavigationDocumentIcon'
+import Tips from '@/Components/Tips'
+import CounterContainer from '@/Components/Counter'
 
-const DeputyPeople = ({ task, onOpenNewTab }) => {
+const DeputyPeople = ({ task, onOpenNewTab, collapsedState }) => {
   const [people, setPeople] = useState([])
 
   const getNotification = useOpenNotification()
@@ -62,12 +64,12 @@ const DeputyPeople = ({ task, onOpenNewTab }) => {
     [onOpenNewTab],
   )
 
-  return (
-    <div className="px-2 font-size-12">
-      {peopleWidthTask.map(
-        ({ lastName, middleName, firstName, userName, all }) => (
+  return peopleWidthTask.map(
+    ({ lastName, middleName, firstName, userName, all }) => {
+      const text = `Задания (${lastName} ${firstName[0]}.${middleName[0]}.)`
+      return (
+        <div key={userName} className="px-2 font-size-12">
           <button
-            key={userName}
             className="flex items-center w-full mb-2"
             onClick={openTaskList({
               lastName,
@@ -76,15 +78,31 @@ const DeputyPeople = ({ task, onOpenNewTab }) => {
               userName,
             })}
           >
-            <NavigationHeaderIcon icon={NavigationDocumentIcon} size={22} />
-            <span className=" mr-auto font-medium">
-              {`Задания (${lastName} ${firstName[0]}.${middleName[0]}.)`}
-            </span>
-            <span className="font-medium color-blue-1">{all}</span>
+            {collapsedState ? (
+              <Tips text={text}>
+                <NavigationHeaderIcon
+                  icon={NavigationDocumentIcon}
+                  size={28}
+                  className="mx-auto relative"
+                >
+                  <CounterContainer>{all}</CounterContainer>
+                </NavigationHeaderIcon>
+              </Tips>
+            ) : (
+              <>
+                <NavigationHeaderIcon
+                  icon={NavigationDocumentIcon}
+                  size={22}
+                  className="mr-4"
+                />
+                <span className=" mr-auto font-medium">{text}</span>
+                <span className="font-medium color-blue-1">{all}</span>
+              </>
+            )}
           </button>
-        ),
-      )}
-    </div>
+        </div>
+      )
+    },
   )
 }
 
