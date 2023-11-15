@@ -19,7 +19,6 @@ import {
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -100,6 +99,8 @@ const SearchTemplateWindowList = ({
   open,
   changeModalState,
   setGlobalFilter,
+  type,
+  title,
 }) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
@@ -161,10 +162,10 @@ const SearchTemplateWindowList = ({
     try {
       const { data } = await api.post(URL_TEMPLATE_LIST, {
         ...filter,
-        type: 'ddt_query_template',
+        type,
         sort: [
           {
-            key: 'r_creation_date',
+            key: 'type',
             direction: 'DESC',
           },
         ],
@@ -174,7 +175,7 @@ const SearchTemplateWindowList = ({
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter, getNotification])
+  }, [api, filter, getNotification, type])
 
   useAutoReload(loadData, tabItemState)
 
@@ -185,7 +186,7 @@ const SearchTemplateWindowList = ({
 
   return (
     <StandardSizeModalWindow
-      title="Выберите шаблон поиска"
+      title={title}
       open={open}
       onClose={changeModalState(false)}
     >
@@ -201,10 +202,6 @@ const SearchTemplateWindowList = ({
           </div>
           <ListTable
             className="mt-2  h-full"
-            // rowComponent={useMemo(
-            //   () => (props) => <RowComponent onClick={onOpen} {...props} />,
-            //   [onOpen],
-            // )}
             value={content}
             columns={columns}
             plugins={plugins}

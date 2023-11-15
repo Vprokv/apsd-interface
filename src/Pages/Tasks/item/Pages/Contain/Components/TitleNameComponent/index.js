@@ -70,13 +70,7 @@ const TitleNameComponent = ({
   ParentValue: { tomId, type, expand, send, name },
   ParentValue,
 }) => {
-  const {
-    valueKey,
-    defaultExpandAll,
-    nestedDataKey,
-    state: { [ParentValue[valueKey]]: expanded = defaultExpandAll },
-    onChange,
-  } = useContext(TreeStateContext)
+  const { valueKey, nestedDataKey, onChange } = useContext(TreeStateContext)
 
   const closeContextMenu = useCallback(() => {
     setOpen(false)
@@ -265,7 +259,7 @@ const TitleNameComponent = ({
             <Icon
               icon={ThreeDotIcon}
               size={14}
-              className="ml-1 color-blue-1 cursor-pointer "
+              className="color-white cursor-pointer "
               onClick={openContextMenu}
             />
           </ThreeDotButton>

@@ -181,6 +181,7 @@ export const URL_REPORTS_BUILD = '/apsd/reporting/build'
 export const URL_REPORTS_GET = '/sedo/reporting/content/'
 export const URL_REPORTS_BRANCH = '/sedo/os/branch/list?limit=100&offset=0'
 export const URL_REPORTS_DEPARTMENT = '/sedo/os/branch/list?limit=100&offset=0'
+export const URL_REPORTS_STATISTIC = '/apsd/reporting/email/statistic'
 
 // BASKET
 export const URL_BASKET_LIST = '/apsd/basket/list'

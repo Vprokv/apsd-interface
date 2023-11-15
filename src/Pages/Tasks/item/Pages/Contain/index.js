@@ -156,7 +156,6 @@ const Contain = () => {
   const [addLinkState, setAddLinkState] = useState({})
   const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
-  const [state, setState] = useState(false)
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
@@ -171,10 +170,8 @@ const Contain = () => {
   })
   const {
     setTabState,
-    tabState: { data, loading, defaultOpen = state },
+    tabState: { data, loading, defaultOpen, treePluginState },
   } = tabItemState
-
-  console.log(defaultOpen, 'defaultOpen')
 
   const loadData = useCallback(
     ({ source = {}, controller = {} } = {}) =>
@@ -319,6 +316,9 @@ const Contain = () => {
     useCallback((controller) => loadData(controller)(), [loadData]),
     tabItemState,
   )
+
+  const updateTreePluginState = useCallback((treePluginState) => setTabState({treePluginState }), [setTabState])
+
 
   const fields = useMemo(
     () => [
@@ -513,6 +513,8 @@ const Contain = () => {
             value={data}
             onInput={onTableUpdate}
             loading={loading}
+            treePluginState={treePluginState}
+            updateTreePluginState={updateTreePluginState}
           />
         </ShowContentByTypeButtonContext.Provider>
         <ContentWindow

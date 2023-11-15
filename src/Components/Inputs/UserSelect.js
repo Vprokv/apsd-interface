@@ -121,7 +121,12 @@ UserSelect.defaultProps = {
   options: [],
   disabled: false,
   source: '',
-  SelectComponent: (props) => <LoadableSelect multipleInputComponent={RenderMultipleValueSelectInput} {...props} />,
+  SelectComponent: (props) => (
+    <LoadableSelect
+      multipleInputComponent={RenderMultipleValueSelectInput}
+      {...props}
+    />
+  ),
   WindowComponent: AddEmployee,
 }
 export default UserSelect

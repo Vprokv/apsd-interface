@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING, TokenContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -19,6 +19,8 @@ import { Validation } from '@Components/Logic/Validator'
 import useParseConfig from '@/Utils/Parser'
 import reportParserStages from './Parser'
 import attrubutesAdapter from './Parser/attrubutesAdapter'
+import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
+import SearchTemplateWindowList from '@/Pages/Search/Pages/DocumentSearch/Components/SearchTemplateWindowList'
 
 const Reporting = () => {
   const api = useContext(ApiContext)
@@ -27,6 +29,23 @@ const Reporting = () => {
   const [filter, setFilter] = useState({})
   const { token } = useContext(TokenContext)
   const getNotification = useOpenNotification()
+
+  const [openCreateTemplateWindow, setOpenCreateTemplateWindowState] =
+    useState(false)
+  const [openUseTemplateWindowState, setOpenUseTemplateWindowState] =
+    useState(false)
+  const changeCreateTemplateWindowState = useCallback(
+    (nextState) => () => {
+      setOpenCreateTemplateWindowState(nextState)
+    },
+    [],
+  )
+  const changeUseTemplateWindowState = useCallback(
+    (nextState) => () => {
+      setOpenUseTemplateWindowState(nextState)
+    },
+    [],
+  )
 
   const {
     tabState: {
@@ -65,7 +84,6 @@ const Reporting = () => {
   const onBuild = useCallback(async () => {
     try {
       const {
-        // data: response,
         data: { fileKey, message, email, name: reportName },
       } = await api.post(URL_REPORTS_BUILD, {
         id: reportId,
@@ -109,7 +127,20 @@ const Reporting = () => {
               <ReportsForm {...validationProps} />
               <div className="flex items-center justify-end my-4 col-span-1 col-span-2">
                 <LoadableSecondaryOverBlueButton
+                  onClick={changeUseTemplateWindowState(true)}
+                >
+                  Применить шаблон
+                </LoadableSecondaryOverBlueButton>
+                <LoadableSecondaryOverBlueButton
+                  className="m-2"
+                  onClick={changeCreateTemplateWindowState(true)}
+                  disabled={Object.keys(filter).length < 2}
+                >
+                  Сохранить шаблон
+                </LoadableSecondaryOverBlueButton>
+                <LoadableSecondaryOverBlueButton
                   onClick={validationProps.onSubmit}
+                  className="ml-2"
                 >
                   Сформировать
                 </LoadableSecondaryOverBlueButton>
@@ -118,6 +149,20 @@ const Reporting = () => {
           )}
         </Validation>
       </ScrollBar>
+      <CreateWindow
+        open={openCreateTemplateWindow}
+        onReverse={changeCreateTemplateWindowState(false)}
+        changeModalState={changeCreateTemplateWindowState}
+        value={filter}
+        type={'ddt_report_template'}
+      />
+      <SearchTemplateWindowList
+        open={openUseTemplateWindowState}
+        changeModalState={changeUseTemplateWindowState}
+        setGlobalFilter={setFilter}
+        type={'ddt_report_template'}
+        title={'Выберите шаблон отчета'}
+      />
     </>
   )
 }

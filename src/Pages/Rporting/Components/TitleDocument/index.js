@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { LoadableSecondaryBlueButton } from '@/Components/Button'
-import Select from '@/Components/Inputs/Select'
+import Select, { AutoLoadableSelect } from '@/Components/Inputs/Select'
 
 const TitleDocument = (props) => {
   const { onInput, id, loadFunction } = props
@@ -16,9 +16,7 @@ const TitleDocument = (props) => {
 
   return (
     <div className="flex items-center">
-      <Select
-        {...props}
-      />
+      <AutoLoadableSelect {...props} />
       <>
         <LoadableSecondaryBlueButton onClick={onAdd} className="ml-2">
           Выбрать все
