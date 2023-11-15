@@ -423,6 +423,8 @@ const DocumentSearch = ({
           open={openUseTemplateWindowState}
           changeModalState={changeUseTemplateWindowState}
           setGlobalFilter={setFilter}
+          type={'ddt_query_template'}
+          title={'Выберите шаблон поиска'}
         />
       </div>
     </ExportContext.Provider>

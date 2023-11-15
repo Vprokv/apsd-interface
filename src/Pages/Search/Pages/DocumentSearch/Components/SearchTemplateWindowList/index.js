@@ -100,6 +100,8 @@ const SearchTemplateWindowList = ({
   open,
   changeModalState,
   setGlobalFilter,
+  type,
+  title,
 }) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
@@ -161,10 +163,10 @@ const SearchTemplateWindowList = ({
     try {
       const { data } = await api.post(URL_TEMPLATE_LIST, {
         ...filter,
-        type: 'ddt_query_template',
+        type,
         sort: [
           {
-            key: 'r_creation_date',
+            key: 'type',
             direction: 'DESC',
           },
         ],
@@ -174,7 +176,7 @@ const SearchTemplateWindowList = ({
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter, getNotification])
+  }, [api, filter, getNotification, type])
 
   useAutoReload(loadData, tabItemState)
 
@@ -185,7 +187,7 @@ const SearchTemplateWindowList = ({
 
   return (
     <StandardSizeModalWindow
-      title="Выберите шаблон поиска"
+      title={title}
       open={open}
       onClose={changeModalState(false)}
     >

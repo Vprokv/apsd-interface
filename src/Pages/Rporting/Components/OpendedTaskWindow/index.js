@@ -81,15 +81,13 @@ const OpenedTaskWindow = () => {
   }, [setTabState])
 
   const onOpen = useCallback(() => {
-    setTabState({ loading: false, fetched: false })
+    // setTabState({ loading: false, fetched: false })
     setOpen(true)
   }, [setTabState])
 
   return (
     <div>
-      <SecondaryBlueButton onClick={onOpen}>
-        Тек. задачи
-      </SecondaryBlueButton>
+      <SecondaryBlueButton onClick={onOpen}>Тек. задачи</SecondaryBlueButton>
       <StandardSizeModalWindow
         title="Текущие задачи"
         open={open}
