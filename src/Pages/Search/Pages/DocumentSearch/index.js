@@ -22,7 +22,6 @@ import {
 } from '@/contants'
 import {
   LoadableSecondaryOverBlueButton,
-  SecondaryBlueButton,
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
@@ -279,12 +278,6 @@ const DocumentSearch = ({
           types: [type],
           inVersions: false,
           queryItems: buildSearchQuery(filters),
-          // sort: [
-          //   {
-          //     property: 'dsdt_creation_date',
-          //     direction: 'DESC',
-          //   },
-          // ],
           orderBy: 'values.dsdt_creation_date',
           sortType: 'DESC',
         },
