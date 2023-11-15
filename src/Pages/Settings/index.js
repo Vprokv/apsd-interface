@@ -10,6 +10,7 @@ import Templates from '@/Pages/Settings/Components/Templates'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import UserTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/UserTemplateTab'
 import SearchTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchTemplateTab'
+import ReportTemplateTab from '@/Pages/Settings/Components/Templates/Components/ReportTemplate/ReportTemplateTab'
 
 const overTemplateMap = {
   ddt_query_template: {
@@ -21,6 +22,11 @@ const overTemplateMap = {
     caption: 'Шаблон пользователей',
     Component: UserTemplateTab,
     path: 'ddt_employee_template',
+  },
+  ddt_report_template: {
+    caption: 'Шаблон отчета',
+    Component: ReportTemplateTab,
+    path: 'ddt_report_template',
   },
 }
 

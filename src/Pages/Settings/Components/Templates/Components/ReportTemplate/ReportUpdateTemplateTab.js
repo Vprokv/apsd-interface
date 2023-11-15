@@ -6,20 +6,27 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, SETTINGS_TEMPLATES, TokenContext } from '@/contants'
+import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
+import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import useParseConfig from '@/Utils/Parser'
-import { searchParserStages } from '@/Pages/Search/Parser'
-import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  parseSettingsFuncMap,
+  TemplateTabStateContext,
+} from '@/Pages/Settings/Components/Templates/constans'
 import {
   URL_CREATE_UPDATE,
-  URL_SEARCH_ATTRIBUTES,
-  URL_TYPE_CONFIG,
+  URL_REPORTS_ITEM,
+  URL_REPORTS_LIST,
 } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import useParseConfig from '@/Utils/Parser'
+import attrubutesAdapter from '@/Pages/Rporting/Parser/attrubutesAdapter'
+import reportParserStages from '@/Pages/Rporting/Parser'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Form from '@Components/Components/Forms'
@@ -28,93 +35,72 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import {
-  parseSettingsFuncMap,
-  TemplateTabStateContext,
-} from '@/Pages/Settings/Components/Templates/constans'
-import { useNavigate } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
-const defaultOptions = [
-  {
-    typeName: 'ddt_project_calc_type_doc',
-    typeLabel: 'Том',
-  },
-]
-
-const SearchUpdateTemplateTab = ({
+const ReportUpdateTemplateTab = ({
   dss_name,
   dss_json,
   dsid_template,
   type,
   ...other
 }) => {
-  const [filter, setFilter] = useState(JSON.parse(dss_json))
   const api = useContext(ApiContext)
-  const [attributes, setAttributes] = useState([])
-  const { onInput } = useContext(TemplateTabStateContext)
   const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
-  const navigate = useNavigate()
+  const [filter, setFilter] = useState({})
+  const [filterField, setFilterField] = useState({})
   const getNotification = useOpenNotification()
+  const navigate = useNavigate()
+  const { onInput } = useContext(TemplateTabStateContext)
+  const [attributes, setAttributes] = useState([])
 
-  const onReverse = useCallback(() => {
-    navigate('/settings/templates')
-    onInput((val) => {
-      const newVal = [...val]
-      newVal.pop()
-      return newVal
-    })
-  }, [navigate, onInput])
+  const loadData = useCallback(async () => {
+    try {
+      if (filter.reportId) {
+        const { data } = await api.post(URL_REPORTS_ITEM, {
+          id: filter.reportId,
+        })
+        // todo убрать харды , надо для отоброжения, ког
+        if (data.parameters.some(({ name }) => name === 'only_original')) {
+          setFilterField({ only_original: true })
+        }
+        setAttributes(data)
+      }
+    } catch (e) {
+      const { response: { status = 500 } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, filter.reportId, getNotification])
+
+  useEffect(loadData, [loadData])
 
   const { fields: parsedFields } = useParseConfig({
-    value: filter,
-    stages: searchParserStages,
+    value: filterField,
     fieldsDesign: useMemo(
-      () => attributes.map(attributesAdapter),
+      () => attributes.map(attrubutesAdapter),
       [attributes],
     ),
+    stages: reportParserStages,
   })
 
   const fields = useMemo(
     () => [
       {
-        id: 'type',
+        id: 'reportId',
         component: AutoLoadableSelect,
-        placeholder: 'Выберите тип документа',
-        label: 'Выберите тип документа',
-        valueKey: 'typeName',
-        labelKey: 'typeLabel',
-        options: defaultOptions,
+        placeholder: 'Выберите отчет',
+        label: 'Выберите отчет',
+        valueKey: 'id',
+        labelKey: 'name',
         loadFunction: async () => {
-          const { data } = await api.post(
-            `${URL_TYPE_CONFIG}?limit=100&offset=0`,
-            {
-              type: 'documentType',
-              id: 'types',
-              filters: {},
-              sortType: null,
-            },
-          )
+          const { data } = await api.post(URL_REPORTS_LIST)
           return data
         },
+        className: 'col-span-2',
       },
       ...parsedFields,
     ],
     [api, parsedFields],
   )
-
-  const loadData = useCallback(async () => {
-    try {
-      const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
-        type: filter.type,
-      })
-
-      setAttributes(data)
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
-  }, [api, filter.type, getNotification])
 
   const reverseParseFromBackend = useMemo(() => {
     const { branchesAccess, usersAccess, dsb_private } = other
@@ -134,6 +120,15 @@ const SearchUpdateTemplateTab = ({
       return { privateAccess: 'organization' }
     }
   }, [other])
+
+  const onReverse = useCallback(() => {
+    navigate('/settings/templates')
+    onInput((val) => {
+      const newVal = [...val]
+      newVal.pop()
+      return newVal
+    })
+  }, [navigate, onInput])
 
   const onUpdate = useCallback(async () => {
     try {
@@ -170,37 +165,35 @@ const SearchUpdateTemplateTab = ({
     type,
   ])
 
-  useEffect(loadData, [loadData])
-
   return (
-    <div className="flex-container  w-full p-4 overflow-hidden">
-      <div className="flex flex-col h-full w-full overflow-hidden">
-        <ScrollBar className="m-4 h-full w-full">
+    <div className="flex flex-col w-full p-4 overflow-hidden">
+      <ScrollBar className="m-4">
+        <div className=" w-full">
           <Form
-            className=" grid grid-row-gap-5 h-min mr-4 h-full"
+            className=" w-full grid  gap-5 h-min mr-4 grid-cols-2"
             value={filter}
             onInput={setFilter}
             fields={fields}
             inputWrapper={RowInputWrapper}
           />
-        </ScrollBar>
-        <div className="flex items-start h-32">
-          <SecondaryOverBlueButton
-            disabled={dss_json === JSON.stringify(filter)}
-            className=" w-64"
-            onClick={onUpdate}
-          >
-            Сохранить шаблон
-          </SecondaryOverBlueButton>
-          <SecondaryGreyButton className="ml-2 w-64" onClick={onReverse}>
-            Отменить
-          </SecondaryGreyButton>
         </div>
+      </ScrollBar>
+      <div className="flex items-start h-32">
+        <SecondaryOverBlueButton
+          disabled={dss_json === JSON.stringify(filter)}
+          className=" w-64"
+          onClick={onUpdate}
+        >
+          Сохранить шаблон
+        </SecondaryOverBlueButton>
+        <SecondaryGreyButton className="ml-2 w-64" onClick={onReverse}>
+          Отменить
+        </SecondaryGreyButton>
       </div>
     </div>
   )
 }
 
-SearchUpdateTemplateTab.propTypes = {}
+ReportUpdateTemplateTab.propTypes = {}
 
-export default SearchUpdateTemplateTab
+export default ReportUpdateTemplateTab

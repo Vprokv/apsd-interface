@@ -50,6 +50,8 @@ import UpdateSettingsWindow from '@/Pages/Settings/Components/Templates/Componen
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import UserUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UserUpdateTemplateTab'
 import SearchUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchUpdateTemplateTab'
+import ReportUpdateTemplateTab
+  from "@/Pages/Settings/Components/Templates/Components/ReportTemplate/ReportUpdateTemplateTab";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -114,6 +116,7 @@ const FilterForm = styled(Form)`
 const updateTabsMap = {
   ddt_employee_template: UserUpdateTemplateTab,
   ddt_query_template: SearchUpdateTemplateTab,
+  ddt_report_template: ReportUpdateTemplateTab,
   default: UserUpdateTemplateTab,
 }
 
@@ -163,6 +166,10 @@ const Templates = (props) => {
         {
           typeName: 'ddt_query_template',
           typeLabel: 'Шаблон поиска',
+        },
+        {
+          typeName: 'ddt_report_template',
+          typeLabel: 'Шаблон отчета',
         },
       ],
     },
