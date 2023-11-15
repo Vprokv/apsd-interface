@@ -9,5 +9,4 @@ export const SideBarContainer = styled.div`
 
 export const NavigationHeaderIcon = styled(Icon)`
   color: var(--blue-6);
-  margin-right: 1rem;
 `

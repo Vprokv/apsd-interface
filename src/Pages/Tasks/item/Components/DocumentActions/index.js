@@ -1,22 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { LoadableBaseButton } from '@/Components/Button'
+import { SidebarEntity } from '@/Pages/Tasks/item/styles'
 
 const DocumentActions = ({ documentActions }) => (
   <>
     {documentActions.map(({ key, caption, handler, icon }) => (
       <LoadableBaseButton
         key={key}
-        className={`font-weight-light ${
-          caption === 'Вернуть на доработку' ? 'mb-8' : ''
-        } `}
+        className="font-weight-light"
         onClick={handler}
+        title={caption}
       >
         <div className="flex items-center">
           <img src={icon} alt="" className="mr-2" />
-          <div className="break-words font-size-12 whitespace-pre-line text-left">
+          <SidebarEntity className="break-words font-size-12 whitespace-pre-line text-left">
             {caption}
-          </div>
+          </SidebarEntity>
         </div>
       </LoadableBaseButton>
     ))}

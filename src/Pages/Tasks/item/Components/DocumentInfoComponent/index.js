@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import StartupComplexComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent/Components/StartupComplexComponent'
@@ -12,7 +11,7 @@ const mapTypesComponent = {
 const DocumentInfoComponent = ({ valuesCustom }) => {
   const { type } = useParams()
   const { [type]: Component } = mapTypesComponent
-  return Component ? <Component {...valuesCustom} /> : <div />
+  return Component ? <Component {...valuesCustom} /> : null
 }
 
 DocumentInfoComponent.propTypes = {

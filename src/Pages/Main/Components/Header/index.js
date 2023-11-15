@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import MainLogo from '../../main_logo.png'
 import Icon from '@Components/Components/Icon'
 import doubleShevronIcon from '@/Icons/doubleShevronIcon'
@@ -26,6 +27,7 @@ import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorage
 
 const MIN_SIDEBAR_WIDTH = { width: 240, margin: 70 }
 const MAX_SIDEBAR_WIDTH = { width: 800, margin: 630 }
+const COLLAPSED_SIDEBAR_WIDTH = { width: 60, margin: 0 }
 
 const Header = ({ children }) => {
   const { dss_first_name, dss_last_name } = useRecoilValue(userAtom)
@@ -39,6 +41,9 @@ const Header = ({ children }) => {
   const [sideBarState, setSideBarState] = useRecoilState(
     cachedLocalStorageValue('SideBarState'),
   )
+  const [collapsedState, setCollapsedState] = useRecoilState(
+    cachedLocalStorageValue('SideBarcollapsedState'),
+  )
 
   const openSetting = useCallback(
     () => openTabOrCreateNewTab(navigate(SETTINGS_PATH)),
@@ -46,8 +51,11 @@ const Header = ({ children }) => {
   )
 
   const columnsWithUiSetting = useMemo(
-    () => sideBarState || MIN_SIDEBAR_WIDTH,
-    [sideBarState],
+    () =>
+      !collapsedState
+        ? COLLAPSED_SIDEBAR_WIDTH
+        : sideBarState || MIN_SIDEBAR_WIDTH,
+    [collapsedState, sideBarState],
   )
 
   const refColumnsState = useRef(columnsWithUiSetting)
@@ -120,26 +128,30 @@ const Header = ({ children }) => {
 
   const tipsText = useMemo(
     () =>
-      columnsWithUiSetting.width <= 240
+      !collapsedState
         ? 'Развернуть дерево навигации'
         : 'Свернуть дерево навигации',
-    [columnsWithUiSetting.width],
+    [collapsedState],
   )
 
   return (
     <div className="flex-container">
-      <div className="bg-blue-1 flex items-center py-2 pl-6 pr-5 text-white">
-        <img src={MainLogo} />
+      <div className="bg-blue-1 flex items-center py-2 pl-2 pr-5 text-white">
         <Tips text={tipsText}>
           <button
-            style={{ 'margin-left': columnsWithUiSetting.margin }}
             type="button"
-            onMouseDown={onColumnStartResize}
-            className="bg-blue-4 rounded-md h-8 pl-1 pr-1"
+            onMouseDown={useCallback(
+              () => setCollapsedState((v) => !v),
+              [setCollapsedState],
+            )}
+            className={`bg-blue-4 rounded-md h-8 pl-1 pr-1 mr-6 ${
+              !collapsedState ? '' : 'rotate-180'
+            }`}
           >
             <Icon icon={doubleShevronIcon} size="22" className={buttonRotate} />
           </button>
         </Tips>
+        <img src={MainLogo} />
         <IconsGroup className="ml-auto flex items-center justify-center relative pr-5 py-2">
           <Search />
           <Tips text="Настройки">
@@ -195,9 +207,14 @@ const Header = ({ children }) => {
         refColumnsState,
         columnsWithUiSetting,
         resizeState,
+        collapsedState: !collapsedState,
       })}
     </div>
   )
+}
+
+Header.propTypes = {
+  children: PropTypes.func.isRequired,
 }
 
 export default Header

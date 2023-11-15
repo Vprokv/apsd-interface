@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon } from '../style'
 import NavigationDocumentIcon from '../icons/NavigationDocumentIcon'
@@ -18,8 +18,10 @@ import { useStatistic } from '@/Pages/Tasks/helper'
 import { CurrentTabContext } from '@Components/Logic/Tab'
 import { TASK_LIST } from '@/contants'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
+import Tips from '@/Components/Tips'
+import CounterContainer from '@/Components/Counter'
 
-const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task }) => {
+const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task, collapsedState }) => {
   const { tabs } = useContext(CurrentTabContext)
   const statistic = useStatistic(task)
   const updateTabStateUpdaterByName = useUpdateCurrentTabChildrenStates()
@@ -39,15 +41,37 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task }) => {
     },
     [onChangeActiveTab, onOpenNewTab, tabs, updateTabStateUpdaterByName],
   )
-  return (
+  return collapsedState ? (
+    <button
+      type="button"
+      className="flex w-full color-blue-1 px-2 mb-2"
+      onClick={handleOpenNewTab(TASK_LIST_PATH)}
+    >
+      <Tips text="Мои задания">
+        <NavigationHeaderIcon
+          icon={NavigationDocumentIcon}
+          size={28}
+          className="mx-auto relative"
+        >
+          <CounterContainer>
+            {statistic[''] ? statistic[''].slice(-2) : ''}
+          </CounterContainer>
+        </NavigationHeaderIcon>
+      </Tips>
+    </button>
+  ) : (
     <WithToggleNavigationItem id="Мои задания">
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className="px-2 mb-4">
+        <div className="px-2 mb-2">
           <button
             className="flex items-center w-full"
             onClick={toggleDisplayedFlag}
           >
-            <NavigationHeaderIcon icon={NavigationDocumentIcon} size={22} />
+            <NavigationHeaderIcon
+              icon={NavigationDocumentIcon}
+              size={22}
+              className="mr-4"
+            />
             <span className="font-size-12 mr-auto font-medium">
               Мои задания
             </span>

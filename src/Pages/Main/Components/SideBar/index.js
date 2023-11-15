@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon, SideBarContainer } from './style'
 import Button from '@/Components/Button'
@@ -28,6 +28,8 @@ import Notification from '@/Pages/Main/Components/SideBar/Components/Notificatio
 import styled from 'styled-components'
 import Knowledge from '@/Pages/Main/Components/SideBar/Components/KnowLedge'
 import DeputyPeople from '@/Pages/Main/Components/SideBar/Components/DeputyPeople'
+import Tips from '@/Components/Tips'
+import notificationIcon from '@/Icons/notificationIcon'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -64,6 +66,7 @@ const SideBar = ({
   onChangeActiveTab,
   onColumnStartResize,
   columnsWithUiSetting,
+  collapsedState,
   children,
 }) => {
   const api = useContext(ApiContext)
@@ -116,56 +119,98 @@ const SideBar = ({
           className="py-4 bg-white flex-container"
         >
           <Button
-            className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 "
+            className="mx-2 text-white bg-blue-1 flex items-center capitalize mb-4 justify-center"
             onClick={openCreateDocumentWindow}
           >
-            <Icon className="mr-2 ml-auto" icon={plusIcon} size={10} />
-            <span className="mr-auto font-size-12">Создать</span>
+            {collapsedState ? (
+              <Tips text={'Создать'}>
+                <Icon icon={plusIcon} size={10} />
+              </Tips>
+            ) : (
+              <>
+                <Icon icon={plusIcon} size={10} />
+                <span className="ml-2 font-size-12">Создать</span>
+              </>
+            )}
           </Button>
           <ScrollBar className="flex-container">
-            <Notification onOpenNewTab={onOpenNewTab} />
+            <Notification
+              onOpenNewTab={onOpenNewTab}
+              collapsedState={collapsedState}
+            />
             <MyTasks
               task={task}
+              collapsedState={collapsedState}
               onOpenNewTab={onOpenNewTab}
               onChangeActiveTab={onChangeActiveTab}
             />
             <DeputyPeople
               task={task}
+              collapsedState={collapsedState}
               onOpenNewTab={onOpenNewTab}
               onChangeActiveTab={onChangeActiveTab}
             />
             <button
               onClick={() => onOpenNewTab(`${TASK_VIEWED_LIST_PATH}`)}
-              className="flex items-center w-full px-2 mb-4"
+              className="flex items-center w-full px-2 mb-2"
             >
-              <NavigationHeaderIcon
-                className="color-blue-6"
-                icon={ViewedIcon}
-                size={22}
-              />
-              <span className="font-size-12 mr-auto font-medium">
-                Просмотренные
-              </span>
+              {collapsedState ? (
+                <Tips text="Просмотренные">
+                  <NavigationHeaderIcon
+                    className="mx-auto"
+                    icon={ViewedIcon}
+                    size={28}
+                  />
+                </Tips>
+              ) : (
+                <>
+                  <NavigationHeaderIcon
+                    className="mr-4"
+                    icon={ViewedIcon}
+                    size={22}
+                  />
+                  <span className="font-size-12 mr-auto font-medium">
+                    Просмотренные
+                  </span>
+                </>
+              )}
             </button>
-            <div className="px-2 flex items-center w-full mb-6">
-              <NavigationHeaderIcon
-                className="mr-2"
-                icon={CreatedByMeIcon}
-                size={20}
-              />
-              <div className="font-size-12 mr-auto font-medium">
-                Созданные мной
-              </div>
+            <div className="px-2 flex items-center w-full mb-2">
+              {collapsedState ? (
+                <Tips text="Просмотренные">
+                  <NavigationHeaderIcon
+                    className="mx-auto"
+                    icon={CreatedByMeIcon}
+                    size={26}
+                  />
+                </Tips>
+              ) : (
+                <>
+                  <NavigationHeaderIcon
+                    className="mr-4"
+                    icon={CreatedByMeIcon}
+                    size={20}
+                  />
+                  <span className="font-size-12 mr-auto font-medium">
+                    Созданные мной
+                  </span>
+                </>
+              )}
             </div>
             <Knowledge
+              collapsedState={collapsedState}
               onOpenNewTab={onOpenNewTab}
               width={columnsWithUiSetting.width}
             />
             <Archive
+              collapsedState={collapsedState}
               onOpenNewTab={onOpenNewTab}
               width={columnsWithUiSetting.width}
             />
-            <Basket onOpenNewTab={onOpenNewTab} />
+            <Basket
+              onOpenNewTab={onOpenNewTab}
+              collapsedState={collapsedState}
+            />
             <CreateDocumentWindow
               open={createDocumentWindow}
               onClose={closeCreateDocumentWindow}
@@ -186,6 +231,9 @@ SideBar.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  onColumnStartResize: PropTypes.func.isRequired,
+  columnsWithUiSetting: PropTypes.object.isRequired,
+  collapsedState: PropTypes.bool,
 }
 
 export default SideBar

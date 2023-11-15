@@ -61,6 +61,7 @@ import CancelIcon from '@/Pages/Tasks/item/Icons/CancelIcon.svg'
 import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
 import ScrollBar from '@Components/Components/ScrollBar'
+import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -327,28 +328,16 @@ const Document = () => {
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
 
-  // // TODO не трогать, пока идет разработка нового парсера
-  // const customDocumentsTab = useMemo(
-  //   () =>
-  //     process.env.NODE_ENV === 'production'
-  //       ? documentTabs
-  //       : [
-  //           ...documentTabs,
-  //           { caption: 'Реквизиты NEW', name: 'requisites_new' },
-  //         ],
-  //   [documentTabs],
-  // )
-
   return (
     <DocumentTypeContext.Provider value={ITEM_DOCUMENT}>
       <DocumentIdContext.Provider value={id}>
         <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
-          <SidebarContainer>
+          <SideBar>
             <ScrollBar>
               {data && <DocumentInfoComponent {...data} />}
               <DocumentActions documentActions={wrappedDocumentActions} />
             </ScrollBar>
-          </SidebarContainer>
+          </SideBar>
         </Layout>
         {ActionComponent && (
           <ActionComponent.Component

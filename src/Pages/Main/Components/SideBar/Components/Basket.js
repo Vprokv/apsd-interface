@@ -11,22 +11,41 @@ import {
   DELETED_3,
   DELETED_YEAR,
 } from '@/Pages/Basket/list/constans'
+import Tips from '@/Components/Tips'
 
-const Basket = ({ onOpenNewTab }) => {
+const Basket = ({ onOpenNewTab, collapsedState }) => {
   const handleOpenNewTab = useCallback(
     (path) => () => onOpenNewTab(path),
     [onOpenNewTab],
   )
 
-  return (
+  return collapsedState ? (
+    <Tips text="Все удаленные">
+      <button
+        type="button"
+        className="flex w-full color-blue-1 px-2 mb-2"
+        onClick={handleOpenNewTab(`${DELETED_LIST_PATH}`)}
+      >
+        <NavigationHeaderIcon
+          icon={SidebarBasketIcon}
+          size={28}
+          className="mx-auto"
+        />
+      </button>
+    </Tips>
+  ) : (
     <WithToggleNavigationItem id="корзина">
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className="px-2 mb-4">
+        <div className="px-2 mb-2">
           <button
             className="flex items-center w-full "
             onClick={toggleDisplayedFlag}
           >
-            <NavigationHeaderIcon icon={SidebarBasketIcon} size={22} />
+            <NavigationHeaderIcon
+              icon={SidebarBasketIcon}
+              size={22}
+              className="mr-4"
+            />
             <span className="font-size-12 mr-auto font-medium">Корзина</span>
             <Icon
               icon={angleIcon}
@@ -76,6 +95,7 @@ const Basket = ({ onOpenNewTab }) => {
 
 Basket.propTypes = {
   onOpenNewTab: PropTypes.func.isRequired,
+  collapsedState: PropTypes.bool,
 }
 
 export default Basket
