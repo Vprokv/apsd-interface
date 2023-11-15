@@ -1,4 +1,4 @@
-import Select from '@/Components/Inputs/Select'
+import Select, { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import Input from '@Components/Components/Inputs/Input'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
@@ -23,18 +23,26 @@ import parseReadOnlyRule from '@/Utils/Parser/Stages/parseReadOnlyRule'
 import parseVisibilityRule from '@/Utils/Parser/Stages/parseVisibilityRule'
 import parseValidationRules from '@/Utils/Parser/Stages/parseValidationRules'
 import { parseFieldProps } from '@/Utils/Parser/Stages/parseFieldProps'
-import TitleDocument from "@/Pages/Rporting/Components/TitleDocument";
+import TitleDocument from '@/Pages/Rporting/Components/TitleDocument'
 
 const fields = {
-  Combobox: Select,
+  Combobox: AutoLoadableSelect,
   Date: DatePicker,
   Checkbox: CheckBox,
   InputString: Input,
-  Orgstructure: UserSelect,
-  Branch: Select,
-  Department: Select,
+  Orgstructure: (props) => (
+    <UserSelect
+      // SelectComponent={WithAutoLoadableAlwaysRenderValuesSelect} //TODO разобраться почему не работает
+      SelectComponent={AutoLoadableSelect}
+      {...props}
+    />
+  ),
+  Branch: AutoLoadableSelect,
+  Department: AutoLoadableSelect,
   TitleDocument: TitleDocument,
-  UserSelect: BaseUserSelect,
+  UserSelect: (props) => (
+    <BaseUserSelect SelectComponent={AutoLoadableSelect} {...props} />
+  ),
   Text: Input,
   TextArea: TextArea,
   Document: DocumentSelect,
