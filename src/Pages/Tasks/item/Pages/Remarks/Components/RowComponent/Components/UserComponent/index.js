@@ -1,7 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import colorFromString from '@Components/Utils/colorFromString'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
+import { SecondaryBlueButton } from '@/Components/Button'
+import { SetAnswerStateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 
 const UserCard = ({ fio = '', position, avatar } = {}) => {
   const bg = useMemo(() => {
@@ -37,12 +39,14 @@ UserCard.defaultProps = {}
 
 const UserComponent = ({
   ParentValue: {
-    props: { remarkAuthor, answerAuthor },
+    props: { remarkAuthor, answerAuthor, permits: { createAnswer } = {} },
     props,
     itsRemark,
   },
-}) =>
-  itsRemark ? (
+}) => {
+  const onOpenRemarkWindow = useContext(SetAnswerStateContext)
+
+  return itsRemark ? (
     <UserCard
       fio={remarkAuthor.memberFullName}
       position={remarkAuthor.memberPosition}
@@ -53,8 +57,14 @@ const UserComponent = ({
       position={answerAuthor.memberPosition}
     />
   ) : (
-    <CreateAnswer {...props} />
+    <SecondaryBlueButton
+      disabled={!createAnswer}
+      onClick={() => onOpenRemarkWindow(props)}
+    >
+      Ответить
+    </SecondaryBlueButton>
   )
+}
 
 UserComponent.propTypes = {
   ParentValue: PropTypes.object,

@@ -10,7 +10,7 @@ import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import {
-  ShowAnswerButtonContext,
+  SetAnswerStateContext,
   ToggleContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
@@ -25,6 +25,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import IterationComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/Iteration'
 import Loading from '../../../../../Components/Loading'
+import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
@@ -39,6 +40,7 @@ const Remarks = () => {
     key: 'remarkCreationDate',
     direction: 'ASC',
   })
+  const [selected, setSelected] = useState()
 
   const tabItemState = useTabItem({
     stateId: TASK_ITEM_REMARKS,
@@ -139,7 +141,7 @@ const Remarks = () => {
   }, [open])
 
   return (
-    <ShowAnswerButtonContext.Provider value={{}}>
+    <SetAnswerStateContext.Provider value={setSelected}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
         <div className="flex items-center py-4 form-element-sizes-32 justify-between">
           <FilterForm
@@ -189,8 +191,9 @@ const Remarks = () => {
             </div>
           </ScrollBar>
         )}
+        <CreateAnswer {...selected} setSelected={setSelected}/>
       </div>
-    </ShowAnswerButtonContext.Provider>
+    </SetAnswerStateContext.Provider>
   )
 }
 
