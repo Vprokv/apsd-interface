@@ -8,10 +8,12 @@ import React, {
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
 import {
+  URL_CREATE_TEMPLATE,
   URL_EXPORT,
   URL_EXPORT_FILE,
   URL_SEARCH_ATTRIBUTES,
   URL_SEARCH_LIST,
+  URL_TEMPLATE_LIST,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import {
@@ -411,6 +413,15 @@ const DocumentSearch = ({
           changeModalState={changeCreateTemplateWindowState}
           value={filter}
           type={'ddt_query_template'}
+          createFunc={(api) => (parseResult) => (type) => async (json) => {
+            return await api.post(URL_CREATE_TEMPLATE, {
+              template: {
+                ...parseResult,
+                json,
+              },
+              type,
+            })
+          }}
         />
         <SearchTemplateWindowList
           open={openUseTemplateWindowState}
@@ -418,6 +429,12 @@ const DocumentSearch = ({
           setGlobalFilter={setFilter}
           type={'ddt_query_template'}
           title={'Выберите шаблон поиска'}
+          // searchFunc={(api) => (searchBody) => async (reportId) => {
+          //   return await api.post(URL_TEMPLATE_LIST, {
+          //     reportId,
+          //     ...searchBody,
+          //   })
+          // }}
         />
       </div>
     </ExportContext.Provider>

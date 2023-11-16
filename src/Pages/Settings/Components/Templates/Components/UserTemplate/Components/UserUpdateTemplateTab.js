@@ -14,7 +14,7 @@ import {
 } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 import log from 'tailwindcss/lib/util/log'
-import { URL_CREATE_UPDATE } from '@/ApiList'
+import { URL_CREATE_TEMPLATE, URL_CREATE_UPDATE } from '@/ApiList'
 import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -142,6 +142,16 @@ const UserUpdateTemplateTab = ({
         onReverse={onReverse}
         changeModalState={changeModalState}
         value={value}
+        type={type}
+        createFunc={(api) => (parseResult) => (type) => async (json) => {
+          return await api.post(URL_CREATE_TEMPLATE, {
+            template: {
+              ...parseResult,
+              json,
+            },
+            type,
+          })
+        }}
       />
     </div>
   )

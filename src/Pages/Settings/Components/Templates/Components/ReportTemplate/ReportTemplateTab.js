@@ -1,17 +1,22 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, REPORTING, SETTINGS_TEMPLATES } from '@/contants'
+import {
+  ApiContext,
+  REPORTING,
+  REPORTING_STATE,
+  SETTINGS_TEMPLATES,
+} from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
-import { URL_REPORTS_ITEM, URL_REPORTS_LIST } from '@/ApiList'
+import {
+  URL_CREATE_TEMPLATE,
+  URL_REPORTS_ITEM,
+  URL_REPORTS_LIST,
+} from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { Validation } from '@Components/Logic/Validator'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { ReportsForm } from '@/Pages/Rporting/styled'
 import {
-  LoadableSecondaryOverBlueButton,
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
@@ -27,7 +32,7 @@ import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserT
 
 const ReportTemplateTab = (props) => {
   const api = useContext(ApiContext)
-  const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const tabItemState = useTabItem({ stateId: REPORTING_STATE })
   const [filter, setFilter] = useState({})
   const [filterField, setFilterField] = useState({})
   const getNotification = useOpenNotification()
@@ -135,6 +140,19 @@ const ReportTemplateTab = (props) => {
         changeModalState={changeModalState}
         value={filter}
         type={type}
+        createFunc={(api) =>
+          (parseResult) =>
+          (type) =>
+          async ({ reportId, ...json }) => {
+            return await api.post(URL_CREATE_TEMPLATE, {
+              template: {
+                ...parseResult,
+                json: [{ reportId, ...json }],
+                reportId,
+              },
+              type,
+            })
+          }}
       />
     </div>
   )

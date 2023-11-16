@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
+import { ApiContext, REPORTING_STATE, SETTINGS_TEMPLATES } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -45,8 +45,9 @@ const ReportUpdateTemplateTab = ({
   ...other
 }) => {
   const api = useContext(ApiContext)
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
-  const [filter, setFilter] = useState({})
+  const { setTabState } = useTabItem({ stateId: REPORTING_STATE })
+  const [initialFilter] = JSON.parse(dss_json)
+  const [filter, setFilter] = useState(initialFilter)
   const [filterField, setFilterField] = useState({})
   const getNotification = useOpenNotification()
   const navigate = useNavigate()
@@ -63,7 +64,7 @@ const ReportUpdateTemplateTab = ({
         if (data.parameters.some(({ name }) => name === 'only_original')) {
           setFilterField({ only_original: true })
         }
-        setAttributes(data)
+        setAttributes(data.parameters)
       }
     } catch (e) {
       const { response: { status = 500 } = {} } = e
@@ -76,7 +77,7 @@ const ReportUpdateTemplateTab = ({
   const { fields: parsedFields } = useParseConfig({
     value: filterField,
     fieldsDesign: useMemo(
-      () => attributes.map(attrubutesAdapter),
+      () => attributes?.map(attrubutesAdapter),
       [attributes],
     ),
     stages: reportParserStages,
@@ -135,9 +136,12 @@ const ReportUpdateTemplateTab = ({
       const { privateAccess } = reverseParseFromBackend
       const { [privateAccess]: func } = parseSettingsFuncMap
       const parseResult = func(other)
+      console.log(parseResult, 'parseResult')
       await api.post(URL_CREATE_UPDATE, {
         template: {
-          json: filter,
+          dss_name,
+          json: [filter],
+          reportId: filter.reportId,
           ...parseResult,
         },
         type,
@@ -156,6 +160,7 @@ const ReportUpdateTemplateTab = ({
   }, [
     api,
     dsid_template,
+    dss_name,
     filter,
     getNotification,
     onReverse,
@@ -180,7 +185,7 @@ const ReportUpdateTemplateTab = ({
       </ScrollBar>
       <div className="flex items-start h-32">
         <SecondaryOverBlueButton
-          disabled={dss_json === JSON.stringify(filter)}
+          disabled={JSON.stringify(initialFilter) === JSON.stringify(filter)}
           className=" w-64"
           onClick={onUpdate}
         >
