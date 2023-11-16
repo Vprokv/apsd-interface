@@ -5,7 +5,7 @@ import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
+import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_ANSWER } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
@@ -49,21 +49,25 @@ const rules = {
   // ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Ответ на замечание добавлен успешно',
+    }
+  },
+}
+
 const CreateAnswer = ({
   remarkText,
   remarkId,
-  permits: { createAnswer, editAuthor },
+  permits: { editAuthor } = {},
+  setSelected,
 }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
-  const [open, setOpenState] = useState(false)
   const getNotification = useOpenNotification()
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenState(nextState)
-    },
-    [],
-  )
   const { setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
@@ -105,68 +109,66 @@ const CreateAnswer = ({
 
   const [filter, setFilterValue] = useState(initialUserValue)
 
-  const fields = [
-    {
-      id: 'remarkText',
-      component: CustomInput,
-      placeholder: 'Введите текст замечания',
-      label: 'Текст замечания',
-      disabled: true,
-    },
-    {
-      id: 'member',
-      label: 'Автор',
-      disabled: !editAuthor,
-      returnOption: true,
-      returnObjects: true,
-      options: [initialUserValue.member],
-      component: UserSelect,
-    },
-    {
-      id: 'solutionId',
-      component: LoadableSelect,
-      placeholder: 'Выберите тип',
-      isRequired: false,
-      label: 'Решение',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_status_solution',
-          query,
-        })
-        return data
+  const fields = useMemo(
+    () => [
+      {
+        id: 'remarkText',
+        component: CustomInput,
+        placeholder: 'Введите текст замечания',
+        label: 'Текст замечания',
+        disabled: true,
       },
-    },
-    {
-      id: 'text',
-      label: 'Текст ответа',
-      isRequired: true,
-      inputWrapper: RemarkWrapper,
-      className: '',
-      component: CustomInput,
-      max: 100,
-      placeholder: 'Введите текст ответа',
-    },
-    {
-      id: 'ndtLinks',
-      label: 'Ссылка нa НТД',
-      component: LinkNdt,
-      placeholder: 'Выберите значение',
-      inputWrapper: returnChildren,
-      InputUiContext: NdtLinkWrapper,
-    },
-  ]
+      {
+        id: 'member',
+        label: 'Автор',
+        disabled: !editAuthor,
+        returnOption: true,
+        returnObjects: true,
+        options: [initialUserValue.member],
+        component: UserSelect,
+      },
+      {
+        id: 'solutionId',
+        component: AutoLoadableSelect,
+        placeholder: 'Выберите тип',
+        isRequired: false,
+        label: 'Решение',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_status_solution',
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'text',
+        label: 'Текст ответа',
+        isRequired: true,
+        inputWrapper: RemarkWrapper,
+        className: '',
+        component: CustomInput,
+        max: 100,
+        placeholder: 'Введите текст ответа',
+      },
+      {
+        id: 'ndtLinks',
+        label: 'Ссылка нa НТД',
+        component: LinkNdt,
+        placeholder: 'Выберите значение',
+        inputWrapper: returnChildren,
+        InputUiContext: NdtLinkWrapper,
+      },
+    ],
+    [api, editAuthor, initialUserValue],
+  )
 
-  const customMessagesFuncMap = {
-    ...defaultFunctionsMap,
-    200: () => {
-      return {
-        type: NOTIFICATION_TYPE_SUCCESS,
-        message: 'Ответ на замечание добавлен успешно',
-      }
-    },
-  }
+  const onClose = useCallback(() => {
+    setSelected(undefined)
+    setFilterValue(initialUserValue)
+  }, [initialUserValue, setSelected])
 
   const onSave = useCallback(async () => {
     try {
@@ -182,50 +184,37 @@ const CreateAnswer = ({
       })
       getNotification(customMessagesFuncMap[status]())
       setTabState({ loading: false, fetched: false })
-      changeModalState(false)()
+      setSelected(undefined)
       setFilterValue(initialUserValue)
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
-    api,
-    changeModalState,
-    customMessagesFuncMap,
     filter,
-    getNotification,
+    api,
     id,
-    initialUserValue,
     remarkId,
+    getNotification,
     setTabState,
+    setSelected,
+    initialUserValue,
   ])
-
-  const onClose = useCallback(() => {
-    changeModalState(false)()
-    setFilterValue(initialUserValue)
-  }, [changeModalState, initialUserValue])
 
   return (
     <div>
-      <SecondaryBlueButton
-        disabled={!createAnswer}
-        onClick={changeModalState(true)}
-      >
-        Ответить
-      </SecondaryBlueButton>
       <StandardSizeModalWindow
         title="Добавить ответ на замечание"
-        open={open}
-        onClose={onClose}
+        open={remarkText}
+        onClose={() => setSelected(undefined)}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <ScrollBar>
-            <div className="flex flex-col py-4">
+          <div className="flex flex-col py-4 h-full grow">
+            <ScrollBar>
               <Validation
                 fields={fields}
                 value={filter}
                 onInput={setFilterValue}
-                inputWrapper={InputWrapper}
                 rules={rules}
                 onSubmit={onSave}
                 validators={remarkValidator}
@@ -235,21 +224,30 @@ const CreateAnswer = ({
                     <>
                       <FilterForm
                         className="form-element-sizes-40"
+                        inputWrapper={InputWrapper}
                         {...validationProps}
                       />
                       <div className="mt-10">
-                        <UnderButtons
-                          disabled={!validationProps.formValid}
-                          rightFunc={validationProps.onSubmit}
-                          leftFunc={onClose}
-                        />
+                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
+                          Скачать шаблон таблицы
+                        </SecondaryBlueButton>
+                        <div className="flex items-center">
+                          <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
+                            Импорт значений
+                          </SecondaryBlueButton>
+                          <UnderButtons
+                            disabled={!validationProps.formValid}
+                            leftFunc={onClose}
+                            rightFunc={validationProps.onSubmit}
+                          />
+                        </div>
                       </div>
                     </>
                   )
                 }}
               </Validation>
-            </div>
-          </ScrollBar>
+            </ScrollBar>
+          </div>
         </div>
       </StandardSizeModalWindow>
     </div>

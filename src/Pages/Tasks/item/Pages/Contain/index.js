@@ -317,8 +317,10 @@ const Contain = () => {
     tabItemState,
   )
 
-  const updateTreePluginState = useCallback((treePluginState) => setTabState({treePluginState }), [setTabState])
-
+  const updateTreePluginState = useCallback(
+    (treePluginState) => setTabState({ treePluginState }),
+    [setTabState],
+  )
 
   const fields = useMemo(
     () => [
@@ -382,10 +384,11 @@ const Contain = () => {
   }, [])
 
   const changeOpenState = useCallback(() => {
+    setTabState({ treePluginState: {} })
+
     setTabState(({ defaultOpen = false }) => {
       return { defaultOpen: !defaultOpen }
     })
-    setState((v) => !v)
   }, [setTabState])
 
   const onReload = useCallback(() => {
