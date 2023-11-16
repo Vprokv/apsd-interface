@@ -39,7 +39,7 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 
 export const FilterForm = styled(WithValidationForm)`
   display: grid;
-  --form-elements-indent: 10px;
+  --form-elements-indent: 20px;
   height: 100%;
 `
 
