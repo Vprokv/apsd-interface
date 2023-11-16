@@ -65,6 +65,12 @@ const columns = [
     sizes: baseCellSize,
   },
   {
+    id: 'notifyDescription',
+    label: 'Описание уведомления',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
     id: 'documentType',
     label: 'Документ',
     component: DocumentTypeComponent,
