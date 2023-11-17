@@ -95,6 +95,38 @@ const columns = [
   },
 ]
 
+const filterFields = [
+  {
+    id: 'name',
+    component: SearchInput,
+    placeholder: 'Наименование',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'note',
+    component: SearchInput,
+    placeholder: 'Примечание',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'isPrivate',
+    component: CheckBox,
+    text: 'Личные шаблоны',
+  },
+]
+
 const SearchTemplateWindowList = ({
   open,
   changeModalState,
@@ -126,38 +158,6 @@ const SearchTemplateWindowList = ({
     defaultLimit: 10,
   })
 
-  const filterFields = [
-    {
-      id: 'name',
-      component: SearchInput,
-      placeholder: 'Наименование',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'note',
-      component: SearchInput,
-      placeholder: 'Примечание',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'isPrivate',
-      component: CheckBox,
-      text: 'Личные шаблоны',
-    },
-  ]
-
   const loadData = useCallback(async () => {
     try {
       const { data } = await api.post(URL_TEMPLATE_LIST, {
@@ -180,9 +180,10 @@ const SearchTemplateWindowList = ({
   useAutoReload(loadData, tabItemState)
 
   const onCreate = useCallback(() => {
-    setGlobalFilter(JSON.parse(selectState.dss_json))
+    const state = JSON.parse(selectState.dss_json)[0] // TODO разобраться как хранит бэк
+    setGlobalFilter(Array.isArray(state) ? state[0] : state)
     changeModalState(false)()
-  }, [changeModalState, selectState.dss_json, setGlobalFilter])
+  }, [changeModalState, selectState?.dss_json, setGlobalFilter])
 
   return (
     <StandardSizeModalWindow
@@ -226,7 +227,7 @@ const SearchTemplateWindowList = ({
               leftFunc={changeModalState(false)}
               leftLabel="Закрыть"
               rightLabel="Выбрать"
-              disabled={Object.keys(selectState).length < 1}
+              disabled={selectState && Object.keys(selectState).length < 1}
               rightFunc={onCreate}
             />
             {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
