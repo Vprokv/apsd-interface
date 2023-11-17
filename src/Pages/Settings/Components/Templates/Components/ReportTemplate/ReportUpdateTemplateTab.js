@@ -6,13 +6,13 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, REPORTING_STATE, SETTINGS_TEMPLATES } from '@/contants'
+import { ApiContext, REPORTING_STATE } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   parseSettingsFuncMap,
   TemplateTabStateContext,
@@ -23,7 +23,6 @@ import {
   URL_REPORTS_LIST,
 } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useParseConfig from '@/Utils/Parser'
 import attrubutesAdapter from '@/Pages/Rporting/Parser/attrubutesAdapter'
 import reportParserStages from '@/Pages/Rporting/Parser'
@@ -35,10 +34,10 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
 const ReportUpdateTemplateTab = ({
   dss_name,
+  dss_note,
   dss_json,
   dsid_template,
   type,
@@ -136,10 +135,10 @@ const ReportUpdateTemplateTab = ({
       const { privateAccess } = reverseParseFromBackend
       const { [privateAccess]: func } = parseSettingsFuncMap
       const parseResult = func(other)
-      console.log(parseResult, 'parseResult')
       await api.post(URL_CREATE_UPDATE, {
         template: {
-          dss_name,
+          // dssName: dss_name,
+          // dssNote: dss_note,
           json: [filter],
           reportId: filter.reportId,
           ...parseResult,
@@ -160,7 +159,6 @@ const ReportUpdateTemplateTab = ({
   }, [
     api,
     dsid_template,
-    dss_name,
     filter,
     getNotification,
     onReverse,
