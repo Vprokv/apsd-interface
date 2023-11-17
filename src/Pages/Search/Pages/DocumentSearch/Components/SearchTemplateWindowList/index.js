@@ -95,44 +95,14 @@ const columns = [
   },
 ]
 
-const filterFields = [
-  {
-    id: 'name',
-    component: SearchInput,
-    placeholder: 'Наименование',
-    children: (
-      <Icon
-        icon={searchIcon}
-        size={10}
-        className="color-text-secondary mr-2.5"
-      />
-    ),
-  },
-  {
-    id: 'note',
-    component: SearchInput,
-    placeholder: 'Примечание',
-    children: (
-      <Icon
-        icon={searchIcon}
-        size={10}
-        className="color-text-secondary mr-2.5"
-      />
-    ),
-  },
-  {
-    id: 'isPrivate',
-    component: CheckBox,
-    text: 'Личные шаблоны',
-  },
-]
-
 const SearchTemplateWindowList = ({
   open,
   changeModalState,
   setGlobalFilter,
   type,
   title,
+  searchFunc,
+  reportId,
 }) => {
   const api = useContext(ApiContext)
   const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
@@ -158,9 +128,41 @@ const SearchTemplateWindowList = ({
     defaultLimit: 10,
   })
 
+  const filterFields = [
+    {
+      id: 'name',
+      component: SearchInput,
+      placeholder: 'Наименование',
+      children: (
+        <Icon
+          icon={searchIcon}
+          size={10}
+          className="color-text-secondary mr-2.5"
+        />
+      ),
+    },
+    {
+      id: 'note',
+      component: SearchInput,
+      placeholder: 'Примечание',
+      children: (
+        <Icon
+          icon={searchIcon}
+          size={10}
+          className="color-text-secondary mr-2.5"
+        />
+      ),
+    },
+    {
+      id: 'isPrivate',
+      component: CheckBox,
+      text: 'Личные шаблоны',
+    },
+  ]
+
   const loadData = useCallback(async () => {
     try {
-      const { data } = await api.post(URL_TEMPLATE_LIST, {
+      const { data } = await searchFunc(api)({
         ...filter,
         type,
         sort: [
@@ -169,19 +171,20 @@ const SearchTemplateWindowList = ({
             direction: 'DESC',
           },
         ],
-      })
+      })(reportId)
       return data
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter, getNotification, type])
+  }, [api, filter, getNotification, reportId, searchFunc, type])
 
   useAutoReload(loadData, tabItemState)
 
   const onCreate = useCallback(() => {
-    const state = JSON.parse(selectState.dss_json)[0] // TODO разобраться как хранит бэк
-    setGlobalFilter(Array.isArray(state) ? state[0] : state)
+    const jsonData = JSON.parse(selectState.dss_json) // TODO разобраться как хранит бэк
+
+    setGlobalFilter(Array.isArray(jsonData) ? jsonData[0] : jsonData)
     changeModalState(false)()
   }, [changeModalState, selectState?.dss_json, setGlobalFilter])
 
@@ -236,6 +239,12 @@ const SearchTemplateWindowList = ({
       </WindowContainer>
     </StandardSizeModalWindow>
   )
+}
+
+SearchTemplateWindowList.defaultProps = {
+  searchFunc: (api) => (searchBody) => async () => {
+    return await api.post(URL_TEMPLATE_LIST, searchBody)
+  },
 }
 
 SearchTemplateWindowList.propTypes = {}

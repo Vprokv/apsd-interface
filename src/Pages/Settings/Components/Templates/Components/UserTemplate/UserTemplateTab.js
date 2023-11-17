@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
+import { URL_CREATE_TEMPLATE } from '@/ApiList'
 
 const UserTemplateTab = (props) => {
   const [value, onInputUser] = useState([])
@@ -59,6 +60,16 @@ const UserTemplateTab = (props) => {
         changeModalState={changeModalState}
         value={value}
         type={type}
+        createFunc={(api) => (parseResult) => (type) => async (json) => {
+          const data = await api.post(URL_CREATE_TEMPLATE, {
+            template: {
+              ...parseResult,
+              json,
+            },
+            type,
+          })
+          return data
+        }}
       />
     </div>
   )

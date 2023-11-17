@@ -12,7 +12,7 @@ import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_CREATE_DELETE, URL_TEMPLATE, URL_TEMPLATE_LIST } from '@/ApiList'
+import { URL_CREATE_DELETE, URL_TEMPLATE_LIST } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { Select } from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -21,11 +21,7 @@ import searchIcon from '@/Icons/searchIcon'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
-import {
-  ButtonForIcon,
-  LoadableSecondaryBlueButton,
-  SecondaryBlueButton,
-} from '@/Components/Button'
+import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
@@ -50,8 +46,7 @@ import UpdateSettingsWindow from '@/Pages/Settings/Components/Templates/Componen
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import UserUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UserUpdateTemplateTab'
 import SearchUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchUpdateTemplateTab'
-import ReportUpdateTemplateTab
-  from "@/Pages/Settings/Components/Templates/Components/ReportTemplate/ReportUpdateTemplateTab";
+import ReportUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/ReportTemplate/ReportUpdateTemplateTab'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -78,7 +73,7 @@ const columns = [
     sizes: 400,
   },
   {
-    id: 'eventName',
+    id: 'author',
     label: 'Автор',
     component: ({ ParentValue: { author } }) => (
       <BaseCellName
@@ -128,7 +123,7 @@ const Templates = (props) => {
   const [filter, setFilter] = useState({ type: 'ddt_employee_template' })
   const getNotification = useOpenNotification()
   const [sortQuery, onSort] = useState({
-    key: 'creationDate',
+    key: 'eventName',
     direction: 'DESC',
   })
 
@@ -138,7 +133,7 @@ const Templates = (props) => {
 
   const {
     // tabState: { data: { content = [], total = 0 } = {} },
-    tabState: { data: content, total = 0, loading },
+    tabState: { data: content = [], total = 0, loading },
     tabState,
     setTabState,
   } = tabItemState
@@ -296,7 +291,7 @@ const Templates = (props) => {
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <SecondaryBlueButton
-            disabled={tabs.length > 2}
+            // disabled={tabs.length > 2}
             onClick={onCreate(filter.type)}
             className="mr-2"
           >
@@ -324,7 +319,7 @@ const Templates = (props) => {
           () => (props) => <RowComponent onClick={onOpen} {...props} />,
           [onOpen],
         )}
-        value={content}
+        value={content || []}
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}

@@ -2,7 +2,13 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING, TokenContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_REPORTS_BUILD, URL_REPORTS_GET, URL_REPORTS_ITEM } from '@/ApiList'
+import {
+  URL_CREATE_TEMPLATE,
+  URL_REPORTS_BUILD,
+  URL_REPORTS_GET,
+  URL_REPORTS_ITEM,
+  URL_TEMPLATE_LIST,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
@@ -27,6 +33,7 @@ const Reporting = () => {
   const { id } = useParams()
   const tabItemState = useTabItem({ stateId: REPORTING })
   const [filter, setFilter] = useState({})
+  console.log(filter, 'filter')
   const { token } = useContext(TokenContext)
   const getNotification = useOpenNotification()
 
@@ -155,6 +162,16 @@ const Reporting = () => {
         changeModalState={changeCreateTemplateWindowState}
         value={filter}
         type={'ddt_report_template'}
+        createFunc={(api) => (parseResult) => (type) => async (json) => {
+          return await api.post(URL_CREATE_TEMPLATE, {
+            template: {
+              ...parseResult,
+              json: [{ reportId: id, ...json }],
+              reportId: id,
+            },
+            type,
+          })
+        }}
       />
       <SearchTemplateWindowList
         open={openUseTemplateWindowState}
@@ -162,6 +179,10 @@ const Reporting = () => {
         setGlobalFilter={setFilter}
         type={'ddt_report_template'}
         title={'Выберите шаблон отчета'}
+        reportId={id}
+        searchFunc={(api) => (searchBody) => async (reportId) => {
+          return await api.post(URL_TEMPLATE_LIST, { reportId, ...searchBody })
+        }}
       />
     </>
   )

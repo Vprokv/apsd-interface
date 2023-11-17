@@ -39,4 +39,10 @@ export const defaultFunctionsMap = {
       message,
     }
   },
+  0: () => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: 'Ошибка интерфейса',
+    }
+  },
 }

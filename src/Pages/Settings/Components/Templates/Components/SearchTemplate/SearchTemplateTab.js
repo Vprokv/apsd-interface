@@ -11,7 +11,11 @@ import { useOpenNotification } from '@/Components/Notificator'
 import useParseConfig from '@/Utils/Parser'
 import { searchParserStages } from '@/Pages/Search/Parser'
 import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
-import { URL_SEARCH_ATTRIBUTES, URL_TYPE_CONFIG } from '@/ApiList'
+import {
+  URL_CREATE_TEMPLATE,
+  URL_SEARCH_ATTRIBUTES,
+  URL_TYPE_CONFIG,
+} from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import ScrollBar from '@Components/Components/ScrollBar'
@@ -22,7 +26,7 @@ import {
   SecondaryOverBlueButton,
 } from '@/Components/Button'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
-import {useNavigate, useParams} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
@@ -142,6 +146,16 @@ const SearchTemplateTab = (props) => {
         changeModalState={changeModalState}
         value={filter}
         type={type}
+        createFunc={(api) => (parseResult) => (type) => async (json) => {
+          const data = await api.post(URL_CREATE_TEMPLATE, {
+            template: {
+              ...parseResult,
+              json,
+            },
+            type,
+          })
+          return data
+        }}
       />
     </div>
   )

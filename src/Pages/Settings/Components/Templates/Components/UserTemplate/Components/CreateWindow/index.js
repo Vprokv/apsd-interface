@@ -17,8 +17,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import styled from 'styled-components'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import OrgStructureComponentWithTemplateWindowWrapper
-  from "@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate";
+import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -50,7 +49,14 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
+const CreateWindow = ({
+  changeModalState,
+  open,
+  value,
+  onReverse,
+  type,
+  createFunc,
+}) => {
   const [filter, setFilter] = useState({})
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
@@ -140,23 +146,30 @@ const CreateWindow = ({ changeModalState, open, value, onReverse, type }) => {
       const { privateAccess, dssName, dssNote } = filter
       const { [privateAccess]: func } = funcMap
       const parseResult = func(filter)
-      const data = await api.post(URL_CREATE_TEMPLATE, {
-        template: {
-          dssName,
-          dssNote,
-          ...parseResult,
-          json: value,
-        },
-        type,
-      })
+
+      const data = await createFunc(api)({
+        ...parseResult,
+        dssName,
+        dssNote,
+      })(type)(value)
+
       setTabState({ loading: false, fetched: false })
-      getNotification(customMessagesFuncMap[data.status]())
+      getNotification(customMessagesFuncMap[data?.status]())
       onReverse()
     } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(customMessagesFuncMap[status](data))
+      const { response: { status = 0, data = '' } = {} } = e
+      getNotification(customMessagesFuncMap[status](data?.dssName))
     }
-  }, [api, filter, getNotification, onReverse, setTabState, type, value])
+  }, [
+    api,
+    createFunc,
+    filter,
+    getNotification,
+    onReverse,
+    setTabState,
+    type,
+    value,
+  ])
 
   const handleClick = useCallback(() => {
     changeModalState(false)()
