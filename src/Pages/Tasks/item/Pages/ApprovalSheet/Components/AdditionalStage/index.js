@@ -89,7 +89,7 @@ const AdditionalStage = (props) => {
   )
 
   const onDeleteApprover = useCallback(async () => {
-    if (selected.deleteApprover) {
+    if (selected?.permit?.deleteApprover) {
       try {
         await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
           approvers: [selected.id],
@@ -115,7 +115,7 @@ const AdditionalStage = (props) => {
   }, [api, getNotification, selected, updateCurrentTabChildrenStates])
 
   const onSendApprover = useCallback(async () => {
-    if (selected.deleteApprover) {
+    if (selected?.permit?.send) {
       try {
         await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND, {
           performersIds: [selected.id],
@@ -150,7 +150,7 @@ const AdditionalStage = (props) => {
   ])
 
   const onRevokeApprover = useCallback(async () => {
-    if (selected.deleteApprover) {
+    if (selected?.permit?.revoke) {
       try {
         await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE, {
           performersIds: [selected.id],
@@ -159,7 +159,7 @@ const AdditionalStage = (props) => {
         })
         getNotification({
           type: NOTIFICATION_TYPE_SUCCESS,
-          message: 'Рассылка выполнена успешно',
+          message: 'Отзыв выполнен успешно',
         })
         updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
           loading: false,
