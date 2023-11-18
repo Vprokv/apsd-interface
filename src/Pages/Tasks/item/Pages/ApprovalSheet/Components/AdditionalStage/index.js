@@ -42,6 +42,8 @@ const AdditionalStage = (props) => {
   const { approvers, permit: { ['delete']: deleteStage, addApprover } = {} } =
     props.node.options
 
+  const { parent } = props
+
   const [isDisplayed, setShow] = useState(true)
   const [selected, onInput] = useState({ additional: false })
   const [ActionComponent, setActionComponent] = useState(null)
@@ -276,7 +278,7 @@ const AdditionalStage = (props) => {
             open={true}
             onClose={closeAction}
             approvers={approvers}
-            selected={selected}
+            selected={parent}
           />
         )}
       </div>
