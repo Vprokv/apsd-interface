@@ -114,7 +114,10 @@ const Document = () => {
   const documentId = useMemo(() => {
     let v = 'Документ'
     if (values) {
-      v = type === titleName ? values.dss_code : values.dss_reg_number
+      v =
+        type === titleName
+          ? values.dss_code || values.dss_ipr_number
+          : values.dss_reg_number
     }
 
     return v

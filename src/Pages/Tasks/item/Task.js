@@ -137,11 +137,15 @@ const Task = () => {
   } = tabItemState
 
   const docId = useMemo(() => {
+    let v = 'Документ'
     if (values) {
-      return type === titleName ? values.dss_code : values.dss_reg_number
+      v =
+        type === titleName
+          ? values.dss_code || values.dss_ipr_number
+          : values.dss_reg_number
     }
 
-    return 'Документ'
+    return v
   }, [type, values])
 
   useSetTabName(useCallback(() => docId, [docId]))
