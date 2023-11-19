@@ -1,24 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { NOTIFICATION_PATH } from '@/routePaths'
 import { NavigationHeaderIcon } from '@/Pages/Main/Components/SideBar/style'
 import notificationIcon from '@/Icons/notificationIcon'
-import { ApiContext } from '@/contants'
-import { URL_SUBSCRIPTION_USER_TOTAL } from '@/ApiList'
 import Tips from '@/Components/Tips'
 import CounterContainer from '@/Components/Counter'
 
-const Notification = ({ onOpenNewTab, collapsedState }) => {
-  const api = useContext(ApiContext)
-  const [notification, setNotification] = useState()
-
-  useEffect(() => {
-    ;(async () => {
-      const { data } = await api.post(URL_SUBSCRIPTION_USER_TOTAL)
-      setNotification(data)
-    })()
-  }, [api])
-
+const Notification = ({ onOpenNewTab, collapsedState, notification }) => {
   return (
     <button
       onClick={() => onOpenNewTab(`${NOTIFICATION_PATH}`)}

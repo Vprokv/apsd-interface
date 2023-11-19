@@ -11,7 +11,8 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_EVENTS,
-  URL_SUBSCRIPTION_NOTIFICATION_DELETE, URL_SUBSCRIPTION_NOTIFICATION_DELETE_ALL,
+  URL_SUBSCRIPTION_NOTIFICATION_DELETE,
+  URL_SUBSCRIPTION_NOTIFICATION_DELETE_ALL,
   URL_SUBSCRIPTION_NOTIFICATION_LIST,
   URL_SUBSCRIPTION_NOTIFICATION_WATCH,
   URL_TYPE_CONFIG,
@@ -29,7 +30,6 @@ import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import DocumentTypeComponent from '@/Pages/Notification/Components/DocumentTypeComponent'
 import {
-  NOTIFICATION_TYPE_INFO,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -39,6 +39,7 @@ import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
+import { LoadNotificationContext } from '@/Pages/Main/constants'
 
 const FilterForm = styled(Form)`
   --form--elements_height: 32px;
@@ -131,6 +132,7 @@ const Notification = () => {
     key: 'creationDate',
     direction: 'DESC',
   })
+  const loadNotification = useContext(LoadNotificationContext)
 
   const tabItemState = useTabItem({ stateId: NOTIFICATION })
 
@@ -244,6 +246,8 @@ const Notification = () => {
       await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE, {
         notificationIds: selectState,
       })
+      await loadNotification()
+
       setTabState({ loading: false, fetched: false })
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
@@ -253,11 +257,13 @@ const Notification = () => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, getNotification, selectState, setTabState])
+  }, [api, getNotification, loadNotification, selectState, setTabState])
 
   const onDeleteALL = useCallback(async () => {
     try {
       await api.post(URL_SUBSCRIPTION_NOTIFICATION_DELETE_ALL)
+      await loadNotification()
+
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Уведомления удалены успешно',
@@ -266,7 +272,7 @@ const Notification = () => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, getNotification])
+  }, [api, getNotification, loadNotification])
 
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
