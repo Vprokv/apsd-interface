@@ -38,7 +38,8 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 
 export const FilterForm = styled(Form)`
   display: grid;
-  --form-elements-indent: 20px;
+  //grid-row-gap: 20px;
+  //--form-elements-indent: 20px;
   height: 100%;
 `
 
@@ -88,43 +89,44 @@ const ExportDocumentWindow = ({
 
   const onExport = useCallback(async () => {
     try {
-      const {
-        data: { filekey, tableName },
-      } = await api.post(URL_DOWNLOAD_CONTENT, {
+      await api.post(URL_DOWNLOAD_CONTENT, {
         documentType: type,
         documentId: id,
         ...filter,
       })
       getNotification({
         type: NOTIFICATION_TYPE_INFO,
-        message: 'Формирование архива начато',
+        message: 'Выгрузка поступит на эл. почту',
       })
-      try {
-        const result = await api.post(
-          URL_DOWNLOAD_FILE,
-          {
-            type: tableName,
-            column: 'dsc_content',
-            id: filekey,
-          },
-          { responseType: 'blob' },
-        )
-        setOpen(false)()
-        downloadFile(result)
-        setFilter({ archiveVersion: true })
-      } catch (e) {
-        getNotification({
-          type: NOTIFICATION_TYPE_ERROR,
-          message: 'Ошибка получания архива',
-        })
-      }
+
+      //todo непонятно надо ли выпилить скачивание
+
+      // try {
+      //   const result = await api.post(
+      //     URL_DOWNLOAD_FILE,
+      //     {
+      //       type: tableName,
+      //       column: 'dsc_content',
+      //       id: filekey,
+      //     },
+      //     { responseType: 'blob' },
+      //   )
+      //   setOpen(false)()
+      //   downloadFile(result)
+      //   setFilter({ archiveVersion: true })
+      // } catch (e) {
+      //   getNotification({
+      //     type: NOTIFICATION_TYPE_ERROR,
+      //     message: 'Ошибка получания архива',
+      //   })
+      // }
     } catch (e) {
       getNotification({
         type: NOTIFICATION_TYPE_ERROR,
-        message: 'Ошибка получания файла',
+        message: 'Ошибка формирования архива',
       })
     }
-  }, [api, filter, getNotification, id, setOpen, type])
+  }, [api, filter, getNotification, id, type])
 
   return (
     <StandardSizeModalWindow title={title} open={open} onClose={onClose}>
