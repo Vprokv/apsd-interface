@@ -27,6 +27,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
+import log from "tailwindcss/lib/util/log";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
