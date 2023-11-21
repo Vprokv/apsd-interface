@@ -30,7 +30,7 @@ export const defaultFunctionsMap = {
   406: () => {
     return {
       type: NOTIFICATION_TYPE_ERROR,
-      message: 'Отсутсвуют права на действие',
+      message: 'Отсутствуют права на действие',
     }
   },
   412: (message) => {
