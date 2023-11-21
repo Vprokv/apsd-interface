@@ -22,7 +22,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import deleteIcon from '@/Icons/deleteIcon'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Form from '@Components/Components/Forms'
-import DownloadWindow from './Components/DownloadWindow'
+import AddVersionWindow from './Components/DownloadWindow'
 import EmptyInputWrapper from '@Components/Components/Forms/EmptyInputWrapper'
 import ViewIcon from '@/Icons/ViewIcon'
 import EditVersionWindow from './Components/EditVersionWindow'
@@ -113,7 +113,7 @@ const customMessagesFuncMap = {
   },
 }
 
-const ContentWindow = ContentWindowWrapper(PreviewContentWindow)
+const DownloadContentWindow = ContentWindowWrapper(PreviewContentWindow)
 
 const Content = () => {
   const id = useContext(DocumentIdContext)
@@ -385,7 +385,7 @@ const Content = () => {
       >
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
-      <DownloadWindow
+      <AddVersionWindow
         contentId={idContent}
         open={addSubscriptionWindow}
         onClose={closeSubscriptionWindow}
@@ -395,7 +395,7 @@ const Content = () => {
         open={openEditWindow}
         onClose={closeEditWindow}
       />
-      <ContentWindow
+      <DownloadContentWindow
         open={renderPreviewWindow}
         onClose={closeWindow}
         value={selectState}

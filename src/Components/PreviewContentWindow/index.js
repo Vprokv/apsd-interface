@@ -25,7 +25,7 @@ export const CustomWindowButton = styled(LoadableBaseButton)`
   }
 `
 
-const PreviewContentWindow = ({ url, downloadContent, ...props }) => {
+const PreviewContentWindow = ({ url, title, downloadContent, ...props }) => {
   const iframe = useRef()
 
   return (
@@ -40,7 +40,14 @@ const PreviewContentWindow = ({ url, downloadContent, ...props }) => {
         </div>
       }
     >
-      <iframe key={url} ref={iframe} src={url} width="100%" height="100%" />
+      <iframe
+        key={url}
+        ref={iframe}
+        src={url}
+        // title={title}
+        width="100%"
+        height="100%"
+      />
     </StandardSizeModalWindow>
   )
 }
@@ -48,6 +55,7 @@ const PreviewContentWindow = ({ url, downloadContent, ...props }) => {
 PreviewContentWindow.propTypes = {
   url: PropTypes.array.isRequired,
   downloadContent: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
 }
 
 PreviewContentWindow.defaultProps = {}

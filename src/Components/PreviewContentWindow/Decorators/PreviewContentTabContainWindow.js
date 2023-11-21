@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useContext, useMemo } from 'react'
+import React, {forwardRef, useCallback, useContext, useEffect, useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import { API_URL } from '@/api'
 import { URL_DOWNLOAD_FILE, URL_ENTITY_PDF_FILE } from '@/ApiList'
@@ -15,17 +15,11 @@ const PreviewContentTabContainWindow = (Component) => {
     const { token } = useContext(TokenContext)
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
-    const url = useMemo(() => {
-      let url = ''
-      if (value?.length) {
-        url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value[0].content.contentId}:${token}`
-      }
-      return url
-    }, [value, token])
+    const [url, setUrl] = useState('')
 
-    const downloadContent = useCallback(async () => {
+    const getContent = useCallback(async () => {
       try {
-        const fileData = await api.post(
+        return await api.post(
           URL_DOWNLOAD_FILE,
           {
             type: 'ddt_document_content',
@@ -34,6 +28,57 @@ const PreviewContentTabContainWindow = (Component) => {
           },
           { responseType: 'blob' },
         )
+      } catch (e) {}
+    }, [api, value])
+
+    const parseUrlFunc = useCallback(
+      async ({ mimeType, blob }) => {
+        const [val] = mimeType.split('/')
+        if (val === 'image') {
+          if (blob) {
+            const url = window.URL.createObjectURL(blob)
+            setUrl(url)
+          } else {
+            const { data: blob } = await getContent()
+            const url = window.URL.createObjectURL(blob)
+            setUrl(url)
+          }
+        } else {
+          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value[0].content.contentId}:${token}`
+          setUrl(url)
+        }
+      },
+      [getContent, token, value],
+    )
+
+    const onGetUrlByMimeType = useCallback(async () => {
+      if (value?.length) {
+        const [{ mimeType }] = value
+        if (mimeType) {
+          return await parseUrlFunc({ mimeType })
+        } else {
+          const {
+            data: blob,
+            headers: { 'content-type': mimeType },
+          } = await getContent()
+          return await parseUrlFunc({ mimeType, blob })
+        }
+      }
+    }, [getContent, parseUrlFunc, value])
+
+    useEffect(async () => await onGetUrlByMimeType(), [onGetUrlByMimeType])
+
+    // const url = useMemo(() => {
+    //   let url = ''
+    //   if (value?.length) {
+    //     url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value[0].content.contentId}:${token}`
+    //   }
+    //   return url
+    // }, [value, token])
+
+    const downloadContent = useCallback(async () => {
+      try {
+        const fileData = await getContent()
 
         if (fileData.data instanceof Error) {
           getNotification({
@@ -47,7 +92,7 @@ const PreviewContentTabContainWindow = (Component) => {
         const { response: { status, data } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, getNotification, value])
+    }, [getContent, getNotification, value])
 
     return (
       <Component
