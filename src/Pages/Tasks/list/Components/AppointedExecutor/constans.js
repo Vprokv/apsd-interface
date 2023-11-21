@@ -22,7 +22,7 @@ export const colorsMap = {
   [STAND_IDLE_STATUS]: 'bg-blue-2',
   [NEW_STATUS]: 'bg-text-secondary',
   [ACQUIRED_STATUS]: 'bg-blue-1',
-  [CONSIDERED_WITH_REMARKS_STATUS]: 'bg-blue-1',
+  [CONSIDERED_WITH_REMARKS_STATUS]: 'bg-color-red',
   [CONSIDERED_STATUS]: 'bg-green',
   [APPROVED_STATUS]: 'bg-green',
   [NOT_APPROVED_STATUS]: 'bg-color-red',
