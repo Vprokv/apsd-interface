@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const BaseCell = ({ value, className }) => {
   return (
     <div
-      className={`${className} flex items-center word-wrap-anywhere font-size-12 break-all `}
+      className={`${className} flex items-center word-wrap-anywhere font-size-12`}
     >
       {value}
     </div>
@@ -18,7 +18,7 @@ BaseCell.propTypes = {
 }
 
 BaseCell.defaultProps = {
-  className: 'min-h-10',
+  className: 'min-h-10 break-all',
 }
 
 export default BaseCell

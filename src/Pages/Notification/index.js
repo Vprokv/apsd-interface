@@ -68,7 +68,12 @@ const columns = [
   {
     id: 'notifyDescription',
     label: 'Описание уведомления',
-    component: BaseCell,
+    component: ({ ParentValue: { notifyDescription } = {} }) => (
+      <BaseCell
+        className="break-word"
+        value={notifyDescription?.replaceAll('\\n', '\n')}
+      />
+    ),
     sizes: baseCellSize,
   },
   {
