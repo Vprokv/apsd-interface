@@ -62,7 +62,7 @@ const columns = [
     sizes: 100,
   },
   {
-    id: 'type',
+    id: 'objectType',
     label: 'Тип объекта',
     component: ({ ParentValue: { type } }) => (
       <BaseCell value={type} className="flex items-center" />
@@ -86,7 +86,7 @@ const columns = [
     sizes: 200,
   },
   {
-    id: 'address',
+    id: 'addres',
     label: 'Адрес',
     component: ({ ParentValue: { address } }) => (
       <BaseCell value={address} className="flex items-center" />
@@ -94,7 +94,7 @@ const columns = [
     sizes: 300,
   },
   {
-    id: 'keeper',
+    id: 'balKeeper',
     label: 'Балансодержатель',
     component: ({ ParentValue: { keeper } }) => (
       <BaseCell value={keeper} className="flex items-center" />

@@ -10,7 +10,7 @@ import Select from '@/Components/Inputs/Select'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_OBJECTS, WINDOW_ADD_OBJECT } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_CREATE } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_ADD } from '@/ApiList'
 import { CreateObjectsWindowComponent, FilterForm } from './styled'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -116,7 +116,7 @@ const filterFormConfig = [
   {
     id: 'one',
     component: SearchInput,
-    placeholder: 'Поиск',
+    placeholder: 'Наименование',
     children: (
       <Icon
         icon={searchIcon}
@@ -202,7 +202,7 @@ const CreateObjectsWindow = ({ onClose }) => {
 
   const onSave = useCallback(async () => {
     try {
-      const response = await api.post(URL_TECHNICAL_OBJECTS_CREATE, {
+      const response = await api.post(URL_TECHNICAL_OBJECTS_ADD, {
         titleId: id,
         techObjectIds: selectState,
       })

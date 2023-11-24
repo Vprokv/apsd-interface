@@ -54,7 +54,13 @@ export const URL_SUBSCRIPTION_USER_DELETE =
   '/apsd/subscription/user/event/delete'
 // OBJECTS
 export const URL_TECHNICAL_OBJECTS_LIST = '/apsd/title/technical_objects/list'
-export const URL_TECHNICAL_OBJECTS_CREATE = '/apsd/title/technical_objects/add'
+export const URL_TECHNICAL_OBJECTS_DICT = '/apsd/title/technical_objects/dict'
+export const URL_TECHNICAL_OBJECTS_ADD = '/apsd/title/technical_objects/add'
+export const URL_TECHNICAL_OBJECTS_CREATE =
+  '/apsd/title/technical_objects/create'
+export const URL_TECHNICAL_OBJECTS_UPDATE =
+  '/apsd/title/technical_objects/update'
+export const URL_TECHNICAL_OBJECTS_DROP = '/apsd/title/technical_objects/drop'
 export const URL_TECHNICAL_OBJECTS_DELETE =
   '/apsd/title/technical_objects/delete'
 export const URL_TITLE_LIST = '/apsd/title/list'

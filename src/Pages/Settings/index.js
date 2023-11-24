@@ -11,6 +11,7 @@ import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/c
 import UserTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/UserTemplateTab'
 import SearchTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchTemplateTab'
 import ReportTemplateTab from '@/Pages/Settings/Components/Templates/Components/ReportTemplate/ReportTemplateTab'
+import TechnicalObjectsSettings from '@/Pages/Settings/Components/TechnicalObjects'
 
 const overTemplateMap = {
   ddt_query_template: {
@@ -40,6 +41,11 @@ const documentTabs = [
     caption: 'Шаблоны',
     Component: Templates,
     path: 'templates',
+  },
+  {
+    caption: 'Технические объекты',
+    Component: TechnicalObjectsSettings,
+    path: 'technical_objects',
   },
 ]
 
