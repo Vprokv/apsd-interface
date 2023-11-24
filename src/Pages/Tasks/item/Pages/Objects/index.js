@@ -33,6 +33,9 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import searchIcon from '@/Icons/searchIcon'
 import LoadableSelect from '../../../../../Components/Inputs/Select'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { useOpenNotification } from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -48,57 +51,43 @@ const columns = [
   {
     id: 'name',
     label: 'Наименование',
-    component: ({ ParentValue: { name } }) => (
-      <BaseCell value={name} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 300,
   },
   {
     id: 'code',
     label: 'Код',
-    component: ({ ParentValue: { code } }) => (
-      <BaseCell value={code} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 100,
   },
   {
     id: 'objectType',
     label: 'Тип объекта',
-    component: ({ ParentValue: { type } }) => (
-      <BaseCell value={type} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 150,
   },
   {
     id: 'voltage',
     label: 'Класс напряжения',
-    component: ({ ParentValue: { voltage } }) => (
-      <BaseCell value={voltage} className="flex items-center" />
-    ),
-    sizes: 150,
+    component: BaseCell,
+    sizes: 100,
   },
   {
     id: 'res',
     label: 'РЭС',
-    component: ({ ParentValue: { res } }) => (
-      <BaseCell value={res} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 200,
   },
   {
     id: 'addres',
     label: 'Адрес',
-    component: ({ ParentValue: { address } }) => (
-      <BaseCell value={address} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 300,
   },
   {
     id: 'balKeeper',
     label: 'Балансодержатель',
-    component: ({ ParentValue: { keeper } }) => (
-      <BaseCell value={keeper} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 300,
   },
 ]
@@ -115,6 +104,7 @@ const Objects = () => {
   const [filter, setFilterValue] = useState({})
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
+  const getNotification = useOpenNotification()
 
   const changeObjectsWindow = useCallback(
     (state) => () => setCreateObjectsWindow(state),
@@ -133,24 +123,21 @@ const Objects = () => {
   const {
     tabState: { data, loading },
     tabState,
-    loadDataHelper,
-    shouldReloadDataFlag,
     setTabState,
   } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: URL_TECHNICAL_OBJECTS_LIST,
+    stateId: TASK_ITEM_OBJECTS,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
   })
 
-  const loadData = useMemo(() => {
-    const { limit, offset } = paginationState
-    return loadDataHelper(async () => {
-      const {
-        data: { technicalObjects },
-      } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
+  const loadData = useCallback(async () => {
+    try {
+      const { limit, offset } = paginationState
+
+      const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
         documentId: id,
         sort:
           Object.keys(sortQuery).length > 0
@@ -163,104 +150,93 @@ const Objects = () => {
         offset,
         filter,
       })
-
-      return technicalObjects.map((item, index) => {
-        return {
-          ...item,
-          key: index + 1,
-        }
-      })
-    })
-  }, [paginationState, loadDataHelper, api, id, sortQuery, filter])
-
-  const refLoadDataFunction = useRef(loadData)
-
-  // todo если загружать данные через него,
-  // то почему то они не приходят в таблицу
-  // useAutoReload(loadData, tabItemState)
-
-  useEffect(() => {
-    if (shouldReloadDataFlag || loadData !== refLoadDataFunction.current) {
-      loadData()
+      return data
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
     }
-    refLoadDataFunction.current = loadData
-  }, [loadData, shouldReloadDataFlag])
+  }, [paginationState, api, id, sortQuery, filter, getNotification])
+
+  useAutoReload(loadData, tabItemState)
 
   const onDelete = useCallback(async () => {
     await api.post(URL_TECHNICAL_OBJECTS_DELETE, { techObjectIds: selectState })
     setTabState({ loading: false, fetched: false })
   }, [api, selectState, setTabState])
 
-  const filterFormConfig = [
-    {
-      id: 'name',
-      component: SearchInput,
-      placeholder: 'Наименование',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'typeId',
-      component: LoadableSelect,
-      placeholder: 'Тип объекта',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_tech_obj_type_catalog',
-          query,
-        })
-        return data
+  const filterFormConfig = useMemo(
+    () => [
+      {
+        id: 'name',
+        component: SearchInput,
+        placeholder: 'Наименование',
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
       },
-    },
-    {
-      id: 'voltageId',
-      component: LoadableSelect,
-      placeholder: 'Класс напряжения',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_voltage',
-          query,
-        })
-        return data
+      {
+        id: 'objectType',
+        component: LoadableSelect,
+        placeholder: 'Тип объекта',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_tech_obj_type_catalog',
+            query,
+          })
+          return data
+        },
       },
-    },
-    {
-      id: 'resId',
-      component: LoadableSelect,
-      placeholder: 'РЭС',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_res',
-          query,
-        })
-        return data
+      {
+        id: 'voltage',
+        component: LoadableSelect,
+        placeholder: 'Класс напряжения',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_voltage',
+            query,
+          })
+          return data
+        },
       },
-    },
-    {
-      id: 'branchId',
-      component: LoadableSelect,
-      placeholder: 'Балансодержатель',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_branch',
-          query,
-        })
-        return data
+      {
+        id: 'resId',
+        component: LoadableSelect,
+        placeholder: 'РЭС',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_res',
+            query,
+          })
+          return data
+        },
       },
-    },
-  ]
+      {
+        id: 'branchId',
+        component: LoadableSelect,
+        placeholder: 'Балансодержатель',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_branch',
+            query,
+          })
+          return data
+        },
+      },
+    ],
+    [api],
+  )
 
   const resizeSlider = useCallback(() => setWidth(ref.current.offsetWidth), [])
 
@@ -292,15 +268,6 @@ const Objects = () => {
           >
             Добавить
           </Button>
-          <Tips text="Удалить">
-            <ButtonForIcon
-              className="mx-2"
-              disabled={!selectState.length}
-              onClick={onDelete}
-            >
-              <Icon icon={DeleteIcon} />
-            </ButtonForIcon>
-          </Tips>
           <FilterWindowWrapper
             show={show}
             fields={filterFormConfig}
@@ -310,6 +277,16 @@ const Objects = () => {
             open={filterWindowOpen}
             onClose={changeFilterWindowState(false)}
           />
+          <Tips text="Удалить">
+            <ButtonForIcon
+              className="mx-2"
+              disabled={!selectState.length}
+              onClick={onDelete}
+            >
+              <Icon icon={DeleteIcon} />
+            </ButtonForIcon>
+          </Tips>
+
         </div>
         <CreateObjectsWindow
           open={addCreateObjectsWindow}

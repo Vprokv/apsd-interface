@@ -133,8 +133,6 @@ const TechnicalObjectsSettings = (props) => {
     setTabState,
   } = tabItemState
 
-  console.log(technicalObjects, 'technicalObjects')
-
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SETTINGS_TECHNICAL_OBJECTS,
     state: tabState,
@@ -158,7 +156,6 @@ const TechnicalObjectsSettings = (props) => {
         offset,
       })
 
-      console.log(data, 'data')
       return data
     } catch (e) {
       const { response: { status, data } = {} } = e

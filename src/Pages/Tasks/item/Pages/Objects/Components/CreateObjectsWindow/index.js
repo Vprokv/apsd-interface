@@ -1,16 +1,16 @@
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import Select from '@/Components/Inputs/Select'
-import { useParams } from 'react-router-dom'
-import { ApiContext, TASK_ITEM_OBJECTS, WINDOW_ADD_OBJECT } from '@/contants'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
+import {
+  ApiContext,
+  SETTINGS_TECHNICAL_OBJECTS,
+  TASK_ITEM_OBJECTS,
+} from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_ADD } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_TECHNICAL_OBJECTS_ADD,
+  URL_TECHNICAL_OBJECTS_DICT,
+} from '@/ApiList'
 import { CreateObjectsWindowComponent, FilterForm } from './styled'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -32,6 +32,11 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
+import usePagination from '@Components/Logic/usePagination'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import Pagination from '@/Components/Pagination'
+import LoadableSelect from '@/Components/Inputs/Select'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -49,7 +54,7 @@ const plugins = {
     driver: FlatSelect,
     component: CheckBox,
     style: { margin: 'auto 0' },
-    valueKey: 'r_object_id',
+    valueKey: 'id',
   },
 }
 
@@ -57,120 +62,51 @@ const columns = [
   {
     id: 'name',
     label: 'Наименование',
-    component: ({ ParentValue: { dss_name } }) => (
-      <BaseCell value={dss_name} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 300,
   },
   {
     id: 'code',
     label: 'Код',
-    component: ({ ParentValue: { dss_code } }) => (
-      <BaseCell value={dss_code} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 100,
   },
   {
-    id: 'type',
+    id: 'objectType',
     label: 'Тип объекта',
-    component: ({ ParentValue: { dss_type } }) => (
-      <BaseCell value={dss_type} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 150,
   },
   {
     id: 'voltage',
-    label: 'Код',
-    component: ({ ParentValue: { dss_voltage } }) => (
-      <BaseCell value={dss_voltage} className="flex items-center" />
-    ),
-    sizes: 100,
+    label: 'Класс напряжения',
+    component: BaseCell,
+    sizes: 150,
   },
   {
     id: 'res',
     label: 'РЭС',
-    component: ({ ParentValue: { dss_res } }) => (
-      <BaseCell value={dss_res} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 200,
   },
   {
-    id: 'address',
+    id: 'addres',
     label: 'Адрес',
-    component: ({ ParentValue: { dss_addr } }) => (
-      <BaseCell value={dss_addr} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 300,
   },
   {
-    id: 'keeper',
+    id: 'balKeeper',
     label: 'Балансодержатель',
-    component: ({ ParentValue: { dss_keeper } }) => (
-      <BaseCell value={dss_keeper} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 300,
-  },
-]
-
-const filterFormConfig = [
-  {
-    id: 'one',
-    component: SearchInput,
-    placeholder: 'Наименование',
-    children: (
-      <Icon
-        icon={searchIcon}
-        size={10}
-        className="color-text-secondary mr-2.5"
-      />
-    ),
-  },
-  {
-    id: 'two',
-    component: SearchInput,
-    placeholder: 'Наименование',
-  },
-  {
-    id: '3',
-    component: Select,
-    placeholder: 'Балансодержатель',
-    options: [
-      {
-        ID: 'ASD',
-        SYS_NAME: 'TT',
-      },
-      {
-        ID: 'ASD1',
-        SYS_NAME: 'TT2',
-      },
-    ],
-  },
-  {
-    id: '4',
-    component: Select,
-    placeholder: 'Тип объекта',
-    options: [
-      {
-        ID: 'ASD',
-        SYS_NAME: 'TT',
-      },
-      {
-        ID: 'ASD1',
-        SYS_NAME: 'TT2',
-      },
-    ],
-  },
-  {
-    id: '5',
-    component: SearchInput,
-    placeholder: 'Код',
   },
 ]
 
 export const emptyWrapper = ({ children }) => children
 
 const CreateObjectsWindow = ({ onClose }) => {
-  const { id } = useParams()
+  const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [filter, setFilter] = useState({})
@@ -181,24 +117,116 @@ const CreateObjectsWindow = ({ onClose }) => {
     stateId: TASK_ITEM_OBJECTS,
   })
 
+  const tabItemState = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
+
   const {
-    tabState: { data = [] },
+    tabState: { data: { technicalObjects = [], total = 0 } = {}, loading },
+    tabState,
     setTabState,
-  } = useTabItem({
-    stateId: WINDOW_ADD_OBJECT,
+  } = tabItemState
+
+  const { setLimit, setPage, paginationState } = usePagination({
+    stateId: SETTINGS_TECHNICAL_OBJECTS,
+    state: tabState,
+    setState: setTabState,
+    defaultLimit: 10,
   })
 
-  useEffect(() => {
-    async function fetchData(query) {
-      const { data } = await api.post(URL_ENTITY_LIST, {
-        type: 'ddt_dict_technical_object',
-        query,
-      })
-      setTabState({ data })
-    }
+  const filterFormConfig = [
+    {
+      id: 'name',
+      component: SearchInput,
+      placeholder: 'Наименование',
+      children: (
+        <Icon
+          icon={searchIcon}
+          size={10}
+          className="color-text-secondary mr-2.5"
+        />
+      ),
+    },
+    {
+      id: 'objectType',
+      component: LoadableSelect,
+      placeholder: 'Тип объекта',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_tech_obj_type_catalog',
+          query,
+        })
+        return data
+      },
+    },
+    {
+      id: 'voltage',
+      component: LoadableSelect,
+      placeholder: 'Класс напряжения',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_voltage',
+          query,
+        })
+        return data
+      },
+    },
+    {
+      id: 'resId',
+      component: LoadableSelect,
+      placeholder: 'РЭС',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_res',
+          query,
+        })
+        return data
+      },
+    },
+    {
+      id: 'branchId',
+      component: LoadableSelect,
+      placeholder: 'Балансодержатель',
+      valueKey: 'r_object_id',
+      labelKey: 'dss_name',
+      loadFunction: async (query) => {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_branch',
+          query,
+        })
+        return data
+      },
+    },
+  ]
 
-    fetchData()
-  }, [id, setTabState, api])
+  const loadData = useCallback(async () => {
+    try {
+      const { limit, offset } = paginationState
+      const { data } = await api.post(URL_TECHNICAL_OBJECTS_DICT, {
+        filter,
+        sort:
+          Object.keys(sortQuery).length > 0
+            ? {
+                property: sortQuery.key,
+                direction: sortQuery.direction,
+              }
+            : null,
+        limit,
+        offset,
+      })
+
+      return data
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, filter, getNotification, paginationState, sortQuery])
+
+  useAutoReload(loadData, tabItemState)
 
   const onSave = useCallback(async () => {
     try {
@@ -230,7 +258,7 @@ const CreateObjectsWindow = ({ onClose }) => {
   const objects = useMemo(
     () =>
       selectState.map((val) => {
-        const obj = data.find(({ r_object_id }) => r_object_id === val)
+        const obj = technicalObjects.find(({ id }) => id === val)
         return (
           <div className="bg-form-input-color p-3 flex mb-2 min-" key={val}>
             <ObjectCard {...obj} />
@@ -248,7 +276,7 @@ const CreateObjectsWindow = ({ onClose }) => {
           </div>
         )
       }),
-    [selectState, data, onRemoveSelectedValue],
+    [selectState, technicalObjects, onRemoveSelectedValue],
   )
 
   return (
@@ -257,7 +285,7 @@ const CreateObjectsWindow = ({ onClose }) => {
         <SelectedSubscriptionContainer>
           <ScrollBar className="pr-4 py-4">{objects}</ScrollBar>
         </SelectedSubscriptionContainer>
-        <div className="px-4 pb-4 overflow-hidden flex-container">
+        <div className="px-4 pb-4 overflow-hidden flex-container w-full">
           <div className="flex items-center py-4">
             <FilterForm
               fields={filterFormConfig}
@@ -267,7 +295,7 @@ const CreateObjectsWindow = ({ onClose }) => {
             />
           </div>
           <ListTable
-            value={data}
+            value={technicalObjects}
             columns={columns}
             plugins={plugins}
             headerCellComponent={HeaderCell}
@@ -276,7 +304,17 @@ const CreateObjectsWindow = ({ onClose }) => {
             sortQuery={sortQuery}
             onSort={onSort}
             valueKey="id"
+            loading={loading}
           />
+          <Pagination
+            className="mt-2"
+            limit={paginationState.limit}
+            page={paginationState.page}
+            setLimit={setLimit}
+            setPage={setPage}
+          >
+            {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${paginationState.endItemValue}`}
+          </Pagination>
         </div>
       </div>
       <div className="flex items-center justify-end">
