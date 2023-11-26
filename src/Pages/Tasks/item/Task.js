@@ -68,6 +68,7 @@ import RejectApproveWindow from '@/Pages/Tasks/item/Components/RejectApproveWind
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
 import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
+import RejectSapPrepareWindow from './Components/RejectSapPrepareWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -195,6 +196,15 @@ const Task = () => {
         },
         icon: defaultTaskIcon[name] || DefaultIcon,
       }),
+      reject_sap_prepare: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RejectSapPrepareWindow signal={'reject_sap_prepare'} {...props} />
+            ),
+          }),
+        icon: defaultTaskIcon['reject_sap_prepare'],
+      },
       reject_consider: {
         handler: () =>
           setComponent({
