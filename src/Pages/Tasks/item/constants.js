@@ -110,4 +110,7 @@ export const defaultTaskIcon = {
   apsd_all_consider: Repeat,
   onward: NextIcon,
   additional_agreement: UploadDoc,
+  finish_sap_prepare: FinishApproveIcon,
+  reject_sap_approve: RejectApproveIcon,
+  on_consider: Repeat,
 }

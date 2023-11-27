@@ -297,7 +297,7 @@ const Task = () => {
               />
             ),
           }),
-        icon: defaultTaskIcon['reject_approve'],
+        icon: defaultTaskIcon['on_consider'],
       },
     }),
     [
