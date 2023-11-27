@@ -59,7 +59,7 @@ const PreviewContentTabLinkWindow = (Component) => {
             setUrl(url)
           }
         } else {
-          const url = `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
+          const url = `${API_URL}${URL_ENTITY_PDF_FILE}${mimeType}:${id}:${token}`
           setUrl(url)
         }
       },
