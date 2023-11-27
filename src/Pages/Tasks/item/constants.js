@@ -106,6 +106,7 @@ export const defaultTaskIcon = {
   reject_consider: RejectApproveIcon,
   apsd_consolidate: FinishApproveIcon,
   apsd_consolidate_reject: RejectApproveIcon,
+  reject_sap_prepare: RejectApproveIcon,
   apsd_all_consider: Repeat,
   onward: NextIcon,
   additional_agreement: UploadDoc,
