@@ -22,18 +22,17 @@ const dependsOnFilter =
     fieldState.hooks.push(({ formPayload, filter }) => {
       return {
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        filter: useMemo(
-          () =>
-            filtersMap.keys.reduce(
-              (acc, key, index) => {
-                const { [key]: depValue } = formPayload
-                acc[filtersMap.targetKeys[index]] = depValue
-                return acc
-              },
-              { ...filter },
-            ),
-          [formPayload, filter],
-        ),
+        filter: useMemo(() => {
+          return filtersMap.keys.reduce(
+            (acc, key, index) => {
+              const { [key]: depValue } = formPayload
+              acc[filtersMap.targetKeys[index]] = depValue
+              return acc
+            },
+            { ...filter },
+          )
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [...filtersMap.keys.map((key) => formPayload[key]), filter]),
       }
     })
   }
