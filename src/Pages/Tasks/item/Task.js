@@ -200,7 +200,10 @@ const Task = () => {
         handler: () =>
           setComponent({
             Component: (props) => (
-              <RejectSapPrepareWindow signal={'reject_sap_prepare'} {...props} />
+              <RejectSapPrepareWindow
+                signal={'reject_sap_prepare'}
+                {...props}
+              />
             ),
           }),
         icon: defaultTaskIcon['reject_sap_prepare'],
@@ -270,7 +273,30 @@ const Task = () => {
         icon: defaultTaskIcon['finish_simple_approve'] || DefaultIcon,
       },
       reject_approve: {
-        handler: () => setComponent({ Component: RejectApproveWindow }),
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RejectApproveWindow
+                title="Выберите этап, на который будет возвращен том после доработки"
+                signal="reject_approve"
+                {...props}
+              />
+            ),
+          }),
+        icon: defaultTaskIcon['reject_approve'],
+      },
+      on_consider: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RejectApproveWindow
+                title="Выберите этап для повторного рассмотрения"
+                signal="reject_approve"
+                stageTypes={['apsd_sap_consider']}
+                {...props}
+              />
+            ),
+          }),
         icon: defaultTaskIcon['reject_approve'],
       },
     }),

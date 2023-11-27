@@ -35,7 +35,14 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 
 const typeRemark = 'Вы не можете отправить документ на доработку без замечаний'
 
-const RejectApproveWindow = ({ open, onClose, documentId }) => {
+const RejectApproveWindow = ({
+  open,
+  onClose,
+  documentId,
+  title,
+  signal,
+  stageTypes,
+}) => {
   const [options, setOptions] = useState([])
   const navigate = useNavigate()
   const api = useContext(ApiContext)
@@ -46,6 +53,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
       try {
         const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
           documentId,
+          stageTypes,
         })
         setOptions(data)
       } catch (e) {
@@ -53,7 +61,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
         getNotification(defaultFunctionsMap[status](data))
       }
     })()
-  }, [api, documentId, getNotification])
+  }, [api, documentId, getNotification, stageTypes])
 
   const initialValue = useMemo(
     () => options?.find(({ status }) => status === 'on_work'),
@@ -93,7 +101,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
     try {
       const { status } = await api.post(URL_TASK_COMPLETE, {
         taskId: id,
-        signal: 'reject_approve',
+        signal,
         bpSettings: settings,
       })
       onClose()
@@ -154,11 +162,7 @@ const RejectApproveWindow = ({ open, onClose, documentId }) => {
   )
 
   return (
-    <StandardSizeModalWindow
-      open={open}
-      onClose={onClose}
-      title="Выберите этап, на который будет возвращен том после доработки"
-    >
+    <StandardSizeModalWindow open={open} onClose={onClose} title={title}>
       <div className="flex flex-col overflow-hidden ">
         <ScrollBar>
           <div className="flex flex-col py-4">
