@@ -33,7 +33,6 @@ const Reporting = () => {
   const { id } = useParams()
   const tabItemState = useTabItem({ stateId: REPORTING })
   const [filter, setFilter] = useState({})
-  console.log(filter, 'filter')
   const { token } = useContext(TokenContext)
   const getNotification = useOpenNotification()
 

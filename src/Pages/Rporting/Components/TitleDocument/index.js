@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { LoadableSecondaryBlueButton } from '@/Components/Button'
-import Select, { AutoLoadableSelect } from '@/Components/Inputs/Select'
+import ReportingSelect from '../ReportingSelect'
 
 const TitleDocument = (props) => {
   const { onInput, id, loadFunction } = props
@@ -16,12 +16,10 @@ const TitleDocument = (props) => {
 
   return (
     <div className="flex items-center">
-      <AutoLoadableSelect {...props} />
-      <>
-        <LoadableSecondaryBlueButton onClick={onAdd} className="ml-2">
-          Выбрать все
-        </LoadableSecondaryBlueButton>
-      </>
+      <ReportingSelect {...props} />
+      <LoadableSecondaryBlueButton onClick={onAdd} className="ml-2">
+        Выбрать все
+      </LoadableSecondaryBlueButton>
     </div>
   )
 }

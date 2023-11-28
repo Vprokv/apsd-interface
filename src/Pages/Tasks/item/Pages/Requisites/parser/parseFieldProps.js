@@ -9,6 +9,7 @@ import customValuesStage from './customValuesStage'
 import addUserFullNameInOptionsStage from './addUserFullNameInOptionsStage'
 import orgstructureAddFilterSourceStage from './orgstructureAddFilterSourceStage'
 import parsePropsRequisites from '@/Pages/Tasks/item/Pages/Requisites/parser/parsePropsComponent'
+import ParsePlainProps from '@/Utils/Parser/Stages/parseFieldProps/Stages/parsePlainProps'
 
 export const propsMap = {
   Combobox: [customValuesStage, ...comboboxProps],
@@ -20,6 +21,7 @@ export const propsMap = {
     parsePropsRequisites,
     ...orgstructureProps,
   ],
+  Classification: [ParsePlainProps, customValuesStage],
 }
 
 export default parseFieldProps(propsMap, componentsMap)

@@ -1,4 +1,4 @@
-import Select, { AutoLoadableSelect } from '@/Components/Inputs/Select'
+import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import Input from '@Components/Components/Inputs/Input'
 import DocumentSelect from '@/Components/Inputs/DocumentSelect'
@@ -24,6 +24,7 @@ import parseVisibilityRule from '@/Utils/Parser/Stages/parseVisibilityRule'
 import parseValidationRules from '@/Utils/Parser/Stages/parseValidationRules'
 import { parseFieldProps } from '@/Utils/Parser/Stages/parseFieldProps'
 import TitleDocument from '@/Pages/Rporting/Components/TitleDocument'
+import { RenderMultipleValueSelectInput } from '@Components/Components/Inputs/Select'
 
 const fields = {
   Combobox: AutoLoadableSelect,
@@ -32,7 +33,7 @@ const fields = {
   InputString: Input,
   Orgstructure: (props) => (
     <UserSelect
-      // SelectComponent={WithAutoLoadableAlwaysRenderValuesSelect} //TODO разобраться почему не работает
+      multipleInputComponent={RenderMultipleValueSelectInput}
       SelectComponent={AutoLoadableSelect}
       {...props}
     />
