@@ -59,11 +59,15 @@ const PreviewContentTabLinkWindow = (Component) => {
             setUrl(url)
           }
         } else {
-          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${id}:${token}`
+          const type =
+            value && value[0]?.childId
+              ? value[0]?.childType
+              : 'ddt_document_content'
+          const url = `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
           setUrl(url)
         }
       },
-      [getContent, id, token],
+      [getContent, id, token, value],
     )
 
     const onGetUrlByMimeType = useCallback(async () => {
