@@ -307,8 +307,9 @@ const Contain = () => {
         }),
       // TODO: сделать нормальный bypass контроллера и параметров. Вызов без контроллера. Но с параметрами
       loadData: loadData(),
+      selectState,
     }),
-    [loadData],
+    [loadData, selectState],
   )
 
   useAutoReload(

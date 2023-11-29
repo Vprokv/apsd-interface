@@ -8,7 +8,11 @@ import {
 } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
-import { URL_STURCTURE_SEND, URL_TITLE_CONTAIN_CREATE_APPROVE } from '@/ApiList'
+import {
+  URL_STURCTURE_SEND,
+  URL_TITLE_CONTAIN_ANNULMENT,
+  URL_TITLE_CONTAIN_CREATE_APPROVE,
+} from '@/ApiList'
 import Icon from '@Components/Components/Icon'
 import sortIcons from '@/Icons/sortIcons'
 import CustomIconComponent from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
@@ -67,21 +71,19 @@ const customMessagesApproveFuncMap = {
 
 const TitleNameComponent = ({
   onInput,
-  ParentValue: { tomId, type, expand, send, name, action },
+  ParentValue: { tomId, expand, send, name, action },
   ParentValue,
 }) => {
-  console.log(ParentValue, 'ParentValue')
   const { valueKey, nestedDataKey, onChange } = useContext(TreeStateContext)
 
   const closeContextMenu = useCallback(() => {
     setOpen(false)
   }, [])
   const api = useContext(ApiContext)
-  const { loadData, addDepartment, addVolume, addLink, editLink } = useContext(
-    LoadContainChildrenContext,
-  )
-  const getNotification = useOpenNotification()
+  const { loadData, addDepartment, addVolume, addLink, editLink, selectState } =
+    useContext(LoadContainChildrenContext)
 
+  const getNotification = useOpenNotification()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [target, setTarget] = useState({})
@@ -134,9 +136,64 @@ const TitleNameComponent = ({
     updateTabStateUpdaterByName,
   ])
 
-  const onAnnulate = useCallback(async()=>{
+  const parseAnnulateArr = useCallback(({ tomId, type, childs, id, arr }) => {
+    if (tomId) {
+      arr.push({
+        documentType: type,
+        documentId: id,
+      })
+    }
 
+    if (childs?.length > 0) {
+      childs.forEach((val) => parseAnnulateArr({ ...val, arr }))
+    }
   }, [])
+
+  const annulateIds = useMemo(() => {
+    if (selectState.includes(({ id }) => id === ParentValue.id)) {
+      const arr = []
+
+      parseAnnulateArr({ ...ParentValue, arr })
+
+      return arr
+    } else {
+      return [
+        {
+          documentType: ParentValue.type,
+          documentId: ParentValue.id,
+        },
+      ]
+    }
+  }, [ParentValue, parseAnnulateArr, selectState])
+
+  const onAnnulate = useCallback(async () => {
+    try {
+      setLoading(true)
+      closeContextMenu()
+      const { status } = await api.post(
+        URL_TITLE_CONTAIN_ANNULMENT,
+        annulateIds,
+      )
+      getNotification(customMessagesSendFuncMap[status]())
+
+      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
+        loading: false,
+        fetched: false,
+      })
+    } catch (e) {
+      const { response: { status, data: { trace } } = {} } = e
+      getNotification(customMessagesSendFuncMap[status](trace))
+      setLoading(false)
+    } finally {
+      setLoading(false)
+    }
+  }, [
+    annulateIds,
+    api,
+    closeContextMenu,
+    getNotification,
+    updateTabStateUpdaterByName,
+  ])
 
   const onApprove = useCallback(async () => {
     try {
@@ -271,12 +328,9 @@ const TitleNameComponent = ({
               <StyledItem className="mb-3 font-size-12" onClick={onSend}>
                 Передать состав титула
               </StyledItem>
-              {/*{!!approveIds.length > 0 && (*/}
               <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
                 Утвердить состав титула
               </StyledItem>
-              {/*)}*/}
-
               <StyledItem className="mb-3 font-size-12">
                 Экспорт данных
               </StyledItem>
@@ -306,10 +360,7 @@ const TitleNameComponent = ({
                 </>
               )}
               {action?.annulment && (
-                <StyledItem
-                  className="mb-3 font-size-12"
-                  onClick={addLinkWindow}
-                >
+                <StyledItem className="mb-3 font-size-12" onClick={onAnnulate}>
                   Аннулирование
                 </StyledItem>
               )}

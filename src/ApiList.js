@@ -30,6 +30,7 @@ export const URL_TITLE_CONTAIN_DELETE = '/apsd/structure/delete'
 export const URL_TITLE_CONTAIN_CREATE_LINK = '/apsd/structure/link'
 export const URL_STURCTURE_SEND = '/apsd/structure/send'
 export const URL_TITLE_CONTAIN_CREATE_APPROVE = '/apsd/structure/approve'
+export const URL_TITLE_CONTAIN_ANNULMENT = 'apsd/structure/document/annulment'
 
 // SUBSCRIPTION
 export const URL_SUBSCRIPTION_LIST = '/apsd/subscription/list'
