@@ -67,9 +67,10 @@ const customMessagesApproveFuncMap = {
 
 const TitleNameComponent = ({
   onInput,
-  ParentValue: { tomId, type, expand, send, name },
+  ParentValue: { tomId, type, expand, send, name, action },
   ParentValue,
 }) => {
+  console.log(ParentValue, 'ParentValue')
   const { valueKey, nestedDataKey, onChange } = useContext(TreeStateContext)
 
   const closeContextMenu = useCallback(() => {
@@ -113,10 +114,6 @@ const TitleNameComponent = ({
         partId: ParentValue.id,
       })
       getNotification(customMessagesSendFuncMap[status]())
-      // const { [nestedDataKey]: children, [valueKey]: id } = ParentValue
-      // if (!children || children.length === 0) {
-      //   onInput(await loadData(id, false), nestedDataKey)
-      // }
 
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
         loading: false,
@@ -136,6 +133,10 @@ const TitleNameComponent = ({
     getNotification,
     updateTabStateUpdaterByName,
   ])
+
+  const onAnnulate = useCallback(async()=>{
+
+  }, [])
 
   const onApprove = useCallback(async () => {
     try {
@@ -303,6 +304,14 @@ const TitleNameComponent = ({
                     Связать
                   </StyledItem>
                 </>
+              )}
+              {action?.annulment && (
+                <StyledItem
+                  className="mb-3 font-size-12"
+                  onClick={addLinkWindow}
+                >
+                  Аннулирование
+                </StyledItem>
               )}
             </StyledContextMenu>
           </ContextMenu>
