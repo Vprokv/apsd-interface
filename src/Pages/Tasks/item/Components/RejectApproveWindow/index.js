@@ -48,20 +48,20 @@ const RejectApproveWindow = ({
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
-          documentId,
-          stageTypes,
-        })
-        setOptions(data)
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(defaultFunctionsMap[status](data))
-      }
-    })()
+  const loadData = useCallback(async () => {
+    try {
+      const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
+        documentId,
+        stageTypes,
+      })
+      setOptions(data)
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
   }, [api, documentId, getNotification, stageTypes])
+
+  useEffect(() => loadData(), [loadData])
 
   const initialValue = useMemo(
     () => options?.find(({ status }) => status === 'on_work'),
@@ -131,6 +131,7 @@ const RejectApproveWindow = ({
     onClose,
     reloadSidebarTaskCounters,
     settings,
+    signal,
     type,
     updateTabStateUpdaterByName,
   ])
@@ -152,13 +153,14 @@ const RejectApproveWindow = ({
         options,
         loadFunction: async () => {
           const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
+            stageTypes,
             documentId,
           })
           return data
         },
       },
     ],
-    [api, documentId, options],
+    [api, documentId, options, stageTypes],
   )
 
   return (
