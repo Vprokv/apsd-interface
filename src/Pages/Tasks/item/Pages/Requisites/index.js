@@ -77,40 +77,57 @@ export const Requisites = ({ permits }) => {
   useEffect(() => {
     if (
       documentType === 'ddt_startup_complex_type_doc' &&
-      values.dss_status === 'unsaved' &&
-      values.dsid_title
+      values.dss_status === 'unsaved'
     ) {
-      ;(async () => {
-        const {
-          data: { dsid_title_type, dss_description, dsd_ipr_cost, dsdt_end },
-        } = await api.post(URL_PRE_SET_FIELD_VALUES, {
-          objectId: values.dsid_title,
-        })
-        setCustomFieldsState({
-          dsid_title_type: {
-            options: [
-              {
-                r_object_id: dsid_title_type.value,
-                dss_name: dsid_title_type.caption,
+      if (values.dsid_title) {
+        ;(async () => {
+          const {
+            data: { dsid_title_type, dss_description, dsd_ipr_cost, dsdt_end },
+          } = await api.post(URL_PRE_SET_FIELD_VALUES, {
+            objectId: values.dsid_title,
+          })
+          setCustomFieldsState({
+            dsid_title_type: {
+              options: [
+                {
+                  r_object_id: dsid_title_type.value,
+                  dss_name: dsid_title_type.caption,
+                },
+              ],
+            },
+          })
+          setDocumentState(({ data }) => {
+            return {
+              data: {
+                ...data,
+                values: {
+                  ...data.values,
+                  dsid_title_type: dsid_title_type.value,
+                  dss_description: dss_description.value,
+                  dsd_ipr_cost: dsd_ipr_cost.value,
+                  dsdt_end: dsdt_end.value,
+                },
               },
-            ],
-          },
-        })
+            }
+          })
+        })()
+      } else {
+        setCustomFieldsState({})
         setDocumentState(({ data }) => {
           return {
             data: {
               ...data,
               values: {
                 ...data.values,
-                dsid_title_type: dsid_title_type.value,
-                dss_description: dss_description.value,
-                dsd_ipr_cost: dsd_ipr_cost.value,
-                dsdt_end: dsdt_end.value,
+                dsid_title_type: undefined,
+                dss_description: undefined,
+                dsd_ipr_cost: undefined,
+                dsdt_end: undefined,
               },
             },
           }
         })
-      })()
+      }
     }
   }, [values.dsid_title])
   const fieldsWithLoadedProps = useMemo(
