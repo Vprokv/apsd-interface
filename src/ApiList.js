@@ -196,7 +196,7 @@ export const URL_BASKET_DELETED = '/apsd/basket/deleteDocument'
 export const URL_BASKET_RESTORE_DELETED = '/apsd/basket/delete'
 export const URL_BASKET_ADD = '/apsd/basket/add'
 
-//DEPUTY
+// DEPUTY
 export const URL_DEPUTY_USERS_LIST = '/sedo/deputy/task/users'
 export const URL_DEPUTY_TASK_LIST = '/apsd/task/v2/deputy/list'
 
@@ -204,3 +204,7 @@ export const URL_EXPORT = '/export/'
 export const URL_EXPORT_FILE = '/export/file/'
 // Kerberos
 export const URL_KERBEROS_LOGIN = 'ts/kerberos/login'
+
+// PRESET
+
+export const URL_PRE_SET_FIELD_VALUES = '/apsd/title/pre_set/attribute'
