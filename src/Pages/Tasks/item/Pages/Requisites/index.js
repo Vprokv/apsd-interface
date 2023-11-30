@@ -81,31 +81,57 @@ export const Requisites = ({ permits }) => {
     ) {
       if (values.dsid_title) {
         ;(async () => {
-          const {
-            data: { dsid_title_type, dss_description, dsd_ipr_cost, dsdt_end },
-          } = await api.post(URL_PRE_SET_FIELD_VALUES, {
-            objectId: values.dsid_title,
-          })
-          setCustomFieldsState({
-            dsid_title_type: {
-              options: [
-                {
-                  r_object_id: dsid_title_type.value,
-                  dss_name: dsid_title_type.caption,
-                },
-              ],
+          const { data: fieldValues } = await api.post(
+            URL_PRE_SET_FIELD_VALUES,
+            {
+              objectId: values.dsid_title,
             },
-          })
+          )
+          setCustomFieldsState(
+            Object.entries(fieldValues).reduce((acc, [key, value]) => {
+              const field =
+                data.find(
+                  ({ attr: { dss_attr_name } }) => dss_attr_name === key,
+                ) || {}
+              if ('Combobox' === field.type) {
+                acc[key] = {
+                  options: [
+                    {
+                      [field.attr.dss_reference_attr || 'r_object_id']:
+                        value.value,
+                      [field.attr.dss_reference_attr_label || 'dss_name']:
+                        value.caption,
+                    },
+                  ],
+                }
+              } else if ('Orgstructure' === field.type) {
+                acc[key] = {
+                  options: [
+                    {
+                      emplId: value.value,
+                      fullDescription: value.caption,
+                    },
+                  ],
+                }
+              }
+              return acc
+            }, {}),
+          )
           setDocumentState(({ data }) => {
             return {
               data: {
                 ...data,
                 values: {
                   ...data.values,
-                  dsid_title_type: dsid_title_type.value,
-                  dss_description: dss_description.value,
-                  dsd_ipr_cost: dsd_ipr_cost.value,
-                  dsdt_end: dsdt_end.value,
+                  ...Object.entries(fieldValues).reduce(
+                    (acc, [key, { value }]) => {
+                      if (value !== '') {
+                        acc[key] = value
+                      }
+                      return acc
+                    },
+                    {},
+                  ),
                 },
               },
             }
