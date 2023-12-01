@@ -124,8 +124,8 @@ const CreateTechnicalObjectWindow = ({ onClose, ...props }) => {
       {
         id: 'address',
         component: LoadableSelect,
-        placeholder: 'Тип объекта',
-        label: 'Тип объекта',
+        placeholder: 'Адрес',
+        label: 'Адрес',
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         loadFunction: async (query) => {
