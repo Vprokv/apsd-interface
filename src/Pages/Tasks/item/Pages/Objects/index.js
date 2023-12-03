@@ -98,7 +98,6 @@ const Objects = () => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
   const [filterWindowOpen, setFilterWindow] = useState(false)
   const [filter, setFilterValue] = useState({})
@@ -116,15 +115,9 @@ const Objects = () => {
     [],
   )
 
-  const tabItemState = useTabItem({
+  const [{ sortQuery, ...tabState }, setTabState] = useTabItem({
     stateId: TASK_ITEM_OBJECTS,
   })
-
-  const {
-    tabState: { data, loading },
-    tabState,
-    setTabState,
-  } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_OBJECTS,
@@ -139,13 +132,12 @@ const Objects = () => {
 
       const { data } = await api.post(URL_TECHNICAL_OBJECTS_LIST, {
         documentId: id,
-        sort:
-          Object.keys(sortQuery).length > 0
-            ? {
-                property: sortQuery.key,
-                direction: sortQuery.direction,
-              }
-            : null,
+        sort: sortQuery
+          ? {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            }
+          : null,
         limit,
         offset,
         filter,
@@ -157,12 +149,16 @@ const Objects = () => {
     }
   }, [paginationState, api, id, sortQuery, filter, getNotification])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data, loading, reloadData }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
 
   const onDelete = useCallback(async () => {
     await api.post(URL_TECHNICAL_OBJECTS_DELETE, { techObjectIds: selectState })
-    setTabState({ loading: false, fetched: false })
-  }, [api, selectState, setTabState])
+    reloadData()
+  }, [api, reloadData, selectState])
 
   const filterFormConfig = useMemo(
     () => [
@@ -286,7 +282,6 @@ const Objects = () => {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
-
         </div>
         <CreateObjectsWindow
           open={addCreateObjectsWindow}
@@ -305,7 +300,10 @@ const Objects = () => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         valueKey="id"
         loading={loading}
       />

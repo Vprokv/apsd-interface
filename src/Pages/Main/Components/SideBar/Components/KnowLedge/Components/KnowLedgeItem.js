@@ -1,8 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import ArchiveItem, {
-  LevelTwoArchiveItem,
-} from '@/Pages/Main/Components/SideBar/Components/Archive/Components/ArchiveItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import { ApiContext } from '@/contants'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
@@ -11,7 +8,6 @@ import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 import { SecondKnowledgeButton } from '@/Pages/Main/Components/SideBar/Components/KnowLedge/Components/KnowLedgeButton'
 import { URL_KNOWLEDGE_STRUCTURE, URL_KNOWLEDGE_TITLE } from '@/ApiList'
-import log from "tailwindcss/lib/util/log";
 
 const apisMap = {
   0: async ({ api }) => {

@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo } from 'react'
 import DocumentSearch, { tableConfig } from './index'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -36,18 +35,12 @@ const PageDocumentSelect = () => {
     [navigate, openTabOrCreateNewTab],
   )
 
-  const tabItemState = useTabItem({
+  const [
+    { filter = defaultFilter, searchState = defaultSearchState, loading },
+    setTabState,
+  ] = useTabItem({
     stateId: SEARCH_PAGE_DOCUMENT,
   })
-
-  const {
-    setTabState,
-    tabState: {
-      filter = defaultFilter,
-      searchState = defaultSearchState,
-      loading,
-    },
-  } = tabItemState
 
   const rowComponent = useMemo(
     () => (props) =>

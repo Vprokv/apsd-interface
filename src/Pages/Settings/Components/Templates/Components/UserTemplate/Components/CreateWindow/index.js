@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { WithValidationForm } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
@@ -17,7 +16,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import styled from 'styled-components'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -61,7 +60,7 @@ const CreateWindow = ({
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
 
   const fields = useMemo(
     () =>
@@ -153,7 +152,7 @@ const CreateWindow = ({
         dssNote,
       })(type)(value)
 
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[data?.status]())
       onReverse()
     } catch (e) {

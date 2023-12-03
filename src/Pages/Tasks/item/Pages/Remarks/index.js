@@ -29,36 +29,27 @@ import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnsw
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
+const defaultSortQuery = {
+  key: 'remarkCreationDate',
+  direction: 'ASC',
+}
+
+const defaultFilter = { allStages: true }
+
 const Remarks = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
-  const [filter, setFilterValue] = useState({ allStages: true })
   const [toggle, onToggle] = useState({})
   const [open, setOpen] = useState(true)
   const getNotification = useOpenNotification()
-  const [sortQuery, onSort] = useState({
-    key: 'remarkCreationDate',
-    direction: 'ASC',
-  })
   const [selected, setSelected] = useState()
 
-  const tabItemState = useTabItem({
+  const [
+    { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
+    setTabState,
+  ] = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
-  const {
-    tabState: { data: { stages = [], tabPermit } = {}, loading },
-  } = tabItemState
-
-  useEffect(() => {
-    return (
-      !toggle.size &&
-      stages.forEach(({ stageName }) => {
-        onToggle((map) => {
-          return { ...map, [stageName]: false }
-        })
-      })
-    )
-  }, [stages, toggle.size])
 
   const loadData = useCallback(async () => {
     try {
@@ -80,7 +71,22 @@ const Remarks = () => {
     }
   }, [api, id, filter, sortQuery, getNotification])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { stages = [], tabPermit } = {}, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
+
+  useEffect(() => {
+    return (
+      !toggle.size &&
+      stages.forEach(({ stageName }) => {
+        onToggle((map) => {
+          return { ...map, [stageName]: false }
+        })
+      })
+    )
+  }, [stages, toggle.size])
 
   const fields = useMemo(
     () => [
@@ -147,7 +153,10 @@ const Remarks = () => {
           <FilterForm
             className="mr-2"
             value={filter}
-            onInput={setFilterValue}
+            onInput={useCallback(
+              (filter) => setTabState({ filter }),
+              [setTabState],
+            )}
             fields={fields}
             inputWrapper={EmptyInputWrapper}
           />
@@ -191,7 +200,7 @@ const Remarks = () => {
             </div>
           </ScrollBar>
         )}
-        <CreateAnswer {...selected} setSelected={setSelected}/>
+        <CreateAnswer {...selected} setSelected={setSelected} />
       </div>
     </SetAnswerStateContext.Provider>
   )

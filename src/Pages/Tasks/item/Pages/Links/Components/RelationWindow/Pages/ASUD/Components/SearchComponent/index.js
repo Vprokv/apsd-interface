@@ -32,7 +32,14 @@ const defaultOptions = [
   },
 ]
 
-const SearchComponent = ({ tabItemState, updateTabState }) => {
+const SearchComponent = ({
+  tabItemState: {
+    filter = defaultFilter,
+    searchState = defaultSearchState,
+    selected,
+  },
+  updateTabState,
+}) => {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
   const navigate = useNavigate()
@@ -42,14 +49,6 @@ const SearchComponent = ({ tabItemState, updateTabState }) => {
         openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openTabOrCreateNewTab],
   )
-
-  const {
-    tabState: {
-      filter = defaultFilter,
-      searchState = defaultSearchState,
-      selected,
-    },
-  } = tabItemState
 
   const rowComponent = useMemo(
     () => (props) =>

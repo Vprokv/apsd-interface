@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -69,14 +69,9 @@ const ApprovalSheet = () => {
     })()
   }, [api, documentId, documentType, getNotification, type])
 
-  const tabItemState = useTabItem({
+  const [{ selectedState, ...tabState }, setTabState] = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
-  const {
-    tabState: { data = [], loading, selectedState },
-    shouldReloadDataFlag,
-    setTabState,
-  } = tabItemState
 
   const loadData = useCallback(async () => {
     try {
@@ -91,7 +86,23 @@ const ApprovalSheet = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, documentId, getNotification, permit, type])
+  }, [api, documentId, getNotification, type])
+
+  const [{ data = [], loading, reloadData, shouldReloadData }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
+
+  useEffect(() => {
+    // заставляем перезагрузить данные на первом рендере, в случаее если ранее данные для этой вкладки
+    // были загруженны и теперь мы на нее повторно вернулись
+    // при этом пользуемся стандартным функционалам загрузки по триггерам
+    if (!shouldReloadData) {
+      reloadData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     setToggleNavigationData(
@@ -103,18 +114,6 @@ const ApprovalSheet = () => {
       }, {}),
     )
   }, [data])
-
-  const fetchDataFunction = useAutoReload(loadData, tabItemState)
-
-  useEffect(() => {
-    // заставляем перезагрузить данные на первом рендере, в случаее если ранее данные для этой вкладки
-    // были загруженны и теперь мы на нее повторно вернулись
-    // при этом пользуемся стандартным функционалам загрузки по триггерам
-    if (!shouldReloadDataFlag) {
-      fetchDataFunction()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const handleInput = useCallback(
     (selectedState) => {

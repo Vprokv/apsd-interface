@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   ApiContext,
   REPORTING,
@@ -30,10 +29,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 
-const ReportTemplateTab = (props) => {
+const defaultFilter = {}
+
+const ReportTemplateTab = () => {
   const api = useContext(ApiContext)
-  const tabItemState = useTabItem({ stateId: REPORTING_STATE })
-  const [filter, setFilter] = useState({})
+  const [{ filter = defaultFilter, ...tabState }, setTabState] = useTabItem({
+    stateId: REPORTING_STATE,
+  })
   const [filterField, setFilterField] = useState({})
   const getNotification = useOpenNotification()
   const navigate = useNavigate()
@@ -46,10 +48,6 @@ const ReportTemplateTab = (props) => {
     },
     [],
   )
-
-  const {
-    tabState: { data: { parameters = [] } = {} },
-  } = tabItemState
 
   const loadData = useCallback(async () => {
     try {
@@ -69,7 +67,11 @@ const ReportTemplateTab = (props) => {
     }
   }, [api, filter.reportId, getNotification])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { parameters = [] } = {} }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
 
   const { fields: parsedFields, ...other } = useParseConfig({
     value: filterField,
@@ -116,7 +118,10 @@ const ReportTemplateTab = (props) => {
           <Form
             className=" w-full grid  gap-5 h-min mr-4 grid-cols-2"
             value={filter}
-            onInput={setFilter}
+            onInput={useCallback(
+              (filter) => setTabState({ filter }),
+              [setTabState],
+            )}
             fields={fields}
             inputWrapper={RowInputWrapper}
           />
@@ -140,19 +145,22 @@ const ReportTemplateTab = (props) => {
         changeModalState={changeModalState}
         value={filter}
         type={type}
-        createFunc={(api) =>
-          (parseResult) =>
-          (type) =>
-          async ({ reportId, ...json }) => {
-            return await api.post(URL_CREATE_TEMPLATE, {
-              template: {
-                ...parseResult,
-                json: [{ reportId, ...json }],
-                reportId,
-              },
-              type,
-            })
-          }}
+        createFunc={useCallback(
+          (api) =>
+            (parseResult) =>
+            (type) =>
+            async ({ reportId, ...json }) => {
+              return await api.post(URL_CREATE_TEMPLATE, {
+                template: {
+                  ...parseResult,
+                  json: [{ reportId, ...json }],
+                  reportId,
+                },
+                type,
+              })
+            },
+          [],
+        )}
       />
     </div>
   )

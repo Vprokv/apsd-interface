@@ -32,6 +32,7 @@ import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Comp
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -66,7 +67,7 @@ const EditStageWindow = (props) => {
   const ref = useRef(filterValue?.name)
   const permit = useContext(PermitDisableContext)
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
 
@@ -169,7 +170,7 @@ const EditStageWindow = (props) => {
         name: visible ? show : name,
         term,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       changeModalState(false)()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {

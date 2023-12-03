@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
 import {
   ApiContext,
   TASK_DEPUTY_LIST,
@@ -14,7 +13,7 @@ import {
   TokenContext,
 } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import usePagination from '@Components/Logic/usePagination'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -23,15 +22,12 @@ import {
   URL_DEPUTY_TASK_LIST,
   URL_EXPORT,
   URL_EXPORT_FILE,
-  URL_KNOWLEDGE_TASKS,
   URL_TASK_LIST_FILTERS,
-  URL_TASK_LIST_V2,
 } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import CheckBox from '@/Components/Inputs/CheckBox'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
@@ -213,14 +209,22 @@ const taskPlugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
 }
 
+const defaultSortQuery = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
+
+const defaultFilter = { readTask: false }
+
 const DeputyList = () => {
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
+  const { userName, name } = useParams()
+  useSetTabName(useCallback(() => `Задания (${name}.)`, [name]))
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
-  const tabItemState = useTabItem({ stateId: TASK_DEPUTY_LIST })
+  const [
+    { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
+    setTabState,
+  ] = useTabItem({ stateId: TASK_DEPUTY_LIST })
   const [filterWindowOpen, setFilterWindow] = useState(false)
   const changeFilterWindowState = useCallback(
     (state) => () => setFilterWindow(state),
@@ -228,13 +232,7 @@ const DeputyList = () => {
   )
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
-  const {
-    tabState,
-    setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, loading },
-  } = tabItemState
   const { token } = useContext(TokenContext)
-  const { userName, name } = useParams()
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -243,7 +241,6 @@ const DeputyList = () => {
     defaultLimit: 10,
   })
 
-  const [filter, setFilter] = useState({ readTask: false })
   const [selectState, setSelectState] = useState([])
   const getNotification = useOpenNotification()
   const handleDoubleClick = useCallback(
@@ -252,8 +249,6 @@ const DeputyList = () => {
         openTabOrCreateNewTab(`/task/${taskId}/${type}`),
     [openTabOrCreateNewTab],
   )
-
-  useSetTabName(useCallback(() => `Задания (${name}.)`, [name]))
 
   const loadData = useMemo(
     () =>
@@ -265,15 +260,12 @@ const DeputyList = () => {
             {
               depute: userName,
               filter,
-              sort:
-                Object.keys(sortQuery).length > 0
-                  ? [
-                      {
-                        property: sortQuery.key,
-                        direction: sortQuery.direction,
-                      },
-                    ]
-                  : [],
+              sort: [
+                {
+                  property: sortQuery.key,
+                  direction: sortQuery.direction,
+                },
+              ],
               limit,
               offset,
             },
@@ -291,6 +283,12 @@ const DeputyList = () => {
     [paginationState, api, userName, filter, sortQuery, getNotification],
   )
 
+  const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
+
   const onExportToExcel = useCallback(async () => {
     try {
       const { limit, offset } = paginationState
@@ -304,15 +302,12 @@ const DeputyList = () => {
         body: {
           depute: userName,
           filter,
-          sort:
-            Object.keys(sortQuery).length > 0
-              ? [
-                  {
-                    property: sortQuery.key,
-                    direction: sortQuery.direction,
-                  },
-                ]
-              : [],
+          sort: [
+            {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            },
+          ],
           limit,
           offset,
         },
@@ -337,7 +332,6 @@ const DeputyList = () => {
     token,
     userName,
   ])
-  useAutoReload(loadData, tabItemState)
 
   const resizeSlider = useCallback(
     () => setWidth(ref?.current?.offsetWidth),
@@ -429,6 +423,11 @@ const DeputyList = () => {
     [api, filter],
   )
 
+  const setFilter = useCallback(
+    (filter) => setTabState({ filter }),
+    [setTabState],
+  )
+
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
       <div ref={ref} className="flex items-center ">
@@ -480,7 +479,10 @@ const DeputyList = () => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         loading={loading}
       />
       <Pagination
@@ -497,8 +499,6 @@ const DeputyList = () => {
   )
 }
 
-DeputyList.propTypes = {
-  loadFunctionRest: PropTypes.string.isRequired,
-}
+DeputyList.propTypes = {}
 
 export default DeputyList

@@ -24,6 +24,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import PropTypes from 'prop-types'
+import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -79,7 +80,7 @@ const EditLinksWindow = ({ value }) => {
   const [date, setDate] = useState(() => new Map())
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
 
@@ -129,7 +130,7 @@ const EditLinksWindow = ({ value }) => {
         )
       })
       changeModalState(false)
-      setTabState({ loading: false, fetched: false })
+      setTabState(SetUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e

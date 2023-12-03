@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_REMARK_EDIT_SET_REMARK } from '@/ApiList'
@@ -10,6 +10,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -31,7 +32,7 @@ const RemarkCheckBoxComponent = ({
   permits: { vault },
 }) => {
   const api = useContext(ApiContext)
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
   const getNotification = useOpenNotification()
@@ -45,7 +46,7 @@ const RemarkCheckBoxComponent = ({
       getNotification(
         customMessagesFuncMap[status]('Изменение выполнено успешно'),
       )
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))

@@ -26,7 +26,11 @@ const Knowledge = ({ onOpenNewTab, width, collapsedState }) =>
               className="mx-2 flex items-center"
               onClick={toggleDisplayedFlag}
             >
-              <NavigationHeaderIcon icon={StorageIcon} size={22} className="mr-4"/>
+              <NavigationHeaderIcon
+                icon={StorageIcon}
+                size={22}
+                className="mr-4"
+              />
               <span className="font-size-12 mr-auto font-medium">
                 Титулы в работе
               </span>

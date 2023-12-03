@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
@@ -30,6 +30,7 @@ import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWra
 import { Validation } from '@Components/Logic/Validator'
 import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -68,7 +69,7 @@ const CreateAnswer = ({
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const getNotification = useOpenNotification()
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
 
@@ -183,7 +184,7 @@ const CreateAnswer = ({
         ...other,
       })
       getNotification(customMessagesFuncMap[status]())
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       setSelected(undefined)
       setFilterValue(initialUserValue)
     } catch (e) {

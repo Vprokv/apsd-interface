@@ -1,20 +1,11 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { FilterForm } from '../../styles'
 import DatePickerComponent from '@/Components/Inputs/DatePicker'
-import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DEFAULT_DATE_FORMAT,
-  ITEM_DOCUMENT,
   PRESENT_DATE_FORMAT,
   TASK_ITEM_CONTENT,
   TASK_ITEM_HISTORY,
@@ -143,25 +134,20 @@ const columns = [
   },
 ]
 
+const baseSortQuery = {
+  key: 'eventDate',
+  direction: 'DESC',
+}
+
 const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({
-    key: 'eventDate',
-    direction: 'DESC',
-  })
   const documentId = useContext(DocumentIdContext)
   const getNotification = useOpenNotification()
-  const [filter, setFilter] = useState({}) // fromDate: '2022-09-01T06:10:44.395Z'
-
-  const tabItemState = useTabItem({
-    stateId: TASK_ITEM_HISTORY,
-  })
-  const {
-    tabState,
-    tabState: { data: { content = [], total = 0 } = {}, loading },
-    setTabState,
-  } = tabItemState
+  const [{ filter, sortQuery = baseSortQuery, ...tabState }, setTabState] =
+    useTabItem({
+      stateId: TASK_ITEM_HISTORY,
+    })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_CONTENT,
@@ -228,7 +214,7 @@ const History = () => {
   )
 
   const preparedFilterValues = useMemo(() => {
-    const { fromDate, ...item } = filter
+    const { fromDate, ...item } = filter || {}
 
     if (!fromDate) {
       return { ...item }
@@ -265,7 +251,11 @@ const History = () => {
     sort,
   ])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
 
   return (
     <div className="px-4 pb-4 w-full overflow-hidden flex-container">
@@ -274,7 +264,10 @@ const History = () => {
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
           value={filter}
-          onInput={setFilter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
         />
       </div>
       <ListTable
@@ -289,7 +282,10 @@ const History = () => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         valueKey="id"
         loading={loading}
       />

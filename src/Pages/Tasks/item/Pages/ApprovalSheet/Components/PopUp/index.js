@@ -14,6 +14,7 @@ import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Comp
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -26,13 +27,13 @@ const customMessagesFuncMap = {
 }
 
 const PopUp = ({ node }) => {
-  const { id, approvers } = node
+  const { id } = node
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const [open, setOpenState] = useState(false)
   const permit = useContext(PermitDisableContext)
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
 
@@ -48,7 +49,7 @@ const PopUp = ({ node }) => {
       await api.post(URL_APPROVAL_SHEET_DELETE, {
         id,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Этап удален успешно',

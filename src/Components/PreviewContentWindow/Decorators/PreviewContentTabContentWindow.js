@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
@@ -35,7 +34,9 @@ const PreviewContentTabContentWindow = (Component) => {
           },
           { responseType: 'blob' },
         )
-      } catch (e) {}
+      } catch (e) {
+        console.log(e)
+      }
     }, [api, value])
 
     const parseUrlFunc = useCallback(

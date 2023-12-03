@@ -7,7 +7,7 @@ import ArchiveItem, { LevelOneArchiveItem } from './Components/ArchiveItem'
 import PropTypes from 'prop-types'
 import { FirstLevelArchiveButton } from './Components/ArchiveButton'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
 import searchIcon from '@/Icons/searchIcon'
@@ -23,6 +23,11 @@ const ScrollBar = styled(SimpleBar)`
 const Archive = ({ onOpenNewTab, width, collapsedState }) => {
   const [query, setQuery] = useState()
   const [loading, setLoading] = useState()
+
+  const archiveLoadingState = useMemo(
+    () => ({ loading, setLoading }),
+    [loading],
+  )
 
   return (
     !collapsedState && (
@@ -60,9 +65,7 @@ const Archive = ({ onOpenNewTab, width, collapsedState }) => {
                       className="color-text-secondary mr-2.5"
                     />
                   </SearchInput>
-                  <ContextArchiveLoading.Provider
-                    value={{ loading, setLoading }}
-                  >
+                  <ContextArchiveLoading.Provider value={archiveLoadingState}>
                     <ScrollBar>
                       <ArchiveItem
                         loading={loading}

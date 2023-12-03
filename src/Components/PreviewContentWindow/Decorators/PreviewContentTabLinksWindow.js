@@ -43,7 +43,9 @@ const PreviewContentTabLinkWindow = (Component) => {
           },
           { responseType: 'blob' },
         )
-      } catch (e) {}
+      } catch (e) {
+        console.log(e)
+      }
     }, [api, id])
 
     const parseUrlFunc = useCallback(

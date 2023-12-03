@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING, TokenContext } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -28,11 +28,14 @@ import attrubutesAdapter from './Parser/attrubutesAdapter'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 import SearchTemplateWindowList from '@/Pages/Search/Pages/DocumentSearch/Components/SearchTemplateWindowList'
 
+const defaultFilter = {}
+
 const Reporting = () => {
   const api = useContext(ApiContext)
   const { id } = useParams()
-  const tabItemState = useTabItem({ stateId: REPORTING })
-  const [filter, setFilter] = useState({})
+  const [{ filter = defaultFilter, ...tabState }, setTabState] = useTabItem({
+    stateId: REPORTING,
+  })
   const { token } = useContext(TokenContext)
   const getNotification = useOpenNotification()
 
@@ -53,11 +56,10 @@ const Reporting = () => {
     [],
   )
 
-  const {
-    tabState: {
-      data: { name, parameters = [], id: reportId, dss_def_format } = {},
-    },
-  } = tabItemState
+  const setFilter = useCallback(
+    (filter) => setTabState({ filter }),
+    [setTabState],
+  )
 
   const loadData = useCallback(async () => {
     try {
@@ -73,10 +75,13 @@ const Reporting = () => {
       const { response: { status = 500 } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, getNotification, id])
+  }, [api, id, setFilter, getNotification])
+
+  const [
+    { data: { name, parameters = [], id: reportId, dss_def_format } = {} },
+  ] = useAutoReload(loadData, tabState, setTabState)
 
   useSetTabName(useCallback(() => name, [name]))
-  useAutoReload(loadData, tabItemState)
 
   const formProps = useParseConfig({
     value: filter,

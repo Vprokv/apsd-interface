@@ -115,35 +115,35 @@ const customMessagesFuncMap = {
 
 const DownloadContentWindow = ContentWindowWrapper(PreviewContentWindow)
 
+const defaultSortQuery = {
+  key: 'versionDate',
+  direction: 'DESC',
+}
+
+const defaultFilter = { isFullVersion: false }
+
 const Content = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [filterValue, setFilterValue] = useState({ isFullVersion: false })
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [dataVersion, setDataVersion] = useState({})
-  const [sortQuery, onSort] = useState({
-    key: 'versionDate',
-    direction: 'DESC',
-  })
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
 
-  const tabItemState = useTabItem({
+  const [
+    {
+      permit = false,
+      sortQuery = defaultSortQuery,
+      filter = defaultFilter,
+      ...tabState
+    },
+    setTabState,
+  ] = useTabItem({
     stateId: TASK_ITEM_CONTENT,
   })
-
-  const {
-    setTabState,
-    tabState: {
-      data: { content = [], total = 0 } = {},
-      permit = false,
-      loading,
-    },
-    tabState,
-  } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_CONTENT,
@@ -158,7 +158,7 @@ const Content = () => {
 
       const { data } = await api.post(URL_CONTENT_LIST, {
         documentId: id,
-        currentVersion: !filterValue.isFullVersion,
+        currentVersion: !filter.isFullVersion,
         limit,
         offset,
       })
@@ -168,7 +168,12 @@ const Content = () => {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [paginationState, api, id, filterValue.isFullVersion, getNotification])
+  }, [paginationState, api, id, filter.isFullVersion, getNotification])
+
+  const [
+    { loading, data: { content = [], total = 0 } = {}, reloadData },
+    updateData,
+  ] = useAutoReload(loadData, tabState, setTabState)
 
   useEffect(() => {
     ;(async () => {
@@ -184,8 +189,6 @@ const Content = () => {
       }
     })()
   }, [id, setTabState, api])
-
-  useAutoReload(loadData, tabItemState)
 
   const openSubscriptionWindow = useCallback(
     () => setAddSubscriptionWindowState(true),
@@ -205,14 +208,14 @@ const Content = () => {
             })
           }),
         ])
-        setTabState({ loading: false, fetched: false })
+        reloadData()
         getNotification(customMessagesFuncMap[response[0].status]())
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
       }
     }
-  }, [api, getNotification, selectState, setTabState])
+  }, [api, getNotification, reloadData, selectState])
 
   const closeEditWindow = useCallback(() => setOpenEditWindow(false), [])
 
@@ -220,11 +223,6 @@ const Content = () => {
     setDataVersion(selectState[0])
     setOpenEditWindow(true)
   }, [selectState])
-
-  const onTableUpdate = useCallback(
-    (data) => setTabState({ data }),
-    [setTabState],
-  )
 
   const idContent = useMemo(() => {
     if (content?.length) {
@@ -299,8 +297,11 @@ const Content = () => {
         <Form
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
-          value={filterValue}
-          onInput={setFilterValue}
+          value={filter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
         />
         <div className="ml-auto flex items-center color-text-secondary">
           <SecondaryBlueButton
@@ -368,11 +369,14 @@ const Content = () => {
         columns={columns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
-        onInput={onTableUpdate}
+        onInput={updateData}
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         loading={loading}
       />
       <Pagination

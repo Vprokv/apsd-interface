@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -23,6 +23,7 @@ import {
 import { useOpenNotification } from '@/Components/Notificator'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import PropTypes from 'prop-types'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;
@@ -48,7 +49,7 @@ const CreateLink = ({ addLinkState }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
   })
 
@@ -67,7 +68,9 @@ const CreateLink = ({ addLinkState }) => {
       })
       setTitles(data)
       changeOpenState(true)()
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
   }, [api, changeOpenState, id])
 
   const onCrateLink = useCallback(async () => {
@@ -77,7 +80,7 @@ const CreateLink = ({ addLinkState }) => {
         source: addLinkState.id,
         target: selected,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
       onClose()
     } catch (e) {

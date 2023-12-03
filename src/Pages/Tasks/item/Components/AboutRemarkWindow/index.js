@@ -1,28 +1,17 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
-import {
-  ApiContext,
-  TASK_ITEM_APPROVAL_SHEET,
-  TASK_ITEM_LINK,
-  TASK_LIST,
-} from '@/contants'
+import { ApiContext, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { WithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import { useNavigate, useParams } from 'react-router-dom'
 import { LoadTasks } from '@/Pages/Main/constants'
-import Input from '@/Components/Fields/Input'
-import NewFileInput from '@/Components/Inputs/NewFileInput'
-import { ContainerContext } from '@Components/constants'
-import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 18%;
@@ -53,10 +42,7 @@ const AboutRemarkWindow = ({ open, onClose, signal }) => {
       onClose()
       closeCurrenTab()
       reloadSidebarTaskCounters()
-      updateTabStateUpdaterByName([TASK_LIST], {
-        loading: false,
-        fetched: false,
-      })
+      updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e

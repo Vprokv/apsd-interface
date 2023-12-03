@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ITEM_DOCUMENT } from '@/contants'
 import {
   NavigationContainer,
   NavigationItem,
@@ -13,10 +11,6 @@ import { MultipleContext } from '@/Pages/Search/constans'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 
 export const SearchComponent = ({ multiple, setSelected, selected }) => {
-  useTabItem({
-    stateId: ITEM_DOCUMENT,
-  })
-
   useSetTabName(useCallback(() => 'Поиск', []))
 
   const pages = useMemo(
@@ -83,8 +77,6 @@ SearchComponent.propTypes = {
 }
 
 const Search = () => {
-  useTabItem({ stateId: ITEM_DOCUMENT })
-
   useSetTabName(useCallback(() => 'Поиск', []))
 
   return (

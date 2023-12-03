@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithValidationForm } from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
@@ -16,6 +16,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import { LoadTasks } from '@/Pages/Main/constants'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -27,15 +28,16 @@ const customMessagesFuncMap = {
   },
 }
 
+const rules = {
+  description: [{ name: VALIDATION_RULE_REQUIRED }],
+}
+
 const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
-  const rules = {
-    description: [{ name: VALIDATION_RULE_REQUIRED }],
-  }
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
 
@@ -62,11 +64,8 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
         signal,
         description: filter.description,
       })
-      setTabState({ loading: false, fetched: false })
-      updateTabStateUpdaterByName([TASK_LIST], {
-        loading: false,
-        fetched: false,
-      })
+      setTabState(setUnFetchedState())
+      updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       reloadSidebarTaskCounters()
       getNotification(customMessagesFuncMap[status]())
     } catch (e) {

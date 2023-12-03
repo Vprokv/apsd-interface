@@ -1,10 +1,8 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 import {
   FlatSelect,
-  SingleSelect,
 } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell, {
@@ -33,7 +31,6 @@ import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/Create
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import UnderButtons from '@/Components/Inputs/UnderButtons'
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
 import ShowTemplate from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/Components/TemplateTab/ShowTemplate'
 import { TemplateContext } from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/constans'
@@ -57,10 +54,6 @@ const FilterForm = styled(Form)`
   display: grid;
   grid-template-columns: 200px 200px 200px 200px 150px;
   grid-column-gap: 0.5rem;
-`
-
-const WindowContainer = styled.div`
-  width: 100%;
 `
 
 const columns = [
@@ -107,6 +100,42 @@ const columns = [
   },
 ]
 
+const filterFields = [
+  {
+    id: 'name',
+    component: SearchInput,
+    placeholder: 'Наименование',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'note',
+    component: SearchInput,
+    placeholder: 'Примечание',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'isPrivate',
+    component: CheckBox,
+    text: 'Личные шаблоны',
+  },
+]
+
+const baseSortState = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
 const SearchTemplateWindowList = ({
   onClose,
   onInput,
@@ -119,23 +148,12 @@ const SearchTemplateWindowList = ({
   returnObjects,
 }) => {
   const api = useContext(ApiContext)
-  const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const [{ filter, sortQuery = baseSortState, ...tabState }, setTabState] =
+    useTabItem({ stateId: SETTINGS_TEMPLATES })
   const [selectTemplateState, setSelectTemplateState] = useState([])
-  const [filter, setFilter] = useState({})
   const [showTemplateWindowState, setShowTemplateWindowState] = useState(false)
   const [showTemplate, setShowTemplate] = useState({})
   const getNotification = useOpenNotification()
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
-
-  const {
-    // tabState: { data: { content = [], total = 0 } = {} },
-    tabState: { data: content, total = 0, loading },
-    tabState,
-    setTabState,
-  } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SETTINGS_TEMPLATES,
@@ -144,58 +162,28 @@ const SearchTemplateWindowList = ({
     defaultLimit: 10,
   })
 
-  const filterFields = [
-    {
-      id: 'name',
-      component: SearchInput,
-      placeholder: 'Наименование',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'note',
-      component: SearchInput,
-      placeholder: 'Примечание',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'isPrivate',
-      component: CheckBox,
-      text: 'Личные шаблоны',
-    },
-  ]
-
-  const loadData = useCallback(async () => {
-    try {
-      const { data } = await api.post(URL_TEMPLATE_LIST, {
-        ...filter,
-        type: 'ddt_employee_template',
-        sort: [
-          {
-            key: 'r_creation_date',
-            direction: 'DESC',
-          },
-        ],
-      })
-      return data
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [api, filter, getNotification])
-
-  useAutoReload(loadData, tabItemState)
+  const [{ data: content, total = 0, loading }] = useAutoReload(
+    useCallback(async () => {
+      try {
+        const { data } = await api.post(URL_TEMPLATE_LIST, {
+          ...filter,
+          type: 'ddt_employee_template',
+          sort: [
+            {
+              key: 'r_creation_date',
+              direction: 'DESC',
+            },
+          ],
+        })
+        return data
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
+    }, [api, filter, getNotification]),
+    tabState,
+    setTabState,
+  )
 
   const onSelectRow = useCallback(
     (val) => () => {
@@ -224,7 +212,6 @@ const SearchTemplateWindowList = ({
 
         setSelectState((selectVal) => {
           const initVal = selectVal ? [...selectVal] : []
-          console.log(selectVal, 'selectVal')
           const valueFunc = (addObj) =>
             returnObjects ? addObj : addObj[valueKey]
 
@@ -323,7 +310,10 @@ const SearchTemplateWindowList = ({
               fields={filterFields}
               inputWrapper={emptyWrapper}
               value={filter}
-              onInput={setFilter}
+              onInput={useCallback(
+                (filter) => setTabState({ filter }),
+                [setTabState],
+              )}
             />
           </div>
           <ScrollBar>
@@ -341,7 +331,10 @@ const SearchTemplateWindowList = ({
               selectState={selectTemplateState}
               onSelect={onSelectRow}
               sortQuery={sortQuery}
-              onSort={onSort}
+              onSort={useCallback(
+                (sortQuery) => setTabState({ sortQuery }),
+                [setTabState],
+              )}
               loading={loading}
             />
           </ScrollBar>

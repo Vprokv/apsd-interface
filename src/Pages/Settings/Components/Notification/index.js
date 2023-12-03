@@ -1,11 +1,10 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_CHANNELS,
@@ -20,7 +19,7 @@ import { ChannelContext } from '@/Pages/Settings/Components/Notification/constan
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 
-const NotificationItem = (props) => {
+const NotificationItem = () => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({
     typeDocument: 'ddt_project_calc_type_doc',

@@ -11,69 +11,62 @@ import { CustomValuesContext, PERMITS_SAVE } from './constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useRequisitesParser from '@/Pages/Tasks/item/Pages/Requisites/parser'
 import { URL_PRE_SET_FIELD_VALUES } from '@/ApiList'
+import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 
 export const Requisites = ({ permits }) => {
   const api = useContext(ApiContext)
   const { type: documentType } = useParams()
   const docContextType = useContext(DocumentTypeContext)
 
-  const documentState = useTabItem({
+  const [documentState, setDocumentState] = useTabItem({
     stateId: docContextType,
   })
 
-  const tabItemState = useTabItem({
-    stateId: TASK_ITEM_REQUISITES,
-  })
   const {
-    tabState: { data, cache },
-  } = tabItemState
-  const {
-    tabState: {
-      data: documentData,
-      data: { values, valuesCustom } = {},
-      touched,
-      changed,
-      submitFailed,
-      formHasSubmitted,
-      validationErrors,
-      backendValidationErrors,
-    },
-    setTabState: setDocumentState,
+    touched,
+    changed,
+    submitFailed,
+    formHasSubmitted,
+    validationErrors,
+    backendValidationErrors,
   } = documentState
 
-  const [customFieldsState, setCustomFieldsState] = useState({})
-  // useEffect(() => {
-  //   if (!cache) {
-  //     setDocumentState({ cache: new Map() })
-  //   }
-  // }, [cache, setDocumentState])
+  const [
+    { data: documentData, data: { values, valuesCustom } = {} },
+    setDocumentData,
+  ] = useReadDataState(documentState, setDocumentState)
+
+  const [tabItemState, setTabItemState] = useTabItem({
+    stateId: TASK_ITEM_REQUISITES,
+  })
 
   const onFormInput = useCallback(
     (formData) =>
-      setDocumentState({
-        data: {
-          ...documentData,
-          values: formData,
-        },
+      setDocumentData({
+        ...documentData,
+        values: formData,
       }),
-    [documentData, setDocumentState],
+    [documentData, setDocumentData],
   )
 
-  const loadData = useCallback(async () => {
-    const {
-      data: { children },
-    } = await api.post(`/sedo/type/config/${documentType}/design`)
-    return children
-  }, [api, documentType])
-
-  useAutoReload(loadData, tabItemState)
+  const [{ data: fieldsDesign }] = useAutoReload(
+    useCallback(async () => {
+      const {
+        data: { children },
+      } = await api.post(`/sedo/type/config/${documentType}/design`)
+      return children
+    }, [api, documentType]),
+    tabItemState,
+    setTabItemState,
+  )
   const { fields, ...formProps } = useRequisitesParser({
     value: values,
-    fieldsDesign: data,
+    fieldsDesign,
     allowedSaveByPermits: permits.some((p) => p === PERMITS_SAVE),
   })
 
   // TODO APSD-1928 обсудить с бэками и вырезать этот функционал
+  const [customFieldsState, setCustomFieldsState] = useState({})
   useEffect(() => {
     if (
       documentType === 'ddt_startup_complex_type_doc' &&
@@ -90,7 +83,7 @@ export const Requisites = ({ permits }) => {
           setCustomFieldsState(
             Object.entries(fieldValues).reduce((acc, [key, value]) => {
               const field =
-                data.find(
+                fieldsDesign.find(
                   ({ attr: { dss_attr_name } }) => dss_attr_name === key,
                 ) || {}
               if ('Combobox' === field.type) {
@@ -117,45 +110,42 @@ export const Requisites = ({ permits }) => {
               return acc
             }, {}),
           )
-          setDocumentState(({ data }) => {
+          setDocumentData((data) => {
             return {
-              data: {
-                ...data,
-                values: {
-                  ...data.values,
-                  ...Object.entries(fieldValues).reduce(
-                    (acc, [key, { value }]) => {
-                      if (value !== '') {
-                        acc[key] = value
-                      }
-                      return acc
-                    },
-                    {},
-                  ),
-                },
+              ...data,
+              values: {
+                ...data.values,
+                ...Object.entries(fieldValues).reduce(
+                  (acc, [key, { value }]) => {
+                    if (value !== '') {
+                      acc[key] = value
+                    }
+                    return acc
+                  },
+                  {},
+                ),
               },
             }
           })
         })()
       } else {
         setCustomFieldsState({})
-        setDocumentState(({ data }) => {
+        setDocumentData((data) => {
           return {
-            data: {
-              ...data,
-              values: {
-                ...data.values,
-                dsid_title_type: undefined,
-                dss_description: undefined,
-                dsd_ipr_cost: undefined,
-                dsdt_end: undefined,
-              },
+            ...data,
+            values: {
+              ...data.values,
+              dsid_title_type: undefined,
+              dss_description: undefined,
+              dsd_ipr_cost: undefined,
+              dsdt_end: undefined,
             },
           }
         })
       }
     }
   }, [values.dsid_title])
+
   const fieldsWithLoadedProps = useMemo(
     () =>
       Object.entries(customFieldsState).reduce(
@@ -172,7 +162,6 @@ export const Requisites = ({ permits }) => {
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
-        {/* <CacheContext.Provider value={cache}>*/}
         <RequisitesForm
           touched={touched}
           changed={changed}
@@ -187,7 +176,6 @@ export const Requisites = ({ permits }) => {
           {...formProps}
           fields={fieldsWithLoadedProps}
         />
-        {/* </CacheContext.Provider>*/}
       </CustomValuesContext.Provider>
     </ScrollBar>
   )

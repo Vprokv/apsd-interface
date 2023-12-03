@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { WithValidationForm } from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -14,7 +8,6 @@ import Input from '@/Components/Fields/Input'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import {
-  URL_CREATE_TEMPLATE,
   URL_CREATE_UPDATE,
   URL_REPORTS_BRANCH,
 } from '@/ApiList'
@@ -27,13 +20,10 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { parseSettingsFuncMap } from '@/Pages/Settings/Components/Templates/constans'
-import { LOGIN_PAGE_PATH } from '@/routePaths'
-import OrgStructureComponentWithTemplateWindowWrapper
-  from "@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate";
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -62,7 +52,7 @@ const UpdateSettingsWindow = ({ onClose, open, type, data }) => {
 
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
 
   const reverseParseFromBackend = useMemo(() => {
     const { branchesAccess, usersAccess, dsb_private } = data
@@ -186,7 +176,7 @@ const UpdateSettingsWindow = ({ onClose, open, type, data }) => {
         type,
         id: dsid_template,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[data.status]())
       onClose()
     } catch (e) {

@@ -1,6 +1,5 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import UserSelect from '@/Components/Inputs/UserSelect'
 import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
 import { ApiContext, ITEM_TASK, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
@@ -8,11 +7,10 @@ import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import {
   URL_ADDITIONAL_AGREEMENT_USER_LIST,
   URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
-} from '../../../../../ApiList'
+} from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -24,6 +22,8 @@ import ScrollBar from '@Components/Components/ScrollBar'
 
 import styled from 'styled-components'
 import ModalWindowWrapper from '../../../../../Components/ModalWindow'
+import useReadDataState from '@Components/Logic/Tab/useReadDataState'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
@@ -50,21 +50,16 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   const documentId = useContext(DocumentIdContext)
   const { type: documentType } = useParams()
   const [values, setValues] = useState({})
-  const { onCloseTab } = useContext(TabStateManipulation)
-  const { currentTabIndex } = useContext(CurrentTabContext)
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
-  const closeCurrenTab = useCallback(
-    () => onCloseTab(currentTabIndex),
-    [onCloseTab, currentTabIndex],
-  )
   const getNotification = useOpenNotification()
 
-  const tabItemState = useTabItem({
+  const [state, tabState] = useTabItem({
     stateId: ITEM_TASK,
   })
-  const {
-    tabState: { data: { approverId, approverParentId } = {} },
-  } = tabItemState
+  const [{ data: { approverId, approverParentId } = {} }] = useReadDataState(
+    state,
+    tabState,
+  )
 
   const fieldMap = useMemo(() => {
     return [
@@ -106,10 +101,10 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         },
       )
       getNotification(customMessagesFuncMap[status]())
-      updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-        loading: false,
-        fetched: false,
-      })
+      updateCurrentTabChildrenStates(
+        [TASK_ITEM_APPROVAL_SHEET],
+        setUnFetchedState(),
+      )
       onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e

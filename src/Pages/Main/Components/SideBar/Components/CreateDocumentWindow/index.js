@@ -1,14 +1,10 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Icon from '@Components/Components/Icon'
 import { URL_DOCUMENT_CREATION_OPTIONS } from '@/ApiList'
-import {
-  DocumentIcon,
-  DocumentTypesContainer,
-  SmallSizeModalWindow,
-} from './style'
+import { DocumentIcon, SmallSizeModalWindow } from './style'
 import RadioButton from '@/Components/Inputs/RadioButton'
 import Button from '@/Components/Button'
 import WithToggleNavigationItem from '../withToggleNavigationItem'

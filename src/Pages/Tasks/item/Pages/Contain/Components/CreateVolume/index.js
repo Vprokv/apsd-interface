@@ -13,14 +13,14 @@ import { TabStateManipulation } from '@Components/Logic/Tab'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { NestedButton } from '../../styles'
 import { DocumentTypeContext } from '../../../../constants'
+import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 
 const CreateVolume = ({ addVolumeState }) => {
   const documentType = useContext(DocumentTypeContext)
-  const {
-    tabState: { data = {} },
-  } = useTabItem({
+  const [tabState, setTabState] = useTabItem({
     stateId: documentType,
   })
+  const [{ data = {} }] = useReadDataState(tabState, setTabState)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const api = useContext(ApiContext)
   const { id } = useParams()

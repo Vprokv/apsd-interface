@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
@@ -10,10 +10,7 @@ import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import {
-  remarkValidator,
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
@@ -30,6 +27,7 @@ import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -86,59 +84,62 @@ const EditRemark = ({
     },
   })
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
 
-  const fields = [
-    {
-      id: 'member',
-      label: 'Автор',
-      disabled: !editAuthor,
-      returnOption: true,
-      returnObjects: true,
-      component: UserSelect,
-    },
-    {
-      id: 'remarkTypeId',
-      component: LoadableSelect,
-      placeholder: 'Выберите тип',
-      options: [
-        {
-          r_object_id: remarkTypeId,
-          dss_name: remarkType,
-        },
-      ],
-      label: 'Тип замечания',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_type_remark',
-          query,
-        })
-        return data
+  const fields = useMemo(
+    () => [
+      {
+        id: 'member',
+        label: 'Автор',
+        disabled: !editAuthor,
+        returnOption: true,
+        returnObjects: true,
+        component: UserSelect,
       },
-    },
-    {
-      id: 'text',
-      label: 'Текст замечания',
-      inputWrapper: RemarkWrapper,
-      component: CustomInput,
-      placeholder: 'Введите текст замечания',
-    },
-    {
-      id: 'ndtLinks',
-      label: 'Ссылка нa НТД',
-      options: ndtLinks.map(({ ndtId, name }) => {
-        return { r_object_id: ndtId, dss_name: name }
-      }),
-      component: LinkNdt,
-      placeholder: 'Выберите значение',
-      inputWrapper: returnChildren,
-      InputUiContext: NdtLinkWrapper,
-    },
-  ]
+      {
+        id: 'remarkTypeId',
+        component: LoadableSelect,
+        placeholder: 'Выберите тип',
+        options: [
+          {
+            r_object_id: remarkTypeId,
+            dss_name: remarkType,
+          },
+        ],
+        label: 'Тип замечания',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_type_remark',
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'text',
+        label: 'Текст замечания',
+        inputWrapper: RemarkWrapper,
+        component: CustomInput,
+        placeholder: 'Введите текст замечания',
+      },
+      {
+        id: 'ndtLinks',
+        label: 'Ссылка нa НТД',
+        options: ndtLinks.map(({ ndtId, name }) => {
+          return { r_object_id: ndtId, dss_name: name }
+        }),
+        component: LinkNdt,
+        placeholder: 'Выберите значение',
+        inputWrapper: returnChildren,
+        InputUiContext: NdtLinkWrapper,
+      },
+    ],
+    [api, editAuthor, ndtLinks, remarkType, remarkTypeId],
+  )
 
   const onSave = useCallback(async () => {
     try {
@@ -154,7 +155,7 @@ const EditRemark = ({
         })),
         ...other,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[status]())
       onClose()
     } catch (e) {

@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import EmptyInput from '../../../Input/style'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
@@ -22,6 +21,7 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const fields = [
   {
@@ -69,7 +69,7 @@ const DocumentEAXD = () => {
     }
   }, [api, search, id, getNotification])
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
 
@@ -213,7 +213,7 @@ const DocumentEAXD = () => {
         },
       ],
     })
-    setTabState({ loading: false, fetched: false })
+    setTabState(setUnFetchedState())
     close()
   }, [
     filter,

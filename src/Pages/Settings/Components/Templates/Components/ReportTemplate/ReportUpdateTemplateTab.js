@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext, REPORTING_STATE } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
@@ -34,6 +27,7 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const ReportUpdateTemplateTab = ({
   dss_name,
@@ -44,7 +38,7 @@ const ReportUpdateTemplateTab = ({
   ...other
 }) => {
   const api = useContext(ApiContext)
-  const { setTabState } = useTabItem({ stateId: REPORTING_STATE })
+  const { 1: setTabState } = useTabItem({ stateId: REPORTING_STATE })
   const [initialFilter] = JSON.parse(dss_json)
   const [filter, setFilter] = useState(initialFilter)
   const [filterField, setFilterField] = useState({})
@@ -146,7 +140,7 @@ const ReportUpdateTemplateTab = ({
         type,
         id: dsid_template,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Шаблон обновлен успешно',

@@ -1,12 +1,5 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
-import { ApiContext, SETTINGS_TEMPLATES, TokenContext } from '@/contants'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -34,6 +27,7 @@ import {
 } from '@/Pages/Settings/Components/Templates/constans'
 import { useNavigate } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const defaultOptions = [
   {
@@ -53,7 +47,7 @@ const SearchUpdateTemplateTab = ({
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])
   const { onInput } = useContext(TemplateTabStateContext)
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
   const navigate = useNavigate()
   const getNotification = useOpenNotification()
 
@@ -148,7 +142,7 @@ const SearchUpdateTemplateTab = ({
         type,
         id: dsid_template,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Шаблон обновлен успешно',

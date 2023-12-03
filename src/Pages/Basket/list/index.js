@@ -30,12 +30,6 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import DocumentState, {
-  sizes as DocumentStateSizes,
-} from '@/Components/ListTableComponents/DocumentState'
-import VolumeState, {
-  sizes as volumeStateSize,
-} from '@/Components/ListTableComponents/VolumeState'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
@@ -113,22 +107,18 @@ const timesMap = {
   },
 }
 
+const baseSortQuery = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
+
 function BasketList() {
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
 
-  const tabBasketState = useTabItem({ stateId: BASKET })
-
-  const {
-    tabState,
-    setTabState,
-    tabState: { data },
-  } = tabBasketState
+  const [{ filter, sortQuery = baseSortQuery, ...tabState }, setTabState] =
+    useTabItem({ stateId: BASKET })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -137,7 +127,6 @@ function BasketList() {
     defaultLimit: 10,
   })
   const getNotification = useOpenNotification()
-  const [filter, setFilter] = useState()
   const [selectState, setSelectState] = useState([])
   const handleDoubleClick = useCallback(
     ({ taskId, type }) =>
@@ -180,7 +169,7 @@ function BasketList() {
     filter,
   ])
 
-  useAutoReload(loadData, tabBasketState)
+  const [{ data }] = useAutoReload(loadData, tabState, setTabState)
 
   const onDelete = useCallback(async () => {
     try {
@@ -203,7 +192,13 @@ function BasketList() {
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container">
       <div className="flex items-center">
-        <Filter value={filter} onInput={setFilter} />
+        <Filter
+          value={filter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
+        />
         <div className="flex items-center color-text-secondary ml-auto">
           <Tips text="Убрать из удаленных">
             <ButtonForIcon
@@ -235,7 +230,10 @@ function BasketList() {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
       />
       <Pagination
         className="mt-2"

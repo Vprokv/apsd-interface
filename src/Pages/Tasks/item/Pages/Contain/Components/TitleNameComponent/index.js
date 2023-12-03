@@ -1,12 +1,7 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { TreeStateContext } from '@Components/Components/Tables/Plugins/constants'
-import {
-  ApiContext,
-  TASK_ITEM_APPROVAL_SHEET,
-  TASK_ITEM_STRUCTURE,
-} from '@/contants'
-import { TabStateManipulation } from '@Components/Logic/Tab'
+import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { LoadContainChildrenContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 import {
   URL_STURCTURE_SEND,
@@ -31,10 +26,9 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 import Loading from '@/Components/Loading'
-import { length } from 'tailwindcss/lib/util/dataTypes'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesSendFuncMap = {
   ...defaultFunctionsMap,
@@ -117,10 +111,7 @@ const TitleNameComponent = ({
       })
       getNotification(customMessagesSendFuncMap[status]())
 
-      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
-        loading: false,
-        fetched: false,
-      })
+      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
     } catch (e) {
       const { response: { status, data: { trace } } = {} } = e
       getNotification(customMessagesSendFuncMap[status](trace))
@@ -176,10 +167,7 @@ const TitleNameComponent = ({
       )
       getNotification(customMessagesSendFuncMap[status]())
 
-      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
-        loading: false,
-        fetched: false,
-      })
+      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
     } catch (e) {
       const { response: { status, data: { trace } } = {} } = e
       getNotification(customMessagesSendFuncMap[status](trace))
@@ -204,10 +192,7 @@ const TitleNameComponent = ({
         partId: ParentValue.id,
       })
       getNotification(customMessagesApproveFuncMap[status]())
-      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], {
-        loading: false,
-        fetched: false,
-      })
+      updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
     } catch (e) {
       const { response: { status, data: { trace }, data } = {} } = e
       getNotification(customMessagesApproveFuncMap[status](trace ?? data))

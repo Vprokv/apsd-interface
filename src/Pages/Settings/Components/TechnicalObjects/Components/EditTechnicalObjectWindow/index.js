@@ -25,6 +25,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const rules = {
   name: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -49,7 +50,7 @@ const EditTechnicalObjectWindow = ({ onClose, selected, ...props }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState(selected[0])
   const getNotification = useOpenNotification()
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
+  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
 
   const filterFormConfig = useMemo(
     () => [
@@ -148,7 +149,7 @@ const EditTechnicalObjectWindow = ({ onClose, selected, ...props }) => {
     try {
       const response = await api.post(URL_TECHNICAL_OBJECTS_UPDATE, filter)
       getNotification(customMessagesFuncMap[response.status]())
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
 
       onClose()
     } catch (e) {

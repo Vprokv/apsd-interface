@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   LoadableButtonForIcon,
   SecondaryBlueButton,
@@ -56,42 +56,51 @@ const columns = [
   },
 ]
 
+const baseFilter = { allUsers: false }
+
 const OpenedTaskWindow = () => {
   const api = useContext(ApiContext)
   const [open, setOpen] = useState(false)
-  const [filter, setFilter] = useState({ allUsers: false })
-  const tabItemState = useTabItem({ stateId: REPORTING_STATE })
+  const [{ filter = baseFilter, ...tabState }, setTabState] = useTabItem({
+    stateId: REPORTING_STATE,
+  })
+
   const getNotification = useOpenNotification()
-  const { tabState: { data, loading } = {}, setTabState } = tabItemState
 
-  const loadData = useCallback(async () => {
-    try {
-      const { data } = await api.post(URL_REPORTS_STATISTIC, filter)
-      return data
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [api, filter, getNotification])
-
-  useAutoReload(loadData, tabItemState)
+  const [{ data, loading, reloadData }] = useAutoReload(
+    useCallback(async () => {
+      try {
+        const { data } = await api.post(URL_REPORTS_STATISTIC, filter)
+        return data
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
+    }, [api, filter, getNotification]),
+    tabState,
+    setTabState,
+  )
 
   const onReload = useCallback(() => {
-    setTabState({ loading: false, fetched: false })
-  }, [setTabState])
+    reloadData()
+  }, [reloadData])
 
-  const onOpen = useCallback(() => {
-    // setTabState({ loading: false, fetched: false })
-    setOpen(true)
-  }, [setTabState])
+  const onOpen = useCallback(
+    (v) => () => {
+      setOpen(v)
+    },
+    [],
+  )
 
   return (
     <div>
-      <SecondaryBlueButton onClick={onOpen}>Тек. задачи</SecondaryBlueButton>
+      <SecondaryBlueButton onClick={onOpen(true)}>
+        Тек. задачи
+      </SecondaryBlueButton>
       <StandardSizeModalWindow
         title="Текущие задачи"
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={onOpen(false)}
       >
         <div className="flex-container pr-4 w-full overflow-hidden">
           <div className="flex items-center form-element-sizes-32 mb-4">
@@ -109,7 +118,10 @@ const OpenedTaskWindow = () => {
               )}
               inputWrapper={emptyWrapper}
               value={filter}
-              onInput={setFilter}
+              onInput={useCallback(
+                (filter) => setTabState({ filter }),
+                [setTabState],
+              )}
             />
             <div className="ml-auto flex items-center color-text-secondary ">
               <Tips text="Обновить">
@@ -128,7 +140,7 @@ const OpenedTaskWindow = () => {
           />
         </div>
         <div className="flex items-center justify-end">
-          <SecondaryOverBlueButton onClick={() => setOpen(false)}>
+          <SecondaryOverBlueButton onClick={onOpen(false)}>
             Закрыть
           </SecondaryOverBlueButton>
         </div>

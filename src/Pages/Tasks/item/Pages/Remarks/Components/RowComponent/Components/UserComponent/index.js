@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import colorFromString from '@Components/Utils/colorFromString'
-import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { SetAnswerStateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 

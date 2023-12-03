@@ -11,6 +11,7 @@ import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdate
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -41,10 +42,7 @@ const RejectSapPrepareWindow = ({ open, onClose, signal }) => {
       onClose()
       closeCurrenTab()
       reloadSidebarTaskCounters()
-      updateTabStateUpdaterByName([TASK_LIST], {
-        loading: false,
-        fetched: false,
-      })
+      updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       getNotification(defaultFunctionsMap[status]())
     } catch (e) {
       const { response: { status = 500, data = '' } = {} } = e

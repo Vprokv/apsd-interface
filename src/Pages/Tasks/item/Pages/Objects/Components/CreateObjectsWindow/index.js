@@ -1,5 +1,5 @@
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   ApiContext,
   SETTINGS_TECHNICAL_OBJECTS,
@@ -37,6 +37,7 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import Pagination from '@/Components/Pagination'
 import LoadableSelect from '@/Components/Inputs/Select'
+import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -109,21 +110,15 @@ const CreateObjectsWindow = ({ onClose }) => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [filter, setFilter] = useState({})
-  const [sortQuery, onSort] = useState({})
   const getNotification = useOpenNotification()
 
-  const { setTabState: setItemObjectState } = useTabItem({
+  const { 1: setItemObjectState } = useTabItem({
     stateId: TASK_ITEM_OBJECTS,
   })
 
-  const tabItemState = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
-
-  const {
-    tabState: { data: { technicalObjects = [], total = 0 } = {}, loading },
-    tabState,
-    setTabState,
-  } = tabItemState
+  const [{ filter, sortQuery, ...tabState }, setTabState] = useTabItem({
+    stateId: SETTINGS_TECHNICAL_OBJECTS,
+  })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SETTINGS_TECHNICAL_OBJECTS,
@@ -132,101 +127,106 @@ const CreateObjectsWindow = ({ onClose }) => {
     defaultLimit: 10,
   })
 
-  const filterFormConfig = [
-    {
-      id: 'name',
-      component: SearchInput,
-      placeholder: 'Наименование',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'objectType',
-      component: LoadableSelect,
-      placeholder: 'Тип объекта',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_tech_obj_type_catalog',
-          query,
-        })
-        return data
-      },
-    },
-    {
-      id: 'voltage',
-      component: LoadableSelect,
-      placeholder: 'Класс напряжения',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_voltage',
-          query,
-        })
-        return data
-      },
-    },
-    {
-      id: 'resId',
-      component: LoadableSelect,
-      placeholder: 'РЭС',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_dict_res',
-          query,
-        })
-        return data
-      },
-    },
-    {
-      id: 'branchId',
-      component: LoadableSelect,
-      placeholder: 'Балансодержатель',
-      valueKey: 'r_object_id',
-      labelKey: 'dss_name',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_ENTITY_LIST, {
-          type: 'ddt_branch',
-          query,
-        })
-        return data
-      },
-    },
-  ]
+  const [{ data: { technicalObjects = [], total = 0 } = {}, loading }] =
+    useAutoReload(
+      useCallback(async () => {
+        try {
+          const { limit, offset } = paginationState
+          const { data } = await api.post(URL_TECHNICAL_OBJECTS_DICT, {
+            filter,
+            sort: sortQuery
+              ? {
+                  property: sortQuery.key,
+                  direction: sortQuery.direction,
+                }
+              : null,
+            limit,
+            offset,
+          })
 
-  const loadData = useCallback(async () => {
-    try {
-      const { limit, offset } = paginationState
-      const { data } = await api.post(URL_TECHNICAL_OBJECTS_DICT, {
-        filter,
-        sort:
-          Object.keys(sortQuery).length > 0
-            ? {
-                property: sortQuery.key,
-                direction: sortQuery.direction,
-              }
-            : null,
-        limit,
-        offset,
-      })
+          return data
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          getNotification(defaultFunctionsMap[status](data))
+        }
+      }, [api, filter, getNotification, paginationState, sortQuery]),
+      tabState,
+      setTabState,
+    )
 
-      return data
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [api, filter, getNotification, paginationState, sortQuery])
-
-  useAutoReload(loadData, tabItemState)
+  const filterFormConfig = useMemo(
+    () => [
+      {
+        id: 'name',
+        component: SearchInput,
+        placeholder: 'Наименование',
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+      {
+        id: 'objectType',
+        component: LoadableSelect,
+        placeholder: 'Тип объекта',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_tech_obj_type_catalog',
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'voltage',
+        component: LoadableSelect,
+        placeholder: 'Класс напряжения',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_voltage',
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'resId',
+        component: LoadableSelect,
+        placeholder: 'РЭС',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_dict_res',
+            query,
+          })
+          return data
+        },
+      },
+      {
+        id: 'branchId',
+        component: LoadableSelect,
+        placeholder: 'Балансодержатель',
+        valueKey: 'r_object_id',
+        labelKey: 'dss_name',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_ENTITY_LIST, {
+            type: 'ddt_branch',
+            query,
+          })
+          return data
+        },
+      },
+    ],
+    [api],
+  )
 
   const onSave = useCallback(async () => {
     try {
@@ -235,7 +235,7 @@ const CreateObjectsWindow = ({ onClose }) => {
         techObjectIds: selectState,
       })
       getNotification(customMessagesFuncMap[response.status]())
-      setItemObjectState({ loading: false, fetched: false })
+      setItemObjectState(SetUnFetchedState())
       onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -291,7 +291,10 @@ const CreateObjectsWindow = ({ onClose }) => {
               fields={filterFormConfig}
               inputWrapper={emptyWrapper}
               value={filter}
-              onInput={setFilter}
+              onInput={useCallback(
+                (filter) => setTabState({ filter }),
+                [setTabState],
+              )}
             />
           </div>
           <ListTable
@@ -302,7 +305,10 @@ const CreateObjectsWindow = ({ onClose }) => {
             selectState={selectState}
             onSelect={setSelectState}
             sortQuery={sortQuery}
-            onSort={onSort}
+            onSort={useCallback(
+              (sortQuery) => setTabState({ sortQuery }),
+              [setTabState],
+            )}
             valueKey="id"
             loading={loading}
           />

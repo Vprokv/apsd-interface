@@ -7,7 +7,6 @@ import { defaultPages, DocumentTypeContext } from './constants'
 import { useNavigate, useParams } from 'react-router-dom'
 import Document from './Components/Layout'
 import useDocumentTabs from './Hooks/useDocumentTabs'
-import { SidebarContainer } from '@/Pages/Tasks/item/styles'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import useDocumentActions from './Hooks/useDocumentActions'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
@@ -21,6 +20,8 @@ import {
 import { useTabStateUpdaterByName } from '@/Utils/TabStateUpdaters'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
+import useTabInitialState from '@Components/Logic/Tab/useTabInitialState'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -43,25 +44,10 @@ export const NewTaskItem = ({ classificationId, type }) => {
   const navigate = useNavigate()
   const getNotification = useOpenNotification()
 
-  const {
-    tabState: { data: { values: { dss_work_number = 'Документ' } = {} } = {} },
-  } = useTabItem({ stateId: TASK_ITEM_NEW_DOCUMENT })
-
-  const tabItemState = useTabItem({ stateId: TASK_ITEM_NEW_DOCUMENT })
-  const {
-    initialState,
-    tabState: { data: { documentActions, documentTabs, values } = {} },
-    setTabState: setDocumentState,
-  } = tabItemState
-
-  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
-
-  const remoteTabUpdater = useTabStateUpdaterByName()
-
-  const refValues = useRef()
-  useEffect(() => {
-    refValues.current = values
-  }, [values])
+  const [tabState, setDocumentState] = useTabItem({
+    stateId: TASK_ITEM_NEW_DOCUMENT,
+  })
+  const initialState = useTabInitialState()
 
   const loadData = useCallback(async () => {
     try {
@@ -80,7 +66,25 @@ export const NewTaskItem = ({ classificationId, type }) => {
     }
   }, [api, classificationId, getNotification, initialState])
 
-  useAutoReload(loadData, tabItemState)
+  const [
+    {
+      data: {
+        documentActions,
+        documentTabs,
+        values,
+        values: { dss_work_number = 'Документ' } = {},
+      } = {},
+    },
+  ] = useAutoReload(loadData, tabState, setDocumentState)
+
+  useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
+
+  const refValues = useRef()
+  useEffect(() => {
+    refValues.current = values
+  }, [values])
+
+  const remoteTabUpdater = useTabStateUpdaterByName()
 
   const documentHandlers = useMemo(
     () => ({
@@ -95,10 +99,9 @@ export const NewTaskItem = ({ classificationId, type }) => {
               type,
             })
             getNotification(customMessagesFuncMap[status]())
-            remoteTabUpdater(initialState?.parentTabName, {
-              loading: false,
-              fetched: false,
-            })
+            if (initialState.parentTabName) {
+              remoteTabUpdater(initialState.parentTabName, setUnFetchedState())
+            }
             navigate(`/document/${id}/${type}`)
           } catch (e) {
             const { response: { status, data } = {} } = e

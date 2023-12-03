@@ -41,7 +41,6 @@ import SendASUD from './Icons/SendASUD.svg'
 import SaveIcon from './Icons/SaveIcon.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
-import { SidebarContainer } from './styles'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
@@ -62,6 +61,7 @@ import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
 import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -98,18 +98,16 @@ const Document = () => {
     }
   }, [api, getNotification, id, type])
 
-  const tabItemState = useTabItem({
+  const [tabState, setTabState] = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
-
-  const {
-    tabState: {
+  const [
+    {
       data: { documentActions, documentTabs = [], values } = {},
       data,
+      reloadData,
     },
-    tabState,
-    setTabState,
-  } = tabItemState
+  ] = useAutoReload(loadData, tabState, setTabState)
 
   const documentId = useMemo(() => {
     let v = 'Документ'
@@ -123,18 +121,18 @@ const Document = () => {
     return v
   }, [type, values])
 
+  useSetTabName(useCallback(() => documentId, [documentId]))
+
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
   const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const remoteSideBarUpdater = useContext(LoadTasks)
 
-  useSetTabName(useCallback(() => documentId, [documentId]))
   const refValues = useRef()
   useEffect(() => {
     refValues.current = values
   }, [values])
 
-  useAutoReload(loadData, tabItemState)
   const documentHandlers = useMemo(
     () => ({
       ...defaultDocumentHandlers,
@@ -206,11 +204,11 @@ const Document = () => {
               documentIds: [id],
             })
             setMessage(data)
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
             getNotification(customMessagesFuncMap[status]())
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -263,7 +261,7 @@ const Document = () => {
               signal: 'apsd_reject_cancel',
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
+            reloadData()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -294,15 +292,12 @@ const Document = () => {
             })
             remoteSideBarUpdater()
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
-            updateTabStateUpdaterByName([TASK_LIST], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
+            updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -315,6 +310,7 @@ const Document = () => {
       api,
       getNotification,
       id,
+      reloadData,
       remoteSideBarUpdater,
       setComponent,
       setTabState,

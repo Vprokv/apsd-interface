@@ -38,7 +38,7 @@ const defaultOptions = [
   },
 ]
 
-const SearchTemplateTab = (props) => {
+const SearchTemplateTab = () => {
   const [filter, setFilter] = useState(defaultFilter)
   const api = useContext(ApiContext)
   const [attributes, setAttributes] = useState([])

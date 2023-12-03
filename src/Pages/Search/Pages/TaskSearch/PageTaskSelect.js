@@ -13,39 +13,6 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 
-const columnsMap = [
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Задание',
-    path: 'taskType',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Исполнитель',
-    path: 'performerEmployee.userName',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Дата выдачи',
-    path: 'issueDate',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Краткое содержание',
-    path: 'documentDescription',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Статус',
-    path: 'documentStatus',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'От кого',
-    path: '[fromWhomEmployee.lastName,fromWhomEmployee.firstName,fromWhomEmployee.middleName]',
-  },
-]
-
 const tableConfig = [
   {
     id: 'taskType',
@@ -127,14 +94,12 @@ const PageTaskSelect = () => {
     [navigate, openTabOrCreateNewTab],
   )
 
-  const tabItemState = useTabItem({
+  const [
+    { filter = defaultFilter, searchState = defaultSearchState },
+    setTabState,
+  ] = useTabItem({
     stateId: SEARCH_PAGE,
   })
-
-  const {
-    setTabState,
-    tabState: { filter = defaultFilter, searchState = defaultSearchState },
-  } = tabItemState
 
   const rowComponent = useMemo(
     () => (props) =>

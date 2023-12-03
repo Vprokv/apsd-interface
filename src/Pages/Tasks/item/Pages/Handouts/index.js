@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_HANDOUTS } from '@/contants'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -66,19 +66,12 @@ const columns = [
 const Handouts = () => {
   const api = useContext(ApiContext)
   const { id } = useParams()
-  const [filterValue, setFilterValue] = useState({})
-  const [sortQuery, onSort] = useState({})
   const [selectState, setSelectState] = useState([])
   const getNotification = useOpenNotification()
 
-  const tabItemState = useTabItem({
+  const [{ sortQuery, filter, ...tabState }, setTabState] = useTabItem({
     stateId: TASK_ITEM_HANDOUTS,
   })
-  const {
-    tabState,
-    setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, loading },
-  } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_HANDOUTS,
@@ -94,7 +87,7 @@ const Handouts = () => {
         URL_HANDOUTS_LIST,
         {
           documentId: id,
-          filter: filterValue,
+          filter,
         },
         {
           params: {
@@ -114,7 +107,7 @@ const Handouts = () => {
     }
   }, [
     api,
-    filterValue,
+    filter,
     getNotification,
     id,
     paginationState,
@@ -122,7 +115,8 @@ const Handouts = () => {
     sortQuery.key,
   ])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { content = [], total = 0 } = {}, loading }, updateData] =
+    useAutoReload(loadData, tabState, setTabState)
 
   const fields = useMemo(
     () => [
@@ -157,18 +151,16 @@ const Handouts = () => {
     [api],
   )
 
-  const onTableUpdate = useCallback(
-    (data) => setTabState({ data }),
-    [setTabState],
-  )
-
   return (
     <div className="flex-container p-4 w-full overflow-hidden">
       <div className="flex items-center form-element-sizes-32 w-full mb-4">
         <FilterForm
           className="mr-2"
-          value={filterValue}
-          onInput={setFilterValue}
+          value={filter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
           fields={fields}
           inputWrapper={EmptyInputWrapper}
         />
@@ -185,9 +177,12 @@ const Handouts = () => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         value={content}
-        onInput={onTableUpdate}
+        onInput={updateData}
         loading={loading}
       />
       <Pagination

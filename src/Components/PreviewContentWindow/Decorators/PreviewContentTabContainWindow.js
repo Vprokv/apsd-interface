@@ -1,4 +1,10 @@
-import React, {forwardRef, useCallback, useContext, useEffect, useMemo, useState} from 'react'
+import React, {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { API_URL } from '@/api'
 import { URL_DOWNLOAD_FILE, URL_ENTITY_PDF_FILE } from '@/ApiList'
@@ -28,7 +34,9 @@ const PreviewContentTabContainWindow = (Component) => {
           },
           { responseType: 'blob' },
         )
-      } catch (e) {}
+      } catch (e) {
+        console.log(e)
+      }
     }, [api, value])
 
     const parseUrlFunc = useCallback(

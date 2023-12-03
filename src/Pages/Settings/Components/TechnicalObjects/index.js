@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
 import { ApiContext, SETTINGS_TECHNICAL_OBJECTS, TASK_LIST } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import usePagination from '@Components/Logic/usePagination'
@@ -99,14 +98,12 @@ const columns = [
   },
 ]
 
-const TechnicalObjectsSettings = (props) => {
+const TechnicalObjectsSettings = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({})
   const [addCreateObjectsWindow, setCreateObjectsWindow] = useState(false)
   const [editObjectsWindow, setEditObjectsWindow] = useState(false)
   const [filterWindowOpen, setFilterWindow] = useState(false)
-  const [filter, setFilterValue] = useState({})
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
   const getNotification = useOpenNotification()
@@ -125,13 +122,9 @@ const TechnicalObjectsSettings = (props) => {
     [],
   )
 
-  const tabItemState = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
-
-  const {
-    tabState: { data: { technicalObjects = [], total = 0 } = {}, loading },
-    tabState,
-    setTabState,
-  } = tabItemState
+  const [{ filter, sortQuery, ...tabState }, setTabState] = useTabItem({
+    stateId: SETTINGS_TECHNICAL_OBJECTS,
+  })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SETTINGS_TECHNICAL_OBJECTS,
@@ -145,13 +138,12 @@ const TechnicalObjectsSettings = (props) => {
       const { limit, offset } = paginationState
       const { data } = await api.post(URL_TECHNICAL_OBJECTS_DICT, {
         filter,
-        sort:
-          Object.keys(sortQuery).length > 0
-            ? {
-                property: sortQuery.key,
-                direction: sortQuery.direction,
-              }
-            : null,
+        sort: sortQuery
+          ? {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            }
+          : null,
         limit,
         offset,
       })
@@ -163,7 +155,8 @@ const TechnicalObjectsSettings = (props) => {
     }
   }, [api, filter, getNotification, paginationState, sortQuery])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { technicalObjects = [], total = 0 } = {}, loading }] =
+    useAutoReload(loadData, tabState, setTabState)
 
   const filterFields = useMemo(
     () => [
@@ -290,6 +283,16 @@ const TechnicalObjectsSettings = (props) => {
     }
   }, [api, getNotification, selectState])
 
+  const setFilterValue = useCallback(
+    (filter) => setTabState({ filter }),
+    [setTabState],
+  )
+
+  const onSort = useCallback(
+    (sortQuery) => setTabState({ sortQuery }),
+    [setTabState],
+  )
+
   return (
     <div className="px-4 pb-4 overflow-hidden flex-container w-full">
       <div ref={ref} className="flex items-center py-4">
@@ -348,10 +351,7 @@ const TechnicalObjectsSettings = (props) => {
         />
       </div>
       <ListTable
-        rowComponent={useMemo(
-          () => (props) => <ShowLineRowComponent {...props} />,
-          [],
-        )}
+        rowComponent={ShowLineRowComponent}
         value={technicalObjects}
         columns={columns}
         plugins={plugins}

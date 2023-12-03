@@ -130,17 +130,11 @@ export const LevelToggleIcon = ({
   toggleDisplayedFlag,
   isDisplayed,
   levelId,
-  key,
 }) => {
   const { loading } = useContext(ContextArchiveLoading)
   const isLoad = useMemo(() => loading === levelId, [levelId, loading])
   return (
-    <button
-      className="pl-2 mr-2 "
-      type="button"
-      onClick={toggleDisplayedFlag}
-      key={key}
-    >
+    <button className="pl-2 mr-2 " type="button" onClick={toggleDisplayedFlag}>
       {isLoad ? (
         <Loading width={'20px'} height={'20px'} />
       ) : (
@@ -155,7 +149,6 @@ export const LevelToggleIcon = ({
 }
 
 LevelToggleIcon.propTypes = {
-  key: PropTypes.string.isRequired,
   levelId: PropTypes.string.isRequired,
   isDisplayed: PropTypes.bool.isRequired,
   toggleDisplayedFlag: PropTypes.func.isRequired,

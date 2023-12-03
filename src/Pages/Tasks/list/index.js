@@ -42,7 +42,6 @@ import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
-import Filter from './Components/Filter'
 import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import PropTypes from 'prop-types'
@@ -59,6 +58,7 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import AppointedExecutor from '@/Pages/Tasks/list/Components/AppointedExecutor'
+import axios from 'axios'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -204,15 +204,21 @@ const columns = [
   },
 ]
 
+const defaultSortQuery = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
+
+const defaultFilter = { readTask: false }
+
 function TaskList({ loadFunctionRest }) {
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
-  const tabItemState = useTabItem({ stateId: TASK_LIST })
+  const [
+    { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
+    setTabState,
+  ] = useTabItem({ stateId: TASK_LIST })
   const [filterWindowOpen, setFilterWindow] = useState(false)
   const changeFilterWindowState = useCallback(
     (state) => () => setFilterWindow(state),
@@ -220,11 +226,7 @@ function TaskList({ loadFunctionRest }) {
   )
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
-  const {
-    tabState,
-    setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, loading },
-  } = tabItemState
+
   const { token } = useContext(TokenContext)
 
   const { setLimit, setPage, paginationState } = usePagination({
@@ -234,7 +236,6 @@ function TaskList({ loadFunctionRest }) {
     defaultLimit: 10,
   })
 
-  const [filter, setFilter] = useState({ readTask: false })
   const [selectState, setSelectState] = useState([])
   const getNotification = useOpenNotification()
   const handleDoubleClick = useCallback(
@@ -265,15 +266,12 @@ function TaskList({ loadFunctionRest }) {
                   : {}),
                 ...filter,
               },
-              sort:
-                Object.keys(sortQuery).length > 0
-                  ? [
-                      {
-                        property: sortQuery.key,
-                        direction: sortQuery.direction,
-                      },
-                    ]
-                  : [],
+              sort: [
+                {
+                  property: sortQuery.key,
+                  direction: sortQuery.direction,
+                },
+              ],
               limit,
               offset,
             },
@@ -284,8 +282,10 @@ function TaskList({ loadFunctionRest }) {
           )
           return data
         } catch (e) {
-          const { response: { status, data } = {} } = e
-          getNotification(defaultFunctionsMap[status](data))
+          if (!axios.isCancel(e)) {
+            const { response: { status, data } = {} } = e
+            getNotification(defaultFunctionsMap[status](data))
+          }
         }
       },
     [
@@ -297,6 +297,12 @@ function TaskList({ loadFunctionRest }) {
       sortQuery,
       getNotification,
     ],
+  )
+
+  const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
   )
 
   const onExportToExcel = useCallback(async () => {
@@ -354,7 +360,6 @@ function TaskList({ loadFunctionRest }) {
     sortQuery.key,
     token,
   ])
-  useAutoReload(loadData, tabItemState)
 
   const resizeSlider = useCallback(
     () => setWidth(ref?.current?.offsetWidth),
@@ -454,6 +459,11 @@ function TaskList({ loadFunctionRest }) {
     [api, filter],
   )
 
+  const setFilter = useCallback(
+    (filter) => setTabState({ filter }),
+    [setTabState],
+  )
+
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
       <div ref={ref} className="flex items-center ">
@@ -505,7 +515,10 @@ function TaskList({ loadFunctionRest }) {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         loading={loading}
       />
       <Pagination

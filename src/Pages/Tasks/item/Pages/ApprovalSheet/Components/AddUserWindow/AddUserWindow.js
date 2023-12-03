@@ -3,8 +3,10 @@ import AddUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons
 import Icon from '@Components/Components/Icon'
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import UserSelect from '../../../../../../../Components/Inputs/UserSelect'
-import {URL_ADDITIONAL_AGREEMENT_USER_LIST, URL_APPROVAL_CREATE} from '@/ApiList'
+import {
+  URL_ADDITIONAL_AGREEMENT_USER_LIST,
+  URL_APPROVAL_CREATE,
+} from '@/ApiList'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -18,8 +20,8 @@ import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
-import AdditionalAgreementOrgStructureComponent
-  from "@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent";
+import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
+import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -30,8 +32,6 @@ const customMessagesFuncMap = {
     }
   },
 }
-
-
 
 const rules = {}
 
@@ -48,7 +48,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
   const permit = useContext(PermitDisableContext)
   const api = useContext(ApiContext)
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
 
@@ -89,7 +89,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
           return { dsidApproverEmpl: val }
         }),
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(SetUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
       changeModalState(false)()
     } catch (e) {
@@ -111,6 +111,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
     changeModalState(false)()
     setFilter({})
   }, [changeModalState])
+
   return (
     <div className="h-full">
       <Tips text="Добавить согласующего">

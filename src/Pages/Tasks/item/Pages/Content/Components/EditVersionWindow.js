@@ -16,6 +16,7 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -43,7 +44,7 @@ const EditVersionWindow = ({ onClose, formData }) => {
         versionDate,
       },
     })
-    setTabState({ loading: false, fetched: false })
+    setTabState(setUnFetchedState())
     onClose()
   }, [api, onClose, setTabState, values])
 

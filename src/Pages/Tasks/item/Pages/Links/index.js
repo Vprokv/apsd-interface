@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
@@ -135,28 +135,24 @@ const AddUserOptionsFullName = (v = {}) => ({
 
 const ContentWindow = LinkWindowWrapper(PreviewContentWindow)
 
+const defaultSortQuery = {
+  key: 'linkDate',
+  direction: 'DESC',
+}
+
 const Links = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
-  const [filter, setFilterValue] = useState({})
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({
-    key: 'linkDate',
-    direction: 'DESC',
-  })
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
 
   const getNotification = useOpenNotification()
 
-  const tabItemState = useTabItem({
-    stateId: TASK_ITEM_LINK,
-  })
-  const {
-    tabState,
-    setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, loading },
-  } = tabItemState
+  const [{ sortQuery = defaultSortQuery, filter, ...tabState }, setTabState] =
+    useTabItem({
+      stateId: TASK_ITEM_LINK,
+    })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: URL_SUBSCRIPTION_EVENTS,
@@ -188,7 +184,8 @@ const Links = () => {
     }
   }, [paginationState, api, id, filter, getNotification, sortQuery])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { content = [], total = 0 } = {}, loading, reloadData }] =
+    useAutoReload(loadData, tabState, setTabState)
 
   const downLoadContent = useCallback(async () => {
     let errorString = ''
@@ -274,13 +271,13 @@ const Links = () => {
       const response = await api.post(URL_LINK_DELETE, {
         linkIds: selectState.map(({ linkId }) => linkId),
       })
-      setTabState({ loading: false, fetched: false })
+      reloadData()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, getNotification, selectState, setTabState])
+  }, [api, getNotification, reloadData, selectState])
 
   const onDoubleClick = useCallback(
     (value) => () => {
@@ -309,7 +306,10 @@ const Links = () => {
         <FilterForm
           className="mr-2"
           value={filter}
-          onInput={setFilterValue}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
           fields={fields}
           inputWrapper={EmptyInputWrapper}
         />
@@ -368,7 +368,10 @@ const Links = () => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         valueKey="id"
         loading={loading}
       />

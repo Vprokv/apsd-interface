@@ -23,6 +23,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -50,7 +51,7 @@ const CreateTitleDepartment = ({
     setOpenState(nextState)
   }, [])
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
   })
 
@@ -106,7 +107,7 @@ const CreateTitleDepartment = ({
       setSelected(null)
       getNotification(customMessagesFuncMap[response.status]())
       changeModalState(false)
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       // handleClose()
     } catch (e) {
       const { response: { status, data } = {} } = e

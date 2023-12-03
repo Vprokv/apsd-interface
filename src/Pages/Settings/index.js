@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   NavigationContainer,
   NavigationItem,
@@ -81,7 +81,10 @@ const Settings = () => {
       <div className="flex-container w-full overflow-hidden h-full">
         <NavigationContainer>{headers}</NavigationContainer>
         <TemplateTabStateContext.Provider
-          value={{ onInput: setTabs, values: overTemplateMap, tabs }}
+          value={useMemo(
+            () => ({ onInput: setTabs, values: overTemplateMap, tabs }),
+            [tabs],
+          )}
         >
           <div className="flex h-full w-full overflow-hidden">
             {routes?.length > 0 && (

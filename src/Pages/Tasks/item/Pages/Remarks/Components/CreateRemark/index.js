@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
@@ -25,10 +19,7 @@ import {
 } from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
-import Form, {
-  returnChildren,
-  WithValidationForm,
-} from '@Components/Components/Forms'
+import Form, { returnChildren } from '@Components/Components/Forms'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
@@ -42,6 +33,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 import { Validation } from '@Components/Logic/Validator'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
@@ -100,7 +92,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
     })()
   }, [api])
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
 
@@ -217,7 +209,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         ...other,
       })
       getNotification(customMessagesFuncMap[status]())
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       changeModalState(false)()
       setFilterValue(initialUserValue)
     } catch (e) {

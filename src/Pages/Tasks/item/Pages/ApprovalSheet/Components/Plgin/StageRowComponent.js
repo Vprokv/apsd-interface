@@ -19,6 +19,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const Row = styled.div`
   height: 48px;
@@ -50,7 +51,7 @@ const StageRowComponent = ({
   const api = useContext(ApiContext)
 
   const getNotification = useOpenNotification()
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
   const mySelectedChildrenIds = useMemo(
@@ -69,7 +70,7 @@ const StageRowComponent = ({
       await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
         performersIds: mySelectedChildrenIds,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))

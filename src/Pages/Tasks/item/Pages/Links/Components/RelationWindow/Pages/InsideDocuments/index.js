@@ -1,30 +1,22 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo } from 'react'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable'
-import {
-  StateContext,
-  UpdateContext,
-} from '@/Pages/Tasks/item/Pages/Links/constans'
-import { useParams } from 'react-router-dom'
+import { StateContext } from '@/Pages/Tasks/item/Pages/Links/constans'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DEFAULT_DATE_FORMAT,
   DEFAULT_DATE_FORMAT_OTHER,
   INSIDE_DOCUMENT_WINDOW,
-  PRESENT_DATE_FORMAT,
-  SEARCH_PAGE,
   TASK_ITEM_LINK,
 } from '@/contants'
 import { URL_LINK_CREATE } from '@/ApiList'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/SearchComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import log from 'tailwindcss/lib/util/log'
 import dayjs from 'dayjs'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 // todo есть дубликат этого компонента в DocumentASUD
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
@@ -48,18 +40,15 @@ const InsideDocument = () => {
   const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
 
-  const tabItemState = useTabItem({
+  const [tabItemState, setTabState] = useTabItem({
     stateId: INSIDE_DOCUMENT_WINDOW,
   })
 
-  const { setTabState: setPageTabState } = useTabItem({
+  const { selected = [], value = [] } = tabItemState
+
+  const { 1: setPageTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
-
-  const {
-    tabState: { selected = [], value = [] },
-    setTabState,
-  } = tabItemState
 
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
 
@@ -95,7 +84,7 @@ const InsideDocument = () => {
 
   const onCreate = useCallback(async () => {
     await api.post(URL_LINK_CREATE, { linkObjects })
-    setPageTabState({ loading: false, fetched: false })
+    setPageTabState(setUnFetchedState())
     close()
     updateTabState('value')([])
     updateTabState('filter')({ type: 'ddt_project_calc_type_doc' })

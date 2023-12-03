@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import ListTable from '@Components/Components/Tables/ListTable'
 import Input from '@/Components/Fields/Input'
@@ -26,6 +26,7 @@ import SelectWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWin
 import { get } from '@Components/Utils/ObjectPath'
 import { FieldValidationStateContext } from '@/Components/InputWrapperRefactor/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -42,7 +43,7 @@ const rules = {
 }
 
 const Files = (props) => {
-  const { validateForm, validationErrors, hasError } = props
+  const { validateForm, validationErrors } = props
   const userObject = useRecoilValue(userAtom)
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
@@ -57,7 +58,7 @@ const Files = (props) => {
     [files],
   )
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
 
@@ -100,7 +101,7 @@ const Files = (props) => {
           }),
         ),
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       close()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {

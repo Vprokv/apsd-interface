@@ -13,7 +13,6 @@ import {
   TemplateTabStateContext,
 } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
-import log from 'tailwindcss/lib/util/log'
 import { URL_CREATE_TEMPLATE, URL_CREATE_UPDATE } from '@/ApiList'
 import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
 import {
@@ -23,6 +22,7 @@ import {
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const UserUpdateTemplateTab = ({
   dss_name,
@@ -33,7 +33,7 @@ const UserUpdateTemplateTab = ({
 }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
   const [value, onInputUser] = useState(
     JSON.parse(dss_json).map(AddUserOptionsFullName),
   )
@@ -89,7 +89,7 @@ const UserUpdateTemplateTab = ({
         type,
         id: dsid_template,
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Шаблон обновлен успешно',

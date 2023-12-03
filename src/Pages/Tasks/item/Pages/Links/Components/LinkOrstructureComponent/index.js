@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import AddEmployee from '@/Components/Inputs/OrgStructure/UserSearchWindow'
@@ -19,10 +18,14 @@ const LinkOrgStructureComponent = (props) => {
   )
 
   return (
-    <div className='flex items-center w-full'>
-      <LoadableSelect {...props} multipleInputComponent={RenderMultipleValueSelectInput} className='mr-0' />
+    <div className="flex items-center w-full">
+      <LoadableSelect
+        {...props}
+        multipleInputComponent={RenderMultipleValueSelectInput}
+        className="mr-0"
+      />
       <>
-        <SearchButton className='ml-1' onClick={openEmployeeWindow}>
+        <SearchButton className="ml-1" onClick={openEmployeeWindow}>
           <Icon icon={searchIcon} />
         </SearchButton>
         <AddEmployee

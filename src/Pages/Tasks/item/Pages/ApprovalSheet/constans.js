@@ -15,4 +15,3 @@ export const CanAddContext = React.createContext({
 export const PermitDisableContext = React.createContext({
   permit: false,
 })
-

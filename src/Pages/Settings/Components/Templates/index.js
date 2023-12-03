@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
@@ -75,9 +74,9 @@ const columns = [
   {
     id: 'author',
     label: 'Автор',
-    component: ({ ParentValue: { author } }) => (
+    component: ({ value }) => (
       <BaseCellName
-        value={author}
+        value={value}
         className="font-size-12 h-10 flex items-center"
       />
     ),
@@ -101,6 +100,67 @@ const columns = [
   },
 ]
 
+const filterFields = [
+  {
+    id: 'type',
+    component: Select,
+    multiple: false,
+    placeholder: 'Тип шаблона',
+    valueKey: 'typeName',
+    labelKey: 'typeLabel',
+    options: [
+      {
+        typeName: 'ddt_employee_template',
+        typeLabel: 'Шаблон пользователей',
+      },
+      {
+        typeName: 'ddt_query_template',
+        typeLabel: 'Шаблон поиска',
+      },
+      {
+        typeName: 'ddt_report_template',
+        typeLabel: 'Шаблон отчета',
+      },
+    ],
+  },
+  {
+    id: 'name',
+    component: SearchInput,
+    placeholder: 'Наименование',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'note',
+    component: SearchInput,
+    placeholder: 'Примечание',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'authorId',
+    component: UserSelect,
+    multiple: false,
+    returnObjects: false,
+    placeholder: 'Выберите участников',
+  },
+  {
+    id: 'isPrivate',
+    component: CheckBox,
+    text: 'Приватные',
+  },
+]
+
 const FilterForm = styled(Form)`
   --form--elements_height: 32px;
   display: grid;
@@ -115,28 +175,31 @@ const updateTabsMap = {
   default: UserUpdateTemplateTab,
 }
 
-const Templates = (props) => {
+const baseFilter = { type: 'ddt_employee_template' }
+
+const defaultSortQuery = {
+  key: 'eventName',
+  direction: 'DESC',
+}
+
+const Templates = () => {
   const api = useContext(ApiContext)
-  const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const [
+    {
+      filter = baseFilter,
+      total = 0,
+      sortQuery = defaultSortQuery,
+      ...tabState
+    },
+    setTabState,
+  ] = useTabItem({ stateId: SETTINGS_TEMPLATES })
   const [selectState, setSelectState] = useState([])
-  const { onInput, values, tabs } = useContext(TemplateTabStateContext)
-  const [filter, setFilter] = useState({ type: 'ddt_employee_template' })
+  const { onInput, values } = useContext(TemplateTabStateContext)
   const getNotification = useOpenNotification()
-  const [sortQuery, onSort] = useState({
-    key: 'eventName',
-    direction: 'DESC',
-  })
 
   const [ActionComponent, setActionComponent] = useState(null)
   const closeAction = useCallback(() => setActionComponent(null), [])
   const navigate = useNavigate()
-
-  const {
-    // tabState: { data: { content = [], total = 0 } = {} },
-    tabState: { data: content = [], total = 0, loading },
-    tabState,
-    setTabState,
-  } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -144,67 +207,6 @@ const Templates = (props) => {
     setState: setTabState,
     defaultLimit: 10,
   })
-
-  const filterFields = [
-    {
-      id: 'type',
-      component: Select,
-      multiple: false,
-      placeholder: 'Тип шаблона',
-      valueKey: 'typeName',
-      labelKey: 'typeLabel',
-      options: [
-        {
-          typeName: 'ddt_employee_template',
-          typeLabel: 'Шаблон пользователей',
-        },
-        {
-          typeName: 'ddt_query_template',
-          typeLabel: 'Шаблон поиска',
-        },
-        {
-          typeName: 'ddt_report_template',
-          typeLabel: 'Шаблон отчета',
-        },
-      ],
-    },
-    {
-      id: 'name',
-      component: SearchInput,
-      placeholder: 'Наименование',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'note',
-      component: SearchInput,
-      placeholder: 'Примечание',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'authorId',
-      component: UserSelect,
-      multiple: false,
-      returnObjects: false,
-      placeholder: 'Выберите участников',
-    },
-    {
-      id: 'isPrivate',
-      component: CheckBox,
-      text: 'Приватные',
-    },
-  ]
 
   const loadData = useCallback(async () => {
     try {
@@ -223,6 +225,12 @@ const Templates = (props) => {
       getNotification(defaultFunctionsMap[status](data))
     }
   }, [api, filter, getNotification])
+
+  const [{ data: content = [], loading, reloadData }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
 
   const onCreate = useCallback(
     (type) => () => {
@@ -263,12 +271,12 @@ const Templates = (props) => {
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Шаблон удален успешно',
       })
-      setTabState({ loading: false, fetched: false })
+      reloadData()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter.type, getNotification, selectState, setTabState])
+  }, [api, filter.type, getNotification, selectState, reloadData])
 
   const onEdit = useCallback(() => {
     setActionComponent({
@@ -278,8 +286,6 @@ const Templates = (props) => {
     })
   }, [selectState])
 
-  useAutoReload(loadData, tabItemState)
-
   return (
     <div className="m-4 w-full">
       <div className="flex form-element-sizes-32">
@@ -287,7 +293,10 @@ const Templates = (props) => {
           fields={filterFields}
           inputWrapper={emptyWrapper}
           value={filter}
-          onInput={setFilter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <SecondaryBlueButton
@@ -326,7 +335,10 @@ const Templates = (props) => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         loading={loading}
       />
       <Pagination

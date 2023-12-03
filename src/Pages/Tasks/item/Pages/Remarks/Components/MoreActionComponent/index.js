@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import {
   ContHover,
   StyledContextMenu,
@@ -12,13 +12,13 @@ import { URL_REMARK_DELETE } from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
-import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const ThreeDotButton = styled.button`
   height: 20px;
@@ -43,17 +43,15 @@ const MoreActionComponent = (props) => {
   const {
     answerCreationDate = '',
     remarkId,
-    setRemark,
-    permits: { vault, deleteAnswer, deleteRemark, edit },
+    permits: { deleteAnswer, deleteRemark, edit },
   } = props
   const api = useContext(ApiContext)
-  const documentId = useContext(DocumentIdContext)
   const [open, setOpen] = useState(false)
   const [openEditWindow, setOpenEditWindow] = useState(false)
   const [target, setTarget] = useState({})
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
 
@@ -83,7 +81,7 @@ const MoreActionComponent = (props) => {
         getNotification(
           customMessagesFuncMap[status]('Удаление выполнено успешно'),
         )
-        setTabState({ loading: false, fetched: false })
+        setTabState(setUnFetchedState())
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))

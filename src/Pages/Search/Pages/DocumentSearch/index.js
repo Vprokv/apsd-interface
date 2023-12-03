@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
 import {
@@ -13,7 +7,6 @@ import {
   URL_EXPORT_FILE,
   URL_SEARCH_ATTRIBUTES,
   URL_SEARCH_LIST,
-  URL_TEMPLATE_LIST,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import {
@@ -45,6 +38,7 @@ import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
 import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 import SearchTemplateWindowList from '@/Pages/Search/Pages/DocumentSearch/Components/SearchTemplateWindowList'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 export const tableConfig = [
   {
@@ -192,17 +186,15 @@ const DocumentSearch = ({
   options,
 }) => {
   const api = useContext(ApiContext)
-  const [attributes, setAttributes] = useState([])
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
   const [paginationStateComp, setPaginationStateComp] = useState({})
 
-  const {
-    setTabState,
-    tabState: { renderTable = false, searchState: { total = 0 } = {} },
-  } = useTabItem({
+  const [tabState, setTabState] = useTabItem({
     stateId: SEARCH_PAGE_DOCUMENT,
   })
+
+  const { renderTable = false, searchState: { total = 0 } = {} } = tabState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,
@@ -211,11 +203,26 @@ const DocumentSearch = ({
     defaultLimit: 10,
   })
 
+  const loadData = useCallback(async () => {
+    try {
+      const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
+        type: filter.type,
+      })
+
+      return data
+    } catch (e) {
+      const { response: { status } = {} } = e
+      getNotification(defaultFunctionsMap[status]())
+    }
+  }, [api, filter.type, getNotification])
+
+  const [{ data: attributes }] = useAutoReload(loadData, tabState, setTabState)
+
   const { fields: parsedFields } = useParseConfig({
     value: filter,
     stages: searchParserStages,
     fieldsDesign: useMemo(
-      () => attributes.map(attributesAdapter),
+      () => attributes?.map(attributesAdapter),
       [attributes],
     ),
   })
@@ -254,26 +261,12 @@ const DocumentSearch = ({
     [api, documentTypeLoadFunction, options, parsedFields],
   )
 
-  const loadData = useCallback(async () => {
-    try {
-      const { data } = await api.post(URL_SEARCH_ATTRIBUTES, {
-        type: filter.type,
-      })
-
-      setAttributes(data)
-    } catch (e) {
-      const { response: { status } = {} } = e
-      getNotification(defaultFunctionsMap[status]())
-    }
-  }, [api, filter.type, getNotification])
-
   const onSearch = useCallback(async () => {
     setTabState({ renderTable: true })
     const { type, ...filters } = filter
     const { limit, offset } = paginationState
 
     try {
-      setTabState({ loading: true })
       const { data } = await api.post(
         `${URL_SEARCH_LIST}?limit=${limit}&offset=${offset}`,
         {
@@ -288,8 +281,6 @@ const DocumentSearch = ({
     } catch (e) {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
-    } finally {
-      setTabState({ loading: false })
     }
   }, [
     api,

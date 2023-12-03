@@ -34,6 +34,7 @@ import SendSystem from './Components/CheckBox/SendSystem'
 import SendEmail from './Components/CheckBox/SendEmail'
 import { useCreateSubscription } from './useCreateSubscription'
 import PropTypes from 'prop-types'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -108,8 +109,6 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
   const { id } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [filter, setFilter] = useState({})
-  const [sortQuery, onSort] = useState({})
   const [events, setEventsState] = useState([])
   const [sedo, setSedo] = useState([])
   const [email, setEmail] = useState([])
@@ -118,21 +117,18 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
 
   const { dss_first_name, dss_last_name, dss_middle_name } =
     useRecoilValue(userAtom)
-  const {
-    tabState: { data = [] },
-    setTabState,
-  } = useTabItem({
+  const [{ filter, sortQuery, ...tabState }, setTabState] = useTabItem({
     stateId: WINDOW_ADD_SUBSCRIPTION,
   })
 
-  useEffect(() => {
-    async function fetchData() {
-      const { data } = await api.post(URL_SUBSCRIPTION_EVENTS)
-      setTabState({ data })
-    }
-
-    fetchData()
-  }, [id, setTabState, api])
+  const [{ data }] = useAutoReload(
+    useCallback(async () => {
+      const { data = [] } = await api.post(URL_SUBSCRIPTION_EVENTS)
+      return data
+    }, [api]),
+    tabState,
+    setTabState,
+  )
 
   // useEffect(async () => {
   //   const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS, {
@@ -218,7 +214,10 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
             fields={filterConfig}
             inputWrapper={emptyWrapper}
             value={filter}
-            onInput={setFilter}
+            onInput={useCallback(
+              (filter) => setTabState({ filter }),
+              [setTabState],
+            )}
           />
         </div>
         <div className="flex items-center color-text-secondary ml-auto">
@@ -233,8 +232,15 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
           <ScrollBar className="pr-4 py-4">{sideBar}</ScrollBar>
         </SelectedSubscriptionContainer>
         <div className="px-4 pb-4 overflow-hidden w-full flex-container">
-          <SedoContext.Provider value={{ value: sedo, onInput: setSedo }}>
-            <EmailContext.Provider value={{ value: email, onInput: setEmail }}>
+          <SedoContext.Provider
+            value={useMemo(() => ({ value: sedo, onInput: setSedo }), [sedo])}
+          >
+            <EmailContext.Provider
+              value={useMemo(
+                () => ({ value: email, onInput: setEmail }),
+                [email],
+              )}
+            >
               <ListTable
                 value={userTable}
                 columns={columns}
@@ -243,7 +249,10 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
                 selectState={selectState}
                 onSelect={setSelectState}
                 sortQuery={sortQuery}
-                onSort={onSort}
+                onSort={useCallback(
+                  (sortQuery) => setTabState({ sortQuery }),
+                  [setTabState],
+                )}
                 valueKey="id"
               />
             </EmailContext.Provider>

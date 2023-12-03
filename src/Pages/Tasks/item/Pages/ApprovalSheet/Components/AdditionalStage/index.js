@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import Icon from '@Components/Components/Icon'
@@ -27,7 +27,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
-import log from "tailwindcss/lib/util/log";
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -196,10 +196,10 @@ const AdditionalStage = (props) => {
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Удаление доп. согласующих выполнено успешно',
       })
-      updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-        loading: false,
-        fetched: false,
-      })
+      updateCurrentTabChildrenStates(
+        [TASK_ITEM_APPROVAL_SHEET],
+        setUnFetchedState(),
+      )
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))

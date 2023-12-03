@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import Dot from '@Components/Components/Tables/ListTable/Tree/icons/Dot'
 import Icon from '@Components/Components/Icon'
 import {
   ChildrenContainer,
@@ -10,8 +9,6 @@ import {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
-import { object } from 'bfj/src/events'
-import log from 'tailwindcss/lib/util/log'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon

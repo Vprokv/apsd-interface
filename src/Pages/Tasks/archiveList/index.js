@@ -16,7 +16,7 @@ import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import {ButtonForIcon, LoadableButtonForIcon} from '@/Components/Button'
+import { LoadableButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import { API_URL } from '@/api'
@@ -137,14 +137,16 @@ const plugins = {
   },
 }
 
+const defaultSortQuery = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
+
 const ArchiveList = () => {
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
+  const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
+  useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
-  const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
   const [selectState, setSelectState] = useState([])
   const navigate = useNavigate()
   const { token } = useContext(TokenContext)
@@ -158,24 +160,8 @@ const ArchiveList = () => {
 
   const [open, setOpen] = useState(false)
   const [activeDocumentState, setActiveDocumentState] = useState({})
-  const tabItemState = useTabItem({ stateId: TASK_LIST_ARCHIVE })
-
-  const changeModalState = useCallback(
-    ({ nextState, documentState }) =>
-      () => {
-        setOpen(nextState)
-        setActiveDocumentState(documentState)
-      },
-    [],
-  )
-
-  useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
-
-  const {
-    tabState,
-    setTabState,
-    tabState: { data: { content, total = 0 } = {}, loading },
-  } = tabItemState
+  const [{ sortQuery = defaultSortQuery, ...tabState }, setTabState] =
+    useTabItem({ stateId: TASK_LIST_ARCHIVE })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST_ARCHIVE,
@@ -214,7 +200,20 @@ const ArchiveList = () => {
     }
   }, [api, filter, getNotification, paginationState, sortQuery])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { content, total = 0 } = {}, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
+
+  const changeModalState = useCallback(
+    ({ nextState, documentState }) =>
+      () => {
+        setOpen(nextState)
+        setActiveDocumentState(documentState)
+      },
+    [],
+  )
 
   const onExportToExcel = useCallback(async () => {
     const { limit, offset } = paginationState
@@ -272,7 +271,10 @@ const ArchiveList = () => {
           selectState={selectState}
           onSelect={setSelectState}
           sortQuery={sortQuery}
-          onSort={onSort}
+          onSort={useCallback(
+            (sortQuery) => setTabState({ sortQuery }),
+            [setTabState],
+          )}
           loading={loading}
         />
         <Pagination

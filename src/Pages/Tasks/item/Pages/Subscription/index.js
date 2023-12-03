@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   ApiContext,
@@ -45,6 +38,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
+import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -134,12 +128,12 @@ const customMessagesFuncMap = {
   },
 }
 
+const defaultEvents = new Map()
+
 const Subscription = () => {
   const { id, type } = useParams()
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
-  const [sortQuery, onSort] = useState({})
-  const [filter, setFilter] = useState({})
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
   const getNotification = useOpenNotification()
   const openSubscriptionWindow = useCallback(
@@ -151,17 +145,10 @@ const Subscription = () => {
     [],
   )
 
-  const {
-    tabState,
+  const [
+    { events = defaultEvents, filter, sortQuery, ...tabState },
     setTabState,
-    tabState: {
-      data: { content = [], total = 0 } = {},
-      events = new Map(),
-      loading,
-    },
-    shouldReloadDataFlag,
-    loadDataHelper,
-  } = useTabItem({
+  ] = useTabItem({
     stateId: TASK_ITEM_SUBSCRIPTION,
   })
 
@@ -186,45 +173,29 @@ const Subscription = () => {
 
   const loadDataFunction = useMemo(() => {
     const { limit, offset } = paginationState
-    return loadDataHelper(async () => {
+    return async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
         documentId: id,
-        sort:
-          Object.keys(sortQuery).length > 0
-            ? {
-                property: sortQuery.key,
-                direction: sortQuery.direction,
-              }
-            : null,
+        sort: sortQuery
+          ? {
+              property: sortQuery.key,
+              direction: sortQuery.direction,
+            }
+          : null,
         type,
         filter,
         limit,
         offset,
       })
       return data
-    })
-  }, [
-    paginationState,
-    loadDataHelper,
-    api,
-    id,
-    sortQuery.key,
-    sortQuery.direction,
-    type,
-    filter,
-  ])
-
-  const refLoadDataFunction = useRef(loadDataFunction)
-
-  useEffect(() => {
-    if (
-      shouldReloadDataFlag ||
-      loadDataFunction !== refLoadDataFunction.current
-    ) {
-      loadDataFunction()
     }
-    refLoadDataFunction.current = loadDataFunction
-  }, [loadDataFunction, shouldReloadDataFlag])
+  }, [paginationState, api, id, sortQuery, type, filter])
+
+  const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
+    loadDataFunction,
+    tabState,
+    setTabState,
+  )
 
   // todo добавить getNotification
   // бывает что при удалении одного элемента, с бэка приходит не один ответ
@@ -250,7 +221,10 @@ const Subscription = () => {
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
           value={filter}
-          onInput={setFilter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
@@ -284,7 +258,10 @@ const Subscription = () => {
           selectState={selectState}
           onSelect={setSelectState}
           sortQuery={sortQuery}
-          onSort={onSort}
+          onSort={useCallback(
+            (sortQuery) => setTabState({ sortQuery }),
+            [setTabState],
+          )}
           valueKey="id"
           loading={loading}
         />

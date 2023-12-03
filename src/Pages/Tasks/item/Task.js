@@ -69,6 +69,7 @@ import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoCom
 import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import RejectSapPrepareWindow from './Components/RejectSapPrepareWindow'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -119,11 +120,12 @@ const Task = () => {
     }
   }, [api, getNotification, id, reloadSidebarTaskCounters])
 
-  const tabItemState = useTabItem({
+  const [tabState, setTabState] = useTabItem({
     stateId: ITEM_TASK,
   })
-  const {
-    tabState: {
+
+  const [
+    {
       data: {
         previousTaskReport,
         documentActions,
@@ -133,10 +135,9 @@ const Task = () => {
         id: documentId,
       } = {},
       data,
+      reloadData,
     },
-    setTabState,
-  } = tabItemState
-
+  ] = useAutoReload(loadData, tabState, setTabState)
   const docId = useMemo(() => {
     let v = 'Документ'
     if (values) {
@@ -155,8 +156,6 @@ const Task = () => {
     setActionComponent(Comp)
   }, [])
 
-  useAutoReload(loadData, tabItemState)
-
   const refValues = useRef()
   useEffect(() => {
     refValues.current = values
@@ -167,6 +166,9 @@ const Task = () => {
 
   const TaskHandlers = useMemo(
     () => ({
+      // TODO: смержить с вероникой все дефаулт хэндлеры
+      // TODO разобраться с набором действий  по завершению экшена
+      // TODO потенциально все открытия документов  - промисы резолвящие экшен
       defaultHandler: ({ caption, name }) => ({
         key: name,
         caption,
@@ -178,17 +180,13 @@ const Task = () => {
             })
             closeCurrenTab()
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
-            updateTabStateUpdaterByName([TASK_LIST], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
+            updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
             reloadSidebarTaskCounters()
-            // setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -244,17 +242,13 @@ const Task = () => {
             })
             closeCurrenTab()
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
-            updateTabStateUpdaterByName([TASK_LIST], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
+            updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
             reloadSidebarTaskCounters()
-            // setTabState({ data: await loadData() })
           } catch (e) {
             const { response: { status, data } = {} } = e
             if (status === 412 && data === 'finish_without_remarks') {
@@ -305,9 +299,9 @@ const Task = () => {
       closeCurrenTab,
       getNotification,
       id,
+      reloadData,
       reloadSidebarTaskCounters,
       setComponent,
-      setTabState,
       updateCurrentTabChildrenStates,
       updateTabStateUpdaterByName,
     ],
@@ -325,11 +319,11 @@ const Task = () => {
               id: documentId,
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
             reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -345,11 +339,11 @@ const Task = () => {
               documentId,
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
             reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -369,11 +363,11 @@ const Task = () => {
             )
             setMessage(data)
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
             reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -450,7 +444,7 @@ const Task = () => {
               signal: 'apsd_reject_cancel',
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
+            reloadData()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -480,11 +474,11 @@ const Task = () => {
               signal: name,
             })
             getNotification(customMessagesFuncMap[status]())
-            setTabState({ loading: false, fetched: false })
-            updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-              loading: false,
-              fetched: false,
-            })
+            reloadData()
+            updateCurrentTabChildrenStates(
+              [TASK_ITEM_APPROVAL_SHEET],
+              setUnFetchedState(),
+            )
             reloadSidebarTaskCounters()
           } catch (e) {
             const { response: { status, data } = {} } = e
@@ -499,9 +493,9 @@ const Task = () => {
       documentId,
       getNotification,
       id,
+      reloadData,
       reloadSidebarTaskCounters,
       setComponent,
-      setTabState,
       type,
       updateCurrentTabChildrenStates,
     ],

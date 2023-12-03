@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import LoadableSelect from '@/Components/Inputs/Select'
 import ValidationConsumer from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/ValidationConsumer'

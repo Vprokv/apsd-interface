@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import Button, {
   LoadableBaseButton,
   SecondaryBlueButton,
@@ -32,6 +26,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -50,7 +45,7 @@ const CreateHandoutsWindow = () => {
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_HANDOUTS,
   })
 
@@ -144,7 +139,7 @@ const CreateHandoutsWindow = () => {
   const onSave = useCallback(async () => {
     try {
       const response = await api.post(URL_HANDOUTS_CREATE, createDate)
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       changeModalState(false)()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {

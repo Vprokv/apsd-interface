@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
@@ -43,6 +43,38 @@ const plugins = {
     returnObjects: true,
   },
 }
+
+const filterFields = [
+  {
+    id: 'name',
+    component: SearchInput,
+    placeholder: 'Наименование',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'note',
+    component: SearchInput,
+    placeholder: 'Примечание',
+    children: (
+      <Icon
+        icon={searchIcon}
+        size={10}
+        className="color-text-secondary mr-2.5"
+      />
+    ),
+  },
+  {
+    id: 'isPrivate',
+    component: CheckBox,
+    text: 'Личные шаблоны',
+  },
+]
 
 const FilterForm = styled(Form)`
   --form--elements_height: 32px;
@@ -95,6 +127,11 @@ const columns = [
   },
 ]
 
+const baseSortQuery = {
+  key: 'type',
+  direction: 'DESC',
+}
+
 const SearchTemplateWindowList = ({
   open,
   changeModalState,
@@ -105,21 +142,10 @@ const SearchTemplateWindowList = ({
   reportId,
 }) => {
   const api = useContext(ApiContext)
-  const tabItemState = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const [{ filter, sortQuery = baseSortQuery, ...tabState }, setTabState] =
+    useTabItem({ stateId: SETTINGS_TEMPLATES })
   const [selectState, setSelectState] = useState({})
-  const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
-
-  const {
-    // tabState: { data: { content = [], total = 0 } = {} },
-    tabState: { data: content, total = 0, loading },
-    tabState,
-    setTabState,
-  } = tabItemState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -128,58 +154,25 @@ const SearchTemplateWindowList = ({
     defaultLimit: 10,
   })
 
-  const filterFields = [
-    {
-      id: 'name',
-      component: SearchInput,
-      placeholder: 'Наименование',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'note',
-      component: SearchInput,
-      placeholder: 'Примечание',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-    {
-      id: 'isPrivate',
-      component: CheckBox,
-      text: 'Личные шаблоны',
-    },
-  ]
-
   const loadData = useCallback(async () => {
     try {
       const { data } = await searchFunc(api)({
         ...filter,
         type,
-        sort: [
-          {
-            key: 'type',
-            direction: 'DESC',
-          },
-        ],
+        sort: [sortQuery],
       })(reportId)
       return data
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, filter, getNotification, reportId, searchFunc, type])
+  }, [api, filter, getNotification, reportId, searchFunc, sortQuery, type])
 
-  useAutoReload(loadData, tabItemState)
+  const [{ data: content, total = 0, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
+  )
 
   const onCreate = useCallback(() => {
     const jsonData = JSON.parse(selectState.dss_json) // TODO разобраться как хранит бэк
@@ -201,7 +194,10 @@ const SearchTemplateWindowList = ({
               fields={filterFields}
               inputWrapper={emptyWrapper}
               value={filter}
-              onInput={setFilter}
+              onInput={useCallback(
+                (filter) => setTabState({ filter }),
+                [setTabState],
+              )}
             />
           </div>
           <ListTable
@@ -213,7 +209,10 @@ const SearchTemplateWindowList = ({
             selectState={selectState}
             onSelect={setSelectState}
             sortQuery={sortQuery}
-            onSort={onSort}
+            onSort={useCallback(
+              (sortQuery) => setTabState({ sortQuery }),
+              [setTabState],
+            )}
             loading={loading}
           />
           <Pagination
@@ -233,7 +232,7 @@ const SearchTemplateWindowList = ({
               disabled={selectState && Object.keys(selectState).length < 1}
               rightFunc={onCreate}
             />
-            {/*{`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
+            {/* {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}*/}
           </Pagination>
         </div>
       </WindowContainer>

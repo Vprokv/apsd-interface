@@ -46,7 +46,6 @@ import usePagination from '../../../components_ocean/Logic/usePagination'
 import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
 import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import PropTypes from 'prop-types'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
@@ -203,15 +202,21 @@ export const taskColumns = [
   },
 ]
 
+const defaultSortQuery = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
+
+const defaultFilter = { readTask: false }
+
 function StorageList() {
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { search } = useLocation()
-  const tabItemState = useTabItem({ stateId: TASK_STORAGE_LIST })
+  const [
+    { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
+    setTabState,
+  ] = useTabItem({ stateId: TASK_STORAGE_LIST })
   const [filterWindowOpen, setFilterWindow] = useState(false)
   const changeFilterWindowState = useCallback(
     (state) => () => setFilterWindow(state),
@@ -219,11 +224,6 @@ function StorageList() {
   )
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
-  const {
-    tabState,
-    setTabState,
-    tabState: { data: { content = [], total = 0 } = {}, loading },
-  } = tabItemState
   const { token } = useContext(TokenContext)
   const { parentName, name, id } = useParams()
 
@@ -234,7 +234,6 @@ function StorageList() {
     defaultLimit: 10,
   })
 
-  const [filter, setFilter] = useState({ readTask: false })
   const [selectState, setSelectState] = useState([])
   const getNotification = useOpenNotification()
   const handleDoubleClick = useCallback(
@@ -266,15 +265,12 @@ function StorageList() {
             {
               ...memoData,
               filter,
-              sort:
-                Object.keys(sortQuery).length > 0
-                  ? [
-                      {
-                        property: sortQuery.key,
-                        direction: sortQuery.direction,
-                      },
-                    ]
-                  : [],
+              sort: [
+                {
+                  property: sortQuery.key,
+                  direction: sortQuery.direction,
+                },
+              ],
               limit,
               offset,
             },
@@ -290,6 +286,12 @@ function StorageList() {
         }
       },
     [paginationState, api, memoData, filter, sortQuery, getNotification],
+  )
+
+  const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
+    loadData,
+    tabState,
+    setTabState,
   )
 
   const onExportToExcel = useCallback(async () => {
@@ -347,7 +349,6 @@ function StorageList() {
     sortQuery.key,
     token,
   ])
-  useAutoReload(loadData, tabItemState)
 
   const resizeSlider = useCallback(
     () => setWidth(ref?.current?.offsetWidth),
@@ -444,6 +445,11 @@ function StorageList() {
     [api, filter],
   )
 
+  const setFilter = useCallback(
+    (filter) => setTabState({ filter }),
+    [setTabState],
+  )
+
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
       <div ref={ref} className="flex items-center ">
@@ -495,7 +501,10 @@ function StorageList() {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         loading={loading}
       />
       <Pagination
@@ -512,8 +521,6 @@ function StorageList() {
   )
 }
 
-StorageList.propTypes = {
-  loadFunctionRest: PropTypes.string.isRequired,
-}
+StorageList.propTypes = {}
 
 export default StorageList

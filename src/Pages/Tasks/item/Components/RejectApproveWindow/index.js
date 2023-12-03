@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -16,16 +9,13 @@ import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useNavigate, useParams } from 'react-router-dom'
-import { WithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { Validation } from '@Components/Logic/Validator'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -48,20 +38,19 @@ const RejectApproveWindow = ({
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
 
-  const loadData = useCallback(async () => {
-    try {
-      const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
-        documentId,
-        stageTypes,
-      })
-      setOptions(data)
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [api, documentId, getNotification, stageTypes])
-
-  useEffect(() => loadData(), [loadData])
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
+          documentId,
+        })
+        setOptions(data)
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
+    })()
+  }, [api, documentId, getNotification])
 
   const initialValue = useMemo(
     () => options?.find(({ status }) => status === 'on_work'),
@@ -106,10 +95,7 @@ const RejectApproveWindow = ({
       })
       onClose()
       reloadSidebarTaskCounters()
-      updateTabStateUpdaterByName([TASK_LIST], {
-        loading: false,
-        fetched: false,
-      })
+      updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       closeCurrenTab()
 
       getNotification(defaultFunctionsMap[status]())

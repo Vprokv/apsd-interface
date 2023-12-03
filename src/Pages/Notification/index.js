@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, NOTIFICATION, TASK_LIST } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
@@ -127,25 +126,22 @@ const columns = [
   },
 ]
 
+const baseSortQuery = {
+  key: 'creationDate',
+  direction: 'DESC',
+}
+
 const Notification = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const [selectState, setSelectState] = useState([])
-  const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
-  const [sortQuery, onSort] = useState({
-    key: 'creationDate',
-    direction: 'DESC',
-  })
   const loadNotification = useContext(LoadNotificationContext)
 
-  const tabItemState = useTabItem({ stateId: NOTIFICATION })
-
-  const {
-    tabState: { data: { content = [], total = 0 } = {} },
-    tabState,
-    setTabState,
-  } = tabItemState
+  const [{ filter, sortQuery = baseSortQuery, ...tabState }, setTabState] =
+    useTabItem({
+      stateId: NOTIFICATION,
+    })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST,
@@ -153,18 +149,6 @@ const Notification = () => {
     setState: setTabState,
     defaultLimit: 10,
   })
-
-  const handleDoubleClick = useCallback(
-    ({ documentId, documentType, notificationId }) =>
-      async () => {
-        openTabOrCreateNewTab(`/document/${documentId}/${documentType}`)
-        await api.post(URL_SUBSCRIPTION_NOTIFICATION_WATCH, {
-          notificationIds: [notificationId],
-        })
-        setTabState({ loading: false, fetched: false })
-      },
-    [api, openTabOrCreateNewTab, setTabState],
-  )
 
   const loadData = useCallback(async () => {
     try {
@@ -199,52 +183,69 @@ const Notification = () => {
     sortQuery.key,
   ])
 
-  useSetTabName(useCallback(() => 'Уведомления', []))
-  useAutoReload(loadData, tabItemState)
+  const [{ data: { content = [], total = 0 } = {}, reloadData }] =
+    useAutoReload(loadData, tabState, setTabState)
 
-  const filterFields = [
-    {
-      id: 'unread',
-      component: CheckBox,
-      text: 'Непросмотренные',
-    },
-    {
-      id: 'documentType',
-      component: LoadableSelect,
-      multiple: true,
-      placeholder: 'Тип документа',
-      valueKey: 'typeName',
-      labelKey: 'typeLabel',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_TYPE_CONFIG, { query })
-        return data
+  const handleDoubleClick = useCallback(
+    ({ documentId, documentType, notificationId }) =>
+      async () => {
+        openTabOrCreateNewTab(`/document/${documentId}/${documentType}`)
+        await api.post(URL_SUBSCRIPTION_NOTIFICATION_WATCH, {
+          notificationIds: [notificationId],
+        })
+        reloadData()
       },
-    },
-    {
-      id: 'eventName',
-      component: LoadableSelect,
-      multiple: true,
-      placeholder: 'Вид уведомления',
-      valueKey: 'name',
-      labelKey: 'label',
-      loadFunction: async (query) => {
-        const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, { query })
-        return data
+    [api, openTabOrCreateNewTab, reloadData],
+  )
+
+  useSetTabName(useCallback(() => 'Уведомления', []))
+
+  const filterFields = useMemo(
+    () => [
+      {
+        id: 'unread',
+        component: CheckBox,
+        text: 'Непросмотренные',
       },
-    },
-    {
-      id: 'query',
-      component: SearchInput,
-      placeholder: 'Поиск',
-      children: (
-        <Icon
-          icon={searchIcon}
-          size={10}
-          className="color-text-secondary mr-2.5"
-        />
-      ),
-    },
-  ]
+      {
+        id: 'documentType',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Тип документа',
+        valueKey: 'typeName',
+        labelKey: 'typeLabel',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_TYPE_CONFIG, { query })
+          return data
+        },
+      },
+      {
+        id: 'eventName',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Вид уведомления',
+        valueKey: 'name',
+        labelKey: 'label',
+        loadFunction: async (query) => {
+          const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, { query })
+          return data
+        },
+      },
+      {
+        id: 'query',
+        component: SearchInput,
+        placeholder: 'Поиск',
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+    ],
+    [api],
+  )
 
   const onDelete = useCallback(async () => {
     try {
@@ -253,7 +254,7 @@ const Notification = () => {
       })
       await loadNotification()
 
-      setTabState({ loading: false, fetched: false })
+      reloadData()
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
         message: 'Уведомления удалены успешно',
@@ -262,7 +263,7 @@ const Notification = () => {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, getNotification, loadNotification, selectState, setTabState])
+  }, [api, getNotification, loadNotification, selectState, reloadData])
 
   const onDeleteALL = useCallback(async () => {
     try {
@@ -286,7 +287,10 @@ const Notification = () => {
           fields={filterFields}
           inputWrapper={emptyWrapper}
           value={filter}
-          onInput={setFilter}
+          onInput={useCallback(
+            (filter) => setTabState({ filter }),
+            [setTabState],
+          )}
         />
         <LoadableSecondaryBlueButton
           disabled={!selectState.length}
@@ -317,7 +321,10 @@ const Notification = () => {
         selectState={selectState}
         onSelect={setSelectState}
         sortQuery={sortQuery}
-        onSort={onSort}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         returnOb={true}
       />
       <Pagination

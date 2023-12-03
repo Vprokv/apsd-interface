@@ -134,7 +134,10 @@ const DocumentSearch = ({
   const { fields: parsedFields } = useParseConfig({
     value: filter,
     stages: searchParserStages,
-    fieldsDesign: useMemo(() => attributes.map(attributesAdapter), [attributes]),
+    fieldsDesign: useMemo(
+      () => attributes.map(attributesAdapter),
+      [attributes],
+    ),
   })
 
   const fields = useMemo(

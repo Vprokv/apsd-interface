@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { NavigationHeaderIcon, SideBarContainer } from './style'
 import Button from '@/Components/Button'
@@ -15,10 +15,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import { TASK_VIEWED_LIST_PATH } from '@/routePaths'
 import { useRecoilState } from 'recoil'
 import { notificationSidebarAtom, tasksAtom } from '@/Pages/Main/store'
-import {
-  URL_SUBSCRIPTION_USER_TOTAL,
-  URL_TASK_STATISTIC,
-} from '@/ApiList'
+import { URL_SUBSCRIPTION_USER_TOTAL, URL_TASK_STATISTIC } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import {
   NOTIFICATION_TYPE_ERROR,

@@ -29,6 +29,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import styled from 'styled-components'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   min-width: 40%;
@@ -69,7 +70,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
   const context = useContext(ContainerContext)
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_CONTENT,
   })
 
@@ -89,7 +90,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
           versionDate,
         },
       })
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       onClose()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import Input from '@/Components/Fields/Input'
 import { MiniModalWindow } from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
 import { WithValidationForm } from '@Components/Components/Forms'
@@ -15,6 +15,7 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import PropTypes from 'prop-types'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -58,7 +59,7 @@ const EditLink = ({ addEditLinkState: { onCancel, onCreate, document } }) => {
   const [value, onInput] = useState({})
   const getNotification = useOpenNotification()
 
-  const { setTabState } = useTabItem({
+  const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
   })
 
@@ -89,7 +90,7 @@ const EditLink = ({ addEditLinkState: { onCancel, onCreate, document } }) => {
   const handleClick = useCallback(async () => {
     try {
       const response = await api.post(URL_TITLE_CONTAIN_SAVE, value)
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
       handleClose()
     } catch (e) {

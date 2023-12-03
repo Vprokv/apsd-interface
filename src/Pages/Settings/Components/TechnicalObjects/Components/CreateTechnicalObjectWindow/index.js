@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   CreateTechnicalObjectsWindowComponent,
@@ -7,7 +7,6 @@ import {
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryGreyButton,
-  SecondaryOverBlueButton,
 } from '@/Components/Button'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -21,6 +20,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const rules = {
   name: [{ name: VALIDATION_RULE_REQUIRED }],
@@ -45,7 +45,7 @@ const CreateTechnicalObjectWindow = ({ onClose, ...props }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
-  const { setTabState } = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
+  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
 
   const filterFormConfig = useMemo(
     () => [
@@ -144,7 +144,7 @@ const CreateTechnicalObjectWindow = ({ onClose, ...props }) => {
     try {
       const response = await api.post(URL_TECHNICAL_OBJECTS_CREATE, filter)
       getNotification(customMessagesFuncMap[response.status]())
-      setTabState({ loading: false, fetched: false })
+      setTabState(setUnFetchedState())
 
       onClose()
     } catch (e) {
@@ -180,6 +180,8 @@ const CreateTechnicalObjectWindow = ({ onClose, ...props }) => {
   )
 }
 
-CreateTechnicalObjectWindow.propTypes = {}
+CreateTechnicalObjectWindow.propTypes = {
+  onClose: PropTypes.func.isRequired,
+}
 
 export default CreateTechnicalObjectWindow

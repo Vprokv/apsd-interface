@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo } from 'react'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import {
   StateContext,
@@ -11,6 +10,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_LINK_CREATE } from '@/ApiList'
 import CreateRelationTable from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/CreateRelationTable'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/ASUD/Components/SearchComponent'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 // todo есть дубликат этого компонента в InsideDocument
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
@@ -29,24 +29,20 @@ const Buttons = ({ value, onSelect, clear, onCreate, close }) =>
     />
   )
 
-const DocumentASUD = (props) => {
+const DocumentASUD = () => {
   const api = useContext(ApiContext)
   const { id: parentId } = useParams()
   const close = useContext(StateContext)
-  const update = useContext(UpdateContext)
 
-  const tabItemState = useTabItem({
+  const [tabState, setTabState] = useTabItem({
     stateId: ASUD_DOCUMENT_WINDOW,
   })
 
-  const { setTabState: setPageTabState } = useTabItem({
+  const { selected = [], value = [] } = tabState
+
+  const { 1: setPageTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
-
-  const {
-    tabState: { selected = [], value = [] },
-    setTabState,
-  } = tabItemState
 
   const updateTabState = useCallback(
     (id) => (state) => {
@@ -77,7 +73,7 @@ const DocumentASUD = (props) => {
 
   const onCreate = useCallback(async () => {
     await api.post(URL_LINK_CREATE, { linkObjects })
-    setPageTabState({ loading: false, fetched: false })
+    setPageTabState(setUnFetchedState())
     close()
   }, [api, close, linkObjects, setPageTabState])
 
@@ -92,7 +88,7 @@ const DocumentASUD = (props) => {
       <div className="flex flex-col overflow-hidden h-full">
         {!value.length && (
           <SearchComponent
-            tabItemState={tabItemState}
+            tabItemState={tabState}
             updateTabState={updateTabState}
           />
         )}

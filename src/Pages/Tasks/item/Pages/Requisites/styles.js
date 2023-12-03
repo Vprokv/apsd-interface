@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import Validation from '@Components/Logic/Validator/V'
-import { repeat } from 'lodash'
 
 export const RequisitesForm = styled(Validation(Form))`
   width: 100%;

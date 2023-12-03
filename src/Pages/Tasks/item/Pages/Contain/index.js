@@ -5,7 +5,6 @@ import {
   URL_ENTITY_LIST,
   URL_EXPORT,
   URL_EXPORT_FILE,
-  URL_STORAGE_DOCUMENT,
   URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_DELETE,
 } from '@/ApiList'
@@ -55,12 +54,10 @@ import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 import ReloadIcon from '@/Icons/ReloadIcon'
-import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import { useRecoilState } from 'recoil'
-import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import ResultCell from '@/Pages/Tasks/item/Pages/Contain/Components/ResultCell'
+import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -148,8 +145,6 @@ const Contain = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { id } = useParams()
-  const [filterValue, setFilterValue] = useState({})
-  const [sortQuery, onSort] = useState({})
   const [selectState, setSelectState] = useState([])
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
@@ -159,19 +154,21 @@ const Contain = () => {
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
-  const {
-    tabState: { data: { values: { dss_code = '' } = {} } = {} },
-  } = useTabItem({
+  const [documentState, setDocumentState] = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
 
-  const tabItemState = useTabItem({
+  const [{ data: { values: { dss_code = '' } = {} } = {} }] = useReadDataState(
+    documentState,
+    setDocumentState,
+  )
+
+  const [
+    { defaultOpen, treePluginState, sortQuery, filter, ...tabState },
+    setTabState,
+  ] = useTabItem({
     stateId: TASK_ITEM_STRUCTURE,
   })
-  const {
-    setTabState,
-    tabState: { data, loading, defaultOpen, treePluginState },
-  } = tabItemState
 
   const loadData = useCallback(
     ({ source = {}, controller = {} } = {}) =>
@@ -198,6 +195,13 @@ const Contain = () => {
     [api, getNotification, id],
   )
 
+  const [{ data, loading, reloadData }, updateData] = useAutoReload(
+    // TODO: сделать нормальный bypass контроллера и параметров. Вызов без параметров. Но с контроллером
+    useCallback((controller) => loadData(controller)(), [loadData]),
+    tabState,
+    setTabState,
+  )
+
   const deleteData = useCallback(async () => {
     try {
       const response = await Promise.all(
@@ -216,36 +220,34 @@ const Contain = () => {
 
         return acc
       }
-      setTabState({
-        data: data.reduce(removeDeletedDocs, []),
-      })
+      updateData(data.reduce(removeDeletedDocs, []))
       setSelectState([])
       getNotification(customMessagesFuncMap[response[0].status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, data, getNotification, selectState, setTabState])
+  }, [api, data, getNotification, selectState, updateData])
 
   const addDepartment = useCallback(async () => {
     setAddDepartmentState({
       onCreate: async () => {
         // TODO: сделать нормальный bypass контроллера и параметров. Вызов без параметров.  Вызов без контроллером
         const newData = await loadData()()
-        setTabState({
-          data: newData.map((nD) => {
+        updateData(
+          newData.map((nD) => {
             const oldRow = data.find((r) => r.id === nD.id)
 
             return oldRow ? { ...oldRow, ...nD } : nD
           }),
-        })
+        )
         setAddDepartmentState({})
       },
       onCancel: () => {
         setAddDepartmentState({})
       },
     })
-  }, [data, loadData, setTabState])
+  }, [data, loadData, updateData])
 
   const containActions = useMemo(
     () => ({
@@ -310,12 +312,6 @@ const Contain = () => {
       selectState,
     }),
     [loadData, selectState],
-  )
-
-  useAutoReload(
-    // TODO: сделать нормальный bypass контроллера и параметров. Вызов без параметров. Но с контроллером
-    useCallback((controller) => loadData(controller)(), [loadData]),
-    tabItemState,
   )
 
   const updateTreePluginState = useCallback(
@@ -392,10 +388,6 @@ const Contain = () => {
     })
   }, [setTabState])
 
-  const onReload = useCallback(() => {
-    setTabState({ loading: false, fetched: false })
-  }, [setTabState])
-
   const onExportToExcel = useCallback(async () => {
     const {
       data: { id: dataId },
@@ -425,8 +417,11 @@ const Contain = () => {
         <div className="flex items-center form-element-sizes-32 w-full mb-4">
           <FilterForm
             className="mr-2 "
-            value={filterValue}
-            onInput={setFilterValue}
+            value={filter}
+            onInput={useCallback(
+              (filter) => setTabState({ filter }),
+              [setTabState],
+            )}
             fields={fields}
             inputWrapper={EmptyInputWrapper}
           />
@@ -473,7 +468,7 @@ const Contain = () => {
                 </LoadableButtonForIcon>
               </Tips>
               <Tips text="Обновить">
-                <LoadableButtonForIcon className="ml-2" onClick={onReload}>
+                <LoadableButtonForIcon className="ml-2" onClick={reloadData}>
                   <Icon icon={ReloadIcon} />
                 </LoadableButtonForIcon>
               </Tips>
@@ -513,7 +508,10 @@ const Contain = () => {
             selectState={selectState}
             onSelect={setSelectState}
             sortQuery={sortQuery}
-            onSort={onSort}
+            onSort={useCallback(
+              (sortQuery) => setTabState({ sortQuery }),
+              [setTabState],
+            )}
             value={data}
             onInput={onTableUpdate}
             loading={loading}

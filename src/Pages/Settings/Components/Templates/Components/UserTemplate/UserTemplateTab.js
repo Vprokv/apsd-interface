@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useState } from 'react'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
   SecondaryGreyButton,
@@ -11,7 +10,18 @@ import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserT
 import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
 import { URL_CREATE_TEMPLATE } from '@/ApiList'
 
-const UserTemplateTab = (props) => {
+const createFunc = (api) => (parseResult) => (type) => async (json) => {
+  const data = await api.post(URL_CREATE_TEMPLATE, {
+    template: {
+      ...parseResult,
+      json,
+    },
+    type,
+  })
+  return data
+}
+
+const UserTemplateTab = () => {
   const [value, onInputUser] = useState([])
   const { ['*']: type } = useParams()
   const { onInput } = useContext(TemplateTabStateContext)
@@ -60,16 +70,7 @@ const UserTemplateTab = (props) => {
         changeModalState={changeModalState}
         value={value}
         type={type}
-        createFunc={(api) => (parseResult) => (type) => async (json) => {
-          const data = await api.post(URL_CREATE_TEMPLATE, {
-            template: {
-              ...parseResult,
-              json,
-            },
-            type,
-          })
-          return data
-        }}
+        createFunc={createFunc}
       />
     </div>
   )
