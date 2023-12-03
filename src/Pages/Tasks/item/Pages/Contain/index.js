@@ -519,6 +519,7 @@ const Contain = () => {
             loading={loading}
             treePluginState={treePluginState}
             updateTreePluginState={updateTreePluginState}
+            // onTableInput
           />
         </ShowContentByTypeButtonContext.Provider>
         <ContentWindow

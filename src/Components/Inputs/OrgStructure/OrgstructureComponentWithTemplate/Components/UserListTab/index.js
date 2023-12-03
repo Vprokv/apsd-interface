@@ -92,18 +92,13 @@ const UserListTab = (props) => {
     setSelectState,
   } = props
 
-  console.log(baseFilter, 'baseFilter')
-
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter })
-  console.log(defaultFilter, 'baseFilter')
   const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
   const getNotification = useOpenNotification()
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const filterRef = useRef(filter)
-
-  console.log(filter, 'filter')
 
   useEffect(
     () =>

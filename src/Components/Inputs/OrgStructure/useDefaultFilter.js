@@ -44,8 +44,6 @@ const useDefaultFilter = ({ baseFilter }) => {
     organization: [{ r_object_id: organizationId = '', branches }] = [{}],
   } = useRecoilValue(userAtom)
 
-  console.log(baseFilter, 'baseFilter')
-
   const defaultParams = useMemo(() => {
     return {
       organizationId,
