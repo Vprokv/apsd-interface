@@ -29,7 +29,7 @@ import {
 } from '@/ApiList'
 import UserCard from './Components/UserCard'
 import closeIcon from '../../../Icons/closeIcon'
-import LoadableSelect from '../Select'
+import LoadableSelect, { AutoLoadableSelect } from '../Select'
 import Pagination from '../../Pagination'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
@@ -126,20 +126,20 @@ export const OrgStructureWindow = (props) => {
       (!filter.branchId && filter.branchId?.length < 2) ||
       filterRef.current.branchId !== filter.branchId
     ) {
-      const { departmentId, ...item } = { ...filter }
-      setFilter({ ...item })
+      // eslint-disable-next-line no-unused-vars
+      setFilter(({ departmentId, ...item }) => item)
     }
-  }, [filter.branchId])
+  }, [filter.branchId, setFilter])
 
   useEffect(() => {
     if (
-      !filter.organization ||
-      filterRef.current.organization !== filter.organization
+      !filter.organizationId ||
+      filterRef.current.organizationId !== filter.organizationId
     ) {
-      const { branchId, ...item } = { ...filter }
-      setFilter({ ...item })
+      // eslint-disable-next-line no-unused-vars
+      setFilter(({ branchId, ...item }) => item)
     }
-  }, [filter.organization, filterRef])
+  }, [filter.organization, filter.organizationId, filterRef, setFilter])
 
   const fields = useMemo(
     () => [
@@ -156,10 +156,13 @@ export const OrgStructureWindow = (props) => {
         ),
       },
       {
-        id: 'organization',
-        component: LoadableSelect,
+        id: 'organizationId',
+        component: AutoLoadableSelect,
         valueKey: 'r_object_id',
-        options: [...(filterOptions?.organization || []), organizationOptions],
+        options: [
+          ...(filterOptions?.organizationId || []),
+          organizationOptions,
+        ],
         labelKey: 'dss_name',
         placeholder: 'Организация',
         loadFunction: async (query) => {
@@ -172,14 +175,14 @@ export const OrgStructureWindow = (props) => {
       {
         id: 'branchId',
         placeholder: 'Филиал',
-        component: LoadableSelect,
-        disabled: !filter.organization,
+        component: AutoLoadableSelect,
+        disabled: !filter.organizationId,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         options: [...(filterOptions?.branchId || []), ...branches],
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
-            id: filter.organization,
+            id: filter.organizationId,
             query,
           })
           return data
@@ -187,7 +190,7 @@ export const OrgStructureWindow = (props) => {
       },
       {
         id: 'departmentId',
-        component: LoadableSelect,
+        component: AutoLoadableSelect,
         disabled: !filter.branchId,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
@@ -201,7 +204,15 @@ export const OrgStructureWindow = (props) => {
         },
       },
     ],
-    [api, branches, filter.branchId, filter.organization, organizationOptions],
+    [
+      api,
+      branches,
+      filter.branchId,
+      filter.organizationId,
+      filterOptions?.branchId,
+      filterOptions?.organizationId,
+      organizationOptions,
+    ],
   )
 
   useEffect(() => loadFunction(), [loadFunction])

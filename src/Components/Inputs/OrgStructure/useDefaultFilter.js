@@ -2,7 +2,7 @@ import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { useMemo } from 'react'
 
-const ORGANIZATION_FIELD = 'organization'
+const ORGANIZATION_FIELD = 'organizationId'
 const BRANCH_FIELD = 'branchId'
 const SOURCE = 'source'
 // const DEPARTMENT_FIELD = 'organization'
@@ -14,8 +14,7 @@ const filterPrepMap = {
     acc[key] = value ?? defaultParam
     return acc
   },
-  [BRANCH_FIELD]: ({ value, acc, defaultParams, key, defaultParam }) => {
-    // if (acc.organization !== defaultParams.organization) {
+  [BRANCH_FIELD]: ({ value, acc, key, defaultParam }) => {
     if (value) {
       acc[key] = value
       // }
@@ -40,17 +39,19 @@ const useCustomFilterFunc = {
   [BRANCH_FIELD]: true,
 }
 
-const useDefaultFilter = ({ baseFilter}) => {
+const useDefaultFilter = ({ baseFilter }) => {
   const {
-    organization: [{ r_object_id: organization = '', branches }] = [{}],
+    organization: [{ r_object_id: organizationId = '', branches }] = [{}],
   } = useRecoilValue(userAtom)
+
+  console.log(baseFilter, 'baseFilter')
 
   const defaultParams = useMemo(() => {
     return {
-      organization,
+      organizationId,
       branchId: branches[0]?.r_object_id,
     }
-  }, [branches, organization])
+  }, [branches, organizationId])
 
   return useMemo(
     () =>

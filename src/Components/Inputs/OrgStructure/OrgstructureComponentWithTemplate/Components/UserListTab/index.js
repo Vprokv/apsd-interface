@@ -77,7 +77,7 @@ const emptyWrapper = ({ children }) => children
 const UserListTab = (props) => {
   const {
     onClose,
-    baseFilter,
+    filter: baseFilter,
     onInput,
     options,
     setModalWindowOptions,
@@ -92,13 +92,18 @@ const UserListTab = (props) => {
     setSelectState,
   } = props
 
+  console.log(baseFilter, 'baseFilter')
+
   const api = useContext(ApiContext)
   const defaultFilter = useDefaultFilter({ baseFilter })
+  console.log(defaultFilter, 'baseFilter')
   const [filter, setFilter] = useState(defaultFilter)
   const [sortQuery, onSort] = useState({})
   const getNotification = useOpenNotification()
   const [paginationStateComp, setPaginationStateComp] = useState({})
   const filterRef = useRef(filter)
+
+  console.log(filter, 'filter')
 
   useEffect(
     () =>
@@ -199,13 +204,13 @@ const UserListTab = (props) => {
 
   useEffect(() => {
     if (
-      !filter.organization ||
-      filterRef.current.organization !== filter.organization
+      !filter.organizationId ||
+      filterRef.current.organizationId !== filter.organizationId
     ) {
       // eslint-disable-next-line no-unused-vars
       setFilter(({ branchId, ...item }) => item)
     }
-  }, [filter.organization, filterRef])
+  }, [filter.organization, filter.organizationId, filterRef])
 
   const fields = useMemo(
     () => [
@@ -222,7 +227,7 @@ const UserListTab = (props) => {
         ),
       },
       {
-        id: 'organization',
+        id: 'organizationId',
         component: AutoLoadableSelect,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
@@ -238,12 +243,12 @@ const UserListTab = (props) => {
         id: 'branchId',
         placeholder: 'Филиал',
         component: AutoLoadableSelect,
-        disabled: !filter.organization,
+        disabled: !filter.organizationId,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ORGSTURCTURE_BRANCHES, {
-            id: filter.organization,
+            id: filter.organizationId,
             query,
           })
           return data
@@ -265,7 +270,7 @@ const UserListTab = (props) => {
         },
       },
     ],
-    [api, filter.branchId, filter.organization],
+    [api, filter.branchId, filter.organizationId],
   )
 
   const handleClick = useCallback(() => {
