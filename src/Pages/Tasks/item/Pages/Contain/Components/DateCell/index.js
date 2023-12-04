@@ -1,13 +1,31 @@
-import React, { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import calendarIcon from '@/Icons/calendarIcon'
 import clockIcon from '@/Icons/clockIcon'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
+import { ThemedCalendar } from '@/Components/Inputs/DatePicker/styles'
+import ContextMenu from '@Components/Components/ContextMenu'
 
-const DateCell = ({ real, plan }) => {
+const DateCell = ({ real, plan, onInput, editable, ParentValue }) => {
+  const [renderCalendar, setRenderStatus] = useState(false)
   const hot = useMemo(() => real > plan, [plan, real])
+
+  const toggleRenderContextMenu = useCallback(
+    (state) => () => {
+      setRenderStatus(state)
+    },
+    [],
+  )
+
+  const updateDate = useCallback(
+    (value, id) => {
+      onInput(value, id, ParentValue)
+      toggleRenderContextMenu(false)()
+    },
+    [ParentValue, onInput, toggleRenderContextMenu],
+  )
 
   const shortReal = useMemo(
     () => real && dayjs(real, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
@@ -21,10 +39,21 @@ const DateCell = ({ real, plan }) => {
 
   return (
     <div>
-      <div className="flex mb-2 font-size-12">
-        <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
-        {shortPlan}
-      </div>
+      {editable ? (
+        <button
+          type="button"
+          onClick={toggleRenderContextMenu(true)}
+          className="flex mb-2 font-size-12"
+        >
+          <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
+          {shortPlan}
+        </button>
+      ) : (
+        <div className="flex mb-2 font-size-12">
+          <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
+          {shortPlan}
+        </div>
+      )}
       <div className="flex font-size-12">
         <Icon
           icon={clockIcon}
@@ -32,6 +61,16 @@ const DateCell = ({ real, plan }) => {
         />
         {shortReal}
       </div>
+      {renderCalendar && (
+        <ContextMenu width={300} onClose={toggleRenderContextMenu(false)}>
+          <ThemedCalendar
+            value={shortPlan}
+            id="agreementDatePlanned"
+            dateFormat={DEFAULT_DATE_FORMAT}
+            onInput={updateDate}
+          />
+        </ContextMenu>
+      )}
     </div>
   )
 }
@@ -39,6 +78,9 @@ const DateCell = ({ real, plan }) => {
 DateCell.propTypes = {
   real: PropTypes.string,
   plan: PropTypes.string,
+  onInput: PropTypes.func.isRequired,
+  editable: PropTypes.bool,
+  ParentValue: PropTypes.object,
 }
 
 export default DateCell

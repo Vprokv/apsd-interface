@@ -7,6 +7,7 @@ import {
   URL_EXPORT_FILE,
   URL_TITLE_CONTAIN,
   URL_TITLE_CONTAIN_DELETE,
+  URL_TITLE_CONTAIN_UPDATE,
 } from '@/ApiList'
 import { TASK_TYPE } from '@/Pages/Tasks/list/constants'
 import {
@@ -38,7 +39,6 @@ import {
 } from '@/Pages/Tasks/item/Pages/Contain/constants'
 import CreateVolume from './Components/CreateVolume'
 import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
-import DateCell from './Components/DateCell'
 import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
@@ -48,7 +48,6 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import TitleNameComponent from '@/Pages/Tasks/item/Pages/Contain/Components/TitleNameComponent'
 import Tips from '@/Components/Tips'
 import CreateLink from '@/Pages/Tasks/item/Pages/Contain/Components/CreateLink'
 import { ContainWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
@@ -56,8 +55,8 @@ import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 import ReloadIcon from '@/Icons/ReloadIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import ResultCell from '@/Pages/Tasks/item/Pages/Contain/Components/ResultCell'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
+import { columns } from './configs'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -68,76 +67,6 @@ const customMessagesFuncMap = {
     }
   },
 }
-
-const columns = [
-  {
-    id: 'name',
-    label: 'Наименование',
-    className: 'flex font-size-12',
-    component: TitleNameComponent,
-    sizes: 600,
-  },
-  {
-    id: 'linkName',
-    label: 'Связь',
-    className: 'flex font-size-12',
-  },
-  {
-    id: 'author',
-    label: 'Автор',
-    className: 'flex font-size-12',
-  },
-  {
-    id: 'regNumber',
-    label: 'Шифр',
-    className: 'flex font-size-12',
-  },
-  {
-    id: 'status',
-    label: 'Состояние раздела/тома',
-    className: 'flex font-size-12',
-    sizes: 190,
-  },
-  {
-    id: 'result',
-    label: 'Результат',
-    component: ResultCell,
-    className: 'flex font-size-12',
-  },
-  {
-    id: 'tomStage',
-    label: 'Стадия',
-    className: 'flex font-size-12',
-  },
-  {
-    id: 'Даты разраб.(план/факт)',
-    label: 'Даты разраб.(план/факт)',
-    sizes: 200,
-    component: ({ ParentValue: { plannedDevDate, actualDevDate } }) => (
-      <DateCell plan={plannedDevDate} real={actualDevDate} />
-    ),
-  },
-  {
-    id: 'Дата согл.(план/факт)',
-    label: 'Дата сог.(план/факт)',
-    sizes: 200,
-    component: ({ ParentValue: { plannedApproveDate, actualApproveDate } }) => (
-      <DateCell plan={plannedApproveDate} real={actualApproveDate} />
-    ),
-  },
-  {
-    id: 'delayDevelopmentDay',
-    label: 'Просрочка проектировщика',
-    className: 'flex font-size-12',
-    sizes: 180,
-  },
-  {
-    id: 'delayApprovalDay',
-    label: 'Просрочка согласования',
-    className: 'flex font-size-12',
-    sizes: 180,
-  },
-]
 
 const ContentWindow = ContainWindowWrapper(PreviewContentWindow)
 
@@ -200,6 +129,17 @@ const Contain = () => {
     useCallback((controller) => loadData(controller)(), [loadData]),
     tabState,
     setTabState,
+  )
+
+  const updateTomeDevelopmentDateAndStage = useCallback(
+    async (value, id, { tomId }) => {
+      await api.post(URL_TITLE_CONTAIN_UPDATE, {
+        [id]: value,
+        tomId,
+      })
+      await reloadData()
+    },
+    [api, reloadData],
   )
 
   const deleteData = useCallback(async () => {
@@ -504,7 +444,10 @@ const Contain = () => {
               }
             }, [defaultOpen])}
             headerCellComponent={HeaderCell}
-            columns={columns}
+            columns={useMemo(
+              () => columns({ updateTomeDevelopmentDateAndStage }),
+              [updateTomeDevelopmentDateAndStage],
+            )}
             selectState={selectState}
             onSelect={setSelectState}
             sortQuery={sortQuery}
