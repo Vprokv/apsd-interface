@@ -40,10 +40,16 @@ const customMessagesFuncMap = {
 }
 
 const AdditionalStage = (props) => {
-  const { approvers, permit: { ['delete']: deleteStage, addApprover } = {} } =
-    props.node.options
+  const { approvers } = props.node.options
 
-  const { parent } = props
+  const {
+    parent,
+    parent: {
+      additionalStage: {
+        permit: { ['delete']: deleteStage, addApprover } = {},
+      } = {},
+    } = {},
+  } = props
 
   const [isDisplayed, setShow] = useState(true)
   const [selected, onInput] = useState({ additional: false })
@@ -230,7 +236,7 @@ const AdditionalStage = (props) => {
               <CustomButtonForIcon
                 className="color-blue-1"
                 onClick={onAddAdditionalApprovers}
-                disabled={!(selected?.additional && addApprover)}
+                disabled={!addApprover}
               >
                 <Icon icon={AddUserIcon} />
               </CustomButtonForIcon>
@@ -266,7 +272,7 @@ const AdditionalStage = (props) => {
               <CustomButtonForIcon
                 className="color-blue-1"
                 onClick={onDeleteAllApprovers}
-                disabled={!(selected?.additional && deleteStage)}
+                disabled={!deleteStage}
               >
                 <Icon icon={deleteIcon} />
               </CustomButtonForIcon>
