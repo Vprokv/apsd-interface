@@ -20,6 +20,7 @@ import { TASK_LIST } from '@/contants'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 import Tips from '@/Components/Tips'
 import CounterContainer from '@/Components/Counter'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task, collapsedState }) => {
   const { tabs } = useContext(CurrentTabContext)
@@ -31,10 +32,7 @@ const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task, collapsedState }) => {
       const tab = tabs.findIndex(({ pathname }) => pathname === path)
       if (tab >= 0) {
         onChangeActiveTab(tab)
-        updateTabStateUpdaterByName([TASK_LIST], {
-          loading: false,
-          fetched: false,
-        })
+        updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       } else {
         onOpenNewTab(path)
       }

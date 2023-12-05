@@ -107,10 +107,7 @@ const AdditionalStage = (props) => {
           type: NOTIFICATION_TYPE_SUCCESS,
           message: 'Удаление доп. согласующего выполнено успешно',
         })
-        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-          loading: false,
-          fetched: false,
-        })
+        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], setUnFetchedState())
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
@@ -135,10 +132,7 @@ const AdditionalStage = (props) => {
           type: NOTIFICATION_TYPE_SUCCESS,
           message: 'Рассылка выполнена успешно',
         })
-        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-          loading: false,
-          fetched: false,
-        })
+        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], setUnFetchedState())
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
@@ -170,10 +164,7 @@ const AdditionalStage = (props) => {
           type: NOTIFICATION_TYPE_SUCCESS,
           message: 'Отзыв выполнен успешно',
         })
-        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], {
-          loading: false,
-          fetched: false,
-        })
+        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], setUnFetchedState())
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
