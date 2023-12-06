@@ -46,7 +46,7 @@ export const columns = ({ updateTomeDevelopmentDateAndStage }) => [
     label: 'Стадия',
     className: 'flex font-size-12',
     component: (props) => {
-      const Component = useCheckIsTomeEditable(props)
+      const Component = useCheckIsTomeEditable(props.ParentValue)
         ? EditStageColumn
         : BaseCell
       return (

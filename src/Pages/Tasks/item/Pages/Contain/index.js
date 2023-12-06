@@ -133,13 +133,22 @@ const Contain = () => {
 
   const updateTomeDevelopmentDateAndStage = useCallback(
     async (value, id, { tomId }) => {
-      await api.post(URL_TITLE_CONTAIN_UPDATE, {
-        [id]: value,
-        tomId,
-      })
-      await reloadData()
+      try {
+        await api.post(URL_TITLE_CONTAIN_UPDATE, {
+          [id]: value,
+          tomId,
+        })
+        getNotification({
+          type: NOTIFICATION_TYPE_SUCCESS,
+          message: 'Том обновлен успешно',
+        })
+        await reloadData()
+      } catch (e) {
+        const { response: { status = 0, data = '' } = {} } = e
+        getNotification(customMessagesFuncMap[status](data))
+      }
     },
-    [api, reloadData],
+    [api, getNotification, reloadData],
   )
 
   const deleteData = useCallback(async () => {

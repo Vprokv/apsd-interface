@@ -4,7 +4,11 @@ import calendarIcon from '@/Icons/calendarIcon'
 import clockIcon from '@/Icons/clockIcon'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
-import { DEFAULT_DATE_FORMAT, PRESENT_DATE_FORMAT } from '@/contants'
+import {
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  DEFAULT_DATE_FORMAT,
+  PRESENT_DATE_FORMAT,
+} from '@/contants'
 import { ThemedCalendar } from '@/Components/Inputs/DatePicker/styles'
 import ContextMenu from '@Components/Components/ContextMenu'
 
@@ -66,7 +70,7 @@ const DateCell = ({ real, plan, onInput, editable, ParentValue }) => {
           <ThemedCalendar
             value={shortPlan}
             id="agreementDatePlanned"
-            dateFormat={DEFAULT_DATE_FORMAT}
+            dateFormat={DATE_FORMAT_DD_MM_YYYY_HH_mm_ss}
             onInput={updateDate}
           />
         </ContextMenu>
