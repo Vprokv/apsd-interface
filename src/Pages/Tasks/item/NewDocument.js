@@ -99,12 +99,12 @@ export const NewTaskItem = ({ classificationId, type }) => {
               type,
             })
             getNotification(customMessagesFuncMap[status]())
-            if (initialState.parentTabName) {
+            if (initialState?.parentTabName) {
               remoteTabUpdater(initialState.parentTabName, setUnFetchedState())
             }
             navigate(`/document/${id}/${type}`)
           } catch (e) {
-            const { response: { status, data } = {} } = e
+            const { response: { status = 0, data = '' } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
             if (status === 412) {
               const { 1: responseError } = data.split(' - ')
