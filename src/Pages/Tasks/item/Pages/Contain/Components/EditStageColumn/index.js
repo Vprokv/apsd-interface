@@ -16,18 +16,25 @@ const EditStageColumn = ({ className, value, onInput, ParentValue }) => {
             type: 'ddt_dict_tom_stage',
             query,
           })
-          return data
+
+          const newData = data.map(({ dss_name, ...props }) => ({
+            dssName: dss_name,
+            ...props,
+          }))
+
+          return newData
         },
         [api],
       )}
-      valueKey="dss_name"
-      labelKey="dss_name"
+      valueKey="dssName"
+      labelKey="dssName"
       value={useMemo(() => (value ? { dssName: value } : undefined), [value])} // из api приходит строчка label
       returnObjects
       onInput={useCallback(
         (value, id) => onInput(value.r_object_id, id, ParentValue), // на бэк отправляем Id-шку
         [ParentValue, onInput],
       )}
+      options={useMemo(() => [{ dssName: value }], [value])}
     />
   )
 }
