@@ -132,7 +132,8 @@ const Contain = () => {
   )
 
   const updateTomeDevelopmentDateAndStage = useCallback(
-    async (value, id, { tomId }) => {
+    async (value, id, { tomId, ...other }) => {
+      console.log(111, 'other')
       try {
         await api.post(URL_TITLE_CONTAIN_UPDATE, {
           [id]: value,

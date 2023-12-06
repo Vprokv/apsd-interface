@@ -25,7 +25,13 @@ const DateCell = ({ real, plan, onInput, editable, ParentValue }) => {
 
   const updateDate = useCallback(
     (value, id) => {
-      onInput(value, id, ParentValue)
+      const day = dayjs(value, PRESENT_DATE_FORMAT).format(
+        DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+      )
+      console.log(day, 'day')
+
+      onInput(day, id, ParentValue)
+      console.log(2222)
       toggleRenderContextMenu(false)()
     },
     [ParentValue, onInput, toggleRenderContextMenu],
@@ -70,7 +76,7 @@ const DateCell = ({ real, plan, onInput, editable, ParentValue }) => {
           <ThemedCalendar
             value={shortPlan}
             id="agreementDatePlanned"
-            dateFormat={DATE_FORMAT_DD_MM_YYYY_HH_mm_ss}
+            dateFormat={PRESENT_DATE_FORMAT}
             onInput={updateDate}
           />
         </ContextMenu>

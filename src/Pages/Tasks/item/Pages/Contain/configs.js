@@ -62,24 +62,28 @@ export const columns = ({ updateTomeDevelopmentDateAndStage }) => [
       const {
         ParentValue: { plannedDevDate, actualDevDate },
       } = props
-      return (
-        <DateCell
-          {...props}
-          plan={plannedDevDate}
-          real={actualDevDate}
-          editable={useCheckIsTomeEditable(props.ParentValue)}
-          onInput={updateTomeDevelopmentDateAndStage}
-        />
-      )
+      return <DateCell {...props} plan={plannedDevDate} real={actualDevDate} />
     },
   },
   {
     id: 'Дата согл.(план/факт)',
     label: 'Дата сог.(план/факт)',
     sizes: 200,
-    component: ({ ParentValue: { plannedApproveDate, actualApproveDate } }) => (
-      <DateCell plan={plannedApproveDate} real={actualApproveDate} />
-    ),
+    component: (props) => {
+      const {
+        ParentValue: { plannedApproveDate, actualApproveDate },
+      } = props
+
+      return (
+        <DateCell
+          {...props}
+          plan={plannedApproveDate}
+          real={actualApproveDate}
+          editable={useCheckIsTomeEditable(props.ParentValue)}
+          onInput={updateTomeDevelopmentDateAndStage}
+        />
+      )
+    },
   },
   {
     id: 'delayDevelopmentDay',
