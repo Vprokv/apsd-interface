@@ -59,6 +59,8 @@ import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import AppointedExecutor from '@/Pages/Tasks/list/Components/AppointedExecutor'
 import axios from 'axios'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -68,6 +70,11 @@ const plugins = {
     driver: FlatSelect,
     component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,
     valueKey: 'id',
+  },
+  movePlugin: {
+    id: TASK_LIST,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
