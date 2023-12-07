@@ -11,15 +11,22 @@ import * as routePath from './routePaths'
 import createAxiosInstance, { API_URL } from './api'
 import Main from './Pages/Main'
 import {
+  URL_COLUMN_SETTINGS_GET,
   URL_KERBEROS_LOGIN,
   URL_LOGIN,
   URL_USER_CHANGE_PASSWORD,
   URL_USER_OBJECT,
 } from './ApiList'
-import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
+import useTokenStorage, {
+  userAtom,
+} from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import {CREATE_PASSWORD_PAGE_PATH, TASK_DEPUTY_LIST_PATH, TASK_STORAGE_TITLE_LIST_PATH} from './routePaths'
+import {
+  CREATE_PASSWORD_PAGE_PATH,
+  TASK_DEPUTY_LIST_PATH,
+  TASK_STORAGE_TITLE_LIST_PATH,
+} from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'
@@ -28,7 +35,10 @@ import ViewedTask from '@/Pages/Tasks/viewed'
 import Settings from '@/Pages/Settings'
 import Notification from '@/Pages/Notification'
 import StorageList from '@/Pages/Tasks/storegeList'
-import DeputyList from "@/Pages/Tasks/DeputyList";
+import DeputyList from '@/Pages/Tasks/DeputyList'
+import { useRecoilState } from 'recoil'
+import { columnSettingsCache } from '@Components/Components/Tables/Plugins/MovePlugin/constans'
+import { apiRecoilCache } from '@Components/constants'
 
 // Апи на получения токена базовое и не требует
 const authorizationRequest = async (data) => {
@@ -46,6 +56,9 @@ function App() {
     () => createAxiosInstance(axiosInstanceParams),
     [axiosInstanceParams],
   )
+  const [columnSettingsState, setColumnSettingsState] =
+    useRecoilState(columnSettingsCache)
+  const [, setApiRecoilState] = useRecoilState(apiRecoilCache)
 
   const userObjectRequest = useCallback(async () => {
     try {
@@ -95,6 +108,24 @@ function App() {
       setLogin('')
     },
     [apiInstance, login, loginRequest, token],
+  )
+
+  const getColumnSettingsRequest = useCallback(async () => {
+    if (token) {
+      const { data } = await apiInstance.post(URL_COLUMN_SETTINGS_GET, {
+        token,
+      })
+      console.log(data, 'data')
+      setColumnSettingsState(data)
+      console.log(33)
+      console.log(columnSettingsState, 'columnSettingsState')
+    }
+  }, [apiInstance, columnSettingsState, setColumnSettingsState, token])
+
+  useEffect(() => getColumnSettingsRequest, [getColumnSettingsRequest])
+  useEffect(
+    () => setApiRecoilState(apiInstance),
+    [apiInstance, setApiRecoilState],
   )
 
   useEffect(() => {

@@ -9,6 +9,8 @@ export const URL_SYSTEM_META = '/settings.json'
 export const URL_REVISION_APSD = '/apsd/revision'
 export const URL_REVISION_CHAT = '/ts/revision'
 export const URL_REVISION_SEDO = '/sedo/revision'
+export const URL_COLUMN_SETTINGS_GET = '/sedo/pref/get'
+export const URL_COLUMN_SETTINGS_UPDATE = '/sedo/pref/create_or_update'
 
 // TASK
 export const URL_TASK_LIST = '/sedo/task/list'
