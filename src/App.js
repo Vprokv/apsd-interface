@@ -58,7 +58,7 @@ function App() {
   )
   const [columnSettingsState, setColumnSettingsState] =
     useRecoilState(columnSettingsCache)
-  const [, setApiRecoilState] = useRecoilState(apiRecoilCache)
+  const [apiInstanceState, setApiRecoilState] = useRecoilState(apiRecoilCache)
 
   const userObjectRequest = useCallback(async () => {
     try {
@@ -115,16 +115,18 @@ function App() {
       const { data } = await apiInstance.post(URL_COLUMN_SETTINGS_GET, {
         token,
       })
-      console.log(data, 'data')
-      setColumnSettingsState(data)
-      console.log(33)
-      console.log(columnSettingsState, 'columnSettingsState')
-    }
-  }, [apiInstance, columnSettingsState, setColumnSettingsState, token])
+      const mapData = data.reduce((acc, { prefKey, prefValue }) => {
+        acc[prefKey] = JSON.parse(prefValue)
+        return acc
+      }, {})
 
-  useEffect(() => getColumnSettingsRequest, [getColumnSettingsRequest])
+      setColumnSettingsState(mapData)
+    }
+  }, [apiInstance, setColumnSettingsState, token])
+
+  useEffect(() => getColumnSettingsRequest(), [getColumnSettingsRequest])
   useEffect(
-    () => setApiRecoilState(apiInstance),
+    () => apiInstance && setApiRecoilState(() => apiInstance),
     [apiInstance, setApiRecoilState],
   )
 
