@@ -37,15 +37,6 @@ const rules = {
 
 function Login({ loginRequest }) {
   const [state, setState] = useState({})
-  const getNotification = useOpenNotification()
-
-  useEffect(() => {
-    getNotification({
-      type: NOTIFICATION_TYPE_ERROR,
-      message: 'Система АПСД (и ЛКП) работает в тестовом режиме',
-      gap: 0.1,
-    })
-  }, [getNotification])
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">
