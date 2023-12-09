@@ -71,11 +71,11 @@ const plugins = {
     component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,
     valueKey: 'id',
   },
-  // movePlugin: {
-  //   id: TASK_LIST,
-  //   TableHeaderComponent: Header,
-  //   driver: useBackendColumnSettingsState,
-  // },
+  movePlugin: {
+    id: TASK_LIST,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
 }
 
 const columnMap = [
