@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import colorFromString from '@Components/Utils/colorFromString'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { SetAnswerStateContext } from '@/Pages/Tasks/item/Pages/Remarks/constans'
+import { useRecoilValue } from 'recoil'
+import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 
 const UserCard = ({ fio = '', position, avatar } = {}) => {
   const bg = useMemo(() => {
@@ -44,6 +46,37 @@ const UserComponent = ({
   },
 }) => {
   const onOpenRemarkWindow = useContext(SetAnswerStateContext)
+  const {
+    r_object_id,
+    dss_user_name,
+    dss_last_name,
+    dss_first_name,
+    dss_middle_name,
+    department_name,
+    position_name,
+  } = useRecoilValue(userAtom)
+
+  const member = useMemo(
+    () => ({
+      firstName: dss_first_name,
+      lastName: dss_last_name,
+      middleName: dss_middle_name,
+      position: position_name,
+      department: department_name,
+      emplId: r_object_id,
+      fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
+      userName: dss_user_name,
+    }),
+    [
+      department_name,
+      dss_first_name,
+      dss_last_name,
+      dss_middle_name,
+      dss_user_name,
+      position_name,
+      r_object_id,
+    ],
+  )
 
   return itsRemark ? (
     <UserCard
@@ -58,7 +91,7 @@ const UserComponent = ({
   ) : (
     <SecondaryBlueButton
       disabled={!createAnswer}
-      onClick={() => onOpenRemarkWindow(props)}
+      onClick={() => onOpenRemarkWindow({ ...props, member })}
     >
       Ответить
     </SecondaryBlueButton>

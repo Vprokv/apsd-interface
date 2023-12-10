@@ -61,54 +61,17 @@ const customMessagesFuncMap = {
 }
 
 const CreateAnswer = ({
-  remarkText,
-  remarkId,
   permits: { editAuthor } = {},
   setSelected,
+  ...filter
 }) => {
+  const { member, remarkId } = filter
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const getNotification = useOpenNotification()
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
-
-  const {
-    r_object_id,
-    dss_user_name,
-    dss_last_name,
-    dss_first_name,
-    dss_middle_name,
-    department_name,
-    position_name,
-  } = useRecoilValue(userAtom)
-
-  const initialUserValue = useMemo(() => {
-    return {
-      remarkText,
-      member: {
-        firstName: dss_first_name,
-        lastName: dss_last_name,
-        middleName: dss_middle_name,
-        position: position_name,
-        department: department_name,
-        emplId: r_object_id,
-        fullDescription: `${dss_last_name} ${dss_first_name},${dss_middle_name}, ${position_name}, ${department_name}`,
-        userName: dss_user_name,
-      },
-    }
-  }, [
-    department_name,
-    dss_first_name,
-    dss_last_name,
-    dss_middle_name,
-    dss_user_name,
-    position_name,
-    r_object_id,
-    remarkText,
-  ])
-
-  const [filter, setFilterValue] = useState(initialUserValue)
 
   const fields = useMemo(
     () => [
@@ -125,7 +88,6 @@ const CreateAnswer = ({
         disabled: !editAuthor,
         returnOption: true,
         returnObjects: true,
-        options: [initialUserValue.member],
         component: UserSelect,
       },
       {
@@ -163,13 +125,12 @@ const CreateAnswer = ({
         InputUiContext: NdtLinkWrapper,
       },
     ],
-    [api, editAuthor, initialUserValue],
+    [api, editAuthor],
   )
 
   const onClose = useCallback(() => {
-    setSelected(undefined)
-    setFilterValue(initialUserValue)
-  }, [initialUserValue, setSelected])
+    setSelected()
+  }, [setSelected])
 
   const onSave = useCallback(async () => {
     try {
@@ -186,28 +147,18 @@ const CreateAnswer = ({
       getNotification(customMessagesFuncMap[status]())
       setTabState(setUnFetchedState())
       setSelected(undefined)
-      setFilterValue(initialUserValue)
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [
-    filter,
-    api,
-    id,
-    remarkId,
-    getNotification,
-    setTabState,
-    setSelected,
-    initialUserValue,
-  ])
+  }, [filter, api, id, remarkId, getNotification, setTabState, setSelected])
 
   return (
     <div>
       <StandardSizeModalWindow
         title="Добавить ответ на замечание"
-        open={remarkText}
-        onClose={() => setSelected(undefined)}
+        open={member}
+        onClose={() => setSelected()}
       >
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4 h-full grow">
@@ -215,7 +166,7 @@ const CreateAnswer = ({
               <Validation
                 fields={fields}
                 value={filter}
-                onInput={setFilterValue}
+                onInput={setSelected}
                 rules={rules}
                 onSubmit={onSave}
                 validators={remarkValidator}
