@@ -28,6 +28,7 @@ import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import DeleteApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DeleteAdditionalState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -97,6 +98,14 @@ const AdditionalStage = (props) => {
     [],
   )
 
+  const onDeleteDeleteApprovalSheet = useCallback(
+    () =>
+      setActionComponent({
+        Component: DeleteApprovalSheet,
+      }),
+    [],
+  )
+
   const onDeleteApprover = useCallback(async () => {
     if (selected?.permit?.deleteApprover) {
       try {
@@ -107,7 +116,10 @@ const AdditionalStage = (props) => {
           type: NOTIFICATION_TYPE_SUCCESS,
           message: 'Удаление доп. согласующего выполнено успешно',
         })
-        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], setUnFetchedState())
+        updateCurrentTabChildrenStates(
+          [TASK_ITEM_APPROVAL_SHEET],
+          setUnFetchedState(),
+        )
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
@@ -132,7 +144,10 @@ const AdditionalStage = (props) => {
           type: NOTIFICATION_TYPE_SUCCESS,
           message: 'Рассылка выполнена успешно',
         })
-        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], setUnFetchedState())
+        updateCurrentTabChildrenStates(
+          [TASK_ITEM_APPROVAL_SHEET],
+          setUnFetchedState(),
+        )
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
@@ -164,7 +179,10 @@ const AdditionalStage = (props) => {
           type: NOTIFICATION_TYPE_SUCCESS,
           message: 'Отзыв выполнен успешно',
         })
-        updateCurrentTabChildrenStates([TASK_ITEM_APPROVAL_SHEET], setUnFetchedState())
+        updateCurrentTabChildrenStates(
+          [TASK_ITEM_APPROVAL_SHEET],
+          setUnFetchedState(),
+        )
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(customMessagesFuncMap[status](data))
@@ -183,25 +201,6 @@ const AdditionalStage = (props) => {
     selected,
     updateCurrentTabChildrenStates,
   ])
-
-  const onDeleteAllApprovers = useCallback(async () => {
-    try {
-      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
-        approvers: approvers?.map(({ id }) => id),
-      })
-      getNotification({
-        type: NOTIFICATION_TYPE_SUCCESS,
-        message: 'Удаление доп. согласующих выполнено успешно',
-      })
-      updateCurrentTabChildrenStates(
-        [TASK_ITEM_APPROVAL_SHEET],
-        setUnFetchedState(),
-      )
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(customMessagesFuncMap[status](data))
-    }
-  }, [api, approvers, getNotification, updateCurrentTabChildrenStates])
 
   return (
     !!approvers?.length && (
@@ -262,7 +261,7 @@ const AdditionalStage = (props) => {
             <Tips text="Удалить этап доп. согласования">
               <CustomButtonForIcon
                 className="color-blue-1"
-                onClick={onDeleteAllApprovers}
+                onClick={onDeleteDeleteApprovalSheet}
                 disabled={!deleteStage}
               >
                 <Icon icon={deleteIcon} />
