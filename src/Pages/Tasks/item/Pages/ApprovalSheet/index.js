@@ -5,14 +5,14 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_APPROVAL_SHEET, URL_BUSINESS_PERMIT } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Icon from '@Components/Components/Icon'
-import { ButtonForIcon } from '@/Components/Button'
+import Button, { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
 import Tree from '@Components/Components/Tree'
 import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin'
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
-import CreateApprovalSheetWindow from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
+import CreateApprovalSheetWindow, { CustomSizeModalWindow } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext, DocumentTypeContext } from '../../constants'
 import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
@@ -46,6 +46,7 @@ const childrenKeyMap = {
 
 const ApprovalSheet = () => {
   const { type } = useParams()
+  const [typeForCreateApprovalSheetWindow, setType] = useState('')
   const api = useContext(ApiContext)
   const [permit, setPermit] = useState(false)
   const [toggleNavigationData, setToggleNavigationData] = useState({})
@@ -122,6 +123,13 @@ const ApprovalSheet = () => {
     [setTabState],
   )
 
+  const setTypeForCreateApprovalSheetWindow = useCallback(
+    (type) => () => {
+      setType(type)
+    },
+    [],
+  )
+
   const openAllStages = useCallback(() => {
     for (let key in toggleNavigationData) {
       setToggleNavigationData(({ [key]: prevAmount, ...prevState }) => ({
@@ -189,7 +197,19 @@ const ApprovalSheet = () => {
                   >
                     {name}
                   </div>
-                  {canAdd && <CreateApprovalSheetWindow stageType={type} />}
+                  {canAdd && (
+                    <div className="flex items-center ml-auto ">
+                      <Button
+                        disabled={!permit}
+                        onClick={setTypeForCreateApprovalSheetWindow(type)}
+                        className={`${
+                          !permit ? 'color-text-secondary' : 'color-blue-1'
+                        }`}
+                      >
+                        Добавить этап
+                      </Button>
+                    </div>
+                  )}
                 </LevelStage>
                 {toggleNavigationData[type] && (
                   <Tree
@@ -211,6 +231,16 @@ const ApprovalSheet = () => {
             ))}
           </ScrollBar>
         )}
+        <CustomSizeModalWindow
+          title="Добавить этап"
+          open={typeForCreateApprovalSheetWindow}
+          onClose={setTypeForCreateApprovalSheetWindow('')}
+        >
+          <CreateApprovalSheetWindow
+            stageType={type}
+            onClose={setTypeForCreateApprovalSheetWindow('')}
+          />
+        </CustomSizeModalWindow>
       </div>
     </PermitDisableContext.Provider>
   )
