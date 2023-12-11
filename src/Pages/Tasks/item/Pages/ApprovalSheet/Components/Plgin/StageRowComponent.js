@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import AddUserWindow from '../AddUserWindow/AddUserWindow'
 import DeleteUserIcon from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/icons/DeleteUserIcon'
 import EditStageWindow from '../EditStageWindow'
-import PopUp from '../PopUp'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import dayjs from 'dayjs'
 import {
@@ -20,6 +19,7 @@ import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import DeleteApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DeleteApprovalSheet'
 
 const Row = styled.div`
   height: 48px;
@@ -128,7 +128,7 @@ const StageRowComponent = ({
               <EditStageWindow {...options} />
             </>
           )}
-          {deletable && <PopUp node={options} />}
+          {deletable && <DeleteApprovalSheet node={options} />}
         </div>
       </div>
     </Row>

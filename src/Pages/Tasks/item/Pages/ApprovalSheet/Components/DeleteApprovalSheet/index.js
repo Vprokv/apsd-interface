@@ -21,12 +21,12 @@ const customMessagesFuncMap = {
   200: () => {
     return {
       type: NOTIFICATION_TYPE_SUCCESS,
-      message: 'Этап добавлен успешно',
+      message: 'Этап удален успешно',
     }
   },
 }
 
-const PopUp = ({ node }) => {
+const DeleteApprovalSheet = ({ node }) => {
   const { id } = node
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
@@ -91,4 +91,4 @@ const PopUp = ({ node }) => {
   )
 }
 
-export default PopUp
+export default DeleteApprovalSheet

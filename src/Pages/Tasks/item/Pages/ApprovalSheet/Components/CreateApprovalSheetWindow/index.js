@@ -6,12 +6,11 @@ import {
   useRef,
   useState,
 } from 'react'
-import Button from '@/Components/Button'
+import PropTypes from 'prop-types'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { CustomSizeModalWindow } from './styles'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
-import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -32,6 +31,7 @@ import { WithValidationForm } from '@Components/Components/Forms'
 import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 
+export { CustomSizeModalWindow }
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
   200: () => {
@@ -44,15 +44,13 @@ const customMessagesFuncMap = {
 
 const NAME = 'Указать наименование этапа вручную'
 
-const CreateApprovalSheetWindow = ({ stageType }) => {
+const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
-  const [open, setOpenState] = useState(false)
   const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
-  const permit = useContext(PermitDisableContext)
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -97,13 +95,6 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
     }
     ref.current = filterValue.name
   }, [filterValue, typicalStage])
-
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenState(nextState)
-    },
-    [],
-  )
 
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
@@ -189,76 +180,51 @@ const CreateApprovalSheetWindow = ({ stageType }) => {
     try {
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
       setTabState(SetUnFetchedState())
-      changeModalState(false)()
+      onClose()
       setFilterValue(initialFilterState)
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [
-    api,
-    stage,
-    setTabState,
-    changeModalState,
-    initialFilterState,
-    getNotification,
-  ])
-
-  const onClose = useCallback(() => {
-    setFilterValue(initialFilterState)
-    changeModalState(false)()
-  }, [changeModalState, initialFilterState])
+  }, [api, stage, setTabState, onClose, initialFilterState, getNotification])
 
   return (
-    <div className="flex items-center ml-auto ">
-      <Button
-        disabled={permit}
-        onClick={changeModalState(true)}
-        className={`${permit ? 'color-text-secondary' : 'color-blue-1'}`}
-      >
-        Добавить этап
-      </Button>
-      <CustomSizeModalWindow
-        title="Добавить этап"
-        open={open}
-        onClose={changeModalState(false)}
-      >
-        <div className="flex flex-col overflow-hidden h-full grow">
-          <ScrollBar>
-            <div className="flex py-4">
-              <WithValidationForm
-                className="form-element-sizes-40 w-full "
-                fields={fields}
-                value={filterValue}
-                onInput={setFilterValue}
-                inputWrapper={InputWrapper}
-                rules={rules}
-                onSubmit={onSave}
-              >
-                <div className="mt-2 font-size-12">
-                  Контрольный срок согласования для томов ПД, РД:
-                  <br className="ml-6" />* Согласование служб - 3 раб. дн.{' '}
-                  <br />* Согласование куратора филиала - 1 раб. дн. <br />*
-                  Согласование куратора ИА - 1 раб. дн. <br />* Визирование - 10
-                  раб. дн
-                </div>
-                <div className="flex items-center justify-end mt-4">
-                  <UnderButtons
-                    leftLabel="Закрыть"
-                    leftFunc={onClose}
-                    rightLabel="Сохранить"
-                  />
-                </div>
-              </WithValidationForm>
+    <div className="flex flex-col overflow-hidden h-full grow">
+      <ScrollBar>
+        <div className="flex py-4">
+          <WithValidationForm
+            className="form-element-sizes-40 w-full "
+            fields={fields}
+            value={filterValue}
+            onInput={setFilterValue}
+            inputWrapper={InputWrapper}
+            rules={rules}
+            onSubmit={onSave}
+          >
+            <div className="mt-2 font-size-12">
+              Контрольный срок согласования для томов ПД, РД:
+              <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
+              Согласование куратора филиала - 1 раб. дн. <br />* Согласование
+              куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
             </div>
-          </ScrollBar>
+            <div className="flex items-center justify-end mt-4">
+              <UnderButtons
+                leftLabel="Закрыть"
+                leftFunc={onClose}
+                rightLabel="Сохранить"
+              />
+            </div>
+          </WithValidationForm>
         </div>
-      </CustomSizeModalWindow>
+      </ScrollBar>
     </div>
   )
 }
 
-CreateApprovalSheetWindow.propTypes = {}
+CreateApprovalSheetWindow.propTypes = {
+  stageType: PropTypes.string.isRequired,
+  onClose: PropTypes.bool.isRequired,
+}
 
 export default CreateApprovalSheetWindow

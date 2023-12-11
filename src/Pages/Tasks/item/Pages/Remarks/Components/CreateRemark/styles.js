@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { WithValidationForm } from '@Components/Components/Forms'
 import { Input } from '@Components/Components/Inputs/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
@@ -10,11 +10,16 @@ export const FilterForm = styled(WithValidationForm)`
 export const CustomInput = styled(TextArea)`
   min-height: 80px;
 
-  ${Input} {
-    &::placeholder {
-      font-size: 14px;
-      font-weight: 400;
-      color: #98a5bc;
-    }
-  }
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: var(--input-disabled-color, #bdbdbd);
+      background: var(--input-disabled-bg, #f3f3f3);
+
+      ${Input} {
+        &::placeholder {
+          color: var(--input-disabled-placeholder-color, #7a7a7a);
+        }
+      }
+    `}
 `
