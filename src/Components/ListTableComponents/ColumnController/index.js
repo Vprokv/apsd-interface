@@ -45,7 +45,7 @@ const ColumnController = ({
 
   const onColumnHidden = useCallback(
     (id) =>
-      ({ [id]: { hidden = false, ...rowState }, ...other }) =>
+      ({ [id]: { hidden = false, ...rowState } = {}, ...other }) =>
       () =>
         setColumnState({ ...other, [id]: { ...rowState, hidden: !hidden } }),
     [setColumnState],
@@ -53,20 +53,19 @@ const ColumnController = ({
 
   const columnsRender = useMemo(
     () =>
-      columns
-        .map(({ id, label }) => ({ ...columnState[id], id, label }))
-        .map((val) => {
-          const { id, label, hidden = false } = val
+      columns.map((val) => {
+        const { id, label } = val
+        const { [id]: { hidden } = {} } = columnState || {}
 
-          return (
-            <ColumnComponent
-              key={id}
-              value={!hidden}
-              label={label}
-              onInput={onColumnHidden(id)({ ...columnState })}
-            />
-          )
-        }),
+        return (
+          <ColumnComponent
+            key={id}
+            value={!hidden}
+            label={label}
+            onInput={onColumnHidden(id)({ ...columnState })}
+          />
+        )
+      }),
     [columnState, columns, onColumnHidden],
   )
 
