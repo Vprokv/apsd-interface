@@ -61,6 +61,7 @@ import AppointedExecutor from '@/Pages/Tasks/list/Components/AppointedExecutor'
 import axios from 'axios'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -493,11 +494,7 @@ function TaskList({ loadFunctionRest }) {
             open={filterWindowOpen}
             onClose={changeFilterWindowState(false)}
           />
-          <Tips text="Настройка колонок">
-            <ButtonForIcon className="mr-2">
-              <Icon icon={sortIcon} />
-            </ButtonForIcon>
-          </Tips>
+          <ColumnController columns={columns} id={TASK_LIST} />
           <Tips text="Выгрузить в Excel">
             <LoadableButtonForIcon
               className="color-green"
