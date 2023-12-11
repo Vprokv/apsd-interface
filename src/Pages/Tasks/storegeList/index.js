@@ -180,23 +180,14 @@ export const taskColumns = [
   {
     id: 'authorEmployee',
     label: 'Автор',
-    component: ({
-      ParentValue: {
-        creatorEmployee: {
-          firstName = '',
-          position = '',
-          avatartId,
-          lastName,
-          middleName,
-        },
-      },
-    }) =>
+    component: ({ ParentValue: { authorEmployee } = {} }) =>
+      authorEmployee &&
       UserCard({
-        name: firstName,
-        lastName: lastName,
-        middleName: middleName,
-        position: position,
-        avatar: avatartId,
+        name: authorEmployee?.firstName,
+        lastName: authorEmployee?.lastName,
+        middleName: authorEmployee?.middleName,
+        position: authorEmployee?.position,
+        avatar: authorEmployee?.avatartId,
       }),
     sizes: useCardSizes,
   },
