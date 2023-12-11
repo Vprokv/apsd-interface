@@ -39,9 +39,13 @@ const useCustomFilterFunc = {
   [BRANCH_FIELD]: true,
 }
 
+const defBranches = []
+
 const useDefaultFilter = ({ baseFilter }) => {
   const {
-    organization: [{ r_object_id: organizationId = '', branches }] = [{}],
+    organization: [
+      { r_object_id: organizationId = '', branches = defBranches },
+    ] = [{}],
   } = useRecoilValue(userAtom)
 
   const defaultParams = useMemo(() => {

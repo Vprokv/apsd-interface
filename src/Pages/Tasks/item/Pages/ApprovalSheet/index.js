@@ -237,7 +237,7 @@ const ApprovalSheet = () => {
           onClose={setTypeForCreateApprovalSheetWindow('')}
         >
           <CreateApprovalSheetWindow
-            stageType={type}
+            stageType={typeForCreateApprovalSheetWindow}
             onClose={setTypeForCreateApprovalSheetWindow('')}
           />
         </CustomSizeModalWindow>
