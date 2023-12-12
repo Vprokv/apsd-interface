@@ -12,7 +12,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
     const api = useContext(ApiContext)
     return useMemo(
       () => ({
-        loadFunction: async (query, { source, controller } = {}) => {
+        loadFunction: async (query, { controller } = {}) => {
           const { data } = await api.post(
             URL_TITLE_LIST,
             {
@@ -20,7 +20,6 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
               ...filter,
             },
             {
-              cancelToken: source?.token,
               signal: controller?.signal,
             },
           )

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import {
@@ -56,19 +56,38 @@ const ArchiveItem = ({
   const getNotification = useOpenNotification()
   const api = useContext(ApiContext)
   const { loading, setLoading } = useContext(ContextArchiveLoading)
+  const refTimeout = useRef()
+  const refAbortController = useRef(null)
   useEffect(() => {
-    ;(async () => {
+    clearTimeout(refTimeout.current)
+    refTimeout.current = setTimeout(async () => {
       try {
         const { [level]: req = apisMap.defaultRequest } = apisMap
+        if (refAbortController.current) {
+          // если есть старый контроллер, значит есть запрос, отменяем прошлый запрос
+          refAbortController.current.abort()
+        }
+        // создаем новый контроллер под актуальный запрос
+        refAbortController.current = new AbortController()
         setItems(await req({ api, id, sectionId, query }))
+        // сбрасываем контроллер по завершению запроса
+        refAbortController.current = null
       } catch (e) {
         const { response: { status, data } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
       } finally {
         setLoading()
       }
-    })()
+    }, 1000)
   }, [api, level, id, sectionId, setItems, query, getNotification, setLoading])
+
+  useEffect(
+    () => () => {
+      clearTimeout(refTimeout.current)
+      refAbortController.current !== null && refAbortController.current()
+    },
+    [],
+  )
 
   return items.map(({ id: levelId, name, expand }) => (
     <WithToggleNavigationItem id={levelId} key={levelId}>

@@ -1,7 +1,7 @@
 import {
   useLoadableSelect,
-  useResolveView,
   useResetSearchOnInput,
+  useResolveView,
 } from '@Components/Components/Inputs/Select'
 import { forwardRef } from 'react'
 import Select from './Select'

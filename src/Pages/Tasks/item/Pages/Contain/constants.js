@@ -31,8 +31,18 @@ export const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Результат',
-    path: '[plannedApproveDate,actualApproveDate]',
+    header: 'Результат(Статус)',
+    path: 'statusResult',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Результат(Стадия)',
+    path: 'tomStageResult',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Результат(Дата)',
+    path: 'finishDate',
   },
   {
     componentType: 'DescriptionTableColumn',
