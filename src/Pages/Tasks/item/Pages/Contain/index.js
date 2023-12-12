@@ -342,7 +342,7 @@ const Contain = () => {
     const {
       data: { id: dataId },
     } = await api.post(URL_EXPORT, {
-      url: `${API_URL}/${URL_TITLE_CONTAIN}`,
+      url: `${API_URL}${URL_TITLE_CONTAIN}`,
       label: `Состав титула "${dss_code}"`,
       sheetName: `Состав титула "${dss_code}"`,
       columns: columnMap,
