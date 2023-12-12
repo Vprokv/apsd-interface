@@ -32,7 +32,7 @@ export const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Результат',
-    path: 'result',
+    path: '[plannedApproveDate,actualApproveDate]',
   },
   {
     componentType: 'DescriptionTableColumn',
