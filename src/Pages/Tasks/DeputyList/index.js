@@ -243,7 +243,7 @@ const DeputyList = () => {
 
   const loadData = useMemo(
     () =>
-      async ({ source, controller } = {}) => {
+      async ({ controller } = {}) => {
         const { limit, offset } = paginationState
         try {
           const { data } = await api.post(
@@ -261,7 +261,6 @@ const DeputyList = () => {
               offset,
             },
             {
-              cancelToken: source.token,
               signal: controller.signal,
             },
           )

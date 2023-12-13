@@ -12,7 +12,7 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
     const api = useContext(ApiContext)
     return useMemo(
       () => ({
-        loadFunction: async (query, { source, controller } = {}) => {
+        loadFunction: async (query, { controller } = {}) => {
           const {
             data: { content },
           } = await api.post(
@@ -27,7 +27,6 @@ const getLoadFunction = (state) => (fieldState) => (config) => {
               },
             },
             {
-              cancelToken: source?.token,
               signal: controller?.signal,
             },
           )

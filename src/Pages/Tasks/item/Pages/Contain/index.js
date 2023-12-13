@@ -100,7 +100,7 @@ const Contain = () => {
   })
 
   const loadData = useCallback(
-    ({ source = {}, controller = {} } = {}) =>
+    ({ controller = {} } = {}) =>
       async (partId = null, expand = true) => {
         try {
           const { data } = await api.post(
@@ -111,7 +111,6 @@ const Contain = () => {
               partId,
             },
             {
-              cancelToken: source.token,
               signal: controller.signal,
             },
           )
