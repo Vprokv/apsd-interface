@@ -40,6 +40,8 @@ const notifyMap = {
   'https://psd.moesk.ru': 'http://10.42.226.32:7777/psd/',
   'http://10.20.56.50/': 'http://10.42.226.32:7777/psd/',
   'http://10.20.56.61/': 'http://10.68.130.25:9999/dp-archive/',
+  'http://10.20.56.50': 'http://10.42.226.32:7777/psd/',
+  'http://10.20.56.61': 'http://10.68.130.25:9999/dp-archive/',
 }
 
 function Login({ loginRequest }) {
