@@ -13,6 +13,7 @@ import {
   NOTIFICATION_TYPE_ERROR,
   useOpenNotification,
 } from '@/Components/Notificator'
+import { API_URL } from '@/api'
 
 export const fieldMap = [
   {
@@ -35,8 +36,36 @@ const rules = {
   password: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
+const notifyMap = {
+  'https://psd.moesk.ru': 'http://10.42.226.32:7777/psd/',
+  'http://10.20.56.50/': 'http://10.42.226.32:7777/psd/',
+  'http://10.20.56.61/': 'http://10.68.130.25:9999/dp-archive/',
+  'http://10.20.56.50': 'http://10.42.226.32:7777/psd/',
+  'http://10.20.56.61': 'http://10.68.130.25:9999/dp-archive/',
+}
+
 function Login({ loginRequest }) {
   const [state, setState] = useState({})
+
+  const getNotification = useOpenNotification()
+
+  useEffect(() => {
+    getNotification({
+      type: NOTIFICATION_TYPE_ERROR,
+      message: (() => (
+        <>
+          <div className="">
+            С 12:00 13.12.2023г. система работает в тестовом режиме. Для
+            продолжения работы перейдите по ссылке:
+          </div>
+          <a className={'color-blue-1'} href={notifyMap[API_URL]}>
+            {notifyMap[API_URL]}
+          </a>
+        </>
+      ))(),
+      gap: 0.1,
+    })
+  }, [getNotification])
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">

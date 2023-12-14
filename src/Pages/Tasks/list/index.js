@@ -246,7 +246,7 @@ function TaskList({ loadFunctionRest }) {
 
   const loadData = useMemo(
     () =>
-      async ({ source, controller } = {}) => {
+      async ({ controller } = {}) => {
         const { limit, offset } = paginationState
         try {
           const { data } = await api.post(
@@ -275,7 +275,6 @@ function TaskList({ loadFunctionRest }) {
               offset,
             },
             {
-              cancelToken: source.token,
               signal: controller.signal,
             },
           )
