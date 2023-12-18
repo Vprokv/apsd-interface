@@ -12,6 +12,17 @@ import TaskSearch from '@/Pages/Search/Pages/TaskSearch/index'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
+
+const plugins = {
+  movePlugin: {
+    id: SEARCH_PAGE,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+}
 
 const tableConfig = [
   {
@@ -130,9 +141,11 @@ const PageTaskSelect = () => {
             <ButtonForIcon onClick={onExport} className="color-green ml-2">
               <Icon icon={XlsIcon} />
             </ButtonForIcon>
+            <ColumnController columns={tableConfig} id={SEARCH_PAGE} />
           </div>
           <ScrollBar className="px-4">
             <ListTable
+              plugins={plugins}
               rowComponent={rowComponent}
               headerCellComponent={HeaderCell}
               columns={tableConfig}

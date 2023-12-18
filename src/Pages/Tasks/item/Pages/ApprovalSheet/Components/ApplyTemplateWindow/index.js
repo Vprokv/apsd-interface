@@ -19,6 +19,8 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import Header from "@Components/Components/Tables/ListTable/header";
+import {useBackendColumnSettingsState} from "@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -32,6 +34,12 @@ const customMessagesFuncMap = {
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
+  movePlugin: {
+    id: URL_TEMPLATE_LIST,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+
   // selectPlugin: {
   //   driver: FlatSelect,
   //   component: CheckBox,

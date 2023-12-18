@@ -10,7 +10,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ApiContext, REPORTING_STATE } from '@/contants'
+import {ApiContext, NOTIFICATION, REPORTING_STATE} from '@/contants'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
@@ -22,6 +22,9 @@ import ReloadIcon from '@/Icons/ReloadIcon'
 import Form from '@Components/Components/Forms'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import Header from "@Components/Components/Tables/ListTable/header";
+import {useBackendColumnSettingsState} from "@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState";
+import ColumnController from "@/Components/ListTableComponents/ColumnController";
 
 const columns = [
   {
@@ -57,6 +60,14 @@ const columns = [
 ]
 
 const baseFilter = { allUsers: false }
+
+const plugin = {
+  movePlugin: {
+    id: REPORTING_STATE,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+}
 
 const OpenedTaskWindow = () => {
   const api = useContext(ApiContext)
@@ -129,6 +140,7 @@ const OpenedTaskWindow = () => {
                   <Icon icon={ReloadIcon} />
                 </LoadableButtonForIcon>
               </Tips>
+              <ColumnController columns={columns} id={REPORTING_STATE} />
             </div>
           </div>
           <ListTable
@@ -137,6 +149,7 @@ const OpenedTaskWindow = () => {
             columns={columns}
             headerCellComponent={HeaderCell}
             loading={loading}
+            plugin={plugin}
           />
         </div>
         <div className="flex items-center justify-end">

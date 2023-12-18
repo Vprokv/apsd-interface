@@ -78,7 +78,10 @@ const ColumnController = ({
   return (
     <>
       <Tips text="Настройка колонок">
-        <ButtonForIcon className="mr-2" onClick={changeModalState(true)}>
+        <ButtonForIcon
+          className="mx-2 color-text-secondary"
+          onClick={changeModalState(true)}
+        >
           <Icon icon={sortIcon} />
         </ButtonForIcon>
       </Tips>

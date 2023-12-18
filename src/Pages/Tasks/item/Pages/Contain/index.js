@@ -57,6 +57,9 @@ import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import { columns } from './configs'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -131,8 +134,7 @@ const Contain = () => {
   )
 
   const updateTomeDevelopmentDateAndStage = useCallback(
-    async (value, id, { tomId, ...other }) => {
-      console.log(111, 'other')
+    async (value, id, { tomId }) => {
       try {
         await api.post(URL_TITLE_CONTAIN_UPDATE, {
           [id]: value,
@@ -421,6 +423,13 @@ const Contain = () => {
                   <Icon icon={ReloadIcon} />
                 </LoadableButtonForIcon>
               </Tips>
+              <ColumnController
+                columns={useMemo(
+                  () => columns({ updateTomeDevelopmentDateAndStage }),
+                  [updateTomeDevelopmentDateAndStage],
+                )}
+                id={TASK_ITEM_STRUCTURE}
+              />
             </div>
           </div>
         </div>
@@ -449,6 +458,11 @@ const Contain = () => {
                   valueKey: 'id',
                   returnObjects: true,
                   nestedDataKey: 'childs',
+                },
+                movePlugin: {
+                  id: TASK_ITEM_STRUCTURE,
+                  TableHeaderComponent: Header,
+                  driver: useBackendColumnSettingsState,
                 },
               }
             }, [defaultOpen])}

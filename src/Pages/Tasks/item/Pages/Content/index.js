@@ -43,6 +43,9 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
 import { ContentWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -52,6 +55,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'id',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: TASK_ITEM_CONTENT,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -347,6 +355,7 @@ const Content = () => {
               <Icon size={20} icon={deleteIcon} />
             </ButtonForIcon>
           </Tips>
+          <ColumnController columns={columns} id={TASK_ITEM_CONTENT} />
         </div>
       </div>
       <FormWindow open={errorState} onClose={() => setErrorState('')}>

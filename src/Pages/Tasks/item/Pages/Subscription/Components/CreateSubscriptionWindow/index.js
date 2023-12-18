@@ -35,6 +35,8 @@ import SendEmail from './Components/CheckBox/SendEmail'
 import { useCreateSubscription } from './useCreateSubscription'
 import PropTypes from 'prop-types'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -43,6 +45,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'emplId',
+  },
+  movePlugin: {
+    id: WINDOW_ADD_SUBSCRIPTION,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 

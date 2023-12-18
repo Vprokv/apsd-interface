@@ -39,6 +39,9 @@ import Form from '@Components/Components/Forms'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import { LoadNotificationContext } from '@/Pages/Main/constants'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const FilterForm = styled(Form)`
   --form--elements_height: 32px;
@@ -54,6 +57,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'notificationId',
+  },
+  movePlugin: {
+    id: NOTIFICATION,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -144,7 +152,7 @@ const Notification = () => {
     })
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_LIST,
+    stateId: NOTIFICATION,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -297,15 +305,18 @@ const Notification = () => {
           onClick={onDelete}
           className="ml-2"
         >
-          {'Удалить'}
+          Удалить
         </LoadableSecondaryBlueButton>
         <LoadableSecondaryBlueButton
           disabled={total === 0}
           className="ml-2"
           onClick={onDeleteALL}
         >
-          {'Удалить все'}
+          Удалить все
         </LoadableSecondaryBlueButton>
+        <div className="ml-auto">
+          <ColumnController columns={columns} id={NOTIFICATION} />
+        </div>
       </div>
       <ListTable
         className="mt-2"

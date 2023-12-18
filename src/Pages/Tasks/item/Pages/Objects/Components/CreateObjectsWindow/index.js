@@ -38,6 +38,8 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import Pagination from '@/Components/Pagination'
 import LoadableSelect from '@/Components/Inputs/Select'
 import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -56,6 +58,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'id',
+  },
+  movePlugin: {
+    id: SETTINGS_TECHNICAL_OBJECTS,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 

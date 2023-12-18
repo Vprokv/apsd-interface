@@ -60,6 +60,9 @@ import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import sortIcon from '@/Pages/Tasks/list/icons/sortIcon'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -69,6 +72,11 @@ export const taskPlugins = {
     driver: FlatSelect,
     component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,
     valueKey: 'id',
+  },
+  movePlugin: {
+    id: TASK_STORAGE_LIST,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -219,7 +227,7 @@ function StorageList() {
   const { parentName, name, id } = useParams()
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_LIST,
+    stateId: TASK_STORAGE_LIST,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -462,11 +470,6 @@ function StorageList() {
             open={filterWindowOpen}
             onClose={changeFilterWindowState(false)}
           />
-          <Tips text="Настройка колонок">
-            <ButtonForIcon className="mr-2">
-              <Icon icon={sortIcon} />
-            </ButtonForIcon>
-          </Tips>
           <Tips text="Выгрузить в Excel">
             <LoadableButtonForIcon
               className="color-green"
@@ -475,6 +478,7 @@ function StorageList() {
               <Icon icon={XlsIcon} />
             </LoadableButtonForIcon>
           </Tips>
+          <ColumnController columns={taskColumns} id={TASK_STORAGE_LIST} />
         </div>
       </div>
       <ListTable

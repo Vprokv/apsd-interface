@@ -40,6 +40,8 @@ import useDefaultFilter from './useDefaultFilter'
 import PropTypes from 'prop-types'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const columns = [
   {
@@ -356,11 +358,21 @@ export const OrgStructureWindow = (props) => {
                         valueKey,
                         returnObjects: returnOption,
                       },
+                      movePlugin: {
+                        id: WINDOW_ADD_EMPLOYEE,
+                        TableHeaderComponent: Header,
+                        driver: useBackendColumnSettingsState,
+                      },
                     }
                   : {
                       outerSortPlugin: {
                         component: SortCellComponent,
                         downDirectionKey: 'DESC',
+                      },
+                      movePlugin: {
+                        id: WINDOW_ADD_EMPLOYEE,
+                        TableHeaderComponent: Header,
+                        driver: useBackendColumnSettingsState,
                       },
                     },
               [multiple, returnOption, valueKey],

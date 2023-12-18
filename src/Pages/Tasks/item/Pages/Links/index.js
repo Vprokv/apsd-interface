@@ -7,7 +7,6 @@ import {
   URL_LINK_DELETE,
   URL_LINK_LIST,
   URL_LINK_USER_LIST,
-  URL_SUBSCRIPTION_EVENTS,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -41,6 +40,9 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Tips from '@/Components/Tips'
 import { LinkWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 import LinkOrgStructureComponent from '@/Pages/Tasks/item/Pages/Links/Components/LinkOrstructureComponent'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -60,6 +62,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'linkId',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: TASK_ITEM_LINK,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -155,7 +162,7 @@ const Links = () => {
     })
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: URL_SUBSCRIPTION_EVENTS,
+    stateId: TASK_ITEM_LINK,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -353,6 +360,7 @@ const Links = () => {
               <Icon size={20} icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
+          <ColumnController columns={columns} id={TASK_ITEM_LINK} />
         </div>
       </div>
       <ListTable

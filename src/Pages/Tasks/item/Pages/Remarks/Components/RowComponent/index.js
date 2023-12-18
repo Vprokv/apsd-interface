@@ -9,6 +9,17 @@ import MoreActionComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/Mor
 import { ContHover } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import PropTypes from 'prop-types'
 import RemarkCheckBoxComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkCheckBoxComponent'
+import { TASK_ITEM_REMARKS } from '@/contants'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+
+const plugins = {
+  movePlugin: {
+    id: TASK_ITEM_REMARKS,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+}
 
 export const RowTableComponent = styled.div`
   &:hover {
@@ -150,6 +161,7 @@ const IterationRemarks = ({ remarks }) => {
       columns={columns}
       headerCellComponent={HeaderCell}
       valueKey="id"
+      plugins={plugins}
     />
   )
 }

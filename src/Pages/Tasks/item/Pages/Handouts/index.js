@@ -19,9 +19,17 @@ import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
+  movePlugin: {
+    id: TASK_ITEM_HANDOUTS,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
 }
 
 const columns = [
@@ -165,6 +173,7 @@ const Handouts = () => {
           inputWrapper={EmptyInputWrapper}
         />
         <CreateHandoutsWindow />
+        <ColumnController columns={columns} id={TASK_ITEM_HANDOUTS} />
       </div>
       <ListTable
         rowComponent={useMemo(

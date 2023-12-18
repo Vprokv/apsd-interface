@@ -25,9 +25,17 @@ import { useOpenNotification } from '@/Components/Notificator'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  movePlugin: {
+    id: TASK_ITEM_CONTENT,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
 }
 
 const AddUserOptionsFullName = (v) => ({
@@ -150,7 +158,7 @@ const History = () => {
     })
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_ITEM_CONTENT,
+    stateId: TASK_ITEM_HISTORY,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -269,6 +277,9 @@ const History = () => {
             [setTabState],
           )}
         />
+        <div className="ml-auto">
+          <ColumnController columns={columns} id={TASK_ITEM_HISTORY} />
+        </div>
       </div>
       <ListTable
         rowComponent={useMemo(

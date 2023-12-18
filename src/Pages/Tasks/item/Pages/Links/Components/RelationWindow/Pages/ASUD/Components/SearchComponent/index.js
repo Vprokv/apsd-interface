@@ -11,6 +11,8 @@ import { SecondaryBlueButton } from '@/Components/Button'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import DocumentSearch from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/ASUD/Components/SearchComponent/DocumentSearch'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const defaultFilter = { type: 'ddt_sedo_search_type_doc' }
 const defaultSearchState = {}
@@ -22,6 +24,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'id',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: 'SearchComponent',
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 

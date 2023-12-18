@@ -25,6 +25,8 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import PropTypes from 'prop-types'
 import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -71,6 +73,14 @@ const columns = [
     sizes: 220,
   },
 ]
+
+const plugins = {
+  movePlugin: {
+    id: TASK_ITEM_LINK,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+}
 
 const EditLinksWindow = ({ value }) => {
   const api = useContext(ApiContext)
@@ -166,6 +176,7 @@ const EditLinksWindow = ({ value }) => {
         >
           <div className="flex flex-col overflow-hidden h-full">
             <ListTable
+              plugins={plugins}
               headerCellComponent={HeaderCell}
               columns={columns}
               value={value}

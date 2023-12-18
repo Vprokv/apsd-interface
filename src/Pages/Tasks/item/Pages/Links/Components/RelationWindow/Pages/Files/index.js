@@ -27,6 +27,8 @@ import { get } from '@Components/Utils/ObjectPath'
 import { FieldValidationStateContext } from '@/Components/InputWrapperRefactor/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -40,6 +42,14 @@ const customMessagesFuncMap = {
 
 const rules = {
   '*.linkType': [{ name: VALIDATION_RULE_REQUIRED }],
+}
+
+const plugins = {
+  movePlugin: {
+    id: TASK_ITEM_LINK,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
 }
 
 const Files = (props) => {
@@ -198,6 +208,7 @@ const Files = (props) => {
           <ScrollBar className="mt-8">
             <FieldValidationStateContext.Provider value={getErrors}>
               <ListTable
+                plugins={plugins}
                 rules={rules}
                 columns={columns}
                 onInput={setFiles}

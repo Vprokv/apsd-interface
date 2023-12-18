@@ -46,6 +46,9 @@ import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent
 import UserUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/UserUpdateTemplateTab'
 import SearchUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/SearchTemplate/SearchUpdateTemplateTab'
 import ReportUpdateTemplateTab from '@/Pages/Settings/Components/Templates/Components/ReportTemplate/ReportUpdateTemplateTab'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -55,6 +58,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'dsid_template',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: SETTINGS_TEMPLATES,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -202,7 +210,7 @@ const Templates = () => {
   const navigate = useNavigate()
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_LIST,
+    stateId: SETTINGS_TEMPLATES,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -320,6 +328,7 @@ const Templates = () => {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
+          <ColumnController columns={columns} id={SETTINGS_TEMPLATES} />
         </div>
       </div>
       <ListTable

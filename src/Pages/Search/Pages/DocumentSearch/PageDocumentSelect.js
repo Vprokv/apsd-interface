@@ -12,6 +12,8 @@ import { LoadableButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import Tips from '@/Components/Tips'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
@@ -23,6 +25,14 @@ const defaultOptions = [
 ]
 
 const defaultSearchState = {}
+
+const plugins = {
+  movePlugin: {
+    id: SEARCH_PAGE_DOCUMENT,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+}
 
 const PageDocumentSelect = () => {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
@@ -84,6 +94,7 @@ const PageDocumentSelect = () => {
               headerCellComponent={HeaderCell}
               columns={tableConfig}
               value={searchState.results}
+              plugins={plugins}
             />
           </ScrollBar>
         </>

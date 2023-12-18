@@ -1,9 +1,7 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import {
-  FlatSelect,
-} from '@Components/Components/Tables/Plugins/selectable'
+import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import BaseCell, {
   sizes as baseCellSize,
@@ -14,6 +12,7 @@ import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
+  SEARCH_PAGE,
   SETTINGS_TEMPLATES,
 } from '@/contants'
 import styled from 'styled-components'
@@ -37,6 +36,9 @@ import { TemplateContext } from '@/Components/Inputs/OrgStructure/OrgstructureCo
 import ShowTemplateButtonComponent from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate/Components/TemplateTab/ShowTemplate/ShowTemplateButtonComponent'
 import Button from '@/Components/Button'
 import ScrollBar from '@Components/Components/ScrollBar'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -46,6 +48,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'dsid_template',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: SETTINGS_TEMPLATES,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -315,6 +322,9 @@ const SearchTemplateWindowList = ({
                 [setTabState],
               )}
             />
+            <div>
+              <ColumnController columns={columns} id={SETTINGS_TEMPLATES} />
+            </div>
           </div>
           <ScrollBar>
             <ListTable

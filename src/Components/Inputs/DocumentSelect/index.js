@@ -19,6 +19,9 @@ import { useLoadableCache } from '@Components/Components/Inputs/Plugins/Loadable
 import Input from '../../Fields/Input'
 import ShowDocumentComponent from '@/Components/Inputs/DocumentSelect/Component/ShowDocumentComponent'
 import Tips from '@/Components/Tips'
+import { SEARCH_PAGE } from '@/contants'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const changeInput = () => {}
 
@@ -135,6 +138,11 @@ const DocumentSelect = ({
                 style: { margin: 'auto 0' },
                 valueKey,
                 returnObjects: returnOption,
+              },
+              movePlugin: {
+                id: SEARCH_PAGE,
+                TableHeaderComponent: Header,
+                driver: useBackendColumnSettingsState,
               },
             },
           }

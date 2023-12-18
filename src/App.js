@@ -5,7 +5,6 @@ import Login from './Pages/Login'
 import ResetPassword from './Pages/ResetPassword'
 import TaskList from './Pages/Tasks/list'
 import ArchiveList from './Pages/Tasks/archiveList'
-import VolumeItem from './Pages/Volume'
 import BasketList from './Pages/Basket/list'
 import * as routePath from './routePaths'
 import createAxiosInstance, { API_URL } from './api'
@@ -18,14 +17,11 @@ import {
   URL_USER_OBJECT,
 } from './ApiList'
 import useTokenStorage, {
-  userAtom,
 } from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
 import {
   CREATE_PASSWORD_PAGE_PATH,
-  TASK_DEPUTY_LIST_PATH,
-  TASK_STORAGE_TITLE_LIST_PATH,
 } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
@@ -215,10 +211,6 @@ function App() {
                   <Route
                     path={routePath.TASK_DEPUTY_LIST_PATH}
                     element={<DeputyList />}
-                  />
-                  <Route
-                    path={routePath.VOLUME_ITEM_PATH}
-                    element={<VolumeItem />}
                   />
                   <Route
                     path={routePath.DELETED_LIST_PATH}

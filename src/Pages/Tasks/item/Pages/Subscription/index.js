@@ -39,6 +39,9 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -47,6 +50,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'objectId',
+  },
+  movePlugin: {
+    id: TASK_ITEM_SUBSCRIPTION,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -228,7 +236,7 @@ const Subscription = () => {
         />
         <div className="flex items-center color-text-secondary ml-auto">
           <Button
-            className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium"
+            className="bg-blue-5 color-blue-1 flex items-center justify-center text-sm font-weight-normal height-small leading-4 padding-medium mr-2"
             onClick={openSubscriptionWindow}
           >
             Добавить подписку
@@ -239,10 +247,11 @@ const Subscription = () => {
             </ButtonForIcon>
           </Tips>
           <Tips text="Удалить">
-            <ButtonForIcon onClick={onDelete} className="mr-2">
+            <ButtonForIcon onClick={onDelete} className="">
               <Icon icon={deleteIcon} />
             </ButtonForIcon>
           </Tips>
+          <ColumnController columns={columns} id={TASK_ITEM_SUBSCRIPTION} />
         </div>
       </div>
       <EventsContext.Provider value={events}>

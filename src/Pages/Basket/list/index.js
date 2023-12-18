@@ -42,6 +42,9 @@ import ExportIcon from '@/Icons/ExportIcon'
 import Tips from '@/Components/Tips'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -50,6 +53,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'documentId',
+  },
+  movePlugin: {
+    id: BASKET,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -121,7 +129,7 @@ function BasketList() {
     useTabItem({ stateId: BASKET })
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_LIST,
+    stateId: BASKET,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -214,6 +222,7 @@ function BasketList() {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
+          <ColumnController columns={columns} id={BASKET} />
         </div>
       </div>
       <ListTable

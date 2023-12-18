@@ -5,9 +5,18 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_ENTITY_LIST } from '@/ApiList'
-import { ApiContext } from '@/contants'
+import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import TextArea from '@Components/Components/Inputs/TextArea'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
+const plugins = {
+  movePlugin: {
+    id: 'CreateRelationTable',
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
+}
 const CreateRelationTable = ({ value, setLink }) => {
   const api = useContext(ApiContext)
 
@@ -88,6 +97,7 @@ const CreateRelationTable = ({ value, setLink }) => {
     <div className=" w-full my-4">
       {!!value?.length && (
         <ListTable
+          plugins={plugins}
           onInput={setLink}
           headerCellComponent={HeaderCell}
           columns={columns}

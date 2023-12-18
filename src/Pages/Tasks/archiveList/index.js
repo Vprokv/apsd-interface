@@ -27,6 +27,9 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import MoreActionComponent from '@/Pages/Tasks/archiveList/Components/MoreActionComponent'
 import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
 import ExportDocumentWindowWrapper from '@/Pages/Tasks/archiveList/Components/ExportDocumentWindow'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const columns = [
   {
@@ -134,6 +137,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'id',
+  },
+  movePlugin: {
+    id: TASK_LIST_ARCHIVE,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -247,7 +255,7 @@ const ArchiveList = () => {
             <span>Титул: </span>
             <span className="font-medium">{name.replaceAll('%2f', '/')}</span>
           </div>
-          <div className="w-64 ml-auto">
+          <div className="w-64 ml-auto  flex">
             <Tips text="Выгрузить в Excel">
               <LoadableButtonForIcon
                 className="color-green  ml-auto"
@@ -256,6 +264,7 @@ const ArchiveList = () => {
                 <Icon icon={XlsIcon} />
               </LoadableButtonForIcon>
             </Tips>
+            <ColumnController columns={columns} id={TASK_LIST_ARCHIVE} />
           </div>
         </div>
         <ListTable

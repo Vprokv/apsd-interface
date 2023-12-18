@@ -13,6 +13,7 @@ import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
+  SEARCH_PAGE,
   SETTINGS_TEMPLATES,
   TASK_LIST,
 } from '@/contants'
@@ -32,6 +33,9 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -41,6 +45,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'dsid_template',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: SETTINGS_TEMPLATES,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -199,6 +208,9 @@ const SearchTemplateWindowList = ({
                 [setTabState],
               )}
             />
+            <div className="ml-auto">
+              <ColumnController columns={columns} id={SETTINGS_TEMPLATES} />
+            </div>
           </div>
           <ListTable
             className="mt-2  h-full"

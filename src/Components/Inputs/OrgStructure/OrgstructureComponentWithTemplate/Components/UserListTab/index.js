@@ -1,5 +1,4 @@
 import React, {
-
   useCallback,
   useContext,
   useEffect,
@@ -8,7 +7,7 @@ import React, {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, WINDOW_ADD_EMPLOYEE } from '@/contants'
+import { ApiContext, SETTINGS_TEMPLATES, WINDOW_ADD_EMPLOYEE } from '@/contants'
 import useDefaultFilter from '@/Components/Inputs/OrgStructure/useDefaultFilter'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
@@ -38,6 +37,8 @@ import { useLoadableCache } from '@Components/Components/Inputs/Plugins/Loadable
 import UserCard from '@/Components/Inputs/OrgStructure/Components/UserCard'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const columns = [
   {
@@ -362,11 +363,21 @@ const UserListTab = (props) => {
                     valueKey,
                     returnObjects,
                   },
+                  movePlugin: {
+                    id: WINDOW_ADD_EMPLOYEE,
+                    TableHeaderComponent: Header,
+                    driver: useBackendColumnSettingsState,
+                  },
                 }
               : {
                   outerSortPlugin: {
                     component: SortCellComponent,
                     downDirectionKey: 'DESC',
+                  },
+                  movePlugin: {
+                    id: WINDOW_ADD_EMPLOYEE,
+                    TableHeaderComponent: Header,
+                    driver: useBackendColumnSettingsState,
                   },
                 },
           [multiple, returnObjects, valueKey],

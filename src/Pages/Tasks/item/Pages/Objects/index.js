@@ -36,6 +36,9 @@ import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -44,6 +47,11 @@ const plugins = {
     component: CheckBox,
     style: { margin: 'auto 0' },
     valueKey: 'key',
+  },
+  movePlugin: {
+    id: TASK_ITEM_OBJECTS,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -287,6 +295,7 @@ const Objects = () => {
           open={addCreateObjectsWindow}
           onClose={changeObjectsWindow(false)}
         />
+        <ColumnController columns={columns} id={TASK_ITEM_OBJECTS} />
       </div>
       <ListTable
         rowComponent={useMemo(

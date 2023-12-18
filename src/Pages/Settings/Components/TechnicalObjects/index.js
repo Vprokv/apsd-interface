@@ -41,6 +41,9 @@ import { FilterForm } from '@/Pages/Settings/Components/TechnicalObjects/styles'
 import CreateTechnicalObjectWindow from '@/Pages/Settings/Components/TechnicalObjects/Components/CreateTechnicalObjectWindow'
 import EditIcon from '@/Icons/editIcon'
 import EditTechnicalObjectWindow from '@/Pages/Settings/Components/TechnicalObjects/Components/EditTechnicalObjectWindow'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -50,6 +53,11 @@ const plugins = {
     style: { margin: 'auto 0' },
     valueKey: 'id',
     returnObjects: true,
+  },
+  movePlugin: {
+    id: SETTINGS_TECHNICAL_OBJECTS,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
   },
 }
 
@@ -329,6 +337,7 @@ const TechnicalObjectsSettings = () => {
               <Icon icon={DeleteIcon} />
             </ButtonForIcon>
           </Tips>
+          <ColumnController columns={columns} id={SETTINGS_TECHNICAL_OBJECTS} />
           <FilterWindowWrapper
             show={show}
             fields={filterFields}

@@ -6,12 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import {
-  ApiContext,
-  TASK_DEPUTY_LIST,
-  TASK_LIST,
-  TokenContext,
-} from '@/contants'
+import { ApiContext, TASK_DEPUTY_LIST, TokenContext } from '@/contants'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -35,8 +30,7 @@ import searchIcon from '@/Icons/searchIcon'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import Tips from '@/Components/Tips'
-import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
-import sortIcon from '@/Pages/Tasks/list/icons/sortIcon'
+import { LoadableButtonForIcon } from '@/Components/Button'
 import XlsIcon from '@/Icons/XlsIcon'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
@@ -58,6 +52,9 @@ import VolumeStatus, {
 import UserCard, {
   sizes as useCardSizes,
 } from '@/Components/ListTableComponents/UserCard'
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const columnMap = [
   {
@@ -198,6 +195,11 @@ const taskColumns = [
 
 const taskPlugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  movePlugin: {
+    id: TASK_DEPUTY_LIST,
+    TableHeaderComponent: Header,
+    driver: useBackendColumnSettingsState,
+  },
 }
 
 const defaultSortQuery = {
@@ -226,7 +228,7 @@ const DeputyList = () => {
   const { token } = useContext(TokenContext)
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: TASK_LIST,
+    stateId: TASK_DEPUTY_LIST,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,
@@ -440,11 +442,7 @@ const DeputyList = () => {
             open={filterWindowOpen}
             onClose={changeFilterWindowState(false)}
           />
-          <Tips text="Настройка колонок">
-            <ButtonForIcon className="mr-2">
-              <Icon icon={sortIcon} />
-            </ButtonForIcon>
-          </Tips>
+          <ColumnController columns={taskColumns} id={TASK_DEPUTY_LIST} />
           <Tips text="Выгрузить в Excel">
             <LoadableButtonForIcon
               className="color-green"
