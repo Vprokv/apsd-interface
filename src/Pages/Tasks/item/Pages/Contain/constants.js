@@ -31,12 +31,27 @@ export const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Результат(Статус)',
-    path: 'statusResult',
+    header: 'Даты разработки (план)',
+    path: 'plannedDevDate',
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Результат(Стадия)',
+    header: 'Даты разработки (факт)',
+    path: 'actualDevDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата согласования (план)',
+    path: 'plannedApproveDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата согласования (факт)',
+    path: 'actualApproveDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Результат(Этап)',
     path: 'tomStageResult',
   },
   {
@@ -48,25 +63,5 @@ export const columnMap = [
     componentType: 'DescriptionTableColumn',
     header: 'Стадия',
     path: 'tomStage',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Даты разраб.(план/факт)',
-    path: '[plannedDevDate,actualDevDate]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Дата сог.(план/факт)',
-    path: '[plannedApproveDate,actualApproveDate]',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Просрочка проектировщика',
-    path: 'delayDevelopmentDay',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Просрочка согласования',
-    path: 'delayApprovalDay',
   },
 ]

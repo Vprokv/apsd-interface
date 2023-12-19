@@ -347,6 +347,7 @@ const Contain = () => {
       label: `Состав титула "${dss_code}"`,
       sheetName: `Состав титула "${dss_code}"`,
       columns: columnMap,
+      exportType: 'structure',
       body: {
         expand: true,
         titleId: id,
