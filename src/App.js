@@ -54,7 +54,7 @@ function App() {
   )
   const [columnSettingsState, setColumnSettingsState] =
     useRecoilState(columnSettingsCache)
-  const [apiInstanceState, setApiRecoilState] = useRecoilState(apiRecoilCache)
+  const [_, setApiRecoilState] = useRecoilState(apiRecoilCache)
 
   const userObjectRequest = useCallback(async () => {
     try {
@@ -116,7 +116,7 @@ function App() {
         return acc
       }, {})
 
-      setColumnSettingsState(mapData)
+      setColumnSettingsState((prev) => ({ ...prev, ...mapData }))
     }
   }, [apiInstance, setColumnSettingsState, token])
 
