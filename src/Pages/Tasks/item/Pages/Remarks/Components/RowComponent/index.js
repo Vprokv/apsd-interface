@@ -92,17 +92,6 @@ const columns = [
     sizes: 120,
   },
   {
-    id: 'remarkType',
-    label: 'Тип замечания',
-    component: ({
-      ParentValue: {
-        itsRemark,
-        props: { remarkType },
-      },
-    }) => itsRemark && <BaseCell value={remarkType} />,
-    sizes: 120,
-  },
-  {
     id: 'setRemark',
     label: 'Свод замечаний',
     component: ({

@@ -99,27 +99,6 @@ const EditRemark = ({
         component: UserSelect,
       },
       {
-        id: 'remarkTypeId',
-        component: LoadableSelect,
-        placeholder: 'Выберите тип',
-        options: [
-          {
-            r_object_id: remarkTypeId,
-            dss_name: remarkType,
-          },
-        ],
-        label: 'Тип замечания',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_type_remark',
-            query,
-          })
-          return data
-        },
-      },
-      {
         id: 'text',
         label: 'Текст замечания',
         inputWrapper: RemarkWrapper,
@@ -138,7 +117,7 @@ const EditRemark = ({
         InputUiContext: NdtLinkWrapper,
       },
     ],
-    [api, editAuthor, ndtLinks, remarkType, remarkTypeId],
+    [editAuthor, ndtLinks],
   )
 
   const onSave = useCallback(async () => {

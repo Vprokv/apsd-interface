@@ -105,20 +105,6 @@ const Remarks = () => {
         },
       },
       {
-        id: 'typeId',
-        component: LoadableSelect,
-        placeholder: 'Выберите тип',
-        valueKey: 'r_object_id',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_type_remark',
-            query,
-          })
-          return data
-        },
-        labelKey: 'dss_name',
-      },
-      {
         id: 'allIteration',
         component: CheckBox,
         text: 'Все итерации',

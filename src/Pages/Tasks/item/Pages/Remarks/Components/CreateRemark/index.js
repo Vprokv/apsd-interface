@@ -5,7 +5,6 @@ import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import { CustomInput } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_CREATE } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
@@ -41,7 +40,6 @@ const ScrollBar = styled(SimpleBar)`
 
 const rules = {
   member: [{ name: VALIDATION_RULE_REQUIRED }],
-  remarkTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
   text: [
     {
       name: VALIDATION_RULE_MAX,
@@ -155,22 +153,6 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         returnObjects: true,
         options: [initialUserValue.member],
         component: UserSelect,
-      },
-      {
-        id: 'remarkTypeId',
-        component: LoadableSelect,
-        placeholder: 'Выберите тип',
-        label: 'Тип замечания',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        options,
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_type_remark',
-            query,
-          })
-          return data
-        },
       },
       {
         id: 'text',
