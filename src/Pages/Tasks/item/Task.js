@@ -89,6 +89,8 @@ const Task = () => {
   const getNotification = useOpenNotification()
 
   const reloadSidebarTaskCounters = useContext(LoadTasks)
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
+  const updateCurrentTabChildrenStates = updateTabChildrenStates()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -100,12 +102,14 @@ const Task = () => {
       const { data } = await api.post(URL_TASK_ITEM, {
         taskId: id,
       })
+
       if (!data.read) {
         // теперь авейтим, чтобы получить корректную статистику
         try {
           await api.post(URL_TASK_MARK_READ, {
             tasksIds: [id],
           })
+          updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
         } catch (e) {
           const { response: { status } = {} } = e
           getNotification(defaultFunctionsMap[status]())
@@ -118,7 +122,13 @@ const Task = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, getNotification, id, reloadSidebarTaskCounters])
+  }, [
+    api,
+    getNotification,
+    id,
+    reloadSidebarTaskCounters,
+    updateTabStateUpdaterByName,
+  ])
 
   const [tabState, setTabState] = useTabItem({
     stateId: ITEM_TASK,
@@ -160,9 +170,6 @@ const Task = () => {
   useEffect(() => {
     refValues.current = values
   }, [values])
-
-  const updateCurrentTabChildrenStates = updateTabChildrenStates()
-  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const TaskHandlers = useMemo(
     () => ({
