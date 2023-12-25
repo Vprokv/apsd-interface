@@ -27,6 +27,7 @@ import PropTypes from 'prop-types'
 import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ModalWindow from '@/Components/ModalWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -42,8 +43,8 @@ const columns = [
   {
     id: 'Document',
     label: 'Документ',
-    component: ({ ParentValue: { regNumber, regDate } }) => (
-      <BaseCell value={`${regNumber} от ${regDate}`} />
+    component: ({ ParentValue: { documentTypeLabel, regDate } }) => (
+      <BaseCell value={`${documentTypeLabel} от ${regDate}`} />
     ),
     sizes: 215,
   },
@@ -112,7 +113,7 @@ const EditLinksWindow = ({ value }) => {
 
   const onSave = useCallback(async () => {
     try {
-      const response = await Promise.all([
+      const response = await Promise.all(
         value.map(
           ({
             comment: defaultComment,
@@ -133,7 +134,7 @@ const EditLinksWindow = ({ value }) => {
             })
           },
         ),
-      ])
+      )
       response.flat().map((item) => {
         item.then(({ status }) =>
           getNotification(customMessagesFuncMap[status]()),
@@ -143,7 +144,8 @@ const EditLinksWindow = ({ value }) => {
       setTabState(SetUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 0, data = '' } = {} } = e
+
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
@@ -169,7 +171,8 @@ const EditLinksWindow = ({ value }) => {
             <Icon size={20} icon={EditIcon} />
           </ButtonForIcon>
         </Tips>
-        <CreateLinkComponent
+        <ModalWindow
+          className="m-auto"
           title="Обновить связи"
           open={open}
           onClose={changeModalState(false)}
@@ -182,8 +185,12 @@ const EditLinksWindow = ({ value }) => {
               value={value}
             />
           </div>
-          <UnderButtons leftFunc={changeModalState(false)} rightFunc={onSave} />
-        </CreateLinkComponent>
+          <UnderButtons
+            className="my-4"
+            leftFunc={changeModalState(false)}
+            rightFunc={onSave}
+          />
+        </ModalWindow>
       </div>
     </EditLinkContext.Provider>
   )
