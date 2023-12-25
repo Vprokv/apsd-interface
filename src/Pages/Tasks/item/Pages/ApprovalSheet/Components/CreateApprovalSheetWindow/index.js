@@ -218,7 +218,6 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
                 leftFunc={onClose}
                 rightLabel="Сохранить"
                 disabled={loading}
-                // rightFunc={onSave}
               />
             </div>
           </WithValidationForm>
