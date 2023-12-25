@@ -43,8 +43,8 @@ const columns = [
   {
     id: 'Document',
     label: 'Документ',
-    component: ({ ParentValue: { documentTypeLabel, regDate } }) => (
-      <BaseCell value={`${documentTypeLabel} от ${regDate}`} />
+    component: ({ ParentValue: { documentTypeLabel} }) => (
+      <BaseCell value={`${documentTypeLabel}`} />
     ),
     sizes: 215,
   },
