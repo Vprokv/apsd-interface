@@ -51,6 +51,7 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
   const [filterValue, setFilterValue] = useState({})
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
+  const [loading, setLoadingState] = useState(false)
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -178,6 +179,7 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
 
   const onSave = useCallback(async () => {
     try {
+      setLoadingState(true)
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
       setTabState(SetUnFetchedState())
       onClose()
@@ -186,6 +188,8 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
+    } finally {
+      setLoadingState(false)
     }
   }, [api, stage, setTabState, onClose, initialFilterState, getNotification])
 
@@ -213,6 +217,8 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
                 leftLabel="Закрыть"
                 leftFunc={onClose}
                 rightLabel="Сохранить"
+                disabled={loading}
+                // rightFunc={onSave}
               />
             </div>
           </WithValidationForm>
