@@ -1,9 +1,7 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import InputComponent from '@Components/Components/Inputs/Input'
-import Form from '@Components/Components/Forms'
 import { ApiContext, ITEM_TASK, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import {
   URL_ADDITIONAL_AGREEMENT_USER_LIST,
   URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
@@ -25,6 +23,12 @@ import ModalWindowWrapper from '../../../../../Components/ModalWindow'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import NumberInput from '@/Components/Fields/NumberInput'
+import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import {Validation} from "@Components/Logic/Validator";
+import Form from "@Components/Components/Forms";
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -33,7 +37,9 @@ export const ModalWindow = styled(ModalWindowWrapper)`
   max-height: 95%;
 `
 
-const rules = {}
+const rules = {
+  executionDays: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -61,8 +67,8 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
     tabState,
   )
 
-  const fieldMap = useMemo(() => {
-    return [
+  const fieldMap = useMemo(
+    () => [
       {
         label: 'Доп. согласующий',
         id: 'performersEmpls',
@@ -86,8 +92,15 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         component: InputComponent,
         placeholder: 'Введите данные',
       },
-    ]
-  }, [approverParentId])
+      {
+        label: 'Укажите в рабочих днях',
+        id: 'executionDays',
+        component: NumberInput,
+        placeholder: '',
+      },
+    ],
+    [approverParentId],
+  )
 
   const onSave = useCallback(async () => {
     try {
@@ -120,25 +133,58 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
     updateCurrentTabChildrenStates,
     onClose,
   ])
+
   return (
-    <div className="flex flex-col overflow-hidden h-full grow">
-      <ScrollBar className="flex grow flex-col">
-        <Form
-          className="mb-10"
-          inputWrapper={DefaultWrapper}
+    <div className="flex flex-col overflow-hidden ">
+      <ScrollBar className="flex flex-col py-4">
+        <Validation
+          fields={fieldMap}
           value={values}
           onInput={setValues}
-          fields={fieldMap}
           rules={rules}
-        />
-        <div className="flex items-center justify-end mt-auto mt-auto">
-          <UnderButtons
-            leftFunc={onClose}
-            rightFunc={onSave}
-            leftLabel={'Закрыть'}
-            rightLabel={'Сохранить'}
-          />
-        </div>
+          onSubmit={onSave}
+        >
+          {({ onSubmit, formValid, ...props }) => {
+            return (
+              <>
+                <Form className="form-element-sizes-40" {...props} />
+                <div className="mt-10">
+                  <UnderButtons
+                    disabled={!formValid}
+                    rightFunc={onSubmit}
+                    leftFunc={onClose}
+                  />
+                </div>
+              </>
+            )
+          }}
+        </Validation>
+        {/*<Validation*/}
+        {/*  // inputWrapper={DefaultWrapper}*/}
+        {/*  fields={fieldMap}*/}
+        {/*  value={values}*/}
+        {/*  onInput={setValues}*/}
+        {/*  rules={rules}*/}
+        {/*  onSubmit={onSave}*/}
+        {/*>*/}
+        {/*  {(validationProps) => (*/}
+        {/*    <>*/}
+        {/*      <FilterForm*/}
+        {/*        className="form-element-sizes-40"*/}
+        {/*        {...validationProps}*/}
+        {/*      />*/}
+        {/*      <div className="flex items-center justify-end mt-auto mt-auto">*/}
+        {/*        <UnderButtons*/}
+        {/*          leftFunc={onClose}*/}
+        {/*          disabled={!validationProps.formValid}*/}
+        {/*          rightFunc={validationProps.onSubmit}*/}
+        {/*          leftLabel={'Закрыть'}*/}
+        {/*          rightLabel={'Сохранить'}*/}
+        {/*        />*/}
+        {/*      </div>*/}
+        {/*    </>*/}
+        {/*  )}*/}
+        {/*</Validation>*/}
       </ScrollBar>
     </div>
   )
