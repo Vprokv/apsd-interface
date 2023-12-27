@@ -48,7 +48,7 @@ const defaultSortQuery = {
   direction: 'ASC',
 }
 
-const defaultFilter = { allStages: true }
+const defaultFilter = { allStages: true, allIteration: true }
 
 const Remarks = () => {
   const id = useContext(DocumentIdContext)
