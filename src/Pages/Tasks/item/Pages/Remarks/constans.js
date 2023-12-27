@@ -23,3 +23,31 @@ export const remarkValidator = {
     },
   },
 }
+
+export const exportColumnConfig = [
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Автор замечания',
+    path: 'remarkAuthor',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Текст замечания',
+    path: 'remarkText',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Ответ на замечание',
+    path: 'answerText',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата создания замечания',
+    path: 'remarkCreationDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Статус замечания (решение)',
+    path: 'status',
+  },
+]

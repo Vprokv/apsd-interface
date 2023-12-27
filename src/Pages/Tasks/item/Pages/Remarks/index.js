@@ -1,15 +1,27 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
+import { ApiContext, TASK_ITEM_REMARKS, TokenContext } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_ENTITY_LIST, URL_REMARK_LIST } from '@/ApiList'
+import {
+  URL_ENTITY_LIST,
+  URL_EXPORT,
+  URL_EXPORT_FILE,
+  URL_REMARK_LIST,
+  URL_TASK_LIST_V2,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
-import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
+import {
+  ButtonForIcon,
+  LoadableSecondaryBlueButton,
+  LoadableSecondaryOverBlueButton,
+  SecondaryBlueButton,
+} from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import {
+  exportColumnConfig,
   SetAnswerStateContext,
   ToggleContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
@@ -26,6 +38,8 @@ import { useOpenNotification } from '@/Components/Notificator'
 import IterationComponent from '@/Pages/Tasks/item/Pages/Remarks/Components/Iteration'
 import Loading from '../../../../../Components/Loading'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
+import { API_URL } from '@/api'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
@@ -43,6 +57,7 @@ const Remarks = () => {
   const [open, setOpen] = useState(true)
   const getNotification = useOpenNotification()
   const [selected, setSelected] = useState()
+  const { token } = useContext(TokenContext)
 
   const [
     { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
@@ -132,10 +147,43 @@ const Remarks = () => {
     setOpen((open) => !open)
   }, [open])
 
+  const onExportRemarks = useCallback(async () => {
+    try {
+      const {
+        data: { id: fileId },
+      } = await api.post(URL_EXPORT, {
+        url: `${API_URL}/apsd/remark/exportList`,
+        label: 'Свод замечаний',
+        sheetName: 'Выгрузка данных',
+        exportType: 'remarks',
+        columns: exportColumnConfig,
+        body: {
+          documentId: id,
+          sort: [
+            {
+              direction: sortQuery.direction,
+              property: sortQuery.key,
+            },
+          ],
+          token,
+        },
+      })
+
+      const { data } = await api.get(`${URL_EXPORT_FILE}${fileId}:${token}`, {
+        responseType: 'blob',
+      })
+
+      downloadFileWithReload(data, 'Замечания.xlsx')
+    } catch (e) {
+      const { response: { status = '0', data = '' } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, getNotification, id, sortQuery.direction, sortQuery.key, token])
+
   return (
     <SetAnswerStateContext.Provider value={setSelected}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-        <div className="flex items-center py-4 form-element-sizes-32 justify-between">
+        <div className="flex items-center  py-4 justify-between">
           <FilterForm
             className="mr-2"
             value={filter}
@@ -146,7 +194,14 @@ const Remarks = () => {
             fields={fields}
             inputWrapper={EmptyInputWrapper}
           />
-          <div>
+          <div className="flex items-center ml-auto">
+            <CreateRemark tabPermit={tabPermit} />
+            <LoadableSecondaryBlueButton
+              className="ml-2"
+              onClick={onExportRemarks}
+            >
+              Выгрузить свод замечаний
+            </LoadableSecondaryBlueButton>
             <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
                 onClick={ChangeAllToggls}
@@ -156,12 +211,6 @@ const Remarks = () => {
               </ButtonForIcon>
             </Tips>
           </div>
-        </div>
-        <div className="flex items-center ml-auto mb-4">
-          <CreateRemark tabPermit={tabPermit} />
-          <SecondaryBlueButton className="ml-2">
-            Выгрузить свод замечаний
-          </SecondaryBlueButton>
         </div>
         {loading ? (
           <Loading />
