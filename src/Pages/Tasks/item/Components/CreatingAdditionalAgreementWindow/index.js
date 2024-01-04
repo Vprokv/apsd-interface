@@ -38,6 +38,7 @@ export const ModalWindow = styled(ModalWindowWrapper)`
 `
 
 const rules = {
+  performersEmpls: [{ name: VALIDATION_RULE_REQUIRED }],
   executionDays: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
