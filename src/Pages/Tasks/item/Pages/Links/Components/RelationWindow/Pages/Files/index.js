@@ -29,6 +29,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import log from 'tailwindcss/lib/util/log'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -61,12 +62,21 @@ const Files = (props) => {
   const context = useContext(ContainerContext)
   const [files, setFiles] = useState([])
   const getNotification = useOpenNotification()
-  const onFileInput = useCallback(
-    (file) => {
-      setFiles([...files, ...file])
-    },
-    [files],
-  )
+  const onFileInput = useCallback((file) => {
+    setFiles((prev) => {
+      return file.reduce(
+        (acc, value) => {
+          if (
+            !acc.some(({ dsc_content }) => dsc_content === value?.dsc_content)
+          ) {
+            acc.push(value)
+          }
+          return acc
+        },
+        [...prev],
+      )
+    })
+  }, [])
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
