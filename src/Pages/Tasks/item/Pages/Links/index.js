@@ -43,6 +43,9 @@ import LinkOrgStructureComponent from '@/Pages/Tasks/item/Pages/Links/Components
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import ShareIcon from '@/Icons/ShareIcon'
+import { TabStateManipulation } from '@Components/Logic/Tab'
+import { useNavigate } from 'react-router-dom'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -74,24 +77,13 @@ const columns = [
   {
     id: 'documentTypeLabel',
     label: 'Документ',
-    className: 'h-10 flex items-center',
-    component: (props) => (
-      <BaseCell
-        className="flex items-center break-words break-all"
-        {...props}
-      />
-    ),
+    component: BaseCell,
     sizes: 200,
   },
   {
     id: 'description',
     label: 'Краткое содержание',
-    component: (props) => (
-      <BaseCell
-        className="flex items-center break-words break-all"
-        {...props}
-      />
-    ),
+    component: BaseCell,
     sizes: 250,
   },
   {
@@ -153,6 +145,8 @@ const Links = () => {
   const [selectState, setSelectState] = useState([])
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
+  const navigate = useNavigate()
 
   const getNotification = useOpenNotification()
 
@@ -307,6 +301,11 @@ const Links = () => {
     setRenderPreviewWindowState(false)
   }, [])
 
+  const onShareLink = useCallback(
+    () => openTabOrCreateNewTab(navigate(selectState[0]?.externalLink)),
+    [navigate, openTabOrCreateNewTab, selectState],
+  )
+
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4 form-element-sizes-32">
@@ -332,6 +331,15 @@ const Links = () => {
             </SecondaryGreyButton>
           </FormWindow>
           <LinksWindow />
+          <Tips text="Перейти по ссылке">
+            <ButtonForIcon
+              onClick={onShareLink}
+              disabled={!selectState[0]?.externalLink}
+              className="mr-2 color-text-secondary"
+            >
+              <Icon icon={ShareIcon} />
+            </ButtonForIcon>
+          </Tips>
           <Tips text="Скачать файл">
             <ButtonForIcon
               onClick={downLoadContent}
