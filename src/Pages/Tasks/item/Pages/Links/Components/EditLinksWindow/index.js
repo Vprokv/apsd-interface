@@ -1,8 +1,7 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { ButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import EditIcon from '@/Icons/editIcon'
-import { CreateLinkComponent } from '@/Pages/Tasks/item/Pages/Links/styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import {
@@ -15,7 +14,7 @@ import LinkDate from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/
 import LinkType from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/LinkType'
 import Comment from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow/Components/Comment'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
-import { URL_LINK_UPDATE } from '@/ApiList'
+import { URL_ENTITY_LIST, URL_LINK_UPDATE } from '@/ApiList'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -43,7 +42,7 @@ const columns = [
   {
     id: 'Document',
     label: 'Документ',
-    component: ({ ParentValue: { documentTypeLabel} }) => (
+    component: ({ ParentValue: { documentTypeLabel } }) => (
       <BaseCell value={`${documentTypeLabel}`} />
     ),
     sizes: 215,
@@ -90,10 +89,31 @@ const EditLinksWindow = ({ value }) => {
   const [link, setLink] = useState(() => new Map())
   const [date, setDate] = useState(() => new Map())
   const getNotification = useOpenNotification()
+  const [typeLink, setTypeLink] = useState({})
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
   })
+
+  useEffect(() => {
+    ;(async (query) => {
+      try {
+        const { data } = await api.post(URL_ENTITY_LIST, {
+          type: 'ddt_dict_link_type',
+          query,
+        })
+        return setTypeLink(
+          data.reduce((acc, { r_object_id, dss_name }) => {
+            acc[dss_name] = r_object_id
+            return acc
+          }, {}),
+        )
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
+    })()
+  }, [api, getNotification])
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -113,7 +133,7 @@ const EditLinksWindow = ({ value }) => {
 
   const onSave = useCallback(async () => {
     try {
-      const response = await Promise.all(
+      const [{ status }] = await Promise.all(
         value.map(
           ({
             comment: defaultComment,
@@ -125,7 +145,8 @@ const EditLinksWindow = ({ value }) => {
             return api.post(URL_LINK_UPDATE, {
               ...item,
               linkType:
-                (link.has(contentId) && link.get(contentId)) || linkType,
+                (link.has(contentId) && link.get(contentId)) ||
+                typeLink[linkType],
               linkDate:
                 (date.has(contentId) && date.get(contentId)) || linkDate,
               comment:
@@ -135,14 +156,10 @@ const EditLinksWindow = ({ value }) => {
           },
         ),
       )
-      response.flat().map((item) => {
-        item.then(({ status }) =>
-          getNotification(customMessagesFuncMap[status]()),
-        )
-      })
-      changeModalState(false)
+      getNotification(customMessagesFuncMap[status]())
+
+      changeModalState(false)()
       setTabState(SetUnFetchedState())
-      getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status = 0, data = '' } = {} } = e
 
@@ -156,6 +173,7 @@ const EditLinksWindow = ({ value }) => {
     getNotification,
     link,
     setTabState,
+    typeLink,
     value,
   ])
 
