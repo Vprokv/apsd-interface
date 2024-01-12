@@ -12,9 +12,11 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import CheckBox from '@/Components/Inputs/CheckBox'
 
 const ColumnComponent = ({ value, label, onInput, key }) => (
-  <RowSettingComponent key={key} onClick={onInput}>
+  <RowSettingComponent key={key}>
     <CheckBox value={value} onInput={onInput} />
-    <div className={'word-break-all'}>{label}</div>
+    <div onClick={onInput} className={'word-break-all w-full'}>
+      {label}
+    </div>
   </RowSettingComponent>
 )
 
