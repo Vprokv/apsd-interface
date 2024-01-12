@@ -1,6 +1,4 @@
 import styled from 'styled-components'
-import ModalWindowWrapper from '@/Components/ModalWindow'
-import ModalWindowComponent from '@Components/Components/ModalWindow'
 import ContextMenu from "@Components/Components/ContextMenu";
 
 export const SettingContextMenu = styled(ContextMenu)`

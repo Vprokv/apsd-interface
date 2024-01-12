@@ -124,7 +124,7 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
 
   const { dss_first_name, dss_last_name, dss_middle_name } =
     useRecoilValue(userAtom)
-  const [{ filter, sortQuery, ...tabState }, setTabState] = useTabItem({
+  const [{ filter = {}, sortQuery, ...tabState }, setTabState] = useTabItem({
     stateId: WINDOW_ADD_SUBSCRIPTION,
   })
 
@@ -145,6 +145,8 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
   //   })
   //   return data
   // }, [api])
+
+  console.log(filter, 'filter')
 
   const sideBar = useMemo(
     () => (
