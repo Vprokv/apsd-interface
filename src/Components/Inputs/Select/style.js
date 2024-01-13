@@ -21,9 +21,15 @@ export const StyledSelect = styled(SelectComponent)`
   }
 `
 
-export const ToggleIndicatorIconComponent = () => (
-  <Icon icon={angleIcon} className="color-text-secondary" size={12} />
-)
+export const ToggleIndicatorIconComponent = ({ isDisplayed }) => {
+  return (
+    <Icon
+      icon={angleIcon}
+      className={`color-text-secondary ${isDisplayed ? '' : 'rotate-180'}`}
+      size={12}
+    />
+  )
+}
 
 export const RemoveIconComponent = () => (
   <Icon icon={closeIcon} className="color-text-secondary" size={12} />

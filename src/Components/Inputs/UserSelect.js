@@ -84,6 +84,7 @@ const UserSelect = (props) => {
       <SelectComponent
         {...props}
         loadFunction={loadRefSelectFunc}
+        closeOnSelect={true}
         className="mr-0"
       />
       <>
