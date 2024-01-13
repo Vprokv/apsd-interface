@@ -21,11 +21,9 @@ export const columnsLifeCycleHistory = [
     sizes: 80,
   },
   {
-    id: 'eventStatus',
+    id: 'statusDisplay',
     label: 'Состояние',
-    component: ({ ParentValue: { eventStatus } }) => (
-      <BaseCell value={eventStatus} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 180,
   },
   {
@@ -70,9 +68,7 @@ export const columnsLifeCycleHistory = [
   {
     id: 'description',
     label: 'Описание',
-    component: ({ ParentValue: { description } }) => (
-      <BaseCell value={description} className="flex items-center" />
-    ),
+    component: BaseCell,
     sizes: 361,
   },
 ]
