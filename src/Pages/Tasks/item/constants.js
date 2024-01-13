@@ -20,6 +20,7 @@ import RejectWithRemarks from './Icons/RejectWithRemarks.svg'
 import Repeat from './Icons/Repeat.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 import UploadDoc from './Icons/UploadDoc.svg'
+import LifeCycleHistory from '@/Pages/Tasks/item/Pages/LifeCycleHistory'
 
 export const DocumentTypeContext = React.createContext(ITEM_DOCUMENT)
 
@@ -75,6 +76,11 @@ export const defaultPages = {
     path: 'remarks',
     key: 'remarks',
     Component: Remarks,
+  },
+  lifecycle_history: {
+    path: 'lifecycle_history',
+    key: 'lifecycle_history',
+    Component: LifeCycleHistory,
   },
 }
 

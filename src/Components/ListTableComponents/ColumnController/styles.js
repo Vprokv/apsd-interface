@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import ContextMenu from "@Components/Components/ContextMenu";
+import ContextMenu from '@Components/Components/ContextMenu'
 
 export const SettingContextMenu = styled(ContextMenu)`
   background: #ffffff;

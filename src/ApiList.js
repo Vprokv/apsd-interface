@@ -119,6 +119,10 @@ export const URL_REMARK_UPDATE = '/apsd/remark/update'
 export const URL_REMARK_PERMIT = '/apsd/remark/permit'
 export const URL_REMARK_EDIT_SET_REMARK = '/apsd/remark/edit/vault'
 
+//LIFE CYCLE HISTORY
+export const URL_HISTORY_LIST = '/apsd/history/list'
+export const URL_HISTORY_LIST_FILTER = '/apsd/history/list/filters'
+
 // ENTITY
 export const URL_ENTITY_LIST = '/sedo/entity/list'
 
