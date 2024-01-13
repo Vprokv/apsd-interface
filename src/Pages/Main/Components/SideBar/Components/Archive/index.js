@@ -66,7 +66,7 @@ const Archive = ({ onOpenNewTab, width, collapsedState }) => {
                     />
                   </SearchInput>
                   <ContextArchiveLoading.Provider value={archiveLoadingState}>
-                    <ScrollBar>
+                    <ScrollBar className="mr-2">
                       <ArchiveItem
                         loading={loading}
                         setLoading={setLoading}
