@@ -61,21 +61,23 @@ const PreviewContentTabContainWindow = (Component) => {
     )
 
     const onGetUrlByMimeType = useCallback(async () => {
-      if (value?.content) {
-        const { mimeType } = value
-        if (mimeType) {
-          return await parseUrlFunc({ mimeType })
-        } else {
-          const {
-            data: blob,
-            headers: { 'content-type': mimeType },
-          } = await getContent()
-          return await parseUrlFunc({ mimeType, blob })
-        }
+      const { mimeType } = value
+      if (mimeType) {
+        return await parseUrlFunc({ mimeType })
+      } else {
+        const {
+          data: blob,
+          headers: { 'content-type': mimeType },
+        } = await getContent()
+        return await parseUrlFunc({ mimeType, blob })
       }
     }, [getContent, parseUrlFunc, value])
 
-    useEffect(async () => await onGetUrlByMimeType(), [onGetUrlByMimeType])
+    useEffect(async () => {
+      if (value?.did_tom && value?.content) {
+        await onGetUrlByMimeType()
+      }
+    }, [onGetUrlByMimeType, value?.content, value?.did_tom])
 
     // const url = useMemo(() => {
     //   let url = ''

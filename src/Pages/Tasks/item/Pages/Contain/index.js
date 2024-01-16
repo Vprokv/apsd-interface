@@ -88,6 +88,8 @@ const Contain = () => {
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
+  console.log(selectState, 'selectState')
+
   const [documentState, setDocumentState] = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
@@ -305,7 +307,7 @@ const Contain = () => {
   )
 
   const disabled = useMemo(
-    () => !selectState?.did_tom && !selectState?.content,
+    () => !selectState?.did_tom && !selectState?.content?.contentId,
     [selectState],
   )
 
