@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState, useMemo } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { TreeStateContext } from '@Components/Components/Tables/Plugins/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
@@ -141,7 +141,7 @@ const TitleNameComponent = ({
   }, [])
 
   const annulateIds = useMemo(() => {
-    if (selectState.includes(({ id }) => id === ParentValue.id)) {
+    if (selectState?.id === ParentValue?.id) {
       const arr = []
 
       parseAnnulateArr({ ...ParentValue, arr })

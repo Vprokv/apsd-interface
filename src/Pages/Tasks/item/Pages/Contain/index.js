@@ -19,7 +19,9 @@ import {
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import { DeepSelect } from '@Components/Components/Tables/Plugins/selectable'
+import {
+  SingleSelect,
+} from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -77,7 +79,7 @@ const Contain = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { id } = useParams()
-  const [selectState, setSelectState] = useState([])
+  const [selectState, setSelectState] = useState({})
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
   const [addLinkState, setAddLinkState] = useState({})
@@ -155,13 +157,17 @@ const Contain = () => {
 
   const deleteData = useCallback(async () => {
     try {
-      const response = await Promise.all(
-        selectState.map(({ id }) =>
-          api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
-        ),
-      )
+      const response = await api.post(URL_TITLE_CONTAIN_DELETE, {
+        partId: selectState.id,
+      })
+
+      //   Promise.all(
+      //   selectState.map(({ id }) =>
+      //     api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
+      //   ),
+      // )
       const removeDeletedDocs = (acc, { id, childs, ...rest }) => {
-        if (selectState.every((r) => r.id !== id)) {
+        if (selectState.id !== id) {
           acc.push({
             id,
             ...rest,
@@ -172,7 +178,7 @@ const Contain = () => {
         return acc
       }
       updateData(data.reduce(removeDeletedDocs, []))
-      setSelectState([])
+      setSelectState({})
       getNotification(customMessagesFuncMap[response[0].status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -299,7 +305,7 @@ const Contain = () => {
   )
 
   const disabled = useMemo(
-    () => !selectState[0]?.did_tom && !selectState[0]?.content,
+    () => !selectState?.did_tom && !selectState?.content,
     [selectState],
   )
 
@@ -312,22 +318,18 @@ const Contain = () => {
 
   const onShowContentByTypeButton = useCallback(
     (value) => () => {
-      setSelectState((prevValue) => {
-        const prev = [...prevValue]
-        prev.splice(0, 0, value)
-        return prev
-      })
+      // setSelectState((prevValue) => {
+      //   const prev = [...prevValue]
+      //   prev.splice(0, 0, value)
+      //   return prev
+      // })
       setRenderPreviewWindowState(true)
     },
     [],
   )
 
   const closeWindow = useCallback(() => {
-    setSelectState((prev) => {
-      const prevState = [...prev]
-      prevState.splice(0, 1)
-      return prevState
-    })
+    setSelectState({})
     setRenderPreviewWindowState(false)
   }, [])
 
@@ -453,12 +455,12 @@ const Contain = () => {
                   component: LeafTableComponent,
                 },
                 selectPlugin: {
-                  driver: DeepSelect,
+                  driver: SingleSelect,
                   component: CheckBox,
                   style: { margin: 'auto 0' },
                   valueKey: 'id',
                   returnObjects: true,
-                  nestedDataKey: 'childs',
+                  // nestedDataKey: 'childs',
                 },
                 movePlugin: {
                   id: TASK_ITEM_STRUCTURE,

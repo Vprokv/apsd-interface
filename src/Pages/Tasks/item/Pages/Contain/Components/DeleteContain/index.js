@@ -26,13 +26,6 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
     [],
   )
 
-  const iconClick = useCallback(() => {
-    if (!selectState.length > 0) {
-      return
-    }
-    changeModalState(true)()
-  }, [changeModalState, selectState.length])
-
   const handleConfirm = useCallback(async () => {
     await onDeleteData()
     changeModalState(false)()
@@ -41,7 +34,11 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
   return (
     <>
       <Tips text="Удалить">
-        <ButtonForIcon onClick={iconClick} className="mr-2">
+        <ButtonForIcon
+          disabled={!Object.keys(selectState)?.length || selectState?.tomId}
+          onClick={changeModalState(true)}
+          className="mr-2"
+        >
           <Icon icon={DeleteIcon} />
         </ButtonForIcon>
       </Tips>
