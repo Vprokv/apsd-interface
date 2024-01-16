@@ -30,14 +30,15 @@ const PreviewContentTabContainWindow = (Component) => {
           {
             type: 'ddt_document_content',
             column: 'dsc_content',
-            id: value[0]?.content?.contentId,
+            id: value?.content?.contentId,
           },
           { responseType: 'blob' },
         )
       } catch (e) {
-        console.log(e)
+        const { response: { status = 0, data = '' } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, value])
+    }, [api, getNotification, value])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -52,7 +53,7 @@ const PreviewContentTabContainWindow = (Component) => {
             setUrl(url)
           }
         } else {
-          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value[0].content.contentId}:${token}`
+          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value?.content.contentId}:${token}`
           setUrl(url)
         }
       },
@@ -60,8 +61,8 @@ const PreviewContentTabContainWindow = (Component) => {
     )
 
     const onGetUrlByMimeType = useCallback(async () => {
-      if (value?.length) {
-        const [{ mimeType }] = value
+      if (value?.content) {
+        const { mimeType } = value
         if (mimeType) {
           return await parseUrlFunc({ mimeType })
         } else {
@@ -91,7 +92,7 @@ const PreviewContentTabContainWindow = (Component) => {
         if (fileData.data instanceof Error) {
           getNotification({
             type: NOTIFICATION_TYPE_ERROR,
-            message: `${value[0]?.content?.contentId} документ не найден`,
+            message: `${value?.content?.contentId} документ не найден`,
           })
         } else {
           downloadFile(fileData)

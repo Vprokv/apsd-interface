@@ -318,11 +318,7 @@ const Contain = () => {
 
   const onShowContentByTypeButton = useCallback(
     (value) => () => {
-      // setSelectState((prevValue) => {
-      //   const prev = [...prevValue]
-      //   prev.splice(0, 0, value)
-      //   return prev
-      // })
+      setSelectState(value)
       setRenderPreviewWindowState(true)
     },
     [],
