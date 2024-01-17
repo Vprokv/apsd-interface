@@ -282,11 +282,15 @@ const Links = () => {
 
   const onDoubleClick = useCallback(
     (value) => () => {
-      setSelectState((prevValue) => {
-        const prev = [...prevValue]
-        prev.splice(0, 0, value)
-        return prev
-      })
+      value.childId && value.childType
+        ? openTabOrCreateNewTab(
+            navigate(`/document/${value.childId}/${value.childType}`),
+          )
+        : setSelectState((prevValue) => {
+            const prev = [...prevValue]
+            prev.splice(0, 0, value)
+            return prev
+          })
       setRenderPreviewWindowState(true)
     },
     [],
