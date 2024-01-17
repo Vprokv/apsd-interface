@@ -282,9 +282,9 @@ const Links = () => {
 
   const onDoubleClick = useCallback(
     (value) => () => {
-      value.childId && value.childType
+      value?.childId && value?.childType
         ? openTabOrCreateNewTab(
-            navigate(`/document/${value.childId}/${value.childType}`),
+            navigate(`/document/${value?.childId}/${value?.childType}`),
           )
         : setSelectState((prevValue) => {
             const prev = [...prevValue]
