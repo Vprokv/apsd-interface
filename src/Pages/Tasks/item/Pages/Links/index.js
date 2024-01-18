@@ -75,12 +75,6 @@ const plugins = {
 
 const columns = [
   {
-    id: 'documentTypeLabel',
-    label: 'Документ',
-    component: BaseCell,
-    sizes: 200,
-  },
-  {
     id: 'description',
     label: 'Краткое содержание',
     component: BaseCell,
@@ -93,10 +87,40 @@ const columns = [
     sizes: 100,
   },
   {
+    id: 'linkDate',
+    label: 'Дата связи',
+    component: BaseCell,
+    sizes: 130,
+  },
+  {
     id: 'stageName',
     label: 'Этап',
     component: BaseCell,
     sizes: 140,
+  },
+  {
+    id: 'documentTypeLabel',
+    label: 'Тип документа',
+    component: BaseCell,
+    sizes: 200,
+  },
+  {
+    id: 'regNumber',
+    label: 'Шифр/ Рег.номер',
+    component: BaseCell,
+    sizes: 130,
+  },
+  {
+    id: 'regDate',
+    label: 'Дата регистрации',
+    component: BaseCell,
+    sizes: 130,
+  },
+  {
+    id: 'linkType',
+    label: 'Тип связи',
+    component: BaseCell,
+    sizes: 200,
   },
   {
     id: 'comment',
@@ -107,19 +131,13 @@ const columns = [
         {...props}
       />
     ),
-    sizes: 120,
+    sizes: 250,
   },
   {
-    id: 'linkDate',
-    label: 'Дата связи',
+    id: 'fileSize',
+    label: 'Размер файла',
     component: BaseCell,
-    sizes: 100,
-  },
-  {
-    id: 'linkType',
-    label: 'Тип связи',
-    component: BaseCell,
-    sizes: 220,
+    sizes: 60,
   },
 ]
 
