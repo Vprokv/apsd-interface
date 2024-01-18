@@ -77,65 +77,70 @@ const columns = [
   {
     id: 'description',
     label: 'Краткое содержание',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 250,
   },
   {
     id: 'authorFullName',
     label: 'Автор',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 100,
   },
   {
     id: 'linkDate',
     label: 'Дата связи',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 130,
   },
   {
     id: 'stageName',
     label: 'Этап',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 140,
   },
   {
     id: 'documentTypeLabel',
     label: 'Тип документа',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 200,
   },
   {
     id: 'regNumber',
     label: 'Шифр/ Рег.номер',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 130,
   },
   {
     id: 'regDate',
     label: 'Дата регистрации',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 130,
   },
   {
     id: 'linkType',
     label: 'Тип связи',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 200,
   },
   {
     id: 'comment',
     label: 'Комментарий',
-    component: (props) => (
-      <BaseCell
-        className="flex items-center break-words break-all"
-        {...props}
-      />
-    ),
+    className: 'min-h-4',
+    component: BaseCell,
     sizes: 250,
   },
   {
     id: 'fileSize',
     label: 'Размер файла',
+    className: 'min-h-4',
     component: BaseCell,
     sizes: 60,
   },
