@@ -135,23 +135,27 @@ const CreateTitleDepartment = ({
                 <NestedButton
                   level={level}
                   type="button"
-                  className={`flex items-center w-full h-10 border-b ${
+                  className={`flex items-center w-full border-b mr-2 ${
                     selected === id ? 'bg-light-gray' : ''
                   }`}
                   onClick={() => setSelected(id)}
                 >
-                  <Icon
-                    icon={angleIcon}
-                    size={10}
-                    onClick={toggleDisplayedFlag}
-                    className={`${
-                      isDisplayed ? 'rotate-180' : ''
-                    } mt-1 color-text-secondary`}
-                  />
-                  <span className="mr-auto ml-2">{name}</span>
+                  <div className="flex items-center h-full min-h-full py-2">
+                    <Icon
+                      icon={angleIcon}
+                      size={10}
+                      onClick={toggleDisplayedFlag}
+                      className={`${
+                        isDisplayed ? 'rotate-180 h-full' : ''
+                      } mt-1 mr-1 color-text-secondary`}
+                    />
+                    <div className="text-left flex items-center h-full">
+                      {name}
+                    </div>
+                  </div>
                 </NestedButton>
                 {isDisplayed && (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col justify-start">
                     {sections.map(renderEntities(level + 1))}
                   </div>
                 )}
@@ -162,12 +166,12 @@ const CreateTitleDepartment = ({
           <NestedButton
             level={level}
             type="button"
-            className={`flex items-center w-full h-10 border-b ${
+            className={`flex items-center h-full border-b ${
               selected === id ? 'bg-light-gray' : ''
             }`}
             onClick={() => setSelected(id)}
           >
-            <span className="mr-auto ml-2">{name}</span>
+            <div className="text-left h-full flex items-center py-2 ">{name}</div>
           </NestedButton>
         ),
     [selected],
