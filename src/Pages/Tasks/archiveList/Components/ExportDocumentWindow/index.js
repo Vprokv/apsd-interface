@@ -32,7 +32,6 @@ import { Validation } from '@Components/Logic/Validator'
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
   min-height: 400px;
-  height: 45%;
   margin: auto;
 `
 

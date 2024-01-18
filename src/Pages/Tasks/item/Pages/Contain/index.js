@@ -19,9 +19,7 @@ import {
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import {
-  SingleSelect,
-} from '@Components/Components/Tables/Plugins/selectable'
+import { SingleSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -87,8 +85,6 @@ const Contain = () => {
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
-
-  console.log(selectState, 'selectState')
 
   const [documentState, setDocumentState] = useTabItem({
     stateId: ITEM_DOCUMENT,
@@ -487,7 +483,7 @@ const Contain = () => {
             // onTableInput
           />
         </ShowContentByTypeButtonContext.Provider>
-        <ContentWindow
+        <ContentWindow //TODO объединить окна и сделать push ActionComponent
           open={renderPreviewWindow}
           onClose={closeWindow}
           value={selectState}

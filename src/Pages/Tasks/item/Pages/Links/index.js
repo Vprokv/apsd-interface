@@ -162,7 +162,6 @@ const defaultSortQuery = {
   direction: 'DESC',
 }
 
-
 const Links = () => {
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
@@ -330,8 +329,8 @@ const Links = () => {
   }, [])
 
   const onShareLink = useCallback(
-    () => openTabOrCreateNewTab(navigate(selectState[0]?.externalLink)),
-    [navigate, openTabOrCreateNewTab, selectState],
+    () => window.open(selectState[0]?.externalLink, '_blank'),
+    [selectState],
   )
 
   return (
