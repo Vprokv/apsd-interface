@@ -60,6 +60,7 @@ import { columns } from './configs'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import ExportDocumentWindowContainWrapper from '@/Pages/Tasks/item/Pages/Contain/Components/ExportDocumentWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -83,8 +84,12 @@ const Contain = () => {
   const [addLinkState, setAddLinkState] = useState({})
   const [addEditLinkState, setEditLinkState] = useState({})
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
+  const [ExportDocumentPreviewWindow, setExportDocumentPreviewWindowState] =
+    useState(false)
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
+
+  console.log(selectState, 'selectState')
 
   const [documentState, setDocumentState] = useTabItem({
     stateId: ITEM_DOCUMENT,
@@ -204,6 +209,14 @@ const Contain = () => {
     })
   }, [data, loadData, updateData])
 
+  const onShowExportWindow = useCallback(
+    (value) => () => {
+      setSelectState(value)
+      setExportDocumentPreviewWindowState(true)
+    },
+    [],
+  )
+
   const containActions = useMemo(
     () => ({
       addDepartment: (id) =>
@@ -265,8 +278,9 @@ const Contain = () => {
       // TODO: сделать нормальный bypass контроллера и параметров. Вызов без контроллера. Но с параметрами
       loadData: loadData(),
       selectState,
+      onShowExportWindow,
     }),
-    [loadData, selectState],
+    [loadData, onShowExportWindow, selectState],
   )
 
   const updateTreePluginState = useCallback(
@@ -325,6 +339,11 @@ const Contain = () => {
   const closeWindow = useCallback(() => {
     setSelectState({})
     setRenderPreviewWindowState(false)
+  }, [])
+
+  const closeExportWindow = useCallback(() => {
+    setSelectState({})
+    setExportDocumentPreviewWindowState(false)
   }, [])
 
   const changeOpenState = useCallback(() => {
@@ -487,6 +506,11 @@ const Contain = () => {
           open={renderPreviewWindow}
           onClose={closeWindow}
           value={selectState}
+        />
+        <ExportDocumentWindowContainWrapper
+          open={ExportDocumentPreviewWindow}
+          onClose={closeExportWindow}
+          {...selectState}
         />
       </div>
     </LoadContainChildrenContext.Provider>

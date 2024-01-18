@@ -2,10 +2,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import {
-  URL_DOWNLOAD_CONTENT,
-  URL_ENTITY_LIST,
-} from '@/ApiList'
+import { URL_DOWNLOAD_CONTENT, URL_ENTITY_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -38,37 +35,13 @@ export const FilterForm = styled(Form)`
   height: 100%;
 `
 
-const titlesMap = {
-  ddt_startup_complex_type_doc: 'Экспорт титула',
-  ddt_project_calc_type_doc: 'Экспорт тома',
-}
-
-const fieldsMap = {
-  ddt_startup_complex_type_doc: [
-    'email',
-    'exportType',
-    'statuses',
-    'archiveVersion',
-  ],
-  ddt_project_calc_type_doc: ['email', 'exportType', 'archiveVersion'],
-}
-
-const rulesMap = {
-  ddt_startup_complex_type_doc: {
-    exportType: [{ name: VALIDATION_RULE_REQUIRED }],
-    email: [{ name: VALIDATION_RULE_REQUIRED }],
-  },
-  ddt_project_calc_type_doc: {
-    email: [{ name: VALIDATION_RULE_REQUIRED }],
-  },
-}
-
-const ExportDocumentWindow = ({
+const ExportDocumentContainWindow = ({
   title,
   open,
   onClose,
   fields,
   id,
+  tomId,
   type,
   rules,
 }) => {
@@ -78,50 +51,28 @@ const ExportDocumentWindow = ({
     archiveVersion: true,
     email: dss_email,
   })
-  const { setOpen } = useContext(OpenWindowContext)
 
   const getNotification = useOpenNotification()
 
   const onExport = useCallback(async () => {
     try {
       await api.post(URL_DOWNLOAD_CONTENT, {
-        documentType: type,
-        documentId: id,
+        documentType: tomId ? 'ddt_project_calc_type_doc' : 'export_section',
+        documentId: tomId || id,
         ...filter,
       })
       getNotification({
         type: NOTIFICATION_TYPE_INFO,
         message: 'Выгрузка поступит на эл. почту',
       })
-
-      //todo непонятно надо ли выпилить скачивание
-
-      // try {
-      //   const result = await api.post(
-      //     URL_DOWNLOAD_FILE,
-      //     {
-      //       type: tableName,
-      //       column: 'dsc_content',
-      //       id: filekey,
-      //     },
-      //     { responseType: 'blob' },
-      //   )
-      //   setOpen(false)()
-      //   downloadFile(result)
-      //   setFilter({ archiveVersion: true })
-      // } catch (e) {
-      //   getNotification({
-      //     type: NOTIFICATION_TYPE_ERROR,
-      //     message: 'Ошибка получания архива',
-      //   })
-      // }
+      onClose()
     } catch (e) {
       getNotification({
         type: NOTIFICATION_TYPE_ERROR,
         message: 'Ошибка формирования архива',
       })
     }
-  }, [api, filter, getNotification, id, type])
+  }, [api, filter, getNotification, id, onClose, tomId])
 
   return (
     <StandardSizeModalWindow title={title} open={open} onClose={onClose}>
@@ -136,10 +87,7 @@ const ExportDocumentWindow = ({
         {({ onSubmit, ...props }) => (
           <FilterForm {...props}>
             <div className="flex items-center justify-end mt-20">
-              <SecondaryGreyButton
-                className="w-60 mr-4"
-                onClick={setOpen(false)}
-              >
+              <SecondaryGreyButton className="w-60 mr-4" onClick={onClose}>
                 Отменить
               </SecondaryGreyButton>
               <LoadableSecondaryOverBlueButton
@@ -157,7 +105,7 @@ const ExportDocumentWindow = ({
   )
 }
 
-ExportDocumentWindow.propTypes = {
+ExportDocumentContainWindow.propTypes = {
   title: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
@@ -167,9 +115,33 @@ ExportDocumentWindow.propTypes = {
   rules: PropTypes.object,
 }
 
-const ExportDocumentWindowWrapper = (props) => {
-  const { type } = props
+const ExportDocumentWindowContainWrapper = (props) => {
+  const { tomId } = props
   const api = useContext(ApiContext)
+
+  const title = useMemo(
+    () => (tomId ? 'Экспорт тома' : 'Экспорт раздела'),
+    [tomId],
+  )
+
+  const rules = useMemo(
+    () =>
+      tomId
+        ? {
+            exportType: [{ name: VALIDATION_RULE_REQUIRED }],
+            email: [{ name: VALIDATION_RULE_REQUIRED }],
+          }
+        : { email: [{ name: VALIDATION_RULE_REQUIRED }] },
+    [tomId],
+  )
+
+  const fieldsMap = useMemo(
+    () =>
+      !tomId
+        ? ['email', 'exportType', 'statuses', 'archiveVersion']
+        : ['email', 'exportType', 'archiveVersion'],
+    [tomId],
+  )
 
   const columnsMap = useMemo(
     () => [
@@ -225,21 +197,21 @@ const ExportDocumentWindowWrapper = (props) => {
     [api],
   )
   return (
-    <ExportDocumentWindow
+    <ExportDocumentContainWindow
       {...props}
-      title={titlesMap[type]}
-      rules={rulesMap[type]}
+      title={title}
+      rules={rules}
       fields={useMemo(
-        () => columnsMap.filter(({ id }) => fieldsMap[type]?.includes(id)),
-        [columnsMap, type],
+        () => columnsMap.filter(({ id }) => fieldsMap?.includes(id)),
+        [columnsMap, fieldsMap],
       )}
     />
   )
 }
 
-ExportDocumentWindowWrapper.propTypes = {
+ExportDocumentWindowContainWrapper.propTypes = {
   type: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
 }
 
-export default ExportDocumentWindowWrapper
+export default ExportDocumentWindowContainWrapper

@@ -74,8 +74,15 @@ const TitleNameComponent = ({
     setOpen(false)
   }, [])
   const api = useContext(ApiContext)
-  const { loadData, addDepartment, addVolume, addLink, editLink, selectState } =
-    useContext(LoadContainChildrenContext)
+  const {
+    loadData,
+    addDepartment,
+    addVolume,
+    addLink,
+    editLink,
+    selectState,
+    onShowExportWindow,
+  } = useContext(LoadContainChildrenContext)
 
   const getNotification = useOpenNotification()
   const [open, setOpen] = useState(false)
@@ -316,7 +323,10 @@ const TitleNameComponent = ({
               <StyledItem className="mb-3 font-size-12" onClick={onApprove}>
                 Утвердить состав титула
               </StyledItem>
-              <StyledItem className="mb-3 font-size-12">
+              <StyledItem
+                onClick={onShowExportWindow(ParentValue)}
+                className="mb-3 font-size-12"
+              >
                 Экспорт данных
               </StyledItem>
               {!tomId && (
