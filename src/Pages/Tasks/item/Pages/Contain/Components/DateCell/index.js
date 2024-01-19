@@ -28,10 +28,7 @@ const DateCell = ({ real, plan, onInput, editable, ParentValue }) => {
       const day = dayjs(value, PRESENT_DATE_FORMAT).format(
         DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
       )
-      console.log(day, 'day')
-
       onInput(day, id, ParentValue)
-      console.log(2222)
       toggleRenderContextMenu(false)()
     },
     [ParentValue, onInput, toggleRenderContextMenu],

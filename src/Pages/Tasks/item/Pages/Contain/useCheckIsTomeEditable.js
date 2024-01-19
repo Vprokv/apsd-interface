@@ -2,8 +2,8 @@ import { isObject } from 'lodash'
 
 // const STATUS_SEND = 'Передан'
 
-const useCheckIsTomeEditable = ({ action }) =>
-  isObject(action) && action.saveTom
+const useCheckIsTomeEditable = ({ action: { saveTom } = {} }, key) =>
+  isObject(saveTom) && saveTom[key]
 // && status === STATUS_SEND
 
 export default useCheckIsTomeEditable

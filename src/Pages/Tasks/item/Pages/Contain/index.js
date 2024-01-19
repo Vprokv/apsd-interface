@@ -89,8 +89,6 @@ const Contain = () => {
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
-  console.log(selectState, 'selectState')
-
   const [documentState, setDocumentState] = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
