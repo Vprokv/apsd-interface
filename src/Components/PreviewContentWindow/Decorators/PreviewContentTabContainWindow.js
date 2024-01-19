@@ -53,7 +53,7 @@ const PreviewContentTabContainWindow = (Component) => {
             setUrl(url)
           }
         } else {
-          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value?.content.contentId}:${token}`
+          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value?.content?.contentId}:${token}`
           setUrl(url)
         }
       },
@@ -61,7 +61,7 @@ const PreviewContentTabContainWindow = (Component) => {
     )
 
     const onGetUrlByMimeType = useCallback(async () => {
-      const { mimeType } = value
+      const { content: { mimeType } = {} } = value
       if (mimeType) {
         return await parseUrlFunc({ mimeType })
       } else {
@@ -74,10 +74,10 @@ const PreviewContentTabContainWindow = (Component) => {
     }, [getContent, parseUrlFunc, value])
 
     useEffect(async () => {
-      if (value?.did_tom && value?.content) {
+      if (value?.tomId) {
         await onGetUrlByMimeType()
       }
-    }, [onGetUrlByMimeType, value?.content, value?.did_tom])
+    }, [onGetUrlByMimeType, value])
 
     // const url = useMemo(() => {
     //   let url = ''
