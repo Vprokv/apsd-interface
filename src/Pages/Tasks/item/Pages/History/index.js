@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { FilterForm } from '../../styles'
 import DatePickerComponent from '@/Components/Inputs/DatePicker'
@@ -259,11 +259,24 @@ const History = () => {
     sort,
   ])
 
-  const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
-    loadData,
-    tabState,
-    setTabState,
-  )
+  const [
+    {
+      data: { content = [], total = 0 } = {},
+      loading,
+      shouldReloadData,
+      reloadData,
+    },
+  ] = useAutoReload(loadData, tabState, setTabState)
+
+  useEffect(() => {
+    // заставляем перезагрузить данные на первом рендере, в случаее если ранее данные для этой вкладки
+    // были загруженны и теперь мы на нее повторно вернулись
+    // при этом пользуемся стандартным функционалам загрузки по триггерам
+    if (!shouldReloadData) {
+      reloadData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="px-4 pb-4 w-full overflow-hidden flex-container">
