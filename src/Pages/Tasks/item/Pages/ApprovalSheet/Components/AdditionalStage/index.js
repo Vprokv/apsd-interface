@@ -136,7 +136,7 @@ const AdditionalStage = (props) => {
     if (selected?.permit?.send) {
       try {
         await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND, {
-          performersIds: [selected.id],
+          approvers: [selected.id],
           documentId,
           documentType,
         })
@@ -171,7 +171,7 @@ const AdditionalStage = (props) => {
     if (selected?.permit?.revoke) {
       try {
         await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE, {
-          performersIds: [selected.id],
+          approvers: [selected.id],
           documentId,
           documentType,
         })
