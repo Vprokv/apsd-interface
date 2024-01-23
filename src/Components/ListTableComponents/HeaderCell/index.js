@@ -2,14 +2,14 @@ import PropTypes from 'prop-types'
 
 import { Resizer } from './styles'
 
-const HeaderCell = ({ label, onResize, onMove, onContextMenu }) => {
+const HeaderCell = ({ label, onResize, onMove, onContextMenu, id }) => {
   return (
     <div
       className="whitespace-nowrap font-size-12 color-text-secondary flex items-center py-3 relative w-full"
       onMouseDown={onMove}
       onContextMenu={onContextMenu}
     >
-      {label}
+      <div id={id}>{label}</div>
       <Resizer onMouseDown={onResize} />
     </div>
   )

@@ -316,7 +316,7 @@ const Links = () => {
           })
       setRenderPreviewWindowState(true)
     },
-    [],
+    [navigate, openTabOrCreateNewTab],
   )
 
   const closeWindow = useCallback(() => {
