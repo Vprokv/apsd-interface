@@ -49,7 +49,7 @@ const rules = {
 const NewTitle = ({ onClose, parentId, closeParent, open }) => {
   const api = useContext(ApiContext)
   const { id } = useParams()
-  const [value, onInput] = useState({})
+  const [value, onInput] = useState({ availableProjector: true })
   const getNotification = useOpenNotification()
 
   const handleClick = useCallback(async () => {
@@ -59,7 +59,7 @@ const NewTitle = ({ onClose, parentId, closeParent, open }) => {
         parentId,
         ...value,
       })
-      onInput('')
+      onInput({ availableProjector: true })
       onClose()
       closeParent(data)
     } catch (e) {
