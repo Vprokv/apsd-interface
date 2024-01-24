@@ -8,6 +8,8 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import AdditionalStage from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/AdditionalStage'
 import VolumeStatus from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DocumentState'
 import UserCard from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/UserCard'
+import dayjs from 'dayjs'
+import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '../../../../../../../../contants'
 
 const AdditionalApprover = (props) => {
   const {
@@ -21,6 +23,7 @@ const AdditionalApprover = (props) => {
     value,
     onInput,
     id,
+    executeDate = null,
   } = props
 
   const checked = useMemo(() => id === value?.id, [id, value])
@@ -31,7 +34,19 @@ const AdditionalApprover = (props) => {
         <CheckBox value={checked} onInput={(v) => onInput(v, props)} />
         <UserCard fio={approverFio} position={approverPosition} />
         <DateCell
-          hot={decisionDate && dueDate ? decisionDate < dueDate : false}
+          hot={
+            decisionDate && dueDate
+              ? (executeDate === null &&
+                  dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).valueOf() <
+                    Date.now()) ||
+                (executeDate &&
+                  dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).valueOf() <
+                    dayjs(
+                      executeDate,
+                      DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+                    ).valueOf())
+              : false
+          }
           plan={decisionDate}
           fact={dueDate}
           className=""
