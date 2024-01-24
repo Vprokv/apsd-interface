@@ -17,7 +17,7 @@ const UnderButtons = ({
   disabled,
 }) => {
   return (
-    <div className={`flex items-center justify-end ${className}`}>
+    <div className={`flex items-center justify-end ${className} mt-4`}>
       {children}
       <SecondaryGreyButton className={leftStyle} onClick={leftFunc}>
         {leftLabel}

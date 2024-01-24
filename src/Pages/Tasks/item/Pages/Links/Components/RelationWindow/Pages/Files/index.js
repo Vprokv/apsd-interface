@@ -30,6 +30,7 @@ import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import log from 'tailwindcss/lib/util/log'
+import Button from '@/Components/Button'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -207,29 +208,27 @@ const Files = (props) => {
   )
   return (
     <>
-      <div className="px-4 pb-4 flex flex-col overflow-hidden h-full">
-        <div className="mt-2">
-          <NewFileInput
-            className="h-10"
-            multiple={true}
-            containerRef={context}
-            onInput={onFileInput}
-          />
-          <ScrollBar className="mt-8">
-            <FieldValidationStateContext.Provider value={getErrors}>
-              <ListTable
-                plugins={plugins}
-                rules={rules}
-                columns={columns}
-                onInput={setFiles}
-                value={files}
-                headerCellComponent={HeaderCell}
-                onSubmit={save}
-              />
-            </FieldValidationStateContext.Provider>
-          </ScrollBar>
-        </div>
+      <div className="mt-4">
+        <NewFileInput
+          className="h-10 mt-4"
+          multiple={true}
+          containerRef={context}
+          onInput={onFileInput}
+        />
       </div>
+      <ScrollBar className="mt-8">
+        <FieldValidationStateContext.Provider value={getErrors}>
+          <ListTable
+            plugins={plugins}
+            rules={rules}
+            columns={columns}
+            onInput={setFiles}
+            value={files}
+            headerCellComponent={HeaderCell}
+            onSubmit={save}
+          />
+        </FieldValidationStateContext.Provider>
+      </ScrollBar>
       <UnderButtons leftFunc={close} rightLabel="Cвязать" rightFunc={save} />
     </>
   )
