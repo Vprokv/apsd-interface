@@ -19,7 +19,11 @@ const Approvers = (props) => {
     dueDate,
     report,
     executeDate = null,
+    initDate,
   } = props.node.options
+
+  console.log(decisionDate)
+  console.log(dueDate)
 
   return (
     <Row>
@@ -39,8 +43,8 @@ const Approvers = (props) => {
                     ).valueOf())
               : false
           }
-          plan={decisionDate}
-          fact={dueDate}
+          init={initDate}
+          plan={dueDate}
           className=""
         />
         <DocumentState value={status} className="" />

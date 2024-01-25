@@ -10,32 +10,32 @@ import {
   PRESENT_DATE_FORMAT,
 } from '@/contants'
 
-const DateCell = ({ hot, className, plan, fact }) => {
+const DateCell = ({ hot, className, init, plan }) => {
+  const dateInit = useMemo(
+    () => dayjs(init, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
+    [init],
+  )
+
   const datePlan = useMemo(
     () => dayjs(plan, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
     [plan],
   )
 
-  const dateFact = useMemo(
-    () => dayjs(fact, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
-    [fact],
-  )
-
   return (
     <div className={`${className}   items-center`}>
-      {plan && (
+      {init && (
         <div className="flex mb-2 font-size-12">
           <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
-          {datePlan}
+          {dateInit}
         </div>
       )}
-      {fact && (
+      {plan && (
         <div className="flex  items-center font-size-12">
           <Icon
             icon={clockIcon}
             className={`${hot ? 'color-red' : ''} mr-2 color-text-secondary`}
           />
-          {dateFact}
+          {datePlan}
         </div>
       )}
     </div>

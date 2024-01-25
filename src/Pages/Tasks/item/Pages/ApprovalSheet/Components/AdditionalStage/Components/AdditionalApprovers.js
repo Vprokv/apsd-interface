@@ -24,9 +24,14 @@ const AdditionalApprover = (props) => {
     onInput,
     id,
     executeDate = null,
+    initDate
   } = props
 
   const checked = useMemo(() => id === value?.id, [id, value])
+
+  console.log(decisionDate)
+  console.log(dueDate)
+
 
   return (
     <Row>
@@ -47,8 +52,8 @@ const AdditionalApprover = (props) => {
                     ).valueOf())
               : false
           }
-          plan={decisionDate}
-          fact={dueDate}
+          init={initDate}
+          plan={dueDate}
           className=""
         />
         <VolumeStatus value={status} className="" />
