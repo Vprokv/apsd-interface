@@ -19,7 +19,7 @@ const Approvers = (props) => {
     dueDate,
     report,
     executeDate = null,
-    initDate
+    initDate,
   } = props.node.options
 
   return (
