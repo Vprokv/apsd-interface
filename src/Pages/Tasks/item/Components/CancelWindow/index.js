@@ -79,6 +79,7 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
     documentType,
     filter.description,
     getNotification,
+    onClose,
     reloadSidebarTaskCounters,
     setTabState,
     signal,
