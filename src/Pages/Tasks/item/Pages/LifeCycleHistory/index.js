@@ -36,7 +36,7 @@ const LifeCycleHistory = () => {
   const [selectState, setSelectState] = useState([])
   const documentId = useContext(DocumentIdContext)
   const getNotification = useOpenNotification()
-  const [{ filter, ...tabState }, setTabState] = useTabItem({
+  const [{ sortQuery, filter, ...tabState }, setTabState] = useTabItem({
     stateId: TASK_ITEM_LIFE_CYCLE_HISTORY,
   })
 
@@ -55,6 +55,10 @@ const LifeCycleHistory = () => {
         limit,
         offset,
         filter,
+        sort: sortQuery && {
+          property: sortQuery?.key,
+          direction: sortQuery?.direction,
+        },
       })
 
       return data
@@ -62,7 +66,7 @@ const LifeCycleHistory = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, documentId, filter, getNotification, paginationState])
+  }, [api, documentId, filter, getNotification, paginationState, sortQuery])
 
   const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
     loadData,
@@ -136,11 +140,11 @@ const LifeCycleHistory = () => {
         headerCellComponent={HeaderCell}
         selectState={selectState}
         onSelect={setSelectState}
-        // sortQuery={sortQuery}
-        // onSort={useCallback(
-        //   (sortQuery) => setTabState({ sortQuery }),
-        //   [setTabState],
-        // )}
+        sortQuery={sortQuery}
+        onSort={useCallback(
+          (sortQuery) => setTabState({ sortQuery }),
+          [setTabState],
+        )}
         valueKey="id"
         loading={loading}
       />
