@@ -56,7 +56,6 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
     [],
   )
 
-
   const complete = useCallback(async () => {
     try {
       const { status } = await api.post(URL_BUSINESS_DOCUMENT_CANCEL, {
