@@ -5,7 +5,7 @@ import { Resizer } from './styles'
 const HeaderCell = ({ label, onResize, onMove, onContextMenu, id }) => {
   return (
     <div
-      className="whitespace-nowrap font-size-12 color-text-secondary flex items-center py-3 relative w-full"
+      className="whitespace-nowrap font-size-12 color-text-secondary flex items-center py-3 relative w-full overflow-hidden"
       onMouseDown={onMove}
       onContextMenu={onContextMenu}
     >
