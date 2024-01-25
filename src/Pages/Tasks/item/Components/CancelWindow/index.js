@@ -56,6 +56,7 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
     [],
   )
 
+
   const complete = useCallback(async () => {
     try {
       const { status } = await api.post(URL_BUSINESS_DOCUMENT_CANCEL, {
@@ -68,6 +69,7 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
       updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       reloadSidebarTaskCounters()
       getNotification(customMessagesFuncMap[status]())
+      onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
