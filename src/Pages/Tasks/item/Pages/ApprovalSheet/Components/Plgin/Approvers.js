@@ -27,19 +27,21 @@ const Approvers = (props) => {
       <RowGrid className="h-full items-center ml-2">
         <UserCard fio={approverFio} position={approverPosition} />
         <DateCell
-          hot={
-            decisionDate && dueDate
-              ? (executeDate === null &&
-                  dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).valueOf() <
-                    Date.now()) ||
-                (executeDate &&
-                  dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).valueOf() <
-                    dayjs(
-                      executeDate,
-                      DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-                    ).valueOf())
-              : false
-          }
+          hot={useMemo(
+            () =>
+              decisionDate && dueDate
+                ? (executeDate === null &&
+                    dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).valueOf() <
+                      Date.now()) ||
+                  (executeDate &&
+                    dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).valueOf() <
+                      dayjs(
+                        executeDate,
+                        DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+                      ).valueOf())
+                : false,
+            [decisionDate, dueDate, executeDate],
+          )}
           init={initDate}
           plan={dueDate}
           className=""
