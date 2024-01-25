@@ -19,11 +19,8 @@ const Approvers = (props) => {
     dueDate,
     report,
     executeDate = null,
-    initDate,
+    initDate
   } = props.node.options
-
-  console.log(decisionDate)
-  console.log(dueDate)
 
   return (
     <Row>

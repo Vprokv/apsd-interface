@@ -29,10 +29,6 @@ const AdditionalApprover = (props) => {
 
   const checked = useMemo(() => id === value?.id, [id, value])
 
-  console.log(decisionDate)
-  console.log(dueDate)
-
-
   return (
     <Row>
       <RowGrid className="h-full items-center ml-2">

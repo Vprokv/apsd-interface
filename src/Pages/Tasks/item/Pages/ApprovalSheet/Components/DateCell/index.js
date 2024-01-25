@@ -42,6 +42,7 @@ const DateCell = ({ hot, className, init, plan }) => {
   )
 }
 
+
 DateCell.propTypes = {}
 
 export default DateCell
