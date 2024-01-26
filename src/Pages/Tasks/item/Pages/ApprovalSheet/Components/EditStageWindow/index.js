@@ -39,7 +39,7 @@ const customMessagesFuncMap = {
   200: () => {
     return {
       type: NOTIFICATION_TYPE_SUCCESS,
-      message: 'Этап мзменен успешно',
+      message: 'Этап изменен успешно',
     }
   },
 }

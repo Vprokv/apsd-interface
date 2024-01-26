@@ -4,6 +4,7 @@ import {
   documentPickerProps,
   orgstructureProps,
   parseFieldProps,
+  parseInputTypeProps,
 } from '@/Utils/Parser/Stages/parseFieldProps'
 import customValuesStage from './customValuesStage'
 import addUserFullNameInOptionsStage from './addUserFullNameInOptionsStage'
@@ -21,6 +22,7 @@ export const propsMap = {
     parsePropsRequisites,
     ...orgstructureProps,
   ],
+  Text: [ParsePlainProps, parseInputTypeProps],
   Classification: [ParsePlainProps, customValuesStage],
 }
 

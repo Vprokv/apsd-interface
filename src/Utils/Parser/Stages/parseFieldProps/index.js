@@ -4,6 +4,7 @@ import parsePlainProps from './Stages/parsePlainProps'
 import comboboxProps from './Combobox'
 import documentPickerProps from './DocumentPicker'
 import orgstructureProps from './Orgstructure'
+import parseInputTypeProps from './Input'
 
 export {
   parseFieldProps,
@@ -13,5 +14,6 @@ export {
   comboboxProps,
   documentPickerProps,
   orgstructureProps,
+  parseInputTypeProps,
 }
 export default parseFieldProps(propsMap, componentsMap)
