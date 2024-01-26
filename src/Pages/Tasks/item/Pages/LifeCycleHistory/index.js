@@ -55,10 +55,12 @@ const LifeCycleHistory = () => {
         limit,
         offset,
         filter,
-        sort: sortQuery && {
-          property: sortQuery?.key,
-          direction: sortQuery?.direction,
-        },
+        sort: sortQuery && [
+          {
+            property: sortQuery?.key,
+            direction: sortQuery?.direction,
+          },
+        ],
       })
 
       return data
