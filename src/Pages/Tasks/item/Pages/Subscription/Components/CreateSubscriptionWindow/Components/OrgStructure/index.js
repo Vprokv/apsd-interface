@@ -33,6 +33,7 @@ const OrgStructure = (props) => {
         onClose={closeEmployeeWindow}
         docId={id}
         onInput={sendValue}
+        returnObjects={true}
       />
     </>
   )

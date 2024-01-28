@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { EmailContext } from '../../constans'
 import PropTypes from 'prop-types'
 
-const SendSystem = ({ ParentValue: { emplId, ...item } = {} }) => {
+const SendSystem = ({ ParentValue: { emplId } = {} }) => {
   const { value, onInput } = useContext(EmailContext)
   return (
     <div className="flex items-center h-full justify-center w-full">

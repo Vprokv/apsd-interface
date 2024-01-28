@@ -161,7 +161,7 @@ const Subscription = () => {
   })
 
   const { setLimit, setPage, paginationState } = usePagination({
-    stateId: URL_SUBSCRIPTION_EVENTS,
+    stateId: TASK_ITEM_SUBSCRIPTION,
     state: tabState,
     setState: setTabState,
     defaultLimit: 10,

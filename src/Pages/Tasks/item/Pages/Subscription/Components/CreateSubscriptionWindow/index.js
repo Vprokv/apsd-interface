@@ -5,24 +5,23 @@ import {
 } from './style'
 import ScrollBar from '@Components/Components/ScrollBar'
 import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import { useParams } from 'react-router-dom'
-import { URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
+import { URL_SUBSCRIPTION_CREATE, URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   ApiContext,
   PRESENT_DATE_FORMAT,
+  TASK_ITEM_SUBSCRIPTION,
+  TASK_LIST,
   WINDOW_ADD_SUBSCRIPTION,
 } from '@/contants'
 import dayjs from 'dayjs'
-import DatePicker from '@/Components/Inputs/DatePicker'
-import FilterForm from '@Components/Components/Forms'
 import Button, { ButtonForIcon, LoadableBaseButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import deleteIcon from '@/Icons/deleteIcon'
@@ -32,11 +31,18 @@ import BaseCellName from './Components/BaseCellName'
 import { EmailContext, SedoContext } from './constans'
 import SendSystem from './Components/CheckBox/SendSystem'
 import SendEmail from './Components/CheckBox/SendEmail'
-import { useCreateSubscription } from './useCreateSubscription'
 import PropTypes from 'prop-types'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import {
+  NOTIFICATION_TYPE_SUCCESS,
+  useOpenNotification,
+} from '@/Components/Notificator'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -101,30 +107,30 @@ const columns = [
   },
 ]
 
-const filterConfig = [
-  {
-    id: 'DatePicker',
-    range: true,
-    startPlaceHolder: 'Дата начала',
-    endPlaceHolder: 'Дата окончания',
-    component: DatePicker,
+const customMessagesFuncMap = {
+  ...defaultFunctionsMap,
+  200: () => {
+    return {
+      type: NOTIFICATION_TYPE_SUCCESS,
+      message: 'Подписка добавлена',
+    }
   },
-]
-const emptyWrapper = ({ children }) => children
+}
 
-const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
-  const { id } = useParams()
+const CreateSubscriptionWindow = ({ onClose }) => {
+  const documentId = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [events, setEventsState] = useState([])
   const [sedo, setSedo] = useState([])
   const [email, setEmail] = useState([])
-  const [value, sendValue] = useState({ valueKeys: [], cache: new Map() })
-  const { valueKeys, cache } = value
+  const [value, sendValue] = useState([])
+  const getNotification = useOpenNotification()
+  const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
 
   const { dss_first_name, dss_last_name, dss_middle_name } =
     useRecoilValue(userAtom)
-  const [{ filter = {}, sortQuery, ...tabState }, setTabState] = useTabItem({
+  const [{ sortQuery, ...tabState }, setTabState] = useTabItem({
     stateId: WINDOW_ADD_SUBSCRIPTION,
   })
 
@@ -137,16 +143,41 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
     setTabState,
   )
 
-  // useEffect(async () => {
-  //   const { data } = await api.post(URL_SUBSCRIPTION_CHANNELS, {
-  //     // "subscribersIDs": [r_object_id]
-  //     // documentId: id,
-  //     // type
-  //   })
-  //   return data
-  // }, [api])
+  const onSave = useCallback(async () => {
+    try {
+      const { status } = await api.post(URL_SUBSCRIPTION_CREATE, {
+        documentId,
+        events: events.map((val) => ({ name: val })),
+        subscribers: value.reduce((acc, { emplId, userName }) => {
+          const obj = { id: emplId, name: userName, channels: [] }
+          if (sedo.includes(emplId)) {
+            obj.channels.push('apsd')
+          }
 
-  console.log(filter, 'filter')
+          if (sedo.includes(emplId)) {
+            obj.channels.push('email')
+          }
+          acc.push(obj)
+          return acc
+        }, []),
+      })
+      updateTabStateUpdaterByName([TASK_ITEM_SUBSCRIPTION], setUnFetchedState())
+      getNotification(customMessagesFuncMap[status]())
+      onClose()
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
+    }
+  }, [
+    api,
+    documentId,
+    events,
+    getNotification,
+    onClose,
+    sedo,
+    updateTabStateUpdaterByName,
+    value,
+  ])
 
   const sideBar = useMemo(
     () => (
@@ -168,44 +199,30 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
     [data, events],
   )
 
-  const userTable = useMemo(
+  const onDelete = useCallback(
     () =>
-      valueKeys?.reduce((acc, val) => {
-        if (cache.has(val)) {
-          acc.push(cache.get(val))
-        }
-        return acc
-      }, []),
-    [valueKeys, cache],
+      sendValue((prev) => {
+        const prevValue = [...prev]
+        selectState.forEach((val) => {
+          prevValue.splice(prevValue.indexOf(val), 1)
+        })
+
+        return prevValue
+      }),
+    [selectState],
   )
+
   const fio = useMemo(
     () => `${dss_last_name} ${dss_first_name[0]}. ${dss_middle_name[0]}.`,
     [dss_last_name, dss_first_name, dss_middle_name],
   )
   const today = useMemo(() => dayjs().format(PRESENT_DATE_FORMAT), [])
-  const handleCloseIconClick = useCallback(
-    () =>
-      sendValue((value) => {
-        const prevValue = { ...value }
-        const keys = valueKeys.filter((val) => !selectState.includes(val))
-        return { ...prevValue, valueKeys: keys }
-      }),
-    [selectState, valueKeys],
-  )
-  const { createData, handleSaveClick } = useCreateSubscription({
-    filter,
-    events,
-    documentId: id,
-    sedo,
-    email,
-    ids: valueKeys,
-  })
 
-  const onSave = useCallback(async () => {
-    await handleSaveClick(api)(createData)
-    await loadDataFunction()
-    onClose()
-  }, [createData, handleSaveClick, api, onClose, loadDataFunction])
+  // const onSave = useCallback(async () => {
+  //   await handleSaveClick(api)(createData)
+  //   await loadDataFunction()
+  //   onClose()
+  // }, [createData, handleSaveClick, api, onClose, loadDataFunction])
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
@@ -219,19 +236,10 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
             <div className="color-text-secondary text-sm">Дата создания:</div>
             <div className="ml-1 text-sm">{today}</div>
           </div>
-          <FilterForm
-            fields={filterConfig}
-            inputWrapper={emptyWrapper}
-            value={filter}
-            onInput={useCallback(
-              (filter) => setTabState({ filter }),
-              [setTabState],
-            )}
-          />
         </div>
         <div className="flex items-center color-text-secondary ml-auto">
-          <OrgStructure value={valueKeys} sendValue={sendValue} />
-          <ButtonForIcon className="ml-2" onClick={handleCloseIconClick}>
+          <OrgStructure value={value} sendValue={sendValue} />
+          <ButtonForIcon className="ml-2" onClick={onDelete}>
             <Icon icon={deleteIcon} />
           </ButtonForIcon>
         </div>
@@ -251,7 +259,7 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
               )}
             >
               <ListTable
-                value={userTable}
+                value={value}
                 columns={columns}
                 plugins={plugins}
                 headerCellComponent={HeaderCell}
@@ -262,7 +270,6 @@ const CreateSubscriptionWindow = ({ onClose, loadDataFunction }) => {
                   (sortQuery) => setTabState({ sortQuery }),
                   [setTabState],
                 )}
-                valueKey="id"
               />
             </EmailContext.Provider>
           </SedoContext.Provider>

@@ -11,7 +11,7 @@ const BaseCellName = ({ value, className }) => {
     [firstName, lastName, middleName],
   )
   return (
-    <div className={`${className} word-wrap-anywhere font-size-14`}>{fio}</div>
+    <div className={`${className} word-wrap-anywhere font-size-12`}>{fio}</div>
   )
 }
 
