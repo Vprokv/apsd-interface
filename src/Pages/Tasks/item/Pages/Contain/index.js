@@ -93,10 +93,9 @@ const Contain = () => {
     stateId: ITEM_DOCUMENT,
   })
 
-  const [{ data: { values: { dss_code = '' } = {} } = {} }] = useReadDataState(
-    documentState,
-    setDocumentState,
-  )
+  const [
+    { data: { values: { dss_code = '', dss_description = '' } = {} } = {} },
+  ] = useReadDataState(documentState, setDocumentState)
 
   const [
     { defaultOpen, treePluginState, sortQuery, filter, ...tabState },
@@ -354,6 +353,7 @@ const Contain = () => {
       url: `${API_URL}${URL_TITLE_CONTAIN}`,
       label: `Состав титула "${dss_code}"`,
       sheetName: `Состав титула "${dss_code}"`,
+      titleDescription: dss_description,
       columns: columnMap,
       exportType: 'structure',
       body: {
@@ -369,7 +369,7 @@ const Contain = () => {
     })
 
     downloadFileWithReload(data, `Состав титула ${dss_code}.xlsx`)
-  }, [api, dss_code, id, token])
+  }, [api, dss_code, dss_description, id, token])
 
   return (
     <LoadContainChildrenContext.Provider value={containActions}>
