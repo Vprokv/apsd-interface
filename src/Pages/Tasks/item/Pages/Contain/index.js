@@ -158,15 +158,10 @@ const Contain = () => {
 
   const deleteData = useCallback(async () => {
     try {
-      const response = await api.post(URL_TITLE_CONTAIN_DELETE, {
+      const { status } = await api.post(URL_TITLE_CONTAIN_DELETE, {
         partId: selectState.id,
       })
 
-      //   Promise.all(
-      //   selectState.map(({ id }) =>
-      //     api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
-      //   ),
-      // )
       const removeDeletedDocs = (acc, { id, childs, ...rest }) => {
         if (selectState.id !== id) {
           acc.push({
@@ -180,7 +175,7 @@ const Contain = () => {
       }
       updateData(data.reduce(removeDeletedDocs, []))
       setSelectState({})
-      getNotification(customMessagesFuncMap[response[0].status]())
+      getNotification(customMessagesFuncMap[status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
