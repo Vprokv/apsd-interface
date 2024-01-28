@@ -27,8 +27,8 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
   )
 
   const handleConfirm = useCallback(async () => {
-    await onDeleteData()
     changeModalState(false)()
+    await onDeleteData()
   }, [onDeleteData, changeModalState])
 
   return (
