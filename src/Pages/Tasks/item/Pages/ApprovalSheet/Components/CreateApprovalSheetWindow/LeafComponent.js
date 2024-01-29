@@ -9,6 +9,8 @@ import {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
+import log from 'tailwindcss/lib/util/log'
+import { error } from 'bfj/src/events'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon
@@ -72,12 +74,16 @@ const Leaf = (props) => {
     className,
     returnObjects,
     selectedState,
+    dropEvent,
   } = props
 
   const rowKey =
     typeof childrenKey === 'string' ? childrenKey : childrenKey(level)
 
   const { title, [rowKey]: rowData, [valueKey]: leafVal, editable } = options
+
+  const onDraggable =
+    draggable === 'boolean' ? draggable : draggable(options, level)
 
   const children =
     Array.isArray(rowData) && rowData.length > 0
@@ -93,6 +99,13 @@ const Leaf = (props) => {
   const [expanded, setExpanded] = useState(defaultExpandAll)
 
   const toggleOpen = useCallback(() => setExpanded((v) => !v), [])
+
+  const onUpdateLeafOption = useCallback(
+    (nextLeafValue) => {
+      onUpdateOptions(nextLeafValue, index)
+    },
+    [index, onUpdateOptions],
+  )
 
   const checkBoxInput = useCallback(
     (value) => {
@@ -124,15 +137,45 @@ const Leaf = (props) => {
     [children, options, onInput, rowKey, valueKey, returnObjects, leafVal],
   )
 
-  const onDragEnd = useCallback(() => {
+  const onDragEnd = useCallback(async () => {
     setBorderState('')
     setDropState(null)
   }, [setDropState])
 
-  const onDrop = useCallback(() => {
-    setBorderState('')
-    setDropState(null)
-  }, [setDropState])
+  const onDrop = useCallback(
+    //todo разобраться как разнести событие синхр в onDragOver
+    async (event) => {
+      const data = JSON.parse(event.dataTransfer.getData('text/plain1'))
+      const {
+        parent,
+        options: { status, id },
+      } = refProps.current
+
+      if (status === 'new') {
+        const newOption = [...parent]
+
+        newOption.splice(
+          parent.findIndex(({ ['id']: rowId }) => rowId === data.id),
+          1,
+        )
+
+        newOption.splice(
+          parent.findIndex(({ ['id']: row }) => row === id),
+          0,
+          data,
+        )
+
+        const result = await dropEvent(newOption)
+        if (result instanceof Error) {
+          onUpdateOptions(parent, 0, true)
+        }
+      }
+
+      setBorderState('')
+      setDropState(null)
+    },
+    [dropEvent, onUpdateOptions, setDropState],
+  )
 
   const onDragOver = useCallback((event) => {
     event.stopPropagation()
@@ -165,13 +208,6 @@ const Leaf = (props) => {
     [getSequence, index],
   )
 
-  const onUpdateLeafOption = useCallback(
-    (nextLeafValue) => {
-      onUpdateOptions(nextLeafValue, index)
-    },
-    [index, onUpdateOptions],
-  )
-
   const handleDeleteLeafOption = useCallback(() => {
     onDeleteLeafOption(index)
   }, [index, onDeleteLeafOption])
@@ -195,10 +231,16 @@ const Leaf = (props) => {
     [options, handleGetSequence],
   )
 
-  const onDragStart = useCallback(() => {
-    const { setDropState } = refProps.current
-    setDropState({ node: refProps.current, sequence: handleGetSequence() })
-  }, [handleGetSequence])
+  const onDragStart = useCallback(
+    (e) => {
+      e.dataTransfer.setData('text/plain1', JSON.stringify(options))
+      e.dataTransfer.effectAllowed = 'copy'
+      const { setDropState } = refProps.current
+
+      setDropState({ node: refProps.current, sequence: handleGetSequence() })
+    },
+    [handleGetSequence, options],
+  )
 
   const OpenStateIcon = children
     ? expanded
@@ -237,7 +279,7 @@ const Leaf = (props) => {
           // onClick={selectNode} // а он делает так
           selected={leafVal === selectedNode}
           borderState={borderState}
-          draggable={draggable}
+          draggable={onDraggable}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
           node={{ options, selectedState, childrenKey: rowKey, valueKey }}
@@ -276,6 +318,7 @@ const Leaf = (props) => {
                   onDeleteLeafOption={deleteLeaf}
                   ChildrenLessIcon={ChildrenLessIcon}
                   childrenKey={childrenKey}
+                  dropEvent={dropEvent}
                 />
               ),
           )}

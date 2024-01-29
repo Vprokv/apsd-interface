@@ -92,6 +92,7 @@ export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND =
 export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE =
   '/apsd/business/additional/revoke'
 export const URL_ADDITIONAL_AGREEMENT_USER_LIST = '/apsd/business/approve/empl'
+export const URL_ADDITIONAL_AGREEMENT_STAGE_MOVE = '/apsd/business/stage/move'
 
 // DOCUMENT
 export const URL_DOCUMENT_CREATION_OPTIONS = '/sedo/classification'

@@ -2,7 +2,11 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_APPROVAL_SHEET, URL_BUSINESS_PERMIT } from '@/ApiList'
+import {
+  URL_ADDITIONAL_AGREEMENT_STAGE_MOVE,
+  URL_APPROVAL_SHEET,
+  URL_BUSINESS_PERMIT,
+} from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Icon from '@Components/Components/Icon'
 import Button, { ButtonForIcon } from '@/Components/Button'
@@ -12,7 +16,9 @@ import RowSelector from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Plgin
 import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
-import CreateApprovalSheetWindow, { CustomSizeModalWindow } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
+import CreateApprovalSheetWindow, {
+  CustomSizeModalWindow,
+} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow'
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext, DocumentTypeContext } from '../../constants'
 import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
@@ -24,6 +30,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import PropTypes from 'prop-types'
 import Loading from '../../../../../Components/Loading'
+import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -89,11 +96,10 @@ const ApprovalSheet = () => {
     }
   }, [api, documentId, getNotification, type])
 
-  const [{ data = [], loading, reloadData, shouldReloadData }] = useAutoReload(
-    loadData,
-    tabState,
-    setTabState,
-  )
+  const [{ data = [], loading, reloadData, shouldReloadData }, updateData] =
+    useAutoReload(loadData, tabState, setTabState)
+
+  const [{ data: pageData }] = useReadDataState(tabState, setTabState)
 
   useEffect(() => {
     // заставляем перезагрузить данные на первом рендере, в случаее если ранее данные для этой вкладки
@@ -151,6 +157,46 @@ const ApprovalSheet = () => {
     return key
   }, [])
 
+  const onUpdateStageOption = useCallback(
+    (key, childrenIndex) => (nextLeafValue) =>
+      updateData((prev) => {
+        const nextVal = [...prev]
+        // eslint-disable-next-line no-unused-vars
+        const { [childrenIndex]: oldVal, ...props } = nextVal[key]
+
+        nextVal[key] = { ...props, [childrenIndex]: nextLeafValue }
+        return nextVal
+      }),
+    [updateData],
+  )
+
+  const onDragRule = useCallback(
+    (canAdd) =>
+      ({ status }, level) => {
+        return canAdd && level === 0 && status === 'new'
+      },
+    [],
+  )
+
+  const onDragSettingsSave = useCallback(
+    (stageName) => async (listPhases) => {
+      try {
+        const { status } = await api.post(URL_ADDITIONAL_AGREEMENT_STAGE_MOVE, {
+          docType: type,
+          documentId,
+          stageName,
+          listPhases,
+        })
+        getNotification(defaultFunctionsMap[status]())
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+        return new Error(e)
+      }
+    },
+    [api, documentId, getNotification, type],
+  )
+
   return (
     <PermitDisableContext.Provider value={!permit}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -172,63 +218,69 @@ const ApprovalSheet = () => {
           <Loading />
         ) : (
           <ScrollBar>
-            {data.map(({ stages, type, name, canAdd }, key) => (
-              <div className="flex flex-col" key={type}>
-                <LevelStage onClick={() => toggleStage(type)}>
-                  {!!stages?.length && (
-                    <button
-                      className="pl-2"
-                      type="button"
-                      onClick={() => toggleStage(type)}
-                    >
-                      <Icon
-                        icon={angleIcon}
-                        size={10}
-                        className={`color-text-secondary ${
-                          toggleNavigationData[type] ? '' : 'rotate-180'
-                        }`}
-                      />
-                    </button>
-                  )}
-                  <div
-                    className={`${
-                      !stages?.length ? 'ml-6' : 'ml-2'
-                    } my-4 flex bold`}
-                  >
-                    {name}
-                  </div>
-                  {canAdd && (
-                    <div className="flex items-center ml-auto ">
-                      <Button
-                        disabled={!permit}
-                        onClick={setTypeForCreateApprovalSheetWindow(type)}
-                        className={`${
-                          !permit ? 'color-text-secondary' : 'color-blue-1'
-                        }`}
+            {data.map((props, key) => {
+              const { stages, type, name, canAdd } = props
+              return (
+                <div className="flex flex-col" key={type}>
+                  <LevelStage onClick={() => toggleStage(type)}>
+                    {!!stages?.length && (
+                      <button
+                        className="pl-2"
+                        type="button"
+                        onClick={() => toggleStage(type)}
                       >
-                        Добавить этап
-                      </Button>
+                        <Icon
+                          icon={angleIcon}
+                          size={10}
+                          className={`color-text-secondary ${
+                            toggleNavigationData[type] ? '' : 'rotate-180'
+                          }`}
+                        />
+                      </button>
+                    )}
+                    <div
+                      className={`${
+                        !stages?.length ? 'ml-6' : 'ml-2'
+                      } my-4 flex bold`}
+                    >
+                      {name}
                     </div>
+                    {canAdd && (
+                      <div className="flex items-center ml-auto ">
+                        <Button
+                          disabled={!permit}
+                          onClick={setTypeForCreateApprovalSheetWindow(type)}
+                          className={`${
+                            !permit ? 'color-text-secondary' : 'color-blue-1'
+                          }`}
+                        >
+                          Добавить этап
+                        </Button>
+                      </div>
+                    )}
+                  </LevelStage>
+                  {toggleNavigationData[type] && (
+                    <Tree
+                      parent={stages}
+                      childrenLessIcon={DotIcon}
+                      DefaultChildrenIcon={DotIcon}
+                      key={key}
+                      defaultExpandAll={true}
+                      valueKey="id"
+                      value={selectedState}
+                      options={stages}
+                      rowComponent={RowSelector}
+                      onUpdateOptions={onUpdateStageOption(key, 'stages')}
+                      childrenKey={getChildrenKey}
+                      onInput={handleInput}
+                      LeafComponent={LeafComponent}
+                      draggable={onDragRule(canAdd)}
+                      dropEvent={onDragSettingsSave(type)}
+                    />
                   )}
-                </LevelStage>
-                {toggleNavigationData[type] && (
-                  <Tree
-                    childrenLessIcon={DotIcon}
-                    DefaultChildrenIcon={DotIcon}
-                    key={key}
-                    defaultExpandAll={true}
-                    valueKey="id"
-                    value={selectedState}
-                    options={stages}
-                    rowComponent={RowSelector}
-                    onUpdateOptions={() => null}
-                    childrenKey={getChildrenKey}
-                    onInput={handleInput}
-                    LeafComponent={LeafComponent}
-                  />
-                )}
-              </div>
-            ))}
+                </div>
+              )
+            })}
           </ScrollBar>
         )}
         <CustomSizeModalWindow
