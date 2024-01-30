@@ -31,6 +31,11 @@ export const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
+    header: 'Дата создания тома',
+    path: 'tomCreationDate',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
     header: 'Даты разработки (план)',
     path: 'plannedDevDate',
   },
@@ -63,11 +68,6 @@ export const columnMap = [
     componentType: 'DescriptionTableColumn',
     header: 'Стадия',
     path: 'tomStage',
-  },
-  {
-    componentType: 'DescriptionTableColumn',
-    header: 'Дата создания тома',
-    path: 'tomCreationDate',
   },
   {
     componentType: 'DescriptionTableColumn',
