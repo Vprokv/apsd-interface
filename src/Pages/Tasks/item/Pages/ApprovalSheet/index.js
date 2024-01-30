@@ -31,17 +31,7 @@ import { useOpenNotification } from '@/Components/Notificator'
 import PropTypes from 'prop-types'
 import Loading from '../../../../../Components/Loading'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
-import styled from 'styled-components'
-
-/* const AddWindowButton = styled(Button)`
-  position: relative;
-  z-index: 1000;
-`*/
-
-const LevelStageWrapper = styled.div`
-  display: flex;
-  border-bottom: 1px solid var(--separator);
-`
+import { LevelStageWrapper } from './styles'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
