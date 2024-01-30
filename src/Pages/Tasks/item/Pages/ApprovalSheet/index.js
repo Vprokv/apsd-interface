@@ -31,6 +31,7 @@ import { useOpenNotification } from '@/Components/Notificator'
 import PropTypes from 'prop-types'
 import Loading from '../../../../../Components/Loading'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
+import { LevelStageWrapper } from './styles'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -222,29 +223,31 @@ const ApprovalSheet = () => {
               const { stages, type, name, canAdd } = props
               return (
                 <div className="flex flex-col" key={type}>
-                  <LevelStage onClick={() => toggleStage(type)}>
-                    {!!stages?.length && (
-                      <button
-                        className="pl-2"
-                        type="button"
-                        onClick={() => toggleStage(type)}
+                  <LevelStageWrapper>
+                    <LevelStage onClick={() => toggleStage(type)}>
+                      {!!stages?.length && (
+                        <button
+                          className="pl-2"
+                          type="button"
+                          onClick={() => toggleStage(type)}
+                        >
+                          <Icon
+                            icon={angleIcon}
+                            size={10}
+                            className={`color-text-secondary ${
+                              toggleNavigationData[type] ? '' : 'rotate-180'
+                            }`}
+                          />
+                        </button>
+                      )}
+                      <div
+                        className={`${
+                          !stages?.length ? 'ml-6' : 'ml-2'
+                        } my-4 flex bold`}
                       >
-                        <Icon
-                          icon={angleIcon}
-                          size={10}
-                          className={`color-text-secondary ${
-                            toggleNavigationData[type] ? '' : 'rotate-180'
-                          }`}
-                        />
-                      </button>
-                    )}
-                    <div
-                      className={`${
-                        !stages?.length ? 'ml-6' : 'ml-2'
-                      } my-4 flex bold`}
-                    >
-                      {name}
-                    </div>
+                        {name}
+                      </div>
+                    </LevelStage>
                     {canAdd && (
                       <div className="flex items-center ml-auto ">
                         <Button
@@ -258,7 +261,7 @@ const ApprovalSheet = () => {
                         </Button>
                       </div>
                     )}
-                  </LevelStage>
+                  </LevelStageWrapper>
                   {toggleNavigationData[type] && (
                     <Tree
                       parent={stages}

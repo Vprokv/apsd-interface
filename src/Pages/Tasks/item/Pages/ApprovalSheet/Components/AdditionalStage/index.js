@@ -29,6 +29,7 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import DeleteApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DeleteAdditionalState'
+import { LevelStageWrapper } from '../../styles'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -205,23 +206,29 @@ const AdditionalStage = (props) => {
   return (
     !!approvers?.length && (
       <div className="ml-6">
-        <LevelStage>
-          <button className="pl-2" type="button" onClick={toggleDisplayedFlag}>
-            <Icon
-              icon={angleIcon}
-              size={10}
-              className={`color-text-secondary ${
-                isDisplayed ? '' : 'rotate-180'
-              }`}
-            />
-          </button>
-          <div
-            className="font-size-12 ml-2 h-full flex items-center  w-full"
-            onClick={toggleDisplayedFlag}
-          >
-            {'Дополнительное согласование'}
-          </div>
-          <div className="flex items-center  h-10">
+        <LevelStageWrapper>
+          <LevelStage>
+            <button
+              className="pl-2"
+              type="button"
+              onClick={toggleDisplayedFlag}
+            >
+              <Icon
+                icon={angleIcon}
+                size={10}
+                className={`color-text-secondary ${
+                  isDisplayed ? '' : 'rotate-180'
+                }`}
+              />
+            </button>
+            <div
+              className="font-size-12 ml-2 h-full flex items-center  w-full"
+              onClick={toggleDisplayedFlag}
+            >
+              {'Дополнительное согласование'}
+            </div>
+          </LevelStage>
+          <div className="flex items-center h-10">
             <Tips text="Добавить доп. согласующего">
               <CustomButtonForIcon
                 className="color-blue-1"
@@ -268,7 +275,7 @@ const AdditionalStage = (props) => {
               </CustomButtonForIcon>
             </Tips>
           </div>
-        </LevelStage>
+        </LevelStageWrapper>
         <div className="">{isDisplayed && renderedEntities}</div>
         {ActionComponent && (
           <ActionComponent.Component
