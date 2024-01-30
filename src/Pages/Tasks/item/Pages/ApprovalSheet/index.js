@@ -130,9 +130,11 @@ const ApprovalSheet = () => {
   )
 
   const setTypeForCreateApprovalSheetWindow = useCallback(
-    (type) => () => {
-      setType(type)
-    },
+    (type, isForButton = false) =>
+      (e) => {
+        setType(type)
+        isForButton && e.stopPropagation()
+      },
     [],
   )
 
@@ -249,7 +251,10 @@ const ApprovalSheet = () => {
                       <div className="flex items-center ml-auto ">
                         <Button
                           disabled={!permit}
-                          onClick={setTypeForCreateApprovalSheetWindow(type)}
+                          onClick={setTypeForCreateApprovalSheetWindow(
+                            type,
+                            true,
+                          )}
                           className={`${
                             !permit ? 'color-text-secondary' : 'color-blue-1'
                           }`}
