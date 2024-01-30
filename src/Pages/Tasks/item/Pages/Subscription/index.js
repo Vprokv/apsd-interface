@@ -42,6 +42,7 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -139,7 +140,8 @@ const customMessagesFuncMap = {
 const defaultEvents = new Map()
 
 const Subscription = () => {
-  const { id, type } = useParams()
+  const { type } = useParams()
+  const documentId = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const [addSubscriptionWindow, setAddSubscriptionWindowState] = useState(false)
@@ -177,13 +179,13 @@ const Subscription = () => {
         }, new Map()),
       })
     })()
-  }, [id, setTabState, api])
+  }, [documentId, setTabState, api])
 
   const loadDataFunction = useMemo(() => {
     const { limit, offset } = paginationState
     return async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
-        documentId: id,
+        documentId,
         sort: sortQuery
           ? {
               property: sortQuery.key,
@@ -197,7 +199,7 @@ const Subscription = () => {
       })
       return data
     }
-  }, [paginationState, api, id, sortQuery, type, filter])
+  }, [paginationState, api, documentId, sortQuery, type, filter])
 
   const [{ data: { content = [], total = 0 } = {}, loading }] = useAutoReload(
     loadDataFunction,
