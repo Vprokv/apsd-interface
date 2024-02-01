@@ -151,6 +151,8 @@ const Leaf = (props) => {
         options: { status, id },
       } = refProps.current
 
+      console.log(parent, 'parent')
+
       if (status === 'new') {
         const newOption = [...parent]
 
@@ -164,6 +166,8 @@ const Leaf = (props) => {
           0,
           data,
         )
+        console.log(newOption, 'parent')
+        onUpdateOptions(newOption, 0, true)
 
         const result = await dropEvent(newOption)
         if (result instanceof Error) {
