@@ -89,7 +89,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   const checkDate = useMemo(
     () =>
       dayjs(dueDate, 'DD.MM.YYYY').valueOf() -
-        dayjs(dayjs().format(PRESENT_DATE_FORMAT), 'DD.MM.YYYY').valueOf() >=
+        dayjs(dayjs().format(PRESENT_DATE_FORMAT), 'DD.MM.YYYY').valueOf() >
       0,
     [dueDate],
   )
