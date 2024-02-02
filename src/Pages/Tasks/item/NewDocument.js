@@ -86,6 +86,8 @@ export const NewTaskItem = ({ classificationId, type }) => {
 
   const remoteTabUpdater = useTabStateUpdaterByName()
 
+  console.log('check')
+
   const documentHandlers = useMemo(
     () => ({
       save: {
