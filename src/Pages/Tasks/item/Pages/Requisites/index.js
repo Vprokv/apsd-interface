@@ -99,12 +99,19 @@ export const Requisites = ({ permits }) => {
                 }
               } else if ('Orgstructure' === field.type) {
                 acc[key] = {
-                  options: [
-                    {
-                      emplId: value.value,
-                      fullDescription: value.caption,
-                    },
-                  ],
+                  options: Array.isArray(value?.value)
+                    ? [
+                        {
+                          emplId: value.value[0],
+                          fullDescription: value.caption,
+                        },
+                      ]
+                    : [
+                        {
+                          emplId: value.value,
+                          fullDescription: value.caption,
+                        },
+                      ],
                 }
               }
               return acc
