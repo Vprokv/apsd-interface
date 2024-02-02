@@ -86,30 +86,48 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
     },
   ] = useReadDataState(state, tabState)
 
+  const checkDate = useMemo(
+    () =>
+      dayjs(dueDate, 'DD.MM.YYYY').valueOf() -
+        dayjs(dayjs().format(PRESENT_DATE_FORMAT), 'DD.MM.YYYY').valueOf() >=
+      0,
+    [dueDate],
+  )
+
   const rules = useMemo(
     () => ({
       performersEmpls: [{ name: VALIDATION_RULE_REQUIRED }],
-      dueDate: [
-        {
-          name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-          args: {
-            format: 'DD.MM.YYYY',
-            before_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
-          },
-        },
-        {
-          name: VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
-          args: {
-            format: 'DD.MM.YYYY',
-            before_or_equal: dayjs(
-              dueDate,
-              DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-            ).format(PRESENT_DATE_FORMAT),
-          },
-        },
-      ],
+      dueDate: checkDate
+        ? [
+            {
+              name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
+              args: {
+                format: 'DD.MM.YYYY',
+                after_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
+              },
+            },
+            {
+              name: VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
+              args: {
+                format: 'DD.MM.YYYY',
+                before_or_equal: dayjs(
+                  dueDate,
+                  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+                ).format(PRESENT_DATE_FORMAT),
+              },
+            },
+          ]
+        : [
+            {
+              name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
+              args: {
+                format: 'DD.MM.YYYY',
+                after_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
+              },
+            },
+          ],
     }),
-    [dueDate],
+    [checkDate, dueDate],
   )
 
   const fieldMap = useMemo(
@@ -144,6 +162,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         selectRestrictions: {
           minDate: dayjs().format(PRESENT_DATE_FORMAT),
           maxDate:
+            checkDate &&
             dueDate &&
             dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
               PRESENT_DATE_FORMAT,
@@ -153,7 +172,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
         placeholder: '',
       },
     ],
-    [approverParentId, dueDate],
+    [approverParentId, checkDate, dueDate],
   )
 
   const time = useMemo(
@@ -224,7 +243,6 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
             )
           }}
         </Validation>
-
       </ScrollBar>
     </div>
   )
