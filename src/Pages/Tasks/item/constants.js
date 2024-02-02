@@ -84,13 +84,6 @@ export const defaultPages = {
   },
 }
 
-export const defaultDocumentHandlers = {
-  print_card: {
-    icon: PrintIcon,
-    handler: () => alert('Функционал не реализован'),
-  },
-}
-
 export const defaultTaskIcon = {
   finish_approve: FinishApproveIcon,
   on_approved: FinishApproveIcon,
@@ -119,4 +112,5 @@ export const defaultTaskIcon = {
   finish_sap_prepare: FinishApproveIcon,
   reject_sap_approve: RejectApproveIcon,
   on_consider: Repeat,
+  print_card: PrintIcon,
 }

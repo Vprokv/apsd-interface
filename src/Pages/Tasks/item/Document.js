@@ -29,7 +29,6 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
-  defaultDocumentHandlers,
   defaultPages,
   defaultTaskIcon,
   DocumentIdContext,
@@ -135,7 +134,6 @@ const Document = () => {
 
   const documentHandlers = useMemo(
     () => ({
-      ...defaultDocumentHandlers,
       save: {
         handler: async () => {
           try {
@@ -313,7 +311,6 @@ const Document = () => {
       reloadData,
       remoteSideBarUpdater,
       setComponent,
-      setTabState,
       type,
       updateCurrentTabChildrenStates,
       updateTabStateUpdaterByName,

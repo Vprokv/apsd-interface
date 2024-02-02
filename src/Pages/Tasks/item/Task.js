@@ -30,7 +30,6 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
-  defaultDocumentHandlers,
   defaultPages,
   defaultTaskIcon,
   DocumentIdContext,
@@ -39,7 +38,6 @@ import {
 import DefaultIcon from './Icons/DefaultIcon.svg'
 import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
-import { SidebarContainer } from './styles'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
@@ -70,12 +68,14 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import RejectSapPrepareWindow from './Components/RejectSapPrepareWindow'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
 }
 
 const titleName = 'ddt_startup_complex_type_doc'
+const tomeName = 'ddt_project_calc_type_doc'
 
 const Task = () => {
   const { id, type } = useParams()
@@ -316,7 +316,6 @@ const Task = () => {
 
   const documentHandlers = useMemo(
     () => ({
-      ...defaultDocumentHandlers,
       save: {
         handler: async () => {
           try {
@@ -472,6 +471,14 @@ const Task = () => {
           }),
         icon: CancelIcon,
       },
+      print_card: {
+        icon: defaultTaskIcon['print_card'],
+        handler: () =>
+          tomeName === type &&
+          setComponent({
+            Component: (props) => <PrintCardWindow {...props} />,
+          }),
+      },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
@@ -510,10 +517,10 @@ const Task = () => {
 
   const wrappedTaskActions = useDocumentActions(taskActions, TaskHandlers)
 
-  const wrappedDocumentActions = useDocumentActions(documentActions, {
-    ...defaultDocumentHandlers,
-    ...documentHandlers,
-  })
+  const wrappedDocumentActions = useDocumentActions(
+    documentActions,
+    documentHandlers,
+  )
 
   const closeModalWindow = useCallback(() => setMessage(''), [])
   return (
