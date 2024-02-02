@@ -28,6 +28,8 @@ const CreateVolume = ({ addVolumeState }) => {
   const [entities, setEntities] = useState([])
   const [selected, setSelected] = useState({})
 
+  console.log(selected, 'selected')
+
   const handleCancel = useCallback(() => {
     if (addVolumeState.onCancel) {
       addVolumeState.onCancel()
@@ -85,7 +87,7 @@ const CreateVolume = ({ addVolumeState }) => {
   const renderEntities = useCallback(
     (level = 1) =>
       // eslint-disable-next-line react/prop-types
-      ({ data: { name, id }, data, children }) =>
+      ({ data: { name, id, typeName }, data, children }) =>
         // eslint-disable-next-line react/prop-types
         children.length > 0 ? (
           <WithToggleNavigationItem id={id} key={id}>
@@ -96,8 +98,13 @@ const CreateVolume = ({ addVolumeState }) => {
                 <NestedButton
                   level={level}
                   type="button"
-                  className="flex items-center w-full h-10 border-b-2 "
-                  onClick={toggleDisplayedFlag}
+                  className={`flex items-center w-full h-10 border-b-2 ${
+                    selected.id === id ? 'bg-light-gray' : ''
+                  }`}
+                  onClick={() => {
+                    toggleDisplayedFlag()
+                    typeName && setSelected(data)
+                  }}
                 >
                   <Icon
                     icon={angleIcon}
