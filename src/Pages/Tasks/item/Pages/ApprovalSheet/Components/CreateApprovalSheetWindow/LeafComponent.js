@@ -152,43 +152,65 @@ const Leaf = (props) => {
       } = refProps.current
 
       if (status === 'new') {
-        const { newOptionValue } = [...parent].reduce(
-          (acc, rowValue) => {
-            const { id } = rowValue
+        // const { newOptionValue } = [...parent].reduce(
+        //   (acc, rowValue) => {
+        //     const { id } = rowValue
+        //
+        //     if (id === droppedId) {
+        //       const dropIndex = acc.newOptionValue.findIndex(
+        //         ({ id }) => id === data.id,
+        //       )
+        //
+        //       const pushIndex = acc.newOptionValue.findIndex(
+        //         ({ id }) => id === droppedId,
+        //       )
+        //       acc.newOptionValue.splice(pushIndex, 0, { ...data, index })
+        //
+        //       acc.newOptionValue.splice(dropIndex, 1)
+        //
+        //       acc.pushPosition = pushIndex
+        //       acc.pushIndex = index
+        //
+        //       acc.newOptionValue = [...acc.newOptionValue].map((val, key) => {
+        //         if (acc.pushPosition && key > acc.pushPosition) {
+        //           const gap = key - acc.pushPosition
+        //
+        //           return { ...val, index: acc.pushIndex + gap }
+        //         }
+        //         return val
+        //       })
+        //     }
+        //
+        //     return acc
+        //   },
+        //   {
+        //     newOptionValue: [...parent],
+        //     pushIndex: undefined,
+        //   },
+        // )
 
-            if (id === droppedId) {
-              acc.newOptionValue.splice(
-                acc.newOptionValue.findIndex(({ id }) => id === data.id),
-                1,
-              )
+        const newOption = [...parent]
 
-              const pushIndex = acc.newOptionValue.findIndex(
-                ({ id }) => id === droppedId,
-              )
-              acc.newOptionValue.splice(pushIndex, 0, { ...data, index })
-              acc.pushPosition = pushIndex
-
-              acc.newOptionValue = [...acc.newOptionValue].map((val, key) => {
-                if (acc.pushPosition && key > acc.pushPosition) {
-                  const gap = key - acc.pushPosition
-
-                  return { ...val, index: index + gap }
-                }
-                return val
-              })
-            }
-
-            return acc
-          },
-          {
-            newOptionValue: [...parent],
-            pushIndex: undefined,
-          },
+        newOption.splice(
+          parent.findIndex(({ ['id']: rowId }) => rowId === data.id),
+          1,
         )
 
-        onUpdateOptions(newOptionValue, 0, true)
+        const droppingIndex = newOption.findIndex(
+          ({ ['id']: row }) => row === droppedId,
+        )
 
-        const result = await dropEvent(newOptionValue)
+        newOption.splice(droppingIndex, 0, { ...data, index })
+        console.log(newOption, 'newOption')
+        console.log(droppingIndex, 'droppingIndex')
+        const sendValue = newOption.map((val, key) => ({
+          ...val,
+          index: key,
+        }))
+
+        onUpdateOptions(sendValue, 0, true)
+
+        const result = await dropEvent(sendValue)
         if (result instanceof Error) {
           onUpdateOptions(parent, 0, true)
         }
