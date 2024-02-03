@@ -148,25 +148,48 @@ const Leaf = (props) => {
       const data = JSON.parse(event.dataTransfer.getData('text/plain1'))
       const {
         parent,
-        options: { status, id },
+        options: { status, id: droppedId, index },
       } = refProps.current
 
       if (status === 'new') {
-        const newOption = [...parent]
 
-        newOption.splice(
-          parent.findIndex(({ ['id']: rowId }) => rowId === data.id),
-          1,
+        const { newOptionValue } = [...parent].reduce(
+          (acc, rowValue) => {
+            const { id } = rowValue
+
+            if (id === droppedId) {
+              acc.newOptionValue.splice(
+                acc.newOptionValue.findIndex(({ id }) => id === data.id),
+                1,
+              )
+
+              const pushIndex = acc.newOptionValue.findIndex(
+                ({ id }) => id === droppedId,
+              )
+              acc.newOptionValue.splice(pushIndex, 0, { ...data, index })
+              acc.pushPosition = pushIndex
+
+              acc.newOptionValue = [...acc.newOptionValue].map((val, key) => {
+                if (acc.pushPosition && key > acc.pushPosition) {
+                  const gap = key - acc.pushPosition
+
+                  return { ...val, index: index + gap }
+                }
+                return val
+              })
+            }
+
+            return acc
+          },
+          {
+            newOptionValue: [...parent],
+            pushIndex: undefined,
+          },
         )
 
-        newOption.splice(
-          parent.findIndex(({ ['id']: row }) => row === id),
-          0,
-          data,
-        )
-        onUpdateOptions(newOption, 0, true)
+        onUpdateOptions(newOptionValue, 0, true)
 
-        const result = await dropEvent(newOption)
+        const result = await dropEvent(newOptionValue)
         if (result instanceof Error) {
           onUpdateOptions(parent, 0, true)
         }
