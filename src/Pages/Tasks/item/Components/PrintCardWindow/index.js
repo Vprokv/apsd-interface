@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext } from '@/contants'
+import { ApiContext, TokenContext } from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 import {
@@ -16,9 +16,11 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import {
   URL_DOWNLOAD_FILE,
   URL_REPORTS_DOCUMENT_PRINT,
+  URL_REPORTS_GET,
 } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import downloadFile from '@/Utils/DownloadFile'
+import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 450px;
@@ -35,7 +37,7 @@ const PrintCardWindow = ({ open, onClose }) => {
   const api = useContext(ApiContext)
   const documentId = useContext(DocumentIdContext)
   const getNotification = useOpenNotification()
-
+  const { token } = useContext(TokenContext)
   const [filter, setFilter] = useState({ requisites: true })
 
   const onAllOnInput = useCallback(
@@ -95,7 +97,9 @@ const PrintCardWindow = ({ open, onClose }) => {
   const onSave = useCallback(async () => {
     try {
       const { all, ...saveData } = filter
-      const { data } = await api.post(URL_REPORTS_DOCUMENT_PRINT, {
+      const {
+        data: { fileKey, name },
+      } = await api.post(URL_REPORTS_DOCUMENT_PRINT, {
         id: documentId,
         reportParameters: {
           ...saveData,
@@ -105,27 +109,16 @@ const PrintCardWindow = ({ open, onClose }) => {
         reportFilters: {},
       })
 
-      const fileData = await api.post(
-        URL_DOWNLOAD_FILE,
-        {
-          id: data.filekey,
-        },
-        { responseType: 'blob' },
-      )
+      const { data } = await api.get(`${URL_REPORTS_GET}${fileKey}:${token}`, {
+        responseType: 'blob',
+      })
 
-      if (fileData.data instanceof Error) {
-        getNotification({
-          type: NOTIFICATION_TYPE_ERROR,
-          message: `${data.filekey} документ не найден`,
-        })
-      } else {
-        downloadFile(fileData)
-      }
+      downloadFileWithReload(data, name)
     } catch (e) {
       const { response: { status = 500, data = '' } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, documentId, filter, getNotification])
+  }, [api, documentId, filter, getNotification, token])
 
   return (
     <ModalWindow
