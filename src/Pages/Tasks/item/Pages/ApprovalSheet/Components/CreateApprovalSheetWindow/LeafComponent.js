@@ -152,7 +152,6 @@ const Leaf = (props) => {
       } = refProps.current
 
       if (status === 'new') {
-
         const { newOptionValue } = [...parent].reduce(
           (acc, rowValue) => {
             const { id } = rowValue
