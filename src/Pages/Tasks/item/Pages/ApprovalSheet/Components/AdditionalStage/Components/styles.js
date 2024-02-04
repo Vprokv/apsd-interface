@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const RowGrid = styled.div`
   display: grid;
-  grid-template-columns: 30px 1fr 90px 1fr 1fr;
+  grid-template-columns: 30px 1fr 125px 1fr 1fr;
   min-height: 50px;
 `
 

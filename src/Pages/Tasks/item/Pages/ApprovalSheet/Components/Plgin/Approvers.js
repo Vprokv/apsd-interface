@@ -8,7 +8,13 @@ import { Button } from '@Components/Components/Button'
 import { Row, RowGrid } from './styles'
 import { LevelStage } from '@/Pages/Tasks/item/Pages/ApprovalSheet/styles'
 import dayjs from 'dayjs'
-import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '../../../../../../../contants'
+import {
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  DEFAULT_DATE_FORMAT,
+} from '../../../../../../../contants'
+
+export const formatDate = (date) =>
+  dayjs(date, DEFAULT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT)
 
 const Approvers = (props) => {
   const {
@@ -21,6 +27,18 @@ const Approvers = (props) => {
     executeDate = null,
     initDate,
   } = props.node.options
+
+  const statusDate = useMemo(
+    () =>
+      executeDate
+        ? formatDate(executeDate)
+        : decisionDate
+        ? formatDate(decisionDate)
+        : initDate
+        ? formatDate(initDate)
+        : false,
+    [executeDate, decisionDate, initDate],
+  )
 
   return (
     <Row>
@@ -46,7 +64,14 @@ const Approvers = (props) => {
           plan={dueDate}
           className=""
         />
-        <DocumentState value={status} className="" />
+        <div>
+          <DocumentState value={status} className="" />
+          {statusDate && (
+            <div className="word-wrap-anywhere font-size-12 pl-24">
+              {statusDate}
+            </div>
+          )}
+        </div>
         <HideAndShowText
           className="font-size-14 break-all flex items-center m-width max-w-xs"
           value={report?.dssReportText}

@@ -12,17 +12,17 @@ import {
 
 const DateCell = ({ hot, className, init, plan }) => {
   const dateInit = useMemo(
-    () => dayjs(init, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
+    () => dayjs(init, DEFAULT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT),
     [init],
   )
 
   const datePlan = useMemo(
-    () => dayjs(plan, DEFAULT_DATE_FORMAT).format(PRESENT_DATE_FORMAT),
+    () => dayjs(plan, DEFAULT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT),
     [plan],
   )
 
   return (
-    <div className={`${className}   items-center`}>
+    <div className={`${className} items-center`}>
       {init && (
         <div className="flex mb-2 font-size-12">
           <Icon icon={calendarIcon} className="mr-2 color-text-secondary" />
@@ -41,7 +41,6 @@ const DateCell = ({ hot, className, init, plan }) => {
     </div>
   )
 }
-
 
 DateCell.propTypes = {}
 

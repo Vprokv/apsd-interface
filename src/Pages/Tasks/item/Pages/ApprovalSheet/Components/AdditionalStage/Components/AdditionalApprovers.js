@@ -10,6 +10,7 @@ import VolumeStatus from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/Docu
 import UserCard from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/UserCard'
 import dayjs from 'dayjs'
 import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '../../../../../../../../contants'
+import { formatDate } from '../../Plgin/Approvers'
 
 const AdditionalApprover = (props) => {
   const {
@@ -28,6 +29,18 @@ const AdditionalApprover = (props) => {
   } = props
 
   const checked = useMemo(() => id === value?.id, [id, value])
+
+  const statusDate = useMemo(
+    () =>
+      executeDate
+        ? formatDate(executeDate)
+        : decisionDate
+        ? formatDate(decisionDate)
+        : initDate
+        ? formatDate(initDate)
+        : false,
+    [executeDate, decisionDate, initDate],
+  )
 
   return (
     <Row>
@@ -54,7 +67,14 @@ const AdditionalApprover = (props) => {
           plan={dueDate}
           className=""
         />
-        <VolumeStatus value={status} className="" />
+        <div>
+          <VolumeStatus value={status} className="" />
+          {statusDate && (
+            <div className="word-wrap-anywhere font-size-12 pl-24">
+              {statusDate}
+            </div>
+          )}
+        </div>
         <HideAndShowText
           className="font-size-14 break-all flex items-center m-width max-w-xs"
           value={report?.dssReportText}

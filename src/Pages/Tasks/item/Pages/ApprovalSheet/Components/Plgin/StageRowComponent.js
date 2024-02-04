@@ -43,6 +43,8 @@ const StageRowComponent = ({
       deletable,
       stageType,
       reworkInfo,
+      term,
+      factTerm,
     },
     selectedState,
     options,
@@ -106,6 +108,7 @@ const StageRowComponent = ({
                 PRESENT_DATE_FORMAT,
               )
         }`}</div>
+        <div className="ml-6">Срок (дней): {factTerm || term}</div>
         <div className="ml-12 font-medium">{info}</div>
         <div className="flex items-center ml-auto">
           {editable && (
