@@ -148,10 +148,47 @@ const Leaf = (props) => {
       const data = JSON.parse(event.dataTransfer.getData('text/plain1'))
       const {
         parent,
-        options: { status, id },
+        options: { status, id: droppedId, index },
       } = refProps.current
 
       if (status === 'new') {
+        // const { newOptionValue } = [...parent].reduce(
+        //   (acc, rowValue) => {
+        //     const { id } = rowValue
+        //
+        //     if (id === droppedId) {
+        //       const dropIndex = acc.newOptionValue.findIndex(
+        //         ({ id }) => id === data.id,
+        //       )
+        //
+        //       const pushIndex = acc.newOptionValue.findIndex(
+        //         ({ id }) => id === droppedId,
+        //       )
+        //       acc.newOptionValue.splice(pushIndex, 0, { ...data, index })
+        //
+        //       acc.newOptionValue.splice(dropIndex, 1)
+        //
+        //       acc.pushPosition = pushIndex
+        //       acc.pushIndex = index
+        //
+        //       acc.newOptionValue = [...acc.newOptionValue].map((val, key) => {
+        //         if (acc.pushPosition && key > acc.pushPosition) {
+        //           const gap = key - acc.pushPosition
+        //
+        //           return { ...val, index: acc.pushIndex + gap }
+        //         }
+        //         return val
+        //       })
+        //     }
+        //
+        //     return acc
+        //   },
+        //   {
+        //     newOptionValue: [...parent],
+        //     pushIndex: undefined,
+        //   },
+        // )
+
         const newOption = [...parent]
 
         newOption.splice(
@@ -159,14 +196,19 @@ const Leaf = (props) => {
           1,
         )
 
-        newOption.splice(
-          parent.findIndex(({ ['id']: row }) => row === id),
-          0,
-          data,
+        const droppingIndex = newOption.findIndex(
+          ({ ['id']: row }) => row === droppedId,
         )
-        onUpdateOptions(newOption, 0, true)
 
-        const result = await dropEvent(newOption)
+        newOption.splice(droppingIndex, 0, { ...data, index })
+        const sendValue = newOption.map((val, key) => ({
+          ...val,
+          index: key,
+        }))
+
+        onUpdateOptions(sendValue, 0, true)
+
+        const result = await dropEvent(sendValue)
         if (result instanceof Error) {
           onUpdateOptions(parent, 0, true)
         }
