@@ -66,9 +66,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   const api = useContext(ApiContext)
   const documentId = useContext(DocumentIdContext)
   const { type: documentType } = useParams()
-  const [values, setValues] = useState({
-    dueDate: dayjs().format(PRESENT_DATE_FORMAT),
-  })
+
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
   const getNotification = useOpenNotification()
 
@@ -85,6 +83,12 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
       } = {},
     },
   ] = useReadDataState(state, tabState)
+
+  const [values, setValues] = useState({
+    dueDate: dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
+      PRESENT_DATE_FORMAT,
+    ),
+  })
 
   const checkDate = useMemo(
     () =>
