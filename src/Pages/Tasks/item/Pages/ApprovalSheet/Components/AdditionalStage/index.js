@@ -42,7 +42,7 @@ const customMessagesFuncMap = {
 }
 
 const AdditionalStage = (props) => {
-  const { approvers } = props.node.options
+  const { approvers, term = null, factTerm = null } = props.node.options
 
   const {
     parent,
@@ -207,28 +207,30 @@ const AdditionalStage = (props) => {
     !!approvers?.length && (
       <div className="ml-6">
         <LevelStageWrapper>
-          <LevelStage>
-            <button
-              className="pl-2"
-              type="button"
-              onClick={toggleDisplayedFlag}
-            >
-              <Icon
-                icon={angleIcon}
-                size={10}
-                className={`color-text-secondary ${
-                  isDisplayed ? '' : 'rotate-180'
-                }`}
-              />
-            </button>
-            <div
-              className="font-size-12 ml-2 h-full flex items-center  w-full"
-              onClick={toggleDisplayedFlag}
-            >
-              {'Дополнительное согласование'}
-            </div>
-            {/* <div className="ml-6">Срок (дней): {factTerm || term}</div>*/}
-          </LevelStage>
+          <div className="flex items-center">
+            <LevelStage>
+              <button
+                className="pl-2"
+                type="button"
+                onClick={toggleDisplayedFlag}
+              >
+                <Icon
+                  icon={angleIcon}
+                  size={10}
+                  className={`color-text-secondary ${
+                    isDisplayed ? '' : 'rotate-180'
+                  }`}
+                />
+              </button>
+              <div
+                className="font-size-12 ml-2 h-full flex items-center  w-full"
+                onClick={toggleDisplayedFlag}
+              >
+                {'Дополнительное согласование'}
+              </div>
+            </LevelStage>
+            <div className="ml-6 font-size-12">Срок (дней): {factTerm || term}</div>
+          </div>
           <div className="flex items-center h-10">
             <Tips text="Добавить доп. согласующего">
               <CustomButtonForIcon
