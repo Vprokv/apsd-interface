@@ -14,6 +14,7 @@ import XlsIcon from '@/Icons/XlsIcon'
 import Tips from '@/Components/Tips'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
@@ -32,6 +33,12 @@ const plugins = {
     TableHeaderComponent: Header,
     driver: useBackendColumnSettingsState,
   },
+  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+}
+
+const baseSortQuery = {
+  key: 'values.dsdt_creation_date',
+  direction: 'DESC',
 }
 
 const PageDocumentSelect = () => {
@@ -46,7 +53,12 @@ const PageDocumentSelect = () => {
   )
 
   const [
-    { filter = defaultFilter, searchState = defaultSearchState, loading },
+    {
+      filter = defaultFilter,
+      sortQuery = baseSortQuery,
+      searchState = defaultSearchState,
+      loading = false,
+    },
     setTabState,
   ] = useTabItem({
     stateId: SEARCH_PAGE_DOCUMENT,
@@ -67,6 +79,7 @@ const PageDocumentSelect = () => {
       filter={filter}
       setSearchState={updateTabState('searchState')}
       setFilter={updateTabState('filter')}
+      setLoading={updateTabState('loading')}
       options={defaultOptions}
     >
       {(closeTable, onExport) => (
@@ -95,6 +108,8 @@ const PageDocumentSelect = () => {
               columns={tableConfig}
               value={searchState.results}
               plugins={plugins}
+              sortQuery={sortQuery}
+              onSort={updateTabState('sortQuery')}
             />
           </ScrollBar>
         </>
