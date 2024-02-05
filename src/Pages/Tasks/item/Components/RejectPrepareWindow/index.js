@@ -78,7 +78,6 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
     reportText: [{ name: VALIDATION_RULE_REQUIRED }],
   }
 
-
   const fields = useMemo(
     () => [
       {
@@ -87,14 +86,8 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
         placeholder: 'Укажите причину отклонения',
         component: Input,
       },
-      {
-        id: 'files',
-        multiple: true,
-        containerRef: context,
-        component: NewFileInput,
-      },
     ],
-    [context],
+    [],
   )
 
   return (
