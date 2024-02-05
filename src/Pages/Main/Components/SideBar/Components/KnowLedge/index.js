@@ -42,7 +42,7 @@ const Knowledge = ({ onOpenNewTab, width, collapsedState }) =>
             </button>
             {isDisplayed && (
               <div className="px-2 ">
-                <ScrollBar>
+                <ScrollBar className="mr-2">
                   <KnowLedgeItem
                     width={width}
                     onOpenNewTab={onOpenNewTab}
