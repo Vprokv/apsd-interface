@@ -229,7 +229,9 @@ const AdditionalStage = (props) => {
                 {'Дополнительное согласование'}
               </div>
             </LevelStage>
-            <div className="ml-6 font-size-12">Срок (дней): {factTerm || term}</div>
+            <div className="ml-6 font-size-12">
+              Срок (дней): {factTerm || term}
+            </div>
           </div>
           <div className="flex items-center h-10">
             <Tips text="Добавить доп. согласующего">
