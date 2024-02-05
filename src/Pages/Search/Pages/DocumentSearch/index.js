@@ -42,7 +42,7 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 export const tableConfig = [
   {
-    id: 'dss_description',
+    id: 'values.dss_description',
     label: 'Наименование',
     sizes: 200,
     component: ({
@@ -52,7 +52,7 @@ export const tableConfig = [
     }) => <BaseCell className="break-all" value={dss_description} />,
   },
   {
-    id: 'dss_type_label',
+    id: 'values.dss_type_label',
     label: 'Вид тома',
     sizes: 200,
     component: ({
@@ -62,7 +62,7 @@ export const tableConfig = [
     }) => <BaseCell value={dss_type_label} />,
   },
   {
-    id: 'dss_status_display',
+    id: 'values.dss_status_display',
     label: 'Статус',
     sizes: 200,
     component: ({
@@ -72,7 +72,7 @@ export const tableConfig = [
     }) => <BaseCell value={dss_status_display} />,
   },
   {
-    id: 'dsid_startup_complex_display',
+    id: 'values.dsid_startup_complex_display',
     label: 'Титул',
     sizes: 200,
     component: ({
@@ -82,7 +82,7 @@ export const tableConfig = [
     }) => <BaseCell value={dsid_startup_complex_display} />,
   },
   {
-    id: 'Дата регистрации',
+    id: 'values.dsdt_reg_date',
     label: 'Дата регистрации',
     sizes: 200,
     component: ({
@@ -92,7 +92,7 @@ export const tableConfig = [
     }) => <BaseCell value={dsdt_reg_date} />,
   },
   {
-    id: 'dsdt_creation_date',
+    id: 'values.dsdt_creation_date',
     label: 'Дата создания',
     sizes: 200,
     component: ({
@@ -116,7 +116,7 @@ export const tableConfig = [
     component: () => <BaseCell />,
   },
   {
-    id: 'Автор',
+    id: 'valuesCustom.dsid_author_empl.fio',
     label: 'Автор',
     sizes: 200,
     component: ({
@@ -177,11 +177,17 @@ const columnsMap = [
   },
 ]
 
+const baseSortQuery = {
+  key: 'values.dsdt_creation_date',
+  direction: 'DESC',
+}
+
 const DocumentSearch = ({
   documentTypeLoadFunction,
   setSearchState,
   filter,
   setFilter,
+  setLoading,
   children,
   options,
 }) => {
@@ -194,7 +200,11 @@ const DocumentSearch = ({
     stateId: SEARCH_PAGE_DOCUMENT,
   })
 
-  const { renderTable = false, searchState: { total = 0 } = {} } = tabState
+  const {
+    renderTable = false,
+    searchState: { total = 0 } = {},
+    sortQuery = baseSortQuery,
+  } = tabState
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,
@@ -263,6 +273,7 @@ const DocumentSearch = ({
 
   const onSearch = useCallback(async () => {
     setTabState({ renderTable: true })
+    setLoading(true)
     const { type, ...filters } = filter
     const { limit, offset } = paginationState
 
@@ -273,25 +284,30 @@ const DocumentSearch = ({
           types: [type],
           inVersions: false,
           queryItems: buildSearchQuery(filters),
-          orderBy: 'values.dsdt_creation_date',
-          sortType: 'DESC',
+          orderBy: sortQuery.key,
+          sortType: sortQuery.direction,
         },
       )
       setSearchState(data)
+      setLoading(false)
     } catch (e) {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
+      setLoading(false)
     }
   }, [
     api,
     filter,
     getNotification,
     paginationState,
+    setLoading,
     setSearchState,
     setTabState,
+    sortQuery.direction,
+    sortQuery.key,
   ])
 
-  useEffect(onSearch, [paginationState])
+  useEffect(onSearch, [sortQuery, paginationState])
 
   const onExportToExcel = useCallback(async () => {
     const { type, ...filters } = filter
@@ -326,11 +342,6 @@ const DocumentSearch = ({
   const onRemove = useCallback(() => setFilter({}), [setFilter])
 
   useEffect(loadData, [loadData])
-
-  // const isSearchDisabled = useMemo(() => {
-  //   const { type, ...keys } = filter
-  //   return Object.keys(keys).length === 0
-  // }, [filter])
 
   const onCloseTable = useCallback(() => {
     setTabState({ renderTable: false })
