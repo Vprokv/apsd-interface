@@ -61,6 +61,7 @@ import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoCom
 import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -73,6 +74,7 @@ const customMessagesFuncMap = {
 }
 
 const titleName = 'ddt_startup_complex_type_doc'
+const tomeName = 'ddt_project_calc_type_doc'
 
 const Document = () => {
   const { id, type } = useParams()
@@ -279,6 +281,14 @@ const Document = () => {
             ),
           }),
         icon: CancelIcon,
+      },
+      print_card: {
+        icon: defaultTaskIcon['print_card'],
+        handler: () =>
+          tomeName === type &&
+          setComponent({
+            Component: (props) => <PrintCardWindow {...props} />,
+          }),
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
