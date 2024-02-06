@@ -2,12 +2,13 @@ import PropTypes from 'prop-types'
 import { SidebarEntity } from '@/Pages/Tasks/item/styles'
 
 const ProjectCalcTypeComponent = ({
-  dsid_startup_complex: {
-    values: { dss_description: titleDescription = '' } = {},
-  } = {},
+  dsid_startup_complex,
   dss_description,
   dss_reg_number,
 }) => {
+  const { values: { dss_description: titleDescription = '' } = {} } =
+    dsid_startup_complex || {}
+
   return (
     <SidebarEntity className="flex flex-col m-4 break-words font-size-12">
       <div className="mb-2">

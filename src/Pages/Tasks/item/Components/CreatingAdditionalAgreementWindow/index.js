@@ -62,7 +62,7 @@ const customMessagesFuncMap = {
   },
 }
 
-const CreatingAdditionalAgreementWindow = ({ onClose }) => {
+const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
   const api = useContext(ApiContext)
   const documentId = useContext(DocumentIdContext)
   const { type: documentType } = useParams()
@@ -70,19 +70,11 @@ const CreatingAdditionalAgreementWindow = ({ onClose }) => {
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
   const getNotification = useOpenNotification()
 
-  const [state, tabState] = useTabItem({
-    stateId: ITEM_TASK,
-  })
-
-  const [
-    {
-      data: {
-        approverId,
-        approverParentId,
-        dueDate = dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
-      } = {},
-    },
-  ] = useReadDataState(state, tabState)
+  const {
+    approverId,
+    approverParentId,
+    dueDate = dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
+  } = data
 
   const [values, setValues] = useState({
     dueDate: dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(

@@ -439,7 +439,14 @@ const Task = () => {
         icon: UploadDoc,
         caption: 'Создание доп. согласования',
         handler: () =>
-          setComponent({ Component: CreatingAdditionalAgreementWindowWrapper }),
+          setComponent({
+            Component: (props) => (
+              <CreatingAdditionalAgreementWindowWrapper
+                {...props}
+                data={data}
+              />
+            ),
+          }),
       },
       apsd_reject_cancel: {
         handler: async () => {
