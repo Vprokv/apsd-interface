@@ -62,6 +62,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
+import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -288,6 +289,15 @@ const Document = () => {
           tomeName === type &&
           setComponent({
             Component: (props) => <PrintCardWindow {...props} />,
+          }),
+      },
+      change_stage: {
+        icon: defaultTaskIcon['change_stage'],
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <ChangeStageWindow {...props} reloadData={reloadData} />
+            ),
           }),
       },
       defaultHandler: ({ name }) => ({

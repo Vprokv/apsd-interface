@@ -18,6 +18,7 @@ import StrelkaRight from './Icons/StrelkaRight.svg'
 import SendToCheck from './Icons/SendToCheck.svg'
 import RejectWithRemarks from './Icons/RejectWithRemarks.svg'
 import Repeat from './Icons/Repeat.svg'
+import ExchangeIcon from './Icons/ExchangeIcon.svg'
 import Remarks from '@/Pages/Tasks/item/Pages/Remarks'
 import UploadDoc from './Icons/UploadDoc.svg'
 import LifeCycleHistory from '@/Pages/Tasks/item/Pages/LifeCycleHistory'
@@ -113,4 +114,5 @@ export const defaultTaskIcon = {
   reject_sap_approve: RejectApproveIcon,
   on_consider: Repeat,
   print_card: PrintIcon,
+  change_stage: ExchangeIcon,
 }

@@ -69,6 +69,7 @@ import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import RejectSapPrepareWindow from './Components/RejectSapPrepareWindow'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
+import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -170,6 +171,52 @@ const Task = () => {
   useEffect(() => {
     refValues.current = values
   }, [values])
+
+  //data
+  //taskId
+  //signal ?
+  //refValues.current
+  //type
+  //documentId
+  // data (task state)
+
+  // actions
+  // closeCurrenTab
+  // getNotification
+  // reloadData document/task state
+  // setComponent
+  // closeCurrenTab
+  // updateCurrentTabChildrenStates TASK_ITEM_APPROVAL_SHEET
+  // updateTabStateUpdaterByName  TASK_LIST
+  // reloadSidebarTaskCounters
+  // setMessage
+  // onCloseTab
+  // currentTabIndex
+  // onClose - стейт модалки
+
+  //todo дополнить экшенами из окон
+
+  // task actions
+  // reject_sap_prepare
+  // reject_consider
+  // apsd_prepare_reject
+  // reject_prepare
+  // finish_simple_approve
+  // reject_approve
+  // on_consider
+
+  // document actions
+  // save - в тасках есть апдейты дата, жц, уведомления, а в документах нет
+  // send_to_eehd -в тасках есть апдейты дата, жц, уведомления, а в документах нет
+  // send_letter -в тасках есть апдейты дата, жц, уведомления, а в документах нет
+  // apsd_canceled - одинаково
+  // download_template_letter - одинаково
+  // additional_agreement - только таск
+  // apsd_reject_cancel - одинаково
+  // apsd_cancel - одинаково
+  // print_card - одинаково
+  // delete - только в документе
+  // defaultHandler - одинаково
 
   const TaskHandlers = useMemo(
     () => ({
@@ -486,6 +533,15 @@ const Task = () => {
             Component: (props) => <PrintCardWindow {...props} />,
           }),
       },
+      change_stage: {
+        icon: defaultTaskIcon['change_stage'],
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <ChangeStageWindow {...props} reloadData={reloadData} />
+            ),
+          }),
+      },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
@@ -511,6 +567,7 @@ const Task = () => {
     }),
     [
       api,
+      data,
       documentId,
       getNotification,
       id,
