@@ -56,13 +56,13 @@ export const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Результат(Этап)',
-    path: 'tomStageResult',
+    header: 'Начало проектирования по договору',
+    path: 'designDateFrom',
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Результат(Дата)',
-    path: 'finishDate',
+    header: 'Окончание проектирования по договору',
+    path: 'designDateTo',
   },
   {
     componentType: 'DescriptionTableColumn',
@@ -71,12 +71,17 @@ export const columnMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Начало проектирования по договору',
-    path: 'designDateFrom',
+    header: 'Этап(результат)',
+    path: 'tomStageResult',
   },
   {
     componentType: 'DescriptionTableColumn',
-    header: 'Окончание проектирования по договору',
-    path: 'designDateTo',
+    header: 'Состояние(результат)',
+    path: 'statusResult',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Дата(результат)',
+    path: 'finishDate',
   },
 ]
