@@ -9,11 +9,10 @@ export const SecondKnowledgeButton = ({
   id,
 }) => {
   const handleClick = useCallback(() => {
+    const encodeParentName = encodeURIComponent(parentName)
+    const encodeName = encodeURIComponent(name)
     onOpenNewTab(
-      `/task/storage/${parentName.replaceAll('/', '%2f')}/${name.replaceAll(
-        '/',
-        '%2f',
-      )}/${id ? `${id}` : ''}`,
+      `/task/storage/${encodeParentName}/${encodeName}/${id ? `${id}` : ''}`,
     )
   }, [onOpenNewTab, parentName, name, id])
 
@@ -29,9 +28,8 @@ export const FirstLevelKnowledgeButton = ({
 }) => {
   const handleClick = useCallback(() => {
     if (!isDisplayed) {
-      onOpenNewTab(
-        `/task/storage/${name.replaceAll('/', '%2f')}/${id ? `${id}` : ''}`,
-      )
+      const encodeName = encodeURIComponent(name)
+      onOpenNewTab(`/task/storage/${encodeName}/${id ? `${id}` : ''}`)
       toggleChildrenRender()
     } else {
       toggleChildrenRender()

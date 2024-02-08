@@ -152,7 +152,14 @@ const defaultSortQuery = {
 
 const ArchiveList = () => {
   const { id, name = '', parentName = '', ['*']: sectionId } = useParams()
-  useSetTabName(useCallback(() => `${parentName}/${name}`, [name, parentName]))
+  const decodeParentName = decodeURIComponent(parentName)
+  const decodeName = decodeURIComponent(name)
+  useSetTabName(
+    useCallback(
+      () => `${decodeParentName}/${decodeName}`,
+      [decodeName, decodeParentName],
+    ),
+  )
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const [selectState, setSelectState] = useState([])
@@ -229,8 +236,8 @@ const ArchiveList = () => {
       data: { id },
     } = await api.post(URL_EXPORT, {
       url: `${API_URL}/${URL_STORAGE_DOCUMENT}`,
-      label: `${parentName}${name}`,
-      sheetName: `${parentName}${name}`,
+      label: `${decodeParentName}${decodeName}`,
+      sheetName: `${decodeParentName}${decodeName}`,
       columns: columnMap,
       body: {
         filter,
@@ -244,8 +251,8 @@ const ArchiveList = () => {
       responseType: 'blob',
     })
 
-    downloadFileWithReload(data, `${parentName}/${name}.xlsx`)
-  }, [api, filter, name, paginationState, parentName, token])
+    downloadFileWithReload(data, `${decodeParentName}/${decodeName}.xlsx`)
+  }, [api, filter, decodeName, paginationState, decodeParentName, token])
 
   return (
     <OpenWindowContext.Provider value={{ open, setOpen: changeModalState }}>
@@ -253,7 +260,7 @@ const ArchiveList = () => {
         <div className="flex items-center mb-2">
           <div className=" font-size-14 justify-start break-word">
             <span>Титул: </span>
-            <span className="font-medium">{name.replaceAll('%2f', '/')}</span>
+            <span className="font-medium">{decodeName}</span>
           </div>
           <div className="w-64 ml-auto  flex">
             <Tips text="Выгрузить в Excel">
