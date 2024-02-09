@@ -339,7 +339,7 @@ const Task = () => {
             Component: (props) => (
               <RejectApproveWindow
                 title="Выберите этап для повторного рассмотрения"
-                signal="reject_approve"
+                signal="on_consider"
                 stageTypes={['apsd_sap_consider']}
                 {...props}
               />
