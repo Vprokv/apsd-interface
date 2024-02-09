@@ -27,7 +27,7 @@ export const columnMap = [
   {
     componentType: 'DescriptionTableColumn',
     header: 'Состояние раздела/тома',
-    path: 'status',
+    path: 'statusResult',
   },
   {
     componentType: 'DescriptionTableColumn',
