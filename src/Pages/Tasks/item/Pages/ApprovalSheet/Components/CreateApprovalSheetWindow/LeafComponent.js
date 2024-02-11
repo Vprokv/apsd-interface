@@ -137,14 +137,21 @@ const Leaf = (props) => {
     [children, options, onInput, rowKey, valueKey, returnObjects, leafVal],
   )
 
+  const opa = index
+
   const onDragEnd = useCallback(async () => {
+    console.log(`onDragEnd ${index}`)
     setBorderState('')
     setDropState(null)
   }, [setDropState])
 
+
+
   const onDrop = useCallback(
     //todo разобраться как разнести событие синхр в onDragOver
     async (event) => {
+
+      console.log(`onDrop ${opa}`)
       const data = JSON.parse(event.dataTransfer.getData('text/plain1'))
       const {
         parent,
@@ -221,6 +228,7 @@ const Leaf = (props) => {
   )
 
   const onDragOver = useCallback((event) => {
+    console.log(`onDragOver ${index}`)
     event.stopPropagation()
     event.preventDefault()
     const {
@@ -240,6 +248,7 @@ const Leaf = (props) => {
   }, [])
 
   const onDragLeave = useCallback(() => {
+    console.log(`onDragLeave ${index}`)
     setBorderState('')
   }, [])
 
@@ -275,11 +284,14 @@ const Leaf = (props) => {
   )
 
   const onDragStart = useCallback(
+
     (e) => {
+      console.log(`onDragStart ${index}`)
+      console.log(options)
+      console.log(refProps.current)
       e.dataTransfer.setData('text/plain1', JSON.stringify(options))
       e.dataTransfer.effectAllowed = 'copy'
       const { setDropState } = refProps.current
-
       setDropState({ node: refProps.current, sequence: handleGetSequence() })
     },
     [handleGetSequence, options],

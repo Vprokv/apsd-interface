@@ -224,6 +224,8 @@ function TaskList({ loadFunctionRest }) {
   )
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
+  const [finallyColumns, setFinallyColumns] = useState(columns)
+  console.log(finallyColumns)
 
   const { token } = useContext(TokenContext)
 
@@ -483,7 +485,11 @@ function TaskList({ loadFunctionRest }) {
             open={filterWindowOpen}
             onClose={changeFilterWindowState(false)}
           />
-          <ColumnController columns={columns} id={TASK_LIST} />
+          <ColumnController
+            columns={finallyColumns}
+            id={TASK_LIST}
+            setColumns={setFinallyColumns}
+          />
           <Tips text="Выгрузить в Excel">
             <LoadableButtonForIcon
               className="color-green"
@@ -502,7 +508,7 @@ function TaskList({ loadFunctionRest }) {
           [handleDoubleClick],
         )}
         value={content}
-        columns={columns}
+        columns={finallyColumns}
         plugins={plugins}
         headerCellComponent={HeaderCell}
         selectState={selectState}
