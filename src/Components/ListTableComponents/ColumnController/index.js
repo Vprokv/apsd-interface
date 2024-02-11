@@ -11,77 +11,20 @@ import {
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import CheckBox from '@/Components/Inputs/CheckBox'
 
-const ColumnComponent = ({
-  value,
-  label,
-  onInput,
-  key,
-  onDragStart,
-  onDrop,
-}) => {
-  return (
-    <div
-      onDragStart={onDragStart}
-      onDragEnd={() => {}}
-      onDragOver={(event) => {
-        event.preventDefault()
-      }}
-      onDragLeave={() => {}}
-      onDrop={onDrop}
-      draggable
-    >
-      <RowSettingComponent key={key}>
-        <CheckBox value={value} onInput={onInput} />
-        <div
-          onClick={onInput}
-          /* onDragStart={onDragStart}*/
-          /* onDrop={() => console.log('drop')}*/
-          className={'word-break-all w-full'}
-          /* draggable*/
-        >
-          {label}
-        </div>
-      </RowSettingComponent>
-    </div>
-  )
-}
-
-function useForceUpdate() {
-  const [value, setValue] = useState(0)
-  return () => setValue((value) => value + 1)
-}
+const ColumnComponent = ({ value, label, onInput, key }) => (
+  <RowSettingComponent key={key} onClick={onInput}>
+    <CheckBox value={value} onInput={onInput} />
+    <div className={'word-break-all'}>{label}</div>
+  </RowSettingComponent>
+)
 
 const ColumnController = ({
   driver = useBackendColumnSettingsState,
   columns,
   id,
-  setColumns,
 }) => {
   const [columnState, setColumnState] = driver({ id })
   const [open, setOpen] = useState(false)
-  const [draggableColumnIndex, setDraggableColumnIndex] = useState(null)
-  /* const [finallyColumns, setFinallyColumns] = useState(columns)*/
-
-  const onDragStart = useCallback(
-    (index) => (e) => {
-      setDraggableColumnIndex(index)
-    },
-    [],
-  )
-
-  // разобраться, почему не работало без спреда массива калумнс
-  const onDrop = useCallback(
-    (index) => (e) => {
-      e.preventDefault()
-      console.log('onDrop')
-      const item = columns[index]
-      columns.splice(index, 1, columns[draggableColumnIndex])
-      columns.splice(draggableColumnIndex, 1, item)
-
-      setColumns([...columns])
-    },
-    [columns, draggableColumnIndex, setColumns],
-  )
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -116,21 +59,20 @@ const ColumnController = ({
 
   const columnsRender = useMemo(
     () =>
-      columns.map((val, index) => {
+      columns.map((val) => {
         const { id, label } = val
         const { [id]: { hidden = false } = {} } = columnState || {}
+
         return (
           <ColumnComponent
             key={id}
             value={!hidden}
             label={label}
             onInput={onColumnHidden(id)}
-            onDragStart={onDragStart(index)}
-            onDrop={onDrop(index)}
           />
         )
       }),
-    [columns, columnState, onColumnHidden, onDragStart, onDrop],
+    [columnState, columns, onColumnHidden],
   )
 
   return (
