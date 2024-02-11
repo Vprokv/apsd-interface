@@ -208,6 +208,8 @@ const Leaf = (props) => {
         )
 
         newOption.splice(droppingIndex, 0, { ...data, index })
+        console.log(newOption, 'newOption')
+        console.log(droppingIndex, 'droppingIndex')
         const sendValue = newOption.map((val, key) => ({
           ...val,
           index: key,
