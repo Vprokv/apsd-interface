@@ -8,23 +8,61 @@ import {
   RowSettingComponent,
   SettingContextMenu,
 } from '@/Components/ListTableComponents/ColumnController/styles'
-import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import CheckBox from '@/Components/Inputs/CheckBox'
 
-const ColumnComponent = ({ value, label, onInput, key }) => (
-  <RowSettingComponent key={key} onClick={onInput}>
-    <CheckBox value={value} onInput={onInput} />
-    <div className={'word-break-all'}>{label}</div>
-  </RowSettingComponent>
-)
-
-const ColumnController = ({
-  driver = useBackendColumnSettingsState,
-  columns,
-  id,
+const ColumnComponent = ({
+  value,
+  label,
+  onInput,
+  key,
+  onDragStart,
+  onDrop,
 }) => {
-  const [columnState, setColumnState] = driver({ id })
+  return (
+    <RowSettingComponent
+      onDragStart={onDragStart}
+      onDragEnd={() => {}}
+      onDragOver={(event) => {
+        event.preventDefault()
+      }}
+      onDragLeave={() => {}}
+      onDrop={onDrop}
+      draggable
+      key={key}
+    >
+      <CheckBox value={value} onInput={onInput} />
+      <div onClick={onInput} className={'word-break-all w-full'}>
+        {label}
+      </div>
+    </RowSettingComponent>
+  )
+}
+
+const ColumnController = ({ columns, columnState, setColumnState }) => {
   const [open, setOpen] = useState(false)
+  const [draggableColumnId, setDraggableColumnId] = useState(null)
+
+  const onDragStart = useCallback(
+    (id) => (e) => {
+      setDraggableColumnId(id)
+    },
+    [],
+  )
+
+  const onDrop = useCallback(
+    (id) => (e) => {
+      e.preventDefault()
+      const subsequence = columns.map((column) => column.id)
+      const finallySubsequence = subsequence.map((a) =>
+        a === id ? draggableColumnId : a === draggableColumnId ? id : a,
+      )
+
+      setColumnState((prev) => {
+        return { ...prev, finallySubsequence }
+      })
+    },
+    [columns, draggableColumnId, setColumnState],
+  )
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -62,17 +100,18 @@ const ColumnController = ({
       columns.map((val) => {
         const { id, label } = val
         const { [id]: { hidden = false } = {} } = columnState || {}
-
         return (
           <ColumnComponent
             key={id}
             value={!hidden}
             label={label}
             onInput={onColumnHidden(id)}
+            onDragStart={onDragStart(id)}
+            onDrop={onDrop(id)}
           />
         )
       }),
-    [columnState, columns, onColumnHidden],
+    [columns, columnState, onColumnHidden, onDragStart, onDrop],
   )
 
   return (

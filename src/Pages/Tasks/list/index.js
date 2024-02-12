@@ -224,8 +224,20 @@ function TaskList({ loadFunctionRest }) {
   )
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
-  const [finallyColumns, setFinallyColumns] = useState(columns)
-  console.log(finallyColumns)
+
+  const [columnState, setColumnState] = useBackendColumnSettingsState({
+    id: TASK_LIST,
+  })
+
+  const finallyColumns = useMemo(() => {
+    return (
+      columnState?.finallySubsequence?.map((id) => {
+        return columns.find((column) => {
+          return column?.id === id
+        })
+      }) || columns
+    )
+  }, [columnState?.finallySubsequence])
 
   const { token } = useContext(TokenContext)
 
@@ -487,8 +499,8 @@ function TaskList({ loadFunctionRest }) {
           />
           <ColumnController
             columns={finallyColumns}
-            id={TASK_LIST}
-            setColumns={setFinallyColumns}
+            columnState={columnState}
+            setColumnState={setColumnState}
           />
           <Tips text="Выгрузить в Excel">
             <LoadableButtonForIcon
