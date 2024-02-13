@@ -9,6 +9,7 @@ import {
   SettingContextMenu,
 } from '@/Components/ListTableComponents/ColumnController/styles'
 import CheckBox from '@/Components/Inputs/CheckBox'
+import { useBackendColumnSettingsState } from '../../../components_ocean/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const ColumnComponent = ({
   value,
@@ -38,8 +39,13 @@ const ColumnComponent = ({
   )
 }
 
-const ColumnController = ({ columns, columnState, setColumnState }) => {
+const ColumnController = ({
+  columns,
+  id,
+  driver = useBackendColumnSettingsState,
+}) => {
   const [open, setOpen] = useState(false)
+  const [columnState, setColumnState] = driver({ id })
   const [draggableColumnId, setDraggableColumnId] = useState(null)
 
   const onDragStart = useCallback(
@@ -52,16 +58,27 @@ const ColumnController = ({ columns, columnState, setColumnState }) => {
   const onDrop = useCallback(
     (id) => (e) => {
       e.preventDefault()
-      const subsequence = columns.map((column) => column.id)
-      const finallySubsequence = subsequence.map((a) =>
-        a === id ? draggableColumnId : a === draggableColumnId ? id : a,
-      )
-
       setColumnState((prev) => {
-        return { ...prev, finallySubsequence }
+        return {
+          ...prev,
+          [id]: {
+            ...prev[id],
+            position: prev[draggableColumnId].position,
+          },
+          [draggableColumnId]: {
+            ...prev[draggableColumnId],
+            position: prev[id].position,
+          },
+        }
       })
     },
-    [columns, draggableColumnId, setColumnState],
+    [draggableColumnId, setColumnState],
+  )
+
+  const sortedColumnState = Object.entries(columnState).sort(
+    ([a, b], [c, d]) => {
+      return b.position - d.position
+    },
   )
 
   const changeModalState = useCallback(
@@ -97,20 +114,29 @@ const ColumnController = ({ columns, columnState, setColumnState }) => {
 
   const columnsRender = useMemo(
     () =>
-      columns.map((val) => {
-        const { id, label } = val
-        const { [id]: { hidden = false } = {} } = columnState || {}
-        return (
-          <ColumnComponent
-            key={id}
-            value={!hidden}
-            label={label}
-            onInput={onColumnHidden(id)}
-            onDragStart={onDragStart(id)}
-            onDrop={onDrop(id)}
-          />
-        )
-      }),
+      sortedColumnState
+        .map(([a, b]) => {
+          return columns.find(({ id }) => {
+            return a === id
+          })
+        })
+        .filter((a) => {
+          return a
+        })
+        .map((val) => {
+          const { id, label } = val
+          const { [id]: { hidden = false } = {} } = columnState || {}
+          return (
+            <ColumnComponent
+              key={id}
+              value={!hidden}
+              label={label}
+              onInput={onColumnHidden(id)}
+              onDragStart={onDragStart(id)}
+              onDrop={onDrop(id)}
+            />
+          )
+        }),
     [columns, columnState, onColumnHidden, onDragStart, onDrop],
   )
 
