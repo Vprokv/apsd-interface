@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
 import Tips from '@/Components/Tips'
 import { ButtonForIcon, SecondaryOverBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
@@ -9,16 +8,9 @@ import {
   SettingContextMenu,
 } from '@/Components/ListTableComponents/ColumnController/styles'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import { useBackendColumnSettingsState } from '../../../components_ocean/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
-const ColumnComponent = ({
-  value,
-  label,
-  onInput,
-  key,
-  onDragStart,
-  onDrop,
-}) => {
+const ColumnComponent = ({ value, label, onInput, onDragStart, onDrop }) => {
   return (
     <RowSettingComponent
       onDragStart={onDragStart}
@@ -29,7 +21,6 @@ const ColumnComponent = ({
       onDragLeave={() => {}}
       onDrop={onDrop}
       draggable
-      key={key}
     >
       <CheckBox value={value} onInput={onInput} />
       <div onClick={onInput} className={'word-break-all w-full'}>
@@ -46,11 +37,11 @@ const ColumnController = ({
 }) => {
   const [open, setOpen] = useState(false)
   const [columnState, setColumnState] = driver({ id })
-  const [draggableColumnId, setDraggableColumnId] = useState(null)
 
   const onDragStart = useCallback(
     (id) => (e) => {
-      setDraggableColumnId(id)
+      e.dataTransfer.setData('text/plain', JSON.stringify(id))
+      e.dataTransfer.effectAllowed = 'copy'
     },
     [],
   )
@@ -58,27 +49,32 @@ const ColumnController = ({
   const onDrop = useCallback(
     (id) => (e) => {
       e.preventDefault()
+      const draggableColumnId = JSON.parse(e.dataTransfer.getData('text/plain'))
       setColumnState((prev) => {
+        const nextValue = prev ? { ...prev } : {}
+        const iterableArray = prev ? Object.keys(nextValue) : columns
+
+        const updateColumnState = iterableArray.reduce((acc, val, index) => {
+          const rowId = typeof val === 'object' ? val.id : val
+          const { [rowId]: { position = index, ...rowState } = {} } = nextValue
+          acc[rowId] = { ...rowState, position }
+          return acc
+        }, {})
+
         return {
-          ...prev,
+          ...updateColumnState,
           [id]: {
-            ...prev[id],
-            position: prev[draggableColumnId].position,
+            ...updateColumnState[id],
+            position: updateColumnState[draggableColumnId].position,
           },
           [draggableColumnId]: {
-            ...prev[draggableColumnId],
-            position: prev[id].position,
+            ...updateColumnState[draggableColumnId],
+            position: updateColumnState[id].position,
           },
         }
       })
     },
-    [draggableColumnId, setColumnState],
-  )
-
-  const sortedColumnState = Object.entries(columnState).sort(
-    ([a, b], [c, d]) => {
-      return b.position - d.position
-    },
+    [columns, setColumnState],
   )
 
   const changeModalState = useCallback(
@@ -112,33 +108,29 @@ const ColumnController = ({
     [columns, setColumnState],
   )
 
-  const columnsRender = useMemo(
-    () =>
-      sortedColumnState
-        .map(([a, b]) => {
-          return columns.find(({ id }) => {
-            return a === id
-          })
-        })
-        .filter((a) => {
-          return a
-        })
-        .map((val) => {
-          const { id, label } = val
-          const { [id]: { hidden = false } = {} } = columnState || {}
-          return (
-            <ColumnComponent
-              key={id}
-              value={!hidden}
-              label={label}
-              onInput={onColumnHidden(id)}
-              onDragStart={onDragStart(id)}
-              onDrop={onDrop(id)}
-            />
-          )
-        }),
-    [columns, columnState, onColumnHidden, onDragStart, onDrop],
-  )
+  const columnsRender = useMemo(() => {
+    const renderArr = columns
+      .map((val, index) => ({
+        ...val,
+        position: columnState ? columnState[val.id]?.position : index,
+      }))
+      .sort((a, b) => a.position - b.position)
+
+    return renderArr.map((val) => {
+      const { id, label } = val
+      const { [id]: { hidden = false } = {} } = columnState || {}
+      return (
+        <ColumnComponent
+          key={id}
+          value={!hidden}
+          label={label}
+          onInput={onColumnHidden(id)}
+          onDragStart={onDragStart(id)}
+          onDrop={onDrop(id)}
+        />
+      )
+    })
+  }, [columns, columnState, onColumnHidden, onDragStart, onDrop])
 
   return (
     <>
