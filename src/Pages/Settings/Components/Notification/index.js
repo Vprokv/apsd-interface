@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import LoadableSelect from '@/Components/Inputs/Select'
 import {
   URL_SUBSCRIPTION_CHANNELS,
@@ -18,6 +12,7 @@ import ChannelItemComponent from '@/Pages/Settings/Components/Notification/Compo
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import ScrollBar from '../../../../components_ocean/Components/ScrollBar'
 
 const NotificationItem = () => {
   const api = useContext(ApiContext)
@@ -92,7 +87,7 @@ const NotificationItem = () => {
   ]
 
   return (
-    <div className="m-4">
+    <div className="m-4 w-full">
       <GridForm
         fields={fields}
         inputWrapper={InputWrapper}
@@ -103,11 +98,15 @@ const NotificationItem = () => {
       <ChannelContext.Provider
         value={{ channels, loadFunction, documentType: filter?.typeDocument }}
       >
-        <GridForm>
-          {userChannels.map((props) => (
-            <ChannelItemComponent key={props.name} {...props} />
-          ))}
-        </GridForm>
+        <div style={{ height: 600 }}>
+          <ScrollBar>
+            <GridForm>
+              {userChannels.map((props) => (
+                <ChannelItemComponent key={props.name} {...props} />
+              ))}
+            </GridForm>
+          </ScrollBar>
+        </div>
       </ChannelContext.Provider>
     </div>
   )
