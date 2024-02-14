@@ -224,10 +224,6 @@ function TaskList({ loadFunctionRest }) {
   )
   const ref = useRef()
   const [width, setWidth] = useState(ref.current?.clientWidth)
-  const [columnState, setColumnState] = useBackendColumnSettingsState({
-    id: TASK_LIST,
-  })
-
   const { token } = useContext(TokenContext)
 
   const { setLimit, setPage, paginationState } = usePagination({
