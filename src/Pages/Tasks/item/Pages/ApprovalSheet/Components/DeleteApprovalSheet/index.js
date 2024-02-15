@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { FormWindow } from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import deleteIcon from '@/Icons/deleteIcon'
@@ -65,6 +65,19 @@ const DeleteApprovalSheet = ({ node }) => {
     () => changeModalState(true)(),
     [changeModalState],
   )
+
+  useEffect(() => {
+    if (open) {
+      const onKeyEnterDown = (e) => {
+        e.key === 'Enter' && onDelete()
+      }
+      document.addEventListener('keydown', onKeyEnterDown)
+      return () => {
+        document.removeEventListener('keydown', onKeyEnterDown)
+      }
+    }
+  }, [onDelete, open])
+
   return (
     <>
       <Tips text="Удалить этап">
