@@ -63,6 +63,7 @@ import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
+import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -84,6 +85,8 @@ const Document = () => {
   const getNotification = useOpenNotification()
   const [ActionComponent, setActionComponent] = useState(null)
   const closeAction = useCallback(() => setActionComponent(null), [])
+  const { onCloseTab } = useContext(TabStateManipulation)
+  const { currentTabIndex } = useContext(CurrentTabContext)
   const setComponent = useCallback((Comp) => {
     setActionComponent(Comp)
   }, [])
@@ -110,6 +113,11 @@ const Document = () => {
       reloadData,
     },
   ] = useAutoReload(loadData, tabState, setTabState)
+
+  const closeCurrenTab = useCallback(
+    () => onCloseTab(currentTabIndex),
+    [onCloseTab, currentTabIndex],
+  )
 
   const documentId = useMemo(() => {
     let v = 'Документ'
@@ -205,12 +213,8 @@ const Document = () => {
               documentIds: [id],
             })
             setMessage(data)
-            reloadData()
-            updateCurrentTabChildrenStates(
-              [TASK_ITEM_APPROVAL_SHEET],
-              setUnFetchedState(),
-            )
             getNotification(customMessagesFuncMap[status]())
+            closeCurrenTab()
           } catch (e) {
             const { response: { status, data } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
@@ -326,6 +330,7 @@ const Document = () => {
     }),
     [
       api,
+      closeCurrenTab,
       getNotification,
       id,
       reloadData,
