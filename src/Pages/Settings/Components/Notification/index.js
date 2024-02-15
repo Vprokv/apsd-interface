@@ -87,7 +87,7 @@ const NotificationItem = () => {
   ]
 
   return (
-    <div className="m-4 w-full">
+    <div className="m-4 w-full pb-8 flex flex-col">
       <GridForm
         fields={fields}
         inputWrapper={InputWrapper}
@@ -98,15 +98,13 @@ const NotificationItem = () => {
       <ChannelContext.Provider
         value={{ channels, loadFunction, documentType: filter?.typeDocument }}
       >
-        <div style={{ height: 600 }}>
-          <ScrollBar>
-            <GridForm>
-              {userChannels.map((props) => (
-                <ChannelItemComponent key={props.name} {...props} />
-              ))}
-            </GridForm>
-          </ScrollBar>
-        </div>
+        <ScrollBar className="m-4">
+          <GridForm>
+            {userChannels.map((props) => (
+              <ChannelItemComponent key={props.name} {...props} />
+            ))}
+          </GridForm>
+        </ScrollBar>
       </ChannelContext.Provider>
     </div>
   )
