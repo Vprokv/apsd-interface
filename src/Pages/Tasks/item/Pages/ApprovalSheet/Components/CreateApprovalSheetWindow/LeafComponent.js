@@ -88,7 +88,7 @@ const Leaf = (props) => {
   const children =
     Array.isArray(rowData) && rowData.length > 0
       ? rowData
-      : !Array.isArray(rowData) && rowData?.approvers?.length > 0 //TODO хорды на распознования ребенка, переделать
+      : !Array.isArray(rowData) && rowData?.approvers?.length > 0 // TODO хорды на распознования ребенка, переделать
       ? [rowData]
       : undefined
 
@@ -136,22 +136,14 @@ const Leaf = (props) => {
     },
     [children, options, onInput, rowKey, valueKey, returnObjects, leafVal],
   )
-
-  const opa = index
-
   const onDragEnd = useCallback(async () => {
-    console.log(`onDragEnd ${index}`)
     setBorderState('')
     setDropState(null)
   }, [setDropState])
 
-
-
   const onDrop = useCallback(
-    //todo разобраться как разнести событие синхр в onDragOver
+    // todo разобраться как разнести событие синхр в onDragOver
     async (event) => {
-
-      console.log(`onDrop ${opa}`)
       const data = JSON.parse(event.dataTransfer.getData('text/plain1'))
       const {
         parent,
@@ -208,8 +200,6 @@ const Leaf = (props) => {
         )
 
         newOption.splice(droppingIndex, 0, { ...data, index })
-        console.log(newOption, 'newOption')
-        console.log(droppingIndex, 'droppingIndex')
         const sendValue = newOption.map((val, key) => ({
           ...val,
           index: key,
@@ -230,7 +220,6 @@ const Leaf = (props) => {
   )
 
   const onDragOver = useCallback((event) => {
-    console.log(`onDragOver ${index}`)
     event.stopPropagation()
     event.preventDefault()
     const {
@@ -250,7 +239,6 @@ const Leaf = (props) => {
   }, [])
 
   const onDragLeave = useCallback(() => {
-    console.log(`onDragLeave ${index}`)
     setBorderState('')
   }, [])
 
@@ -286,11 +274,7 @@ const Leaf = (props) => {
   )
 
   const onDragStart = useCallback(
-
     (e) => {
-      console.log(`onDragStart ${index}`)
-      console.log(options)
-      console.log(refProps.current)
       e.dataTransfer.setData('text/plain1', JSON.stringify(options))
       e.dataTransfer.effectAllowed = 'copy'
       const { setDropState } = refProps.current
@@ -319,7 +303,7 @@ const Leaf = (props) => {
         onDragLeave={onDragLeave}
       >
         {editable &&
-          level !== 2 && ( //TODO хорды на правило появления чекбокса
+          level !== 2 && ( // TODO хорды на правило появления чекбокса
             <CheckBox
               className="mr-1.5"
               onInput={checkBoxInput}

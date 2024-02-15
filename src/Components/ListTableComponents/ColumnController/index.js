@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
 import Tips from '@/Components/Tips'
 import { ButtonForIcon, SecondaryOverBlueButton } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
@@ -8,23 +7,75 @@ import {
   RowSettingComponent,
   SettingContextMenu,
 } from '@/Components/ListTableComponents/ColumnController/styles'
-import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import CheckBox from '@/Components/Inputs/CheckBox'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
-const ColumnComponent = ({ value, label, onInput, key }) => (
-  <RowSettingComponent key={key} onClick={onInput}>
-    <CheckBox value={value} onInput={onInput} />
-    <div className={'word-break-all'}>{label}</div>
-  </RowSettingComponent>
-)
+const ColumnComponent = ({ value, label, onInput, onDragStart, onDrop }) => {
+  return (
+    <RowSettingComponent
+      onDragStart={onDragStart}
+      onDragEnd={() => {}}
+      onDragOver={(event) => {
+        event.preventDefault()
+      }}
+      onDragLeave={() => {}}
+      onDrop={onDrop}
+      draggable
+    >
+      <CheckBox value={value} onInput={onInput} />
+      <div onClick={onInput} className={'word-break-all w-full'}>
+        {label}
+      </div>
+    </RowSettingComponent>
+  )
+}
 
 const ColumnController = ({
-  driver = useBackendColumnSettingsState,
   columns,
   id,
+  driver = useBackendColumnSettingsState,
 }) => {
-  const [columnState, setColumnState] = driver({ id })
   const [open, setOpen] = useState(false)
+  const [columnState, setColumnState] = driver({ id })
+
+  const onDragStart = useCallback(
+    (id) => (e) => {
+      e.dataTransfer.setData('text/plain', JSON.stringify(id))
+      e.dataTransfer.effectAllowed = 'copy'
+    },
+    [],
+  )
+
+  const onDrop = useCallback(
+    (id) => (e) => {
+      e.preventDefault()
+      const draggableColumnId = JSON.parse(e.dataTransfer.getData('text/plain'))
+      setColumnState((prev) => {
+        const nextValue = prev ? { ...prev } : {}
+        const iterableArray = prev ? Object.keys(nextValue) : columns
+
+        const updateColumnState = iterableArray.reduce((acc, val, index) => {
+          const rowId = typeof val === 'object' ? val.id : val
+          const { [rowId]: { position = index, ...rowState } = {} } = nextValue
+          acc[rowId] = { ...rowState, position }
+          return acc
+        }, {})
+
+        return {
+          ...updateColumnState,
+          [id]: {
+            ...updateColumnState[id],
+            position: updateColumnState[draggableColumnId].position,
+          },
+          [draggableColumnId]: {
+            ...updateColumnState[draggableColumnId],
+            position: updateColumnState[id].position,
+          },
+        }
+      })
+    },
+    [columns, setColumnState],
+  )
 
   const changeModalState = useCallback(
     (nextState) => () => {
@@ -57,23 +108,29 @@ const ColumnController = ({
     [columns, setColumnState],
   )
 
-  const columnsRender = useMemo(
-    () =>
-      columns.map((val) => {
-        const { id, label } = val
-        const { [id]: { hidden = false } = {} } = columnState || {}
+  const columnsRender = useMemo(() => {
+    const renderArr = columns
+      .map((val, index) => ({
+        ...val,
+        position: columnState ? columnState[val.id]?.position : index,
+      }))
+      .sort((a, b) => a.position - b.position)
 
-        return (
-          <ColumnComponent
-            key={id}
-            value={!hidden}
-            label={label}
-            onInput={onColumnHidden(id)}
-          />
-        )
-      }),
-    [columnState, columns, onColumnHidden],
-  )
+    return renderArr.map((val) => {
+      const { id, label } = val
+      const { [id]: { hidden = false } = {} } = columnState || {}
+      return (
+        <ColumnComponent
+          key={id}
+          value={!hidden}
+          label={label}
+          onInput={onColumnHidden(id)}
+          onDragStart={onDragStart(id)}
+          onDrop={onDrop(id)}
+        />
+      )
+    })
+  }, [columns, columnState, onColumnHidden, onDragStart, onDrop])
 
   return (
     <>
