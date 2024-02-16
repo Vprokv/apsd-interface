@@ -100,12 +100,10 @@ export const Requisites = ({ permits }) => {
               } else if ('Orgstructure' === field.type) {
                 acc[key] = {
                   options: Array.isArray(value?.value)
-                    ? [
-                        {
-                          emplId: value.value[0],
-                          fullDescription: value.caption,
-                        },
-                      ]
+                    ? value?.value.map(({ value, caption }) => ({
+                        emplId: value,
+                        fullDescription: caption,
+                      }))
                     : [
                         {
                           emplId: value.value,
@@ -125,7 +123,9 @@ export const Requisites = ({ permits }) => {
                 ...Object.entries(fieldValues).reduce(
                   (acc, [key, { value }]) => {
                     if (value !== '') {
-                      acc[key] = value
+                      acc[key] = Array.isArray(value)
+                        ? value.map(({ value: v }) => v)
+                        : value
                     }
                     return acc
                   },
