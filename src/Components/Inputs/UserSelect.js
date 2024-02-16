@@ -80,7 +80,7 @@ const UserSelect = (props) => {
   )
 
   return (
-    <div className="flex items-center w-full">
+    <div className="flex w-full">
       <SelectComponent
         {...props}
         loadFunction={loadRefSelectFunc}
