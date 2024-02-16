@@ -137,9 +137,9 @@ function BasketList() {
   const getNotification = useOpenNotification()
   const [selectState, setSelectState] = useState([])
   const handleDoubleClick = useCallback(
-    ({ taskId, type }) =>
+    ({ documentId, docType }) =>
       () =>
-        openTabOrCreateNewTab(`/task/${taskId}/${type}`),
+        openTabOrCreateNewTab(`/document/${documentId}/${docType}`),
     [openTabOrCreateNewTab],
   )
 
@@ -178,6 +178,8 @@ function BasketList() {
   ])
 
   const [{ data }] = useAutoReload(loadData, tabState, setTabState)
+
+  console.log(data, 'data')
 
   const onDelete = useCallback(async () => {
     try {

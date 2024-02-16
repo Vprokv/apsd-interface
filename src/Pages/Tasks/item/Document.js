@@ -304,6 +304,15 @@ const Document = () => {
             ),
           }),
       },
+      title_delete: {
+        icon: DeleteIcon,
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <ChangeStageWindow {...props} closeCurrenTab={closeCurrenTab} />
+            ),
+          }),
+      },
       defaultHandler: ({ name }) => ({
         handler: async () => {
           try {
