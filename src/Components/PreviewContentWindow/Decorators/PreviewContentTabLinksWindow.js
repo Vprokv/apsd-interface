@@ -22,7 +22,7 @@ const PreviewContentTabLinkWindow = (Component) => {
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
     const { token } = useContext(TokenContext)
-    const [url, setUrl] = useState('')
+    const [contentState, setUrl] = useState({ url: '', type: '' })
 
     const id = useMemo(() => {
       if (value?.length) {
@@ -44,9 +44,10 @@ const PreviewContentTabLinkWindow = (Component) => {
           { responseType: 'blob' },
         )
       } catch (e) {
-        console.log(e)
+        const { response: { status = 0, data = '' } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, id])
+    }, [api, getNotification, id])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -54,11 +55,11 @@ const PreviewContentTabLinkWindow = (Component) => {
         if (val === 'image') {
           if (blob) {
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           } else {
             const { data: blob } = await getContent()
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           }
         } else {
           const type =
@@ -66,7 +67,7 @@ const PreviewContentTabLinkWindow = (Component) => {
               ? value[0]?.childType
               : 'ddt_document_content'
           const url = `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
-          setUrl(url)
+          setUrl({ url, type: 'pdf' })
         }
       },
       [getContent, id, token, value],
@@ -121,7 +122,7 @@ const PreviewContentTabLinkWindow = (Component) => {
 
     return (
       <Component
-        url={url}
+        {...contentState}
         ref={ref}
         downloadContent={downloadContent}
         {...props}

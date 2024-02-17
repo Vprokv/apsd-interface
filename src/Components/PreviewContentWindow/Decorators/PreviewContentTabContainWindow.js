@@ -21,7 +21,7 @@ const PreviewContentTabContainWindow = (Component) => {
     const { token } = useContext(TokenContext)
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
-    const [url, setUrl] = useState('')
+    const [contentState, setUrl] = useState({ url: '', type: '' })
 
     const getContent = useCallback(async () => {
       try {
@@ -46,15 +46,15 @@ const PreviewContentTabContainWindow = (Component) => {
         if (val === 'image') {
           if (blob) {
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           } else {
             const { data: blob } = await getContent()
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           }
         } else {
           const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value?.content?.contentId}:${token}`
-          setUrl(url)
+          setUrl({ url, type: 'pdf' })
         }
       },
       [getContent, token, value],
@@ -107,7 +107,7 @@ const PreviewContentTabContainWindow = (Component) => {
 
     return (
       <Component
-        url={url}
+        {...contentState}
         ref={ref}
         downloadContent={downloadContent}
         {...props}

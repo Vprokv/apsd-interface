@@ -21,7 +21,7 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
     const { token } = useContext(TokenContext)
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
-    const [url, setUrl] = useState('')
+    const [contentState, setUrl] = useState({ url: '', type: '' })
 
     const getContent = useCallback(async () => {
       try {
@@ -34,8 +34,11 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
           },
           { responseType: 'blob' },
         )
-      } catch (e) {}
-    }, [api, value])
+      } catch (e) {
+        const { response: { status = 0, data = '' } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
+      }
+    }, [api, getNotification, value])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -43,15 +46,15 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
         if (val === 'image') {
           if (blob) {
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           } else {
             const { data: blob } = await getContent()
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           }
         } else {
           const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_report_content:${value}:${token}`
-          setUrl(url)
+          setUrl({ url, type: 'pdf' })
         }
       },
       [getContent, token, value],
@@ -103,7 +106,7 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
 
     return (
       <Component
-        url={url}
+        {...contentState}
         ref={ref}
         downloadContent={downloadContent}
         {...props}

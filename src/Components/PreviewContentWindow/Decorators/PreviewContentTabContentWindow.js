@@ -21,7 +21,7 @@ const PreviewContentTabContentWindow = (Component) => {
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
     const { token } = useContext(TokenContext)
-    const [url, setUrl] = useState('')
+    const [contentState, setUrl] = useState({ url: '', type: '' })
 
     const getContent = useCallback(async () => {
       try {
@@ -35,9 +35,10 @@ const PreviewContentTabContentWindow = (Component) => {
           { responseType: 'blob' },
         )
       } catch (e) {
-        console.log(e)
+        const { response: { status = 0, data = '' } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, value])
+    }, [api, getNotification, value])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -45,15 +46,15 @@ const PreviewContentTabContentWindow = (Component) => {
         if (val === 'image') {
           if (blob) {
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           } else {
             const { data: blob } = await getContent()
             const url = window.URL.createObjectURL(blob)
-            setUrl(url)
+            setUrl({ url, type: 'other' })
           }
         } else {
           const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_apsd_content_version:${value[0].id}:${token}`
-          setUrl(url)
+          setUrl({ url, type: 'pdf' })
         }
       },
       [getContent, token, value],
@@ -105,7 +106,7 @@ const PreviewContentTabContentWindow = (Component) => {
 
     return (
       <Component
-        url={url}
+        {...contentState}
         title={value[0]?.contentName}
         ref={ref}
         {...props}

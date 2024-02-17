@@ -4,6 +4,10 @@ import { useRef } from 'react'
 
 import styled from 'styled-components'
 import { LoadableBaseButton } from '@/Components/Button'
+import '@react-pdf-viewer/core/lib/styles/index.css'
+import '@react-pdf-viewer/default-layout/lib/styles/index.css'
+import PdfReaderComponent from '@/Components/PreviewContentWindow/Components/PdfReaderComponent'
+import IframeComponent from '@/Components/PreviewContentWindow/Components/IframeComponent'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 65%;
@@ -25,8 +29,20 @@ export const CustomWindowButton = styled(LoadableBaseButton)`
   }
 `
 
-const PreviewContentWindow = ({ url, title, downloadContent, ...props }) => {
-  const iframe = useRef()
+const componentReaderMap = {
+  pdf: PdfReaderComponent,
+  other: IframeComponent,
+}
+
+const PreviewContentWindow = ({
+  url,
+  title,
+  downloadContent,
+  type,
+  ...props
+}) => {
+  const { [type]: RenderPdfComponent = componentReaderMap.other } =
+    componentReaderMap
 
   return (
     <StandardSizeModalWindow
@@ -40,14 +56,7 @@ const PreviewContentWindow = ({ url, title, downloadContent, ...props }) => {
         </div>
       }
     >
-      <iframe
-        key={url}
-        ref={iframe}
-        src={url}
-        // title={title}
-        width="100%"
-        height="100%"
-      />
+      <RenderPdfComponent url={url} title={title} />
     </StandardSizeModalWindow>
   )
 }
@@ -56,8 +65,7 @@ PreviewContentWindow.propTypes = {
   url: PropTypes.array.isRequired,
   downloadContent: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 }
-
-PreviewContentWindow.defaultProps = {}
 
 export default PreviewContentWindow
