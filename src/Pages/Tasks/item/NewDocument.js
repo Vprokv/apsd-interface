@@ -13,7 +13,6 @@ import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
-  NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -29,12 +28,6 @@ const customMessagesFuncMap = {
     return {
       type: NOTIFICATION_TYPE_SUCCESS,
       message: 'Документ создан',
-    }
-  },
-  412: () => {
-    return {
-      type: NOTIFICATION_TYPE_ERROR,
-      message: 'Заполните обязательные поля',
     }
   },
 }
