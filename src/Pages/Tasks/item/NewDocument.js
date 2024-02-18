@@ -13,6 +13,7 @@ import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
+  NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
@@ -28,6 +29,12 @@ const customMessagesFuncMap = {
     return {
       type: NOTIFICATION_TYPE_SUCCESS,
       message: 'Документ создан',
+    }
+  },
+  412: (message, err) => {
+    return {
+      type: NOTIFICATION_TYPE_ERROR,
+      message: err ? 'Заполните обязательные поля' : message,
     }
   },
 }
@@ -98,9 +105,12 @@ export const NewTaskItem = ({ classificationId, type }) => {
             navigate(`/document/${id}/${type}`)
           } catch (e) {
             const { response: { status = 0, data = '' } = {} } = e
-            getNotification(customMessagesFuncMap[status](data))
             if (status === 412) {
               const { 1: responseError } = data.split(' - ')
+              getNotification(
+                customMessagesFuncMap[status](data, responseError),
+              )
+
               setDocumentState({
                 submitFailed: true,
                 formHasSubmitted: true,
@@ -111,6 +121,8 @@ export const NewTaskItem = ({ classificationId, type }) => {
                     return acc
                   }, {}),
               })
+            } else {
+              getNotification(customMessagesFuncMap[status](data))
             }
           }
         },
