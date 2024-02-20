@@ -23,39 +23,39 @@ const PdfReaderComponent = ({ url }) => {
           } = slots
           return (
             <div className="flex items-center w-full">
-              <div className="" style={{ padding: '0px 2px' }}>
+              <div className="py-2">
                 <ShowSearchPopover />
               </div>
-              <div style={{ padding: '0px 2px' }}>
+              <div className="py-2">
                 <ZoomOut />
               </div>
-              <div style={{ padding: '0px 2px' }}>
+              <div className="py-2">
                 <Zoom />
               </div>
-              <div style={{ padding: '0px 2px' }}>
+              <div className="py-2">
                 <ZoomIn />
               </div>
               <div className="flex items-center ml-auto">
-                <div style={{ padding: '0px 2px' }}>
+                <div className="py-2">
                   <GoToPreviousPage />
                 </div>
                 <CurrentPageInput />
-                <div className="bg-secondary py-2 h-full px-2">
+                <div className="bg-secondary py-2 h-full px-2 rounded-sm">
                   /
                   <NumberOfPages />
                 </div>
-                <div style={{ padding: '0px 2px' }}>
+                <div className="py-2">
                   <GoToNextPage />
                 </div>
               </div>
 
-              <div style={{ padding: '0px 2px', marginLeft: 'auto' }}>
+              <div className="ml-auto py-2">
                 <EnterFullScreen />
               </div>
-              <div style={{ padding: '0px 2px' }}>
+              <div className="py-2">
                 <Print />
               </div>
-              <div style={{ padding: '0px 2px' }}>
+              <div className="py-2">
                 <SwitchTheme />
               </div>
             </div>
