@@ -64,7 +64,7 @@ import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
-import TitleDeleteWindow from "@/Pages/Tasks/item/Components/TitleDeleteWindow";
+import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -300,9 +300,7 @@ const Document = () => {
         icon: defaultTaskIcon['change_stage'],
         handler: () =>
           setComponent({
-            Component: (props) => (
-              <ChangeStageWindow {...props} reloadData={reloadData} />
-            ),
+            Component: (props) => <ChangeStageWindow {...props} />,
           }),
       },
       title_delete: {
