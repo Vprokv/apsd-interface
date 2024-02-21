@@ -12,7 +12,7 @@ export const operatorsComponent = [
   'Orgstructure',
   'UserSelect',
   'Date',
-  'Checkbox',
+  // 'Checkbox',
 ]
 
 const resolveOperatorsStage = () => (fieldState) => (args) => {
