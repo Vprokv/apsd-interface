@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import TaskListWrapper from '@/Pages/Tasks/list'
-import { URL_LINK_VIEWED_LIST } from '@/ApiList'
+import { URL_LINK_VIEWED_LIST, URL_TASK_LIST_FILTERS } from '@/ApiList'
 import DocumentState, {
   sizes as DocumentStateSizes,
 } from '@/Components/ListTableComponents/DocumentState'
@@ -26,6 +26,12 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ListTable from '@Components/Components/Tables/ListTable'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
+import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import LoadableSelect from '@/Components/Inputs/Select'
+import Icon from '@Components/Components/Icon'
+import searchIcon from '@/Icons/searchIcon'
 
 const columns = [
   {
@@ -88,32 +94,35 @@ const columns = [
   },
 ]
 
+const defaultFilter = { readTask: false }
 const ViewedTask = (props) => {
   /* const setTabName = () => 'Просмотренные'*/
   const api = useContext(ApiContext)
   const [
-    { /* sortQuery = defaultSortQuery, filter = defaultFilter, */ ...tabState },
+    { /* sortQuery = defaultSortQuery,*/ filter = defaultFilter, ...tabState },
     setTabState,
   ] = useTabItem({ stateId: VIEWED_TASK_LIST })
+  const show = true
 
   const loadData = useMemo(
     () => async () => {
       try {
         const { data } = await api.post(URL_LINK_VIEWED_LIST, {
           filter: {
-            type: 'ddt_project_calc_type_doc',
+            ...filter,
           },
           sort: [],
           token: '14d8c75e-e4ad-4166-bcb2-88cc1e007fab',
           limit: 100,
           offset: 0,
         })
+        console.log(data)
         return data
       } catch (e) {
         console.log(e)
       }
     },
-    [api],
+    [api, filter],
   )
 
   const [{ data: { recentlyList = [], count = 0 } = {} }] = useAutoReload(
@@ -122,8 +131,117 @@ const ViewedTask = (props) => {
     setTabState,
   )
 
-  console.log(recentlyList)
-  console.log(count)
+  const fields = useMemo(
+    () => [
+      /* {
+        id: 'readTask',
+        component: CheckBox,
+        text: 'Непросмотренные',
+      },
+      {
+        id: 'taskTypes',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Тип задания',
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const {
+            data: { taskTypes },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            filter: { ...filter, readTask: !filter.readTask },
+          })
+
+          return taskTypes.map((val) => {
+            return { dss_name: val }
+          })
+        },
+      },
+      {
+        id: 'stageNames',
+        component: LoadableSelect,
+        placeholder: 'Этап',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const { stageNames: item, ...other } = filter
+          const {
+            data: { stageNames },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            ...other,
+          })
+
+          return stageNames.map((val) => {
+            return { dss_name: val }
+          })
+        },
+      },
+      {
+        id: 'documentStatus',
+        component: LoadableSelect,
+        placeholder: 'Статус',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const { documentStatus: item, ...other } = filter
+
+          const {
+            data: { documentStatus },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            ...other,
+          })
+
+          return documentStatus.map((val) => {
+            return { dss_name: val }
+          })
+        },
+      },
+      {
+        id: 'searchQuery',
+        component: SearchInput,
+        placeholder: 'Поиск',
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },*/
+      /* {
+        id: 'documentTypes',
+        component: LoadableSelect,
+        placeholder: 'Тип документа',
+        multiple: true,
+        valueKey: 'dss_name',
+        labelKey: 'dss_name',
+        loadFunction: async () => {
+          const { documentTypes: item, ...other } = filter
+
+          const {
+            data: { documentTypes },
+          } = await api.post(URL_TASK_LIST_FILTERS, {
+            ...other,
+          })
+
+          return documentStatus.map((val) => {
+            return { dss_name: val }
+          })
+        },
+
+        },
+      },*/
+    ],
+    [api, filter],
+  )
+
+
+  const setFilter = useCallback(
+    (filter) => setTabState({ filter }),
+    [setTabState],
+  )
 
   /* return (
     <TaskListWrapper
@@ -134,6 +252,17 @@ const ViewedTask = (props) => {
 
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
+      <div /* ref={ref}*/ className="flex items-center ">
+        {show && (
+          <FilterForm
+            className="pl-4"
+            fields={fields}
+            inputWrapper={emptyWrapper}
+            value={filter}
+            onInput={setFilter}
+          />
+        )}
+      </div>
       <ListTable
         className="mt-2"
         value={recentlyList}
