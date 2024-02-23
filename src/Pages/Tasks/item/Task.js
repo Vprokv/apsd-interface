@@ -74,6 +74,7 @@ import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import useReadCurrentChildrenTabContext from '@/Pages/Tasks/item/DocumentHandlers/hooks/useReadCurrentChildrenTabContext'
 import { filterManipulationData } from '@/Pages/Tasks/item/DocumentHandlers/Handlers/FinishSimpleApprove'
 import ViewAdditionsRemarks from '@/Pages/Tasks/item/Components/ViewAdditionaRemarks'
+import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -594,6 +595,20 @@ const Task = () => {
               <ChangeStageWindow {...props} reloadData={reloadData} />
             ),
           }),
+      },
+      recall_for_revision: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RecallForRevisionWindow
+                reloadData={reloadData}
+                title="Выберите этап, на который будет возвращен том после доработки"
+                signal="recall_for_revision"
+                {...props}
+              />
+            ),
+          }),
+        icon: defaultTaskIcon['reject_approve'],
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
