@@ -7,6 +7,7 @@ export const TokenContext = React.createContext({
 })
 
 export const TASK_LIST = 'TASK_LIST'
+export const VIEWED_TASK_LIST = 'VIEWED_TASK_LIST'
 export const TASK_LIST_ARCHIVE = 'TASK_LIST_ARCHIVE'
 export const ITEM_DOCUMENT = 'ITEM_DOCUMENT'
 export const ITEM_TASK = 'ITEM_TASK'

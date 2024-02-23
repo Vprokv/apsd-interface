@@ -108,7 +108,9 @@ export const URL_LINK_LIST = '/apsd/link/list'
 export const URL_LINK_CREATE = '/apsd/link/create'
 export const URL_LINK_DELETE = '/apsd/link/delete'
 export const URL_LINK_UPDATE = '/apsd/link/update'
-export const URL_LINK_VIEWED_LIST = '/apsd/task/v2/list/recently'
+
+// export const URL_LINK_VIEWED_LIST = '/apsd/task/v2/list/recently'
+export const URL_LINK_VIEWED_LIST = '/apsd/document/recently/list'
 export const URL_LINK_USER_LIST = '/apsd/link/list/filters'
 
 // REMARK
@@ -120,7 +122,7 @@ export const URL_REMARK_UPDATE = '/apsd/remark/update'
 export const URL_REMARK_PERMIT = '/apsd/remark/permit'
 export const URL_REMARK_EDIT_SET_REMARK = '/apsd/remark/edit/vault'
 
-//LIFE CYCLE HISTORY
+// LIFE CYCLE HISTORY
 export const URL_HISTORY_LIST = '/apsd/history/list'
 export const URL_HISTORY_LIST_FILTER = '/apsd/history/list/filters'
 
