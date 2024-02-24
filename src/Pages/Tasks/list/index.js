@@ -460,8 +460,6 @@ function TaskList({ loadFunctionRest }) {
     [setTabState],
   )
 
-
-
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
       <div ref={ref} className="flex items-center ">
