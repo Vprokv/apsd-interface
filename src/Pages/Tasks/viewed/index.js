@@ -46,6 +46,7 @@ import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import searchIcon from '@/Icons/searchIcon'
 import { Select } from '@/Components/Inputs/Select'
 import TypeLabelComponent from '@/Pages/Tasks/viewed/Components/DocumentTypeLabel'
+import {columnMap} from "@/Pages/Tasks/viewed/constans";
 
 const columns = [
   {
@@ -245,7 +246,7 @@ const ViewedTask = () => {
         url: `${API_URL}${URL_LINK_VIEWED_LIST}`,
         label: 'Просмотренные',
         sheetName: 'Просмотренные',
-        columns,
+        columns: columnMap,
         body: {
           filter,
           sort: sortQuery && [
@@ -264,7 +265,7 @@ const ViewedTask = () => {
         responseType: 'blob',
       })
 
-      downloadFileWithReload(data, 'Все задания.xlsx')
+      downloadFileWithReload(data, 'Просмотренные задания.xlsx')
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
