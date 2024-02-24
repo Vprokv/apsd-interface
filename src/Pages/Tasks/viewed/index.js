@@ -6,12 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  URL_EXPORT,
-  URL_EXPORT_FILE,
-  URL_LINK_VIEWED_LIST,
-  URL_TASK_LIST_V2,
-} from '@/ApiList'
+import { URL_EXPORT, URL_EXPORT_FILE, URL_LINK_VIEWED_LIST } from '@/ApiList'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
