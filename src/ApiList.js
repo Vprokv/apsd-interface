@@ -169,6 +169,8 @@ export const URL_INTEGRATION_SEND_LETTER = '/apsd/integration/tom/letter/send'
 export const URL_BUSINESS_DOCUMENT_RECALL = '/apsd/business/document/recall'
 export const URL_BUSINESS_PERMIT = '/apsd/business/permit'
 export const URL_BUSINESS_DOCUMENT_STAGES = '/apsd/business/document/stages'
+export const URL_BUSINESS_DOCUMENT_RECALL_FOR_REVISION =
+  '/apsd/business/document/recall/revision'
 export const URL_BUSINESS_DOCUMENT_STAGE_CHANGE =
   'apsd/business/document/stage/change'
 export const URL_BUSINESS_DOCUMENT_CANCEL = '/apsd/business/document/cancel'

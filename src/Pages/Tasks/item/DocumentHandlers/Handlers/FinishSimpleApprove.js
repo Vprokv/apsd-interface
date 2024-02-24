@@ -5,8 +5,21 @@ import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
 import { defaultTaskIcon } from '@/Pages/Tasks/item/constants'
 import DefaultIcon from '@/Pages/Tasks/item/Icons/DefaultIcon.svg'
 
+export const filterManipulationData = {
+  'approval-sheet/': () => ({
+    allStages: false,
+    allIteration: false,
+    isApprove: true,
+  }),
+  remarks: ({ filter: { allStages = true, allIteration = true } = {} }) => ({
+    allStages,
+    allIteration,
+    isApprove: false,
+  }),
+}
+
 export default {
-  key: "finish_simple_approve",
+  key: 'finish_simple_approve',
   handler: async ({
     reloadSidebarTaskCounters,
     openComponent,

@@ -14,6 +14,7 @@ import {
   URL_DOWNLOAD_FILE,
   URL_INTEGRATION_SEND_LETTER,
   URL_INTEGRATION_TOM_DOWNLOAD,
+  URL_REMARK_LIST,
   URL_TASK_COMPLETE,
   URL_TASK_ITEM,
   URL_TASK_MARK_READ,
@@ -70,6 +71,10 @@ import RejectSapPrepareWindow from './Components/RejectSapPrepareWindow'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
+import useReadCurrentChildrenTabContext from '@/Pages/Tasks/item/DocumentHandlers/hooks/useReadCurrentChildrenTabContext'
+import { filterManipulationData } from '@/Pages/Tasks/item/DocumentHandlers/Handlers/FinishSimpleApprove'
+import ViewAdditionsRemarks from '@/Pages/Tasks/item/Components/ViewAdditionaRemarks'
+import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -79,7 +84,7 @@ const titleName = 'ddt_startup_complex_type_doc'
 const tomeName = 'ddt_project_calc_type_doc'
 
 const Task = () => {
-  const { id, type } = useParams()
+  const { id, type, ['*']: childrenTabName } = useParams()
   const api = useContext(ApiContext)
   const [ActionComponent, setActionComponent] = useState(null)
   const closeAction = useCallback(() => setActionComponent(null), [])
@@ -92,6 +97,7 @@ const Task = () => {
   const reloadSidebarTaskCounters = useContext(LoadTasks)
   const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
+  const currentTabChildrenState = useReadCurrentChildrenTabContext()
 
   const closeCurrenTab = useCallback(
     () => onCloseTab(currentTabIndex),
@@ -290,31 +296,76 @@ const Task = () => {
       finish_simple_approve: {
         handler: async () => {
           try {
-            const { status } = await api.post(URL_TASK_COMPLETE, {
-              taskId: id,
-              signal: 'finish_simple_approve',
-            })
-            closeCurrenTab()
-            getNotification(customMessagesFuncMap[status]())
-            reloadData()
-            updateCurrentTabChildrenStates(
-              [TASK_ITEM_APPROVAL_SHEET],
-              setUnFetchedState(),
+            const {
+              [childrenTabName]: filterFunc = filterManipulationData.remarks,
+            } = filterManipulationData
+            const filter = filterFunc(currentTabChildrenState)
+
+            const { data: { stages = [] } = {} } = await api.post(
+              URL_REMARK_LIST,
+              {
+                documentId,
+                filter,
+                sort: [
+                  {
+                    direction: 'ASC',
+                    property: 'remarkCreationDate',
+                  },
+                ],
+              },
             )
-            updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
-            reloadSidebarTaskCounters()
-          } catch (e) {
-            const { response: { status, data } = {} } = e
-            if (status === 412 && data === 'finish_without_remarks') {
-              return setComponent({
+
+            const isOpen =
+              !!stages.length &&
+              stages?.some(({ iterations }) =>
+                iterations.some(({ remarks }) =>
+                  remarks.some(({ setRemark }) => setRemark === true),
+                ),
+              )
+            if (isOpen) {
+              setComponent({
                 Component: (props) => (
-                  <AboutRemarkWindow
-                    signal={'finish_without_remark'}
+                  <ViewAdditionsRemarks
+                    closeCurrenTab={closeCurrenTab}
+                    taskId={id}
+                    stages={stages}
+                    reloadData={reloadData}
                     {...props}
                   />
                 ),
               })
+            } else {
+              try {
+                const { status } = await api.post(URL_TASK_COMPLETE, {
+                  taskId: id,
+                  signal: 'finish_simple_approve',
+                })
+                closeCurrenTab()
+                getNotification(customMessagesFuncMap[status]())
+                reloadData()
+                updateCurrentTabChildrenStates(
+                  [TASK_ITEM_APPROVAL_SHEET],
+                  setUnFetchedState(),
+                )
+                updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
+                reloadSidebarTaskCounters()
+              } catch (e) {
+                const { response: { status, data } = {} } = e
+                if (status === 412 && data === 'finish_without_remarks') {
+                  return setComponent({
+                    Component: (props) => (
+                      <AboutRemarkWindow
+                        signal={'finish_without_remark'}
+                        {...props}
+                      />
+                    ),
+                  })
+                }
+                getNotification(customMessagesFuncMap[status](data))
+              }
             }
+          } catch (e) {
+            const { response: { status = 0, data = '' } = {} } = e
             getNotification(customMessagesFuncMap[status](data))
           }
         },
@@ -350,7 +401,10 @@ const Task = () => {
     }),
     [
       api,
+      childrenTabName,
       closeCurrenTab,
+      currentTabChildrenState,
+      documentId,
       getNotification,
       id,
       reloadData,
@@ -541,6 +595,20 @@ const Task = () => {
               <ChangeStageWindow {...props} reloadData={reloadData} />
             ),
           }),
+      },
+      recall_for_revision: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RecallForRevisionWindow
+                reloadData={reloadData}
+                title="Выберите этап, на который будет возвращен том после доработки"
+                signal="recall_for_revision"
+                {...props}
+              />
+            ),
+          }),
+        icon: defaultTaskIcon['reject_approve'],
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {

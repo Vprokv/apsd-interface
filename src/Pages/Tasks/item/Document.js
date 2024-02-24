@@ -65,6 +65,7 @@ import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
+import RecallForRevisionWindow from "@/Pages/Tasks/item/Components/RecallForRevisionWindow";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -311,6 +312,20 @@ const Document = () => {
               <TitleDeleteWindow {...props} closeCurrenTab={closeCurrenTab} />
             ),
           }),
+      },
+      recall_for_revision: {
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <RecallForRevisionWindow
+                reloadData={reloadData}
+                title="Выберите этап, на который будет возвращен том после доработки"
+                signal="recall_for_revision"
+                {...props}
+              />
+            ),
+          }),
+        icon: defaultTaskIcon['reject_approve'],
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {

@@ -3,6 +3,11 @@ import { Viewer, Worker } from '@react-pdf-viewer/core'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
 import ru_RU from '@react-pdf-viewer/locales/lib/ru_RU.json'
 
+import { GlobalWorkerOptions } from 'pdfjs-dist/build/pdf'
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
+
+GlobalWorkerOptions.workerSrc = pdfjsWorker
+
 const PdfReaderComponent = ({ url }) => {
   const renderToolbar = (Toolbar) => {
     return (
@@ -70,7 +75,7 @@ const PdfReaderComponent = ({ url }) => {
   })
 
   return (
-    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+    <Worker>
       <Viewer
         fileUrl={url}
         plugins={[defaultLayoutPluginInstance]}
