@@ -19,6 +19,8 @@ import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
+import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 70%;
@@ -33,8 +35,8 @@ const ViewAdditionsRemarks = ({
   onClose,
   stages,
   taskId,
-  closeCurrenTab,
   reloadData,
+  setComponent,
 }) => {
   const api = useContext(ApiContext)
   const [toggle, onToggle] = useState({})
@@ -42,6 +44,14 @@ const ViewAdditionsRemarks = ({
   const [selected, setSelected] = useState()
   const reloadSidebarTaskCounters = useContext(LoadTasks)
   const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
+
+  const { onCloseTab } = useContext(TabStateManipulation)
+  const { currentTabIndex } = useContext(CurrentTabContext)
+
+  const closeCurrenTab = useCallback(
+    () => onCloseTab(currentTabIndex),
+    [onCloseTab, currentTabIndex],
+  )
 
   const onSave = useCallback(async () => {
     try {
@@ -55,15 +65,25 @@ const ViewAdditionsRemarks = ({
       updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
       reloadSidebarTaskCounters()
     } catch (e) {
-      const { response: { status = 0, data = '' } = {} } = e
+      const { response: { status, data } = {} } = e
+      if (status === 412 && data === 'finish_without_remarks') {
+        onClose()
+        return setComponent({
+          Component: (props) => (
+            <AboutRemarkWindow signal={'finish_without_remark'} {...props} />
+          ),
+        })
+      }
       getNotification(defaultFunctionsMap[status](data))
     }
   }, [
     api,
     closeCurrenTab,
     getNotification,
+    onClose,
     reloadData,
     reloadSidebarTaskCounters,
+    setComponent,
     taskId,
     updateTabStateUpdaterByName,
   ])
@@ -102,7 +122,7 @@ const ViewAdditionsRemarks = ({
         <div className="flex w-full items-center justify-end">
           <UnderButtons
             leftLabel="Закрыть"
-            rightLabel="Сформировать"
+            rightLabel="Завершить"
             rightFunc={onSave}
             leftFunc={onClose}
           />
@@ -113,7 +133,5 @@ const ViewAdditionsRemarks = ({
     </StandardSizeModalWindow>
   )
 }
-
-ViewAdditionsRemarks.propTypes = {}
 
 export default ViewAdditionsRemarks

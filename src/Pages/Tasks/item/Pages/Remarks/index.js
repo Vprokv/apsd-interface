@@ -64,7 +64,10 @@ const Remarks = () => {
     try {
       const { data } = await api.post(URL_REMARK_LIST, {
         documentId: id,
-        filter,
+        filter: {
+          ...filter,
+          isApprove: false,
+        },
         sort: [
           {
             direction: sortQuery.direction,

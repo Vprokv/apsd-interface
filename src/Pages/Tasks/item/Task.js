@@ -296,16 +296,15 @@ const Task = () => {
       finish_simple_approve: {
         handler: async () => {
           try {
-            const {
-              [childrenTabName]: filterFunc = filterManipulationData.remarks,
-            } = filterManipulationData
-            const filter = filterFunc(currentTabChildrenState)
-
             const { data: { stages = [] } = {} } = await api.post(
               URL_REMARK_LIST,
               {
                 documentId,
-                filter,
+                filter: {
+                  allStages: false,
+                  allIteration: false,
+                  isApprove: true,
+                },
                 sort: [
                   {
                     direction: 'ASC',
@@ -315,14 +314,7 @@ const Task = () => {
               },
             )
 
-            const isOpen =
-              !!stages.length &&
-              stages?.some(({ iterations }) =>
-                iterations.some(({ remarks }) =>
-                  remarks.some(({ setRemark }) => setRemark === true),
-                ),
-              )
-            if (isOpen) {
+            if (stages.length) {
               setComponent({
                 Component: (props) => (
                   <ViewAdditionsRemarks
@@ -330,6 +322,7 @@ const Task = () => {
                     taskId={id}
                     stages={stages}
                     reloadData={reloadData}
+                    setComponent={setComponent}
                     {...props}
                   />
                 ),

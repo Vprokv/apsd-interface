@@ -15,7 +15,7 @@ import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 18%;
-  min-height: 22.65%;
+  //height: 22.65%;
   margin: auto;
 `
 
