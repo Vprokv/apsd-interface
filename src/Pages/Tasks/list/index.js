@@ -263,12 +263,14 @@ function TaskList({ loadFunctionRest }) {
                   : {}),
                 ...filter,
               },
-              sort: [
-                {
-                  property: sortQuery.key,
-                  direction: sortQuery.direction,
-                },
-              ],
+              sort: sortQuery.key
+                ? [
+                    {
+                      property: sortQuery.key,
+                      direction: sortQuery.direction,
+                    },
+                  ]
+                : [],
               limit,
               offset,
             },
