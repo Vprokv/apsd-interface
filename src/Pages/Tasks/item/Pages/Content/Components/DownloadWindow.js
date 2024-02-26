@@ -30,6 +30,7 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import styled from 'styled-components'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { Validation } from '@Components/Logic/Validator'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   min-width: 40%;
@@ -175,7 +176,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
   return (
     <div className="flex flex-col overflow-hidden h-full grow">
       <ScrollBar className="flex grow flex-col">
-        <FilterForm
+        <Validation
           inputWrapper={InputWrapper}
           value={values}
           onInput={setValues}
@@ -183,13 +184,17 @@ const DownloadWindow = ({ onClose, contentId }) => {
           rules={rules}
           onSubmit={onSave}
         >
-          <UnderButtons
-            className="mt-auto"
-            leftFunc={onClose}
-            rightLabel={'Сохранить'}
-            leftLabel={'Закрыть'}
-          />
-        </FilterForm>
+          {(validationProps) => {
+            ;<FilterForm {...validationProps}>
+              <UnderButtons
+                className="mt-auto"
+                leftFunc={onClose}
+                rightLabel={'Сохранить'}
+                leftLabel={'Закрыть'}
+              />
+            </FilterForm>
+          }}
+        </Validation>
       </ScrollBar>
     </div>
   )
