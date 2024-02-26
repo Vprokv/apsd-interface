@@ -26,13 +26,13 @@ const RecallForRevisionWindow = ({
 
   const [selected, setSelected] = useState({})
 
-  const settings = useMemo(() => {
-    if (selected?.stage?.type === 'apsd_prepare') {
-      return { moveStageType: selected?.stage?.type }
-    } else {
-      return { moveStageId: selected?.stage?.id }
-    }
-  }, [selected])
+  const settings = useMemo(
+    () =>
+      selected?.stage?.type === 'apsd_prepare'
+        ? selected?.stage?.type
+        : selected?.stage?.id,
+    [selected],
+  )
 
   const complete = useCallback(async () => {
     try {
