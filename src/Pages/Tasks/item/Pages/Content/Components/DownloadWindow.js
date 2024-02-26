@@ -79,6 +79,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
     const { contentType, comment, regNumber, versionDate, files } = values
     const [{ dsc_content, dss_content_name }] = files
     try {
+      onClose()
       const response = await api.post(URL_CREATE_VERSION, {
         documentId: id,
         file: {
@@ -92,7 +93,6 @@ const DownloadWindow = ({ onClose, contentId }) => {
         },
       })
       setTabState(setUnFetchedState())
-      onClose()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
@@ -185,14 +185,17 @@ const DownloadWindow = ({ onClose, contentId }) => {
           onSubmit={onSave}
         >
           {(validationProps) => {
-            ;<FilterForm {...validationProps}>
-              <UnderButtons
-                className="mt-auto"
-                leftFunc={onClose}
-                rightLabel={'Сохранить'}
-                leftLabel={'Закрыть'}
-              />
-            </FilterForm>
+            return (
+              <FilterForm {...validationProps}>
+                <UnderButtons
+                  className="mt-auto"
+                  leftFunc={onClose}
+                  rightFunc={validationProps.onSubmit}
+                  rightLabel={'Сохранить'}
+                  leftLabel={'Закрыть'}
+                />
+              </FilterForm>
+            )
           }}
         </Validation>
       </ScrollBar>
