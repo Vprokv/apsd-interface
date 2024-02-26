@@ -70,6 +70,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
   const api = useContext(ApiContext)
   const context = useContext(ContainerContext)
   const getNotification = useOpenNotification()
+  const [loading, setLoadingState] = useState(false)
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_CONTENT,
@@ -79,7 +80,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
     const { contentType, comment, regNumber, versionDate, files } = values
     const [{ dsc_content, dss_content_name }] = files
     try {
-      onClose()
+      setLoadingState(true)
       const response = await api.post(URL_CREATE_VERSION, {
         documentId: id,
         file: {
@@ -94,9 +95,12 @@ const DownloadWindow = ({ onClose, contentId }) => {
       })
       setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
+      setLoadingState(false)
+      onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
+      setLoadingState(false)
     }
   }, [api, contentId, getNotification, id, onClose, setTabState, values])
   const userObject = useRecoilValue(userAtom)
@@ -188,6 +192,7 @@ const DownloadWindow = ({ onClose, contentId }) => {
             return (
               <FilterForm {...validationProps}>
                 <UnderButtons
+                  disabled={!validationProps.formValid || loading}
                   className="mt-auto"
                   leftFunc={onClose}
                   rightFunc={validationProps.onSubmit}
