@@ -7,14 +7,6 @@ import { OperatorContainer } from '@/Pages/Search/Pages/Components/SearchOperato
 import { Select } from '@/Components/Inputs/Select'
 import { forwardRef, useCallback, useMemo } from 'react'
 
-export const operatorsComponent = [
-  'Combobox',
-  'Orgstructure',
-  'UserSelect',
-  'Date',
-  // 'Checkbox',
-]
-
 const resolveOperatorsStage = () => (fieldState) => (args) => {
   const {
     type,
@@ -29,6 +21,10 @@ const resolveOperatorsStage = () => (fieldState) => (args) => {
     return acc
   }, [])
 
+  console.log(type, 'type')
+  console.log(dss_default_search_operator, 'default')
+  console.log(mappedOperators, 'mappedOperators')
+
   // нормализуем список операторов доступных полю
   const options =
     mappedOperators.length > 0 ? mappedOperators : [defaultOperator]
@@ -41,7 +37,7 @@ const resolveOperatorsStage = () => (fieldState) => (args) => {
   // определяем по типу поля доступен ли выбор оператора, выдаем соотвествующий декоратор
   const decorator = (Component) =>
     forwardRef(
-      operatorsComponent.includes(type)
+      mappedOperators.length > 0
         ? (
             {
               className,
@@ -50,27 +46,29 @@ const resolveOperatorsStage = () => (fieldState) => (args) => {
               ...props
             },
             ref,
-          ) => (
-            <OperatorContainer className={className} style={style}>
-              <Component
-                ref={ref}
-                {...props}
-                className="mr-4"
-                id="value"
-                value={value}
-              />
-              <Select
-                className="w-60 flex-0"
-                id="operator"
-                value={operator}
-                options={options}
-                onInput={props.onInput}
-                clearable={false}
-                valueKey="ID"
-                labelKey="SYS_NAME"
-              />
-            </OperatorContainer>
-          )
+          ) => {
+            return (
+              <OperatorContainer className={className} style={style}>
+                <Component
+                  ref={ref}
+                  {...props}
+                  className="mr-4"
+                  id="value"
+                  value={value}
+                />
+                <Select
+                  className="w-60 flex-0"
+                  id="operator"
+                  value={operator}
+                  options={options}
+                  onInput={props.onInput}
+                  clearable={false}
+                  valueKey="ID"
+                  labelKey="SYS_NAME"
+                />
+              </OperatorContainer>
+            )
+          }
         : ({ className, style, value: { value } = {}, ...props }, ref) => (
             <OperatorContainer className={className} style={style}>
               <Component
