@@ -139,6 +139,11 @@ const baseSortQuery = {
   direction: 'DESC',
 }
 
+const documentTypes = [
+  'ddt_startup_complex_type_doc',
+  'ddt_project_calc_type_doc',
+]
+
 const Notification = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
@@ -235,9 +240,23 @@ const Notification = () => {
         valueKey: 'name',
         labelKey: 'label',
         loadFunction: async (query) => {
-          const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, { query })
-          return data
+          let functionData = []
+          documentTypes.forEach(async (type) => {
+            const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
+              documentType: type,
+            })
+            functionData.push(...data)
+          })
+          console.log(functionData)
+          return functionData
         },
+        /* loadFunction: async (query) => {
+          const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
+            documentType: documentTypes[0],
+          })
+          console.log(data)
+          return data
+        },*/
       },
       {
         id: 'query',

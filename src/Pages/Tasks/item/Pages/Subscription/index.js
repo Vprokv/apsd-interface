@@ -42,7 +42,7 @@ import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
-import {DocumentIdContext} from "@/Pages/Tasks/item/constants";
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
@@ -71,9 +71,10 @@ const columns = [
   {
     id: 'events',
     label: 'Подписка на событие',
-    component: ({ ParentValue: { events = '' } }) => (
-      <Events events={events} className="flex items-center w-full" />
-    ),
+    component: ({ ParentValue: { events = '' } }) => {
+      console.log(events)
+      return <Events events={events} className="flex items-center w-full" />
+    },
     sizes: 450,
   },
   {
@@ -171,7 +172,9 @@ const Subscription = () => {
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await api.post(URL_SUBSCRIPTION_EVENTS)
+      const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
+        documentType: type,
+      })
       setTabState({
         events: data.reduce((acc, { name, label }) => {
           acc.set(name, label)
@@ -179,7 +182,7 @@ const Subscription = () => {
         }, new Map()),
       })
     })()
-  }, [documentId, setTabState, api])
+  }, [documentId, setTabState, api, type])
 
   const loadDataFunction = useMemo(() => {
     const { limit, offset } = paginationState
@@ -223,6 +226,8 @@ const Subscription = () => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [selectState, getNotification, loadDataFunction, api])
+
+  console.log(content)
 
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
