@@ -243,6 +243,7 @@ const Notification = () => {
           let functionData = []
           documentTypes.forEach(async (type) => {
             const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
+              query,
               documentType: type,
             })
             functionData.push(...data)

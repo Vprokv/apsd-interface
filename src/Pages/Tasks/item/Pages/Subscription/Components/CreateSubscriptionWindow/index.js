@@ -43,6 +43,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { useParams } from 'react-router-dom'
 
 const plugins = {
   outerSortPlugin: { component: SortCellComponent },
@@ -127,6 +128,7 @@ const CreateSubscriptionWindow = ({ onClose }) => {
   const [value, sendValue] = useState([])
   const getNotification = useOpenNotification()
   const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
+  const { type } = useParams()
 
   const { dss_first_name, dss_last_name, dss_middle_name } =
     useRecoilValue(userAtom)
@@ -136,9 +138,11 @@ const CreateSubscriptionWindow = ({ onClose }) => {
 
   const [{ data }] = useAutoReload(
     useCallback(async () => {
-      const { data = [] } = await api.post(URL_SUBSCRIPTION_EVENTS)
+      const { data = [] } = await api.post(URL_SUBSCRIPTION_EVENTS, {
+        documentType: type,
+      })
       return data
-    }, [api]),
+    }, [api, type]),
     tabState,
     setTabState,
   )
