@@ -21,10 +21,6 @@ const resolveOperatorsStage = () => (fieldState) => (args) => {
     return acc
   }, [])
 
-  console.log(type, 'type')
-  console.log(dss_default_search_operator, 'default')
-  console.log(mappedOperators, 'mappedOperators')
-
   // нормализуем список операторов доступных полю
   const options =
     mappedOperators.length > 0 ? mappedOperators : [defaultOperator]
