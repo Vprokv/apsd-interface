@@ -172,7 +172,7 @@ const Subscription = () => {
   useEffect(() => {
     ;(async () => {
       const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
-        documentType: type,
+        documentType: [type],
       })
       setTabState({
         events: data.reduce((acc, { name, label }) => {

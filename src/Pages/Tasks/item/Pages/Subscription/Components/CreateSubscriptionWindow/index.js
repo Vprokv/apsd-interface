@@ -139,7 +139,7 @@ const CreateSubscriptionWindow = ({ onClose }) => {
   const [{ data }] = useAutoReload(
     useCallback(async () => {
       const { data = [] } = await api.post(URL_SUBSCRIPTION_EVENTS, {
-        documentType: type,
+        documentType: [type],
       })
       return data
     }, [api, type]),
