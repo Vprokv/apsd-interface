@@ -56,7 +56,9 @@ const PreviewContentWindow = ({
         </div>
       }
     >
-      <RenderPdfComponent url={url} title={title} />
+      <div className="flex-container overflow-hidden">
+        <RenderPdfComponent url={url} title={title} />
+      </div>
     </StandardSizeModalWindow>
   )
 }
