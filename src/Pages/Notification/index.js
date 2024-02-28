@@ -138,12 +138,6 @@ const baseSortQuery = {
   key: 'creationDate',
   direction: 'DESC',
 }
-
-const documentTypes = [
-  'ddt_startup_complex_type_doc',
-  'ddt_project_calc_type_doc',
-]
-
 const Notification = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
@@ -240,24 +234,12 @@ const Notification = () => {
         valueKey: 'name',
         labelKey: 'label',
         loadFunction: async (query) => {
-          let functionData = []
-          documentTypes.forEach(async (type) => {
-            const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
-              query,
-              documentType: type,
-            })
-            functionData.push(...data)
-          })
-          console.log(functionData)
-          return functionData
-        },
-        /* loadFunction: async (query) => {
           const { data } = await api.post(URL_SUBSCRIPTION_EVENTS, {
-            documentType: documentTypes[0],
+            query,
+            documentType: filter?.documentType,
           })
-          console.log(data)
           return data
-        },*/
+        },
       },
       {
         id: 'query',
@@ -272,7 +254,7 @@ const Notification = () => {
         ),
       },
     ],
-    [api],
+    [api, filter?.documentType],
   )
 
   const onDelete = useCallback(async () => {

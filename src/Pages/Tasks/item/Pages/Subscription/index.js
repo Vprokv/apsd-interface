@@ -72,7 +72,6 @@ const columns = [
     id: 'events',
     label: 'Подписка на событие',
     component: ({ ParentValue: { events = '' } }) => {
-      console.log(events)
       return <Events events={events} className="flex items-center w-full" />
     },
     sizes: 450,
@@ -226,9 +225,6 @@ const Subscription = () => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [selectState, getNotification, loadDataFunction, api])
-
-  console.log(content)
-
   return (
     <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
       <div className="flex items-center py-4">
