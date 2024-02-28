@@ -58,7 +58,7 @@ const columns = [
   {
     id: 'description',
     label: 'Наименование',
-    className: 'flex items-center break-words break-all h-10',
+    className: 'flex items-center break-words break-all min-h-10',
     component: BaseCell,
     sizes: 200,
   },
