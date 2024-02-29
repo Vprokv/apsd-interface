@@ -348,6 +348,19 @@ const DocumentSearch = ({
     setSearchState([])
   }, [setSearchState, setTabState])
 
+  useEffect(() => {
+    if (!renderTable) {
+      const onKeyEnterDown = (e) => {
+        e.key === 'Enter' && onSearch()
+      }
+
+      document.addEventListener('keydown', onKeyEnterDown)
+      return () => {
+        document.removeEventListener('keydown', onKeyEnterDown)
+      }
+    }
+  }, [onSearch, renderTable])
+
   return (
     <ExportContext.Provider value={'asas'}>
       <div className="flex flex-col w-full p-4 overflow-hidden">
