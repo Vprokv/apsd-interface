@@ -108,56 +108,42 @@ const AdditionalStage = (props) => {
   )
 
   const onDeleteApprover = useCallback(async () => {
-    if (selected?.permit?.deleteApprover) {
-      try {
-        await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
-          approvers: [selected.id],
-        })
-        getNotification({
-          type: NOTIFICATION_TYPE_SUCCESS,
-          message: 'Удаление доп. согласующего выполнено успешно',
-        })
-        updateCurrentTabChildrenStates(
-          [TASK_ITEM_APPROVAL_SHEET],
-          setUnFetchedState(),
-        )
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(customMessagesFuncMap[status](data))
-      }
-    } else {
-      getNotification({
-        type: NOTIFICATION_TYPE_ERROR,
-        message: `Согласующий ${selected.approverFio} не доступен для удаления`,
+    try {
+      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
+        approvers: [selected.id],
       })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Удаление доп. согласующего выполнено успешно',
+      })
+      updateCurrentTabChildrenStates(
+        [TASK_ITEM_APPROVAL_SHEET],
+        setUnFetchedState(),
+      )
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [api, getNotification, selected, updateCurrentTabChildrenStates])
 
   const onSendApprover = useCallback(async () => {
-    if (selected?.permit?.send) {
-      try {
-        await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND, {
-          approvers: [selected.id],
-          documentId,
-          documentType,
-        })
-        getNotification({
-          type: NOTIFICATION_TYPE_SUCCESS,
-          message: 'Рассылка выполнена успешно',
-        })
-        updateCurrentTabChildrenStates(
-          [TASK_ITEM_APPROVAL_SHEET],
-          setUnFetchedState(),
-        )
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(customMessagesFuncMap[status](data))
-      }
-    } else {
-      getNotification({
-        type: NOTIFICATION_TYPE_ERROR,
-        message: `Согласующий ${selected.approverFio} не доступен для рассылки`,
+    try {
+      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND, {
+        approvers: [selected.id],
+        documentId,
+        documentType,
       })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Рассылка выполнена успешно',
+      })
+      updateCurrentTabChildrenStates(
+        [TASK_ITEM_APPROVAL_SHEET],
+        setUnFetchedState(),
+      )
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [
     api,
@@ -169,30 +155,23 @@ const AdditionalStage = (props) => {
   ])
 
   const onRevokeApprover = useCallback(async () => {
-    if (selected?.permit?.revoke) {
-      try {
-        await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE, {
-          approvers: [selected.id],
-          documentId,
-          documentType,
-        })
-        getNotification({
-          type: NOTIFICATION_TYPE_SUCCESS,
-          message: 'Отзыв выполнен успешно',
-        })
-        updateCurrentTabChildrenStates(
-          [TASK_ITEM_APPROVAL_SHEET],
-          setUnFetchedState(),
-        )
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(customMessagesFuncMap[status](data))
-      }
-    } else {
-      getNotification({
-        type: NOTIFICATION_TYPE_ERROR,
-        message: `Согласующий ${selected.approverFio} не доступен для отзыва`,
+    try {
+      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE, {
+        approvers: [selected.id],
+        documentId,
+        documentType,
       })
+      getNotification({
+        type: NOTIFICATION_TYPE_SUCCESS,
+        message: 'Отзыв выполнен успешно',
+      })
+      updateCurrentTabChildrenStates(
+        [TASK_ITEM_APPROVAL_SHEET],
+        setUnFetchedState(),
+      )
+    } catch (e) {
+      const { response: { status, data } = {} } = e
+      getNotification(customMessagesFuncMap[status](data))
     }
   }, [
     api,
@@ -247,7 +226,7 @@ const AdditionalStage = (props) => {
               <CustomButtonForIcon
                 className="color-blue-1 h-10"
                 onClick={onDeleteApprover}
-                disabled={!selected?.additional}
+                disabled={!selected?.permit?.deleteApprover}
               >
                 <Icon icon={DeleteUserIcon} />
               </CustomButtonForIcon>
@@ -256,7 +235,7 @@ const AdditionalStage = (props) => {
               <CustomButtonForIcon
                 className="color-blue-1"
                 onClick={onSendApprover}
-                disabled={!selected?.additional}
+                disabled={!selected?.permit?.send}
               >
                 <Icon icon={SendIcon} />
               </CustomButtonForIcon>
@@ -265,7 +244,7 @@ const AdditionalStage = (props) => {
               <CustomButtonForIcon
                 className="color-blue-1"
                 onClick={onRevokeApprover}
-                disabled={!selected?.additional}
+                disabled={selected?.permit?.revoke}
               >
                 <Icon icon={SendReverseIcon} />
               </CustomButtonForIcon>
