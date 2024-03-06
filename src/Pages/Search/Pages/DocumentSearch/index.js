@@ -147,6 +147,11 @@ const columnsMap = [
   },
   {
     componentType: 'DescriptionTableColumn',
+    header: 'Шифр/Рег.номер',
+    path: 'values.dss_reg_number',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
     header: 'Вид тома',
     path: 'values.dss_type_label',
   },
