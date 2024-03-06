@@ -52,6 +52,16 @@ export const tableConfig = [
     }) => <BaseCell className="break-all" value={dss_description} />,
   },
   {
+    id: 'values.dss_reg_number',
+    label: 'Шифр/Рег.номер',
+    sizes: 200,
+    component: ({
+      ParentValue: {
+        values: { dss_reg_number = '' },
+      },
+    }) => <BaseCell value={dss_reg_number} />,
+  },
+  {
     id: 'values.dss_type_label',
     label: 'Вид тома',
     sizes: 200,
