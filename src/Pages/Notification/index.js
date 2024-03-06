@@ -116,20 +116,25 @@ const columns = [
   {
     id: 'documentAuthor',
     label: 'Автор документа',
-    component: ({ ParentValue: { documentAuthor } }) => {
-      const { fio, position } = documentAuthor === null ? {} : documentAuthor
-      return <BaseSubCell value={fio} subValue={position} />
-    },
+    component: ({ ParentValue: { documentAuthor } = {} }) =>
+      documentAuthor && (
+        <BaseSubCell
+          value={documentAuthor.fio}
+          subValue={documentAuthor.position}
+        />
+      ),
     sizes: baseCellSize,
   },
   {
     id: 'initiatorEvent',
     label: 'Инициатор события',
-    component: ({
-      ParentValue: {
-        initiatorEvent: { fio, position },
-      },
-    }) => <BaseSubCell value={fio} subValue={position} />,
+    component: ({ ParentValue: { initiatorEvent } = {} }) =>
+      initiatorEvent && (
+        <BaseSubCell
+          value={initiatorEvent.fio}
+          subValue={initiatorEvent.position}
+        />
+      ),
     sizes: baseCellSize,
   },
 ]
