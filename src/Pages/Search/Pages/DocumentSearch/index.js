@@ -57,9 +57,17 @@ export const tableConfig = [
     sizes: 200,
     component: ({
       ParentValue: {
-        values: { dss_reg_number = '' },
+        values: { dss_reg_number, dss_document_type = '' },
       },
-    }) => <BaseCell value={dss_reg_number} />,
+    }) => (
+      <BaseCell
+        value={
+          dss_document_type === 'ddt_project_calc_type_doc'
+            ? dss_reg_number
+            : ''
+        }
+      />
+    ),
   },
   {
     id: 'values.dss_type_label',
