@@ -95,7 +95,7 @@ const ViewAdditionsRemarks = ({
       title={'Замечания доп. согласующих'}
     >
       <div className="flex flex-col overflow-hidden h-full w-full">
-        <div className="flex overflow-hidden mb-6 h-full w-full">
+        <div className="flex flex-col overflow-hidden mb-6 h-full w-full">
           <ScrollBar className=" w-full">
             <SetAnswerStateContext.Provider value={setSelected}>
               <div className="flex flex-col h-full">
