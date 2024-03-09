@@ -16,24 +16,20 @@ const SortCellComponent = (Component) => {
     return (
       <div className={`${className} flex items-center`} style={style}>
         <div className="flex flex-col mr-1.5">
-          {(id !== key || direction !== downDirectionKey) && (
-            <SortButton
-              type="button"
-              onClick={() => onChange(id, upperDirectionKey)}
-              current={direction === 'ASC' && id === key}
-            >
-              <Icon icon={sortAngleIcon} size={8} />
-            </SortButton>
-          )}
-          {(id !== key || direction !== upperDirectionKey) && (
-            <SortButton
-              type="button"
-              onClick={() => onChange(id, downDirectionKey)}
-              current={direction === downDirectionKey && id === key}
-            >
-              <Icon icon={sortAngleIcon} size={8} className="rotate-180" />
-            </SortButton>
-          )}
+          <SortButton
+            type="button"
+            onClick={() => onChange(id, upperDirectionKey)}
+            current={direction === 'ASC' && id === key}
+          >
+            <Icon icon={sortAngleIcon} size={8} />
+          </SortButton>
+          <SortButton
+            type="button"
+            onClick={() => onChange(id, downDirectionKey)}
+            current={direction === downDirectionKey && id === key}
+          >
+            <Icon icon={sortAngleIcon} size={8} className="rotate-180" />
+          </SortButton>
         </div>
         <Component id={id} {...props} />
       </div>
