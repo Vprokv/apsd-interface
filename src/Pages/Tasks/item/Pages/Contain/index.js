@@ -18,7 +18,7 @@ import {
 } from '@/contants'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { SingleSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -453,7 +453,7 @@ const Contain = () => {
             )}
             plugins={useMemo(() => {
               return {
-                outerSortPlugin: { component: SortCellComponent },
+                outerSortPlugin: { component: ModifiedSortCellComponent },
                 treePlugin: {
                   valueKey: 'id',
                   nestedDataKey: 'childs',

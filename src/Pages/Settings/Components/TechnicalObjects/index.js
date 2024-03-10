@@ -35,7 +35,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import { FilterForm } from '@/Pages/Settings/Components/TechnicalObjects/styles'
 import CreateTechnicalObjectWindow from '@/Pages/Settings/Components/TechnicalObjects/Components/CreateTechnicalObjectWindow'
@@ -46,7 +46,7 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

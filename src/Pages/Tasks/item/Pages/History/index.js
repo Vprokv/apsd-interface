@@ -12,7 +12,7 @@ import {
 } from '@/contants'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ListTable from '@Components/Components/Tables/ListTable'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
@@ -30,7 +30,7 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   movePlugin: {
     id: TASK_ITEM_CONTENT,
     TableHeaderComponent: Header,

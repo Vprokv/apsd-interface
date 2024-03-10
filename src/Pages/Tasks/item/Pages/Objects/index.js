@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react'
 import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
-import SortCellComponent from '../../../../../Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '../../../../../Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
@@ -41,7 +41,7 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

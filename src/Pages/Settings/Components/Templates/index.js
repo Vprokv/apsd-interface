@@ -24,7 +24,7 @@ import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import usePagination from '@Components/Logic/usePagination'
 import {
@@ -51,7 +51,7 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

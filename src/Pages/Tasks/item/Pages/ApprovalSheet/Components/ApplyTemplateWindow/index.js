@@ -4,7 +4,7 @@ import { URL_CREATE_STAGE, URL_TEMPLATE, URL_TEMPLATE_LIST } from '@/ApiList'
 import Button, { SecondaryBlueButton } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -33,7 +33,7 @@ const customMessagesFuncMap = {
 }
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: ModifiedSortCellComponent },
   movePlugin: {
     id: URL_TEMPLATE_LIST,
     TableHeaderComponent: Header,

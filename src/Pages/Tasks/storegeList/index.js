@@ -43,7 +43,7 @@ import {
 } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
-import SortCellComponent from '../../../Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '../../../Components/ListTableComponents/ModifiedSortCellComponent'
 import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { TabStateManipulation } from '@Components/Logic/Tab'
@@ -67,7 +67,7 @@ import ColumnController from '@/Components/ListTableComponents/ColumnController'
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
 export const taskPlugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,

@@ -14,7 +14,7 @@ import XlsIcon from '@/Icons/XlsIcon'
 import Tips from '@/Components/Tips'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 
 const defaultFilter = { type: 'ddt_project_calc_type_doc' }
 
@@ -33,7 +33,7 @@ const plugins = {
     TableHeaderComponent: Header,
     driver: useBackendColumnSettingsState,
   },
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
 }
 
 const baseSortQuery = {

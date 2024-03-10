@@ -18,12 +18,12 @@ import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
 import { columnsLifeCycleHistory } from '@/Pages/Tasks/item/Pages/LifeCycleHistory/constans'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   movePlugin: {
     id: TASK_ITEM_LIFE_CYCLE_HISTORY,
     TableHeaderComponent: Header,

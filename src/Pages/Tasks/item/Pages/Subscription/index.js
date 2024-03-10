@@ -7,7 +7,7 @@ import {
   TASK_ITEM_SUBSCRIPTION,
 } from '@/contants'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { FlatSelect } from '@/components_ocean/Components/Tables/Plugins/selectable'
 import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
@@ -45,7 +45,7 @@ import ColumnController from '@/Components/ListTableComponents/ColumnController'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

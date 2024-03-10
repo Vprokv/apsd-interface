@@ -18,7 +18,7 @@ import searchIcon from '@/Icons/searchIcon'
 import ListTable from '../../../components_ocean/Components/Tables/ListTable'
 import RowComponent from '../../ListTableComponents/EmitValueRowComponent'
 import HeaderCell from '../../ListTableComponents/HeaderCell'
-import SortCellComponent from '../../ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '../../ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../CheckBox'
 import {
@@ -348,7 +348,7 @@ export const OrgStructureWindow = (props) => {
                 multiple
                   ? {
                       outerSortPlugin: {
-                        component: SortCellComponent,
+                        component: ModifiedSortCellComponent,
                         downDirectionKey: 'DESC',
                       },
                       selectPlugin: {
@@ -366,7 +366,7 @@ export const OrgStructureWindow = (props) => {
                     }
                   : {
                       outerSortPlugin: {
-                        component: SortCellComponent,
+                        component: ModifiedSortCellComponent,
                         downDirectionKey: 'DESC',
                       },
                       movePlugin: {

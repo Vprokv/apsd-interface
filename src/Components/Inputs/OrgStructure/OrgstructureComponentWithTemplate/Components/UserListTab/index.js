@@ -22,7 +22,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Components/ListTableComponents/EmitValueRowComponent'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -353,7 +353,7 @@ const UserListTab = (props) => {
             multiple
               ? {
                   outerSortPlugin: {
-                    component: SortCellComponent,
+                    component: ModifiedSortCellComponent,
                     downDirectionKey: 'DESC',
                   },
                   selectPlugin: {
@@ -371,7 +371,7 @@ const UserListTab = (props) => {
                 }
               : {
                   outerSortPlugin: {
-                    component: SortCellComponent,
+                    component: ModifiedSortCellComponent,
                     downDirectionKey: 'DESC',
                   },
                   movePlugin: {

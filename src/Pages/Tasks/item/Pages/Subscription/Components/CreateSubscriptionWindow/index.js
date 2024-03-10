@@ -4,7 +4,7 @@ import {
   SubscriptionWindowComponent,
 } from './style'
 import ScrollBar from '@Components/Components/ScrollBar'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import ListTable from '@Components/Components/Tables/ListTable'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
@@ -46,7 +46,7 @@ import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { useParams } from 'react-router-dom'
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: ModifiedSortCellComponent },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

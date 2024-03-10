@@ -12,7 +12,7 @@ import {
   URL_TECHNICAL_OBJECTS_DICT,
 } from '@/ApiList'
 import { CreateObjectsWindowComponent, FilterForm } from './styled'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Button from '@Components/Components/Button'
@@ -52,7 +52,7 @@ const customMessagesFuncMap = {
 }
 
 const plugins = {
-  outerSortPlugin: { component: SortCellComponent },
+  outerSortPlugin: { component: ModifiedSortCellComponent },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

@@ -36,7 +36,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
-import SortCellComponent from '@/Components/ListTableComponents/SortCellComponent'
+import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import DocumentState, {
   sizes as DocumentStateSizes,
 } from '@/Components/ListTableComponents/DocumentState'
@@ -194,7 +194,7 @@ const taskColumns = [
 ]
 
 const taskPlugins = {
-  outerSortPlugin: { component: SortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
   movePlugin: {
     id: TASK_DEPUTY_LIST,
     TableHeaderComponent: Header,
