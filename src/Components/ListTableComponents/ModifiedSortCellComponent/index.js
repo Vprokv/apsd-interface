@@ -13,8 +13,6 @@ const ModifiedSortCellComponent = (Component) => {
       upperDirectionKey,
       downDirectionKey,
     } = useContext(SortStateContext)
-    console.log([key, id, direction, upperDirectionKey])
-    const [currentValues, setCurrentValues] = useState(null)
     return (
       <div className={`${className} flex items-center`} style={style}>
         <div className="flex flex-col mr-1.5">
