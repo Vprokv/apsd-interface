@@ -45,7 +45,10 @@ import ColumnController from '@/Components/ListTableComponents/ColumnController'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const plugins = {
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
@@ -189,10 +192,12 @@ const Subscription = () => {
       const { data } = await api.post(URL_SUBSCRIPTION_LIST, {
         documentId,
         sort: sortQuery
-          ? {
-              property: sortQuery.key,
-              direction: sortQuery.direction,
-            }
+          ? [
+              {
+                property: sortQuery.key,
+                direction: sortQuery.direction,
+              },
+            ]
           : null,
         type,
         filter,

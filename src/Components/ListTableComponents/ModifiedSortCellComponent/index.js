@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import sortAngleIcon from '../../../Icons/sortAngleIcon'
 import Icon from '@Components/Components/Icon'
@@ -13,19 +13,29 @@ const ModifiedSortCellComponent = (Component) => {
       upperDirectionKey,
       downDirectionKey,
     } = useContext(SortStateContext)
+    console.log([key, id, direction, upperDirectionKey])
+    const [currentValues, setCurrentValues] = useState(null)
     return (
       <div className={`${className} flex items-center`} style={style}>
         <div className="flex flex-col mr-1.5">
           <SortButton
             type="button"
-            onClick={() => onChange(id, upperDirectionKey)}
+            onClick={
+              id === key && direction === 'ASC'
+                ? () => {}
+                : () => onChange(id, upperDirectionKey)
+            }
             current={direction === 'ASC' && id === key}
           >
             <Icon icon={sortAngleIcon} size={8} />
           </SortButton>
           <SortButton
             type="button"
-            onClick={() => onChange(id, downDirectionKey)}
+            onClick={
+              id === key && direction === 'DESC'
+                ? () => {}
+                : () => onChange(id, downDirectionKey)
+            }
             current={direction === downDirectionKey && id === key}
           >
             <Icon icon={sortAngleIcon} size={8} className="rotate-180" />
