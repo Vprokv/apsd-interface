@@ -65,7 +65,10 @@ import ColumnController from '@/Components/ListTableComponents/ColumnController'
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
 const plugins = {
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
   selectPlugin: {
     driver: FlatSelect,
     component: (props) => <CheckBox {...props} style={tableCheckBoxStyles} />,

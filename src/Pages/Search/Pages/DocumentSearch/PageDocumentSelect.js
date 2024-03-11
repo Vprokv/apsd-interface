@@ -33,7 +33,10 @@ const plugins = {
     TableHeaderComponent: Header,
     driver: useBackendColumnSettingsState,
   },
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
 }
 
 const baseSortQuery = {

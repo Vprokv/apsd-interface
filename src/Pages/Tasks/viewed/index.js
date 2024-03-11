@@ -46,7 +46,7 @@ import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import searchIcon from '@/Icons/searchIcon'
 import { Select } from '@/Components/Inputs/Select'
 import TypeLabelComponent from '@/Pages/Tasks/viewed/Components/DocumentTypeLabel'
-import {columnMap} from "@/Pages/Tasks/viewed/constans";
+import { columnMap } from '@/Pages/Tasks/viewed/constans'
 
 const columns = [
   {
@@ -100,7 +100,10 @@ const columns = [
 // }
 
 const plugins = {
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
   selectPlugin: {
     driver: FlatSelect,
     component: (props) => (

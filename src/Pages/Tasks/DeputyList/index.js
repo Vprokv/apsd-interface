@@ -194,7 +194,10 @@ const taskColumns = [
 ]
 
 const taskPlugins = {
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
   movePlugin: {
     id: TASK_DEPUTY_LIST,
     TableHeaderComponent: Header,

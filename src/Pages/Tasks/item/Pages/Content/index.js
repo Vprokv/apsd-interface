@@ -48,7 +48,10 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const plugins = {
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,

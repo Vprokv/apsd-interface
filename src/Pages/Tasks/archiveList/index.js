@@ -131,7 +131,10 @@ const columnMap = [
 ]
 
 const plugins = {
-  outerSortPlugin: { component: ModifiedSortCellComponent, downDirectionKey: 'DESC' },
+  outerSortPlugin: {
+    component: ModifiedSortCellComponent,
+    downDirectionKey: 'DESC',
+  },
   selectPlugin: {
     driver: FlatSelect,
     component: CheckBox,
