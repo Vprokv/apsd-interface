@@ -72,7 +72,6 @@ import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import useReadCurrentChildrenTabContext from '@/Pages/Tasks/item/DocumentHandlers/hooks/useReadCurrentChildrenTabContext'
-import { filterManipulationData } from '@/Pages/Tasks/item/DocumentHandlers/Handlers/FinishSimpleApprove'
 import ViewAdditionsRemarks from '@/Pages/Tasks/item/Components/ViewAdditionaRemarks'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 
@@ -116,9 +115,10 @@ const Task = () => {
           await api.post(URL_TASK_MARK_READ, {
             tasksIds: [id],
           })
+
           updateTabStateUpdaterByName([TASK_LIST], setUnFetchedState())
         } catch (e) {
-          const { response: { status } = {} } = e
+          const { response: { status = 0 } = {} } = e
           getNotification(defaultFunctionsMap[status]())
         } finally {
           reloadSidebarTaskCounters()
