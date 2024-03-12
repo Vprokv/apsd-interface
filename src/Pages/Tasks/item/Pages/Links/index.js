@@ -443,11 +443,13 @@ const Links = () => {
       >
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
-      <ContentWindow
-        open={renderPreviewWindow}
-        onClose={closeWindow}
-        value={selectState}
-      />
+      {renderPreviewWindow && (
+        <ContentWindow
+          open={renderPreviewWindow}
+          onClose={closeWindow}
+          value={selectState}
+        />
+      )}
     </div>
   )
 }
