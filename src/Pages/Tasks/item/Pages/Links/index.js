@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
@@ -211,8 +211,20 @@ const Links = () => {
     }
   }, [paginationState, api, id, filter, getNotification, sortQuery])
 
-  const [{ data: { content = [], total = 0 } = {}, loading, reloadData }] =
-    useAutoReload(loadData, tabState, setTabState)
+  const [
+    {
+      data: { content = [], total = 0 } = {},
+      loading,
+      reloadData,
+      shouldReloadData,
+    },
+  ] = useAutoReload(loadData, tabState, setTabState)
+
+  useEffect(() => {
+    if (!shouldReloadData) {
+      reloadData()
+    }
+  }, [])
 
   const downLoadContent = useCallback(async () => {
     let errorString = ''
