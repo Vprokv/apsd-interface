@@ -5,7 +5,7 @@ import axios from 'axios'
 
 //stage
 //export const API_URL = 'http://10.20.56.47/'
-//export const API_URL = 'http://10.20.56.50/'
+// export const API_URL = 'http://10.20.56.50/'
 
 // production
 // export const API_URL = 'https://psd.moesk.ru'

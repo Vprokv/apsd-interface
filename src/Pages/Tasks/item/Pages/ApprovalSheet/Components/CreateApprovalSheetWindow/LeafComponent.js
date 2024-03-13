@@ -9,8 +9,7 @@ import {
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
-import log from 'tailwindcss/lib/util/log'
-import { error } from 'bfj/src/events'
+import cloneDeep from 'lodash/_copyArray'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon
@@ -147,65 +146,60 @@ const Leaf = (props) => {
       const data = JSON.parse(event.dataTransfer.getData('text/plain1'))
       const {
         parent,
-        options: { status, id: droppedId, index },
+        options: { status, id: droppedId },
       } = refProps.current
 
       if (status === 'new') {
-        // const { newOptionValue } = [...parent].reduce(
-        //   (acc, rowValue) => {
-        //     const { id } = rowValue
-        //
-        //     if (id === droppedId) {
-        //       const dropIndex = acc.newOptionValue.findIndex(
-        //         ({ id }) => id === data.id,
-        //       )
-        //
-        //       const pushIndex = acc.newOptionValue.findIndex(
-        //         ({ id }) => id === droppedId,
-        //       )
-        //       acc.newOptionValue.splice(pushIndex, 0, { ...data, index })
-        //
-        //       acc.newOptionValue.splice(dropIndex, 1)
-        //
-        //       acc.pushPosition = pushIndex
-        //       acc.pushIndex = index
-        //
-        //       acc.newOptionValue = [...acc.newOptionValue].map((val, key) => {
-        //         if (acc.pushPosition && key > acc.pushPosition) {
-        //           const gap = key - acc.pushPosition
-        //
-        //           return { ...val, index: acc.pushIndex + gap }
-        //         }
-        //         return val
-        //       })
-        //     }
-        //
-        //     return acc
-        //   },
-        //   {
-        //     newOptionValue: [...parent],
-        //     pushIndex: undefined,
-        //   },
-        // )
+        const dropIndex = parent.findIndex(({ id }) => id === data.id)
+        const pushIndex = parent.findIndex(({ id }) => id === droppedId)
+        const [left, right] = [dropIndex, pushIndex].sort((a, b) => a - b)
+        const [{ index: minIndexInRow }] = [
+          parent[dropIndex],
+          parent[pushIndex],
+        ].sort((a, b) => a.index - b.index)
 
-        const newOption = [...parent]
+        const editArray = [...parent].slice(left, right + 1)
 
-        newOption.splice(
-          parent.findIndex(({ ['id']: rowId }) => rowId === data.id),
+        editArray.splice(
+          editArray.findIndex(({ ['id']: rowId }) => rowId === data.id),
           1,
         )
 
-        const droppingIndex = newOption.findIndex(
+        const droppingIndex = editArray.findIndex(
           ({ ['id']: row }) => row === droppedId,
         )
 
-        newOption.splice(droppingIndex, 0, { ...data, index })
-        const sendValue = newOption.map((val, key) => ({
-          ...val,
-          index: key,
-        }))
+        const customIndex =
+          droppingIndex === left
+            ? dropIndex === left
+              ? droppingIndex + 1
+              : droppingIndex
+            : dropIndex === right
+            ? droppingIndex
+            : droppingIndex + 1
 
-        onUpdateOptions(sendValue, 0, true)
+        editArray.splice(customIndex, 0, data)
+
+        const { sendValue, indexMap } = editArray.reduce(
+          (acc, val, key) => {
+            acc.sendValue.push({
+              ...val,
+              index: minIndexInRow + key,
+            })
+            acc.indexMap[val.id] = minIndexInRow + key
+            return acc
+          },
+          { sendValue: [], indexMap: {} },
+        )
+
+        const renderValue = parent
+          .map((value) => ({
+            ...value,
+            index: indexMap[value.id] ? indexMap[value.id] : value.index,
+          }))
+          .sort((a, b) => a.index - b.index)
+
+        onUpdateOptions(renderValue, 0, true)
 
         const result = await dropEvent(sendValue)
         if (result instanceof Error) {

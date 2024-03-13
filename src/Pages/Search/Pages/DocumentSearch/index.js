@@ -52,6 +52,24 @@ export const tableConfig = [
     }) => <BaseCell className="break-all" value={dss_description} />,
   },
   {
+    id: 'values.dss_reg_number',
+    label: 'Шифр/Рег.номер',
+    sizes: 200,
+    component: ({
+      ParentValue: {
+        values: { dss_reg_number, dss_document_type = '' },
+      },
+    }) => (
+      <BaseCell
+        value={
+          dss_document_type === 'ddt_project_calc_type_doc'
+            ? dss_reg_number
+            : ''
+        }
+      />
+    ),
+  },
+  {
     id: 'values.dss_type_label',
     label: 'Вид тома',
     sizes: 200,
@@ -134,6 +152,11 @@ const columnsMap = [
     componentType: 'DescriptionTableColumn',
     header: 'Наименование',
     path: 'values.dss_description',
+  },
+  {
+    componentType: 'DescriptionTableColumn',
+    header: 'Шифр/Рег.номер',
+    path: 'values.dss_reg_number',
   },
   {
     componentType: 'DescriptionTableColumn',

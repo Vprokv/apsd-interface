@@ -1,6 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { ApiContext, TASK_ITEM_NEW_DOCUMENT } from '@/contants'
+import {
+  ApiContext,
+  TASK_ITEM_NEW_DOCUMENT,
+  TASK_ITEM_REQUISITES,
+} from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { URL_DOCUMENT_CLASSIFICATION, URL_DOCUMENT_CREATE } from '@/ApiList'
 import { defaultPages, DocumentTypeContext } from './constants'
@@ -22,6 +26,8 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import useTabInitialState from '@Components/Logic/Tab/useTabInitialState'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
+import Validator from '@Components/Logic/Validator/Validator'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -43,8 +49,12 @@ export const NewTaskItem = ({ classificationId, type }) => {
   const api = useContext(ApiContext)
   const navigate = useNavigate()
   const getNotification = useOpenNotification()
+  const validator = new Validator()
+  const [tabItemState, setTabItemState] = useTabItem({
+    stateId: TASK_ITEM_REQUISITES,
+  })
 
-  const [tabState, setDocumentState] = useTabItem({
+  const [documentState, setDocumentState] = useTabItem({
     stateId: TASK_ITEM_NEW_DOCUMENT,
   })
   const initialState = useTabInitialState()
@@ -75,7 +85,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
         values: { dss_work_number = 'Документ' } = {},
       } = {},
     },
-  ] = useAutoReload(loadData, tabState, setDocumentState)
+  ] = useAutoReload(loadData, documentState, setDocumentState)
 
   useSetTabName(useCallback(() => dss_work_number, [dss_work_number]))
 
@@ -86,10 +96,33 @@ export const NewTaskItem = ({ classificationId, type }) => {
 
   const remoteTabUpdater = useTabStateUpdaterByName()
 
+  const {
+    formProps: { rules },
+    documentState: { validationErrors },
+  } = useRequisitesInfo({
+    TASK_ITEM_NEW_DOCUMENT,
+    permits: [],
+    tabItemState,
+    setTabItemState,
+    documentState,
+    setDocumentState,
+  })
+  //todo обсудить необходимость делать через validator
+
+  // const errors = validator.validate(refValues.current, rules)
+
   const documentHandlers = useMemo(
     () => ({
       save: {
         handler: async () => {
+          if (Object.keys(validationErrors)?.length) {
+            return setDocumentState({
+              submitFailed: true,
+              formHasSubmitted: true,
+              validationErrors,
+            })
+          }
+
           try {
             const {
               status,
@@ -137,6 +170,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
       remoteTabUpdater,
       setDocumentState,
       type,
+      validationErrors,
     ],
   )
 

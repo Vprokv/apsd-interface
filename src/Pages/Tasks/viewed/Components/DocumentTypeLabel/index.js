@@ -8,8 +8,6 @@ const TypeLabelComponent = ({ ParentValue: { typeLabel } }) => {
     return colorFromString(typeLabel, 100, 35)
   }, [typeLabel])
 
-  console.log(typeLabel, 'typeLabel')
-
   const bg = useMemo(() => {
     return `${color.slice(0, 3)}a${color.slice(3, -1)}, 0.1)`
   }, [color])

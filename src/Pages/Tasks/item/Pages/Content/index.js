@@ -172,6 +172,14 @@ const Content = () => {
         currentVersion: !filter.isFullVersion,
         limit,
         offset,
+        sort: sortQuery.key
+          ? [
+              {
+                property: sortQuery.key,
+                direction: sortQuery.direction,
+              },
+            ]
+          : [],
       })
 
       return data
@@ -179,7 +187,15 @@ const Content = () => {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [paginationState, api, id, filter.isFullVersion, getNotification])
+  }, [
+    paginationState,
+    api,
+    id,
+    filter.isFullVersion,
+    sortQuery.key,
+    sortQuery.direction,
+    getNotification,
+  ])
 
   const [
     { loading, data: { content = [], total = 0 } = {}, reloadData },
