@@ -18,7 +18,8 @@ import downloadFile from '@/Utils/DownloadFile'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const PreviewContentTabLinkWindow = (Component) => {
-  const WindowContent = forwardRef(({ value, ...props }, ref) => {
+  const WindowContent = forwardRef((props, ref) => {
+    const { value, open } = props
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
     const { token } = useContext(TokenContext)
@@ -74,7 +75,7 @@ const PreviewContentTabLinkWindow = (Component) => {
     )
 
     const onGetUrlByMimeType = useCallback(async () => {
-      if (value?.length) {
+      if (value?.length && open) {
         const [{ mimeType }] = value
         if (mimeType) {
           return await parseUrlFunc({ mimeType })
@@ -86,21 +87,9 @@ const PreviewContentTabLinkWindow = (Component) => {
           return await parseUrlFunc({ mimeType, blob })
         }
       }
-    }, [getContent, parseUrlFunc, value])
+    }, [getContent, open, parseUrlFunc, value])
 
     useEffect(async () => await onGetUrlByMimeType(), [onGetUrlByMimeType])
-
-    // const url = useMemo(() => {
-    //   let url = ''
-    //   if (value?.length) {
-    //     const type =
-    //       value && value[0]?.childId
-    //         ? value[0]?.childType
-    //         : 'ddt_document_content'
-    //     url = `${API_URL}${URL_ENTITY_PDF_FILE}${type}:${id}:${token}`
-    //   }
-    //   return url
-    // }, [value, id, token])
 
     const downloadContent = useCallback(async () => {
       try {

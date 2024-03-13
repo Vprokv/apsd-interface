@@ -394,7 +394,7 @@ const Links = () => {
           <Tips text="Посмотреть файл">
             <ButtonForIcon
               onClick={useCallback(() => setRenderPreviewWindowState(true), [])}
-              disabled={disabled}
+              disabled={!selectState[0]}
               className="mr-2 color-text-secondary"
             >
               <Icon size={20} icon={ViewIcon} />
@@ -443,13 +443,11 @@ const Links = () => {
       >
         {`Отображаются записи с ${paginationState.startItemValue} по ${paginationState.endItemValue}, всего ${total}`}
       </Pagination>
-      {renderPreviewWindow && (
-        <ContentWindow
-          open={renderPreviewWindow}
-          onClose={closeWindow}
-          value={selectState}
-        />
-      )}
+      <ContentWindow
+        open={renderPreviewWindow}
+        onClose={closeWindow}
+        value={selectState}
+      />
     </div>
   )
 }
