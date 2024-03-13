@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import sortAngleIcon from '../../../Icons/sortAngleIcon'
 import Icon from '@Components/Components/Icon'
@@ -18,10 +18,10 @@ const ModifiedSortCellComponent = (Component) => {
         <div className="flex flex-col mr-1.5">
           <SortButton
             type="button"
-            onClick={() =>
-              id === key &&
-              direction === 'ASC' &&
-              onChange(id, upperDirectionKey)
+            onClick={
+              id === key && direction === 'ASC'
+                ? () => null
+                : () => onChange(id, upperDirectionKey)
             }
             current={direction === 'ASC' && id === key}
           >
@@ -30,9 +30,9 @@ const ModifiedSortCellComponent = (Component) => {
           <SortButton
             type="button"
             onClick={
-              id === key &&
-              direction === 'DESC' &&
-              onChange(id, upperDirectionKey)
+              id === key && direction === 'DESC'
+                ? () => null
+                : () => onChange(id, downDirectionKey)
             }
             current={direction === downDirectionKey && id === key}
           >
