@@ -7,17 +7,14 @@ import React, {
 } from 'react'
 import { ApiContext, TokenContext } from '@/contants'
 import { API_URL } from '@/api'
-import { URL_DOWNLOAD_FILE, URL_ENTITY_PDF_FILE } from '@/ApiList'
+import { URL_DOWNLOAD_GET_FILE, URL_ENTITY_PDF_FILE } from '@/ApiList'
 import PropTypes from 'prop-types'
-import {
-  NOTIFICATION_TYPE_ERROR,
-  useOpenNotification,
-} from '@/Components/Notificator'
-import downloadFile from '@/Utils/DownloadFile'
+import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const PreviewContentTabApprovalSheetWindow = (Component) => {
-  const WindowContent = forwardRef(({ value, ...props }, ref) => {
+  const WindowContent = forwardRef((props, ref) => {
+    const { value, open } = props
     const { token } = useContext(TokenContext)
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
@@ -25,20 +22,17 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
 
     const getContent = useCallback(async () => {
       try {
-        return await api.post(
-          URL_DOWNLOAD_FILE,
+        return await api.get(
+          `${URL_DOWNLOAD_GET_FILE}/ddt_report_content:${value}:${token}:dsc_content`,
           {
-            type: 'ddt_report_content',
-            column: 'dsc_content',
-            id: value,
+            responseType: 'blob',
           },
-          { responseType: 'blob' },
         )
       } catch (e) {
         const { response: { status = 0, data = '' } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, getNotification, value])
+    }, [api, getNotification, token, value])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -60,55 +54,36 @@ const PreviewContentTabApprovalSheetWindow = (Component) => {
       [getContent, token, value],
     )
 
+    const onDownLoad = useCallback(
+      () =>
+        window.open(
+          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_report_content:${value}:${token}:dsc_content`,
+        ),
+      [token, value],
+    )
+
     const onGetUrlByMimeType = useCallback(async () => {
-      if (value?.length) {
-        const [{ mimeType }] = value
-        if (mimeType) {
-          return await parseUrlFunc({ mimeType })
-        } else {
-          const {
-            data: blob,
-            headers: { 'content-type': mimeType },
-          } = await getContent()
-          return await parseUrlFunc({ mimeType, blob })
-        }
+      const [{ mimeType }] = value
+      if (mimeType) {
+        return await parseUrlFunc({ mimeType })
+      } else {
+        const {
+          data: blob,
+          headers: { 'content-type': mimeType },
+        } = await getContent()
+        return await parseUrlFunc({ mimeType, blob })
       }
     }, [getContent, parseUrlFunc, value])
 
-    useEffect(async () => await onGetUrlByMimeType(), [onGetUrlByMimeType])
-
-    //
-    // const url = useMemo(() => {
-    //   let url = ''
-    //   if (value?.length) {
-    //     url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_report_content:${value}:${token}`
-    //   }
-    //   return url
-    // }, [value, token])
-
-    const downloadContent = useCallback(async () => {
-      try {
-        const fileData = await getContent()
-
-        if (fileData.data instanceof Error) {
-          getNotification({
-            type: NOTIFICATION_TYPE_ERROR,
-            message: `${value} документ не найден`,
-          })
-        } else {
-          downloadFile(fileData)
-        }
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(defaultFunctionsMap[status](data))
-      }
-    }, [getContent, getNotification, value])
+    useEffect(() => {
+      ;(async () => value?.length && open && (await onGetUrlByMimeType()))()
+    }, [api, onGetUrlByMimeType, open, value?.length])
 
     return (
       <Component
         {...contentState}
         ref={ref}
-        downloadContent={downloadContent}
+        downloadContent={onDownLoad}
         {...props}
       />
     )

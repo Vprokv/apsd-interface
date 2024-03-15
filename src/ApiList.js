@@ -180,6 +180,7 @@ export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'
 
 // DOWNLOAD
 export const URL_DOWNLOAD_FILE = '/sedo/entity/getcontent'
+export const URL_DOWNLOAD_GET_FILE = '/sedo/entity/file'
 export const URL_DOWNLOAD_CONTENT = '/apsd/document/export/queue/archive'
 export const URL_INTEGRATION_TOM_DOWNLOAD =
   '/apsd/integration/tom/letter/template/download'

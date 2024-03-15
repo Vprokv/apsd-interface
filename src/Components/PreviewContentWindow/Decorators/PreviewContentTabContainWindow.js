@@ -7,17 +7,14 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import { API_URL } from '@/api'
-import { URL_DOWNLOAD_FILE, URL_ENTITY_PDF_FILE } from '@/ApiList'
+import { URL_DOWNLOAD_GET_FILE, URL_ENTITY_PDF_FILE } from '@/ApiList'
 import { ApiContext, TokenContext } from '@/contants'
-import {
-  NOTIFICATION_TYPE_ERROR,
-  useOpenNotification,
-} from '@/Components/Notificator'
-import downloadFile from '@/Utils/DownloadFile'
+import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 
 const PreviewContentTabContainWindow = (Component) => {
-  const WindowContent = forwardRef(({ value, ...props }, ref) => {
+  const WindowContent = forwardRef((props, ref) => {
+    const { value, open } = props
     const { token } = useContext(TokenContext)
     const api = useContext(ApiContext)
     const getNotification = useOpenNotification()
@@ -25,20 +22,15 @@ const PreviewContentTabContainWindow = (Component) => {
 
     const getContent = useCallback(async () => {
       try {
-        return await api.post(
-          URL_DOWNLOAD_FILE,
-          {
-            type: 'ddt_document_content',
-            column: 'dsc_content',
-            id: value?.content?.contentId,
-          },
+        return await api.get(
+          `${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${value?.content?.contentId}:${token}:dsc_content`,
           { responseType: 'blob' },
         )
       } catch (e) {
         const { response: { status = 0, data = '' } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, getNotification, value])
+    }, [api, getNotification, token, value?.content?.contentId])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -73,43 +65,23 @@ const PreviewContentTabContainWindow = (Component) => {
       }
     }, [getContent, parseUrlFunc, value])
 
-    useEffect(async () => {
-      if (value?.tomId) {
-        await onGetUrlByMimeType()
-      }
-    }, [onGetUrlByMimeType, value])
+    useEffect(() => {
+      ;(async () => value?.tomId && open && (await onGetUrlByMimeType()))()
+    }, [api, onGetUrlByMimeType, open, value?.tomId])
 
-    // const url = useMemo(() => {
-    //   let url = ''
-    //   if (value?.length) {
-    //     url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value[0].content.contentId}:${token}`
-    //   }
-    //   return url
-    // }, [value, token])
-
-    const downloadContent = useCallback(async () => {
-      try {
-        const fileData = await getContent()
-
-        if (fileData.data instanceof Error) {
-          getNotification({
-            type: NOTIFICATION_TYPE_ERROR,
-            message: `${value?.content?.contentId} документ не найден`,
-          })
-        } else {
-          downloadFile(fileData)
-        }
-      } catch (e) {
-        const { response: { status, data } = {} } = e
-        getNotification(defaultFunctionsMap[status](data))
-      }
-    }, [getContent, getNotification, value])
+    const onDownLoad = useCallback(
+      () =>
+        window.open(
+          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${value?.content?.contentId}:${token}:dsc_content`,
+        ),
+      [token, value],
+    )
 
     return (
       <Component
         {...contentState}
         ref={ref}
-        downloadContent={downloadContent}
+        downloadContent={onDownLoad}
         {...props}
       />
     )

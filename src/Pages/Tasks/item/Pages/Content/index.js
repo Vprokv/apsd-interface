@@ -11,10 +11,10 @@ import {
   URL_CONTENT_LIST,
   URL_CONTENT_PERMIT,
   URL_DELETE_VERSION,
-  URL_DOWNLOAD_FILE,
+  URL_DOWNLOAD_GET_FILE,
 } from '@/ApiList'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { ApiContext, TASK_ITEM_CONTENT } from '@/contants'
+import { ApiContext, TASK_ITEM_CONTENT, TokenContext } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -30,7 +30,6 @@ import Pagination from '../../../../../Components/Pagination'
 import usePagination from '../../../../../components_ocean/Logic/usePagination'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import DownloadIcon from '@/Icons/DownloadIcon'
-import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import EditIcon from '@/Icons/editIcon'
@@ -46,6 +45,7 @@ import { ContentWindowWrapper } from '@/Components/PreviewContentWindow/Decorato
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import { API_URL } from '@/api'
 
 const plugins = {
   outerSortPlugin: {
@@ -143,6 +143,7 @@ const Content = () => {
   const [errorState, setErrorState] = useState()
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const getNotification = useOpenNotification()
+  const { token } = useContext(TokenContext)
 
   const [
     {
@@ -257,43 +258,15 @@ const Content = () => {
     }
   }, [content])
 
-  const downLoadContent = useCallback(async () => {
-    let errorString = ''
-
-    const res = await Promise.all(
-      selectState.map(
-        ({ id }) =>
-          new Promise((res) => {
-            api
-              .post(
-                URL_DOWNLOAD_FILE,
-                {
-                  type: 'ddt_apsd_content_version',
-                  column: 'dsc_content',
-                  id,
-                },
-                { responseType: 'blob' },
-              )
-              .then((response) => {
-                res(response)
-              })
-              .catch(() => res(new Error('Документ не найден')))
-          }),
+  const downLoadContent = useCallback(
+    () =>
+      selectState.map(({ id }) =>
+        window.open(
+          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_apsd_content_version:${id}:${token}:dsc_content`,
+        ),
       ),
-    )
-
-    res.forEach((val, i) => {
-      if (val instanceof Error) {
-        errorString = `${errorString}, Документ ${selectState[i]?.contentName} не найден`
-      } else {
-        downloadFile(val)
-      }
-    })
-
-    if (errorString.length) {
-      setErrorState(errorString.trim())
-    }
-  }, [api, selectState])
+    [selectState, token],
+  )
 
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
 

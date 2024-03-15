@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { ApiContext, TASK_ITEM_LINK } from '@/contants'
+import {ApiContext, TASK_ITEM_LINK, TokenContext} from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
-  URL_DOWNLOAD_FILE,
+  URL_DOWNLOAD_FILE, URL_DOWNLOAD_GET_FILE,
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
@@ -46,6 +46,7 @@ import ColumnController from '@/Components/ListTableComponents/ColumnController'
 import ShareIcon from '@/Icons/ShareIcon'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
+import {API_URL} from "@/api";
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -173,7 +174,7 @@ const Links = () => {
   const [renderPreviewWindow, setRenderPreviewWindowState] = useState(false)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const navigate = useNavigate()
-
+  const { token } = useContext(TokenContext)
   const getNotification = useOpenNotification()
 
   const [{ sortQuery = defaultSortQuery, filter, ...tabState }, setTabState] =
@@ -226,45 +227,15 @@ const Links = () => {
     }
   }, [])
 
-  const downLoadContent = useCallback(async () => {
-    let errorString = ''
-
-    const res = await Promise.all(
-      selectState.reduce((acc, { contentId }) => {
-        contentId &&
-          acc.push(
-            new Promise((res) => {
-              api
-                .post(
-                  URL_DOWNLOAD_FILE,
-                  {
-                    type: 'ddt_document_content',
-                    column: 'dsc_content',
-                    id: contentId,
-                  },
-                  { responseType: 'blob' },
-                )
-                .then((response) => {
-                  res(response)
-                })
-                .catch(() => res(new Error('Документ не найден')))
-            }),
-          )
-        return acc
-      }, []),
-    )
-    res.forEach((val) => {
-      if (val.data instanceof Error) {
-        errorString = `${errorString}, Документ не найден`
-      } else {
-        downloadFile(val)
-      }
-    })
-
-    if (errorString.length) {
-      setErrorState(errorString.trim())
-    }
-  }, [api, selectState])
+  const downLoadContent = useCallback(
+    () =>
+      selectState.map(({ contentId }) =>
+        window.open(
+          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${contentId}:${token}:dsc_content`,
+        ),
+      ),
+    [selectState, token],
+  )
 
   const disabled = useMemo(() => !selectState.length > 0, [selectState])
 
