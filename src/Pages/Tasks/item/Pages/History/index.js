@@ -153,6 +153,7 @@ const baseSortQuery = {
 }
 
 const ComponentHistoryFilterForm = styled(Form)`
+  display: grid;
   grid-template-columns: 200px 200px 200px 200px;
   grid-column-gap: 0;
   grid-gap: 5px;
