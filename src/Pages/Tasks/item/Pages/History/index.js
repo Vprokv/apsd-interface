@@ -28,6 +28,8 @@ import usePagination from '@Components/Logic/usePagination'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import CheckBox from '@/Components/Inputs/CheckBox'
+import styled from 'styled-components'
 
 const plugins = {
   outerSortPlugin: {
@@ -150,6 +152,12 @@ const baseSortQuery = {
   direction: 'DESC',
 }
 
+const ComponentHistoryFilterForm = styled(FilterForm)`
+  grid-template-columns: 200px 200px 200px 200px;
+  grid-column-gap: 0;
+  grid-gap: 5px;
+`
+
 const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
@@ -183,6 +191,11 @@ const History = () => {
 
   const filterFormConfig = useMemo(
     () => [
+      {
+        id: 'isActive',
+        component: CheckBox,
+        text: 'Активные задания',
+      },
       {
         id: 'fromDate',
         component: (props) => (
@@ -219,6 +232,11 @@ const History = () => {
           })
           return performerId.map(AddUserOptionsFullName)
         },
+      },
+      {
+        id: 'isLifecycle',
+        component: CheckBox,
+        text: 'История согласования',
       },
     ],
     [api, documentId],
@@ -284,7 +302,7 @@ const History = () => {
   return (
     <div className="px-4 pb-4 w-full overflow-hidden flex-container">
       <div className="flex items-center  py-4">
-        <FilterForm
+        <ComponentHistoryFilterForm
           fields={filterFormConfig}
           inputWrapper={EmptyInputWrapper}
           value={filter}
