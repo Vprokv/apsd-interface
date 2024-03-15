@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { PaginationButton } from './styles'
 import Icon from '@Components/Components/Icon'
@@ -13,7 +13,7 @@ const Pagination = ({
   page,
   setPage,
   total,
-  disabled,//TODO в поиске нет лимита и нужно ограничить переход
+  disabled, // TODO в поиске нет лимита и нужно ограничить переход
 }) => {
   const onSetLimit = useCallback(
     (limit) => () => {
@@ -35,6 +35,35 @@ const Pagination = ({
     },
     [limit, page, setPage, total],
   )
+
+  const buttons = useMemo(() => {
+    const arr = []
+    const nextPageValue = Math.ceil((total - page * limit) / limit) || 0
+    //ищем есть ли справа 2 значения от текущего положения
+    // если есть оставляем 0, если нет
+    // может нам надо проверить еще и, если есть справа налево два?
+    const gap =
+      nextPageValue - page - 2 >= 0 || nextPageValue - page - 2 <= -2
+        ? 1
+        : nextPageValue - page - 2
+    // console.log(page, 'page')
+    // console.log(gap, 'gap')
+    const startValue = page - 2 - gap > 0 ? page - 2 - gap : 0
+    // console.log(startValue, 'str')
+    for (let i = startValue; i < startValue + 5 && i < total / limit; i++) {
+      arr.push(
+        <PaginationButton
+          className="mr-1.5"
+          active={page === i + 1}
+          onClick={() => setPage(i + 1)}
+        >
+          {i + 1}
+        </PaginationButton>,
+      )
+    }
+
+    return arr
+  }, [limit, page, setPage, total])
 
   return (
     <div className={`${className} flex item-center`}>
@@ -75,9 +104,10 @@ const Pagination = ({
         <button type="button" onClick={goToPage(-1)}>
           <Icon icon={angleIcon} className="rotate-90 mr-1.5" size={11} />
         </button>
-        <PaginationButton className="mr-1.5" active>
-          {page}
-        </PaginationButton>
+        {/* <PaginationButton className="mr-1.5" active>*/}
+        {/*  {page}*/}
+        {/* </PaginationButton>*/}
+        {buttons}
         <button type="button" onClick={goToPage(1)}>
           <Icon icon={angleIcon} size={11} className="mr-1.5 rotate-270" />
         </button>
