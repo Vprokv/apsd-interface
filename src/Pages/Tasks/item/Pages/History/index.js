@@ -15,7 +15,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import LoadableSelect from '@/Components/Inputs/Select'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
+import Form, { EmptyInputWrapper } from '@Components/Components/Forms'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
@@ -152,21 +152,28 @@ const baseSortQuery = {
   direction: 'DESC',
 }
 
-const ComponentHistoryFilterForm = styled(FilterForm)`
+const ComponentHistoryFilterForm = styled(Form)`
   grid-template-columns: 200px 200px 200px 200px;
   grid-column-gap: 0;
   grid-gap: 5px;
 `
+
+const defaultFilterValues = {
+  isActive: false,
+  isLifecycle: false,
+}
 
 const History = () => {
   const api = useContext(ApiContext)
   const [selectState, setSelectState] = useState([])
   const documentId = useContext(DocumentIdContext)
   const getNotification = useOpenNotification()
-  const [{ filter, sortQuery = baseSortQuery, ...tabState }, setTabState] =
-    useTabItem({
-      stateId: TASK_ITEM_HISTORY,
-    })
+  const [
+    { filter = defaultFilterValues, sortQuery = baseSortQuery, ...tabState },
+    setTabState,
+  ] = useTabItem({
+    stateId: TASK_ITEM_HISTORY,
+  })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_ITEM_HISTORY,
