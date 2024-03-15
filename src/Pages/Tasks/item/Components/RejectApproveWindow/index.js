@@ -52,13 +52,12 @@ const RejectApproveWindow = ({
     })()
   }, [api, documentId, getNotification])
 
-  const initialValue = useMemo(
-    () =>
-      options?.find(
-        ({ status, type }) => type === 'apsd_prepare' || status === 'on_work',
-      ),
-    [options],
-  )
+  const initialValue = useMemo(() => {
+    const prepare = options?.find(({ type }) => type === 'apsd_prepare')
+    const onWork = options?.find(({ status }) => status === 'on_work')
+
+    return prepare || onWork
+  }, [options])
 
   const [selected, setSelected] = useState({})
 
