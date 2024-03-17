@@ -34,7 +34,7 @@ const rules = {
   stageId: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const ChangeStageWindow = ({ open, onClose, documentId }) => {
+const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
@@ -75,12 +75,13 @@ const ChangeStageWindow = ({ open, onClose, documentId }) => {
         stageId: filter.stageId,
       })
       getNotification(customMessagesFuncMap[status]())
+      reloadData()
       onClose()
     } catch (e) {
       const { response: { status = 500, data = '' } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, documentId, filter.stageId, getNotification, onClose])
+  }, [api, documentId, filter.stageId, getNotification, onClose, reloadData])
 
   return (
     <ModalWindow

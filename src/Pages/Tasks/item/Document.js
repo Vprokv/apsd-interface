@@ -65,7 +65,7 @@ import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
-import RecallForRevisionWindow from "@/Pages/Tasks/item/Components/RecallForRevisionWindow";
+import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -294,14 +294,18 @@ const Document = () => {
         handler: () =>
           tomeName === type &&
           setComponent({
-            Component: (props) => <PrintCardWindow {...props} />,
+            Component: (props) => (
+              <PrintCardWindow {...props} reloadData={reloadData} />
+            ),
           }),
       },
       change_stage: {
         icon: defaultTaskIcon['change_stage'],
         handler: () =>
           setComponent({
-            Component: (props) => <ChangeStageWindow {...props} />,
+            Component: (props) => (
+              <ChangeStageWindow {...props} reloadData={reloadData} />
+            ),
           }),
       },
       title_delete: {
