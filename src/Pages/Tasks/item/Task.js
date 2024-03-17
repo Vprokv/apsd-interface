@@ -25,6 +25,8 @@ import {
   ApiContext,
   ITEM_TASK,
   TASK_ITEM_APPROVAL_SHEET,
+  TASK_ITEM_NEW_DOCUMENT,
+  TASK_ITEM_REQUISITES,
   TASK_LIST,
 } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -74,6 +76,7 @@ import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import useReadCurrentChildrenTabContext from '@/Pages/Tasks/item/DocumentHandlers/hooks/useReadCurrentChildrenTabContext'
 import ViewAdditionsRemarks from '@/Pages/Tasks/item/Components/ViewAdditionaRemarks'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
+import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -178,6 +181,10 @@ const Task = () => {
     refValues.current = values
   }, [values])
 
+  const [tabItemState, setTabItemState] = useTabItem({
+    stateId: TASK_ITEM_REQUISITES,
+  })
+
   //data
   //taskId
   //signal ?
@@ -223,6 +230,19 @@ const Task = () => {
   // print_card - одинаково
   // delete - только в документе
   // defaultHandler - одинаково
+
+  const {
+    formProps: { rules },
+    documentState: { validationErrors },
+  } = useRequisitesInfo({
+    TASK_ITEM_NEW_DOCUMENT,
+    permits: [],
+    tabItemState,
+    setTabItemState,
+    documentState: tabState,
+    setDocumentState: setTabState,
+  })
+  //todo обсудить необходимость делать через validator
 
   const TaskHandlers = useMemo(
     () => ({
@@ -394,9 +414,7 @@ const Task = () => {
     }),
     [
       api,
-      childrenTabName,
       closeCurrenTab,
-      currentTabChildrenState,
       documentId,
       getNotification,
       id,
@@ -412,6 +430,14 @@ const Task = () => {
     () => ({
       save: {
         handler: async () => {
+          if (Object.keys(validationErrors)?.length) {
+            return setTabState({
+              submitFailed: true,
+              formHasSubmitted: true,
+              validationErrors,
+            })
+          }
+
           try {
             const { status } = await api.post(URL_DOCUMENT_UPDATE, {
               values: refValues.current,
@@ -635,8 +661,10 @@ const Task = () => {
       reloadData,
       reloadSidebarTaskCounters,
       setComponent,
+      setTabState,
       type,
       updateCurrentTabChildrenStates,
+      validationErrors,
     ],
   )
 

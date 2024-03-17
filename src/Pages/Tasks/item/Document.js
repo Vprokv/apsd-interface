@@ -23,6 +23,8 @@ import {
   ApiContext,
   ITEM_DOCUMENT,
   TASK_ITEM_APPROVAL_SHEET,
+  TASK_ITEM_NEW_DOCUMENT,
+  TASK_ITEM_REQUISITES,
   TASK_LIST,
 } from '@/contants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -66,6 +68,7 @@ import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
+import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -108,6 +111,11 @@ const Document = () => {
   const [tabState, setTabState] = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
+
+  const [tabItemState, setTabItemState] = useTabItem({
+    stateId: TASK_ITEM_REQUISITES,
+  })
+
   const [
     {
       data: { documentActions, documentTabs = [], values } = {},
@@ -145,10 +153,31 @@ const Document = () => {
     refValues.current = values
   }, [values])
 
+  const {
+    formProps: { rules },
+    documentState: { validationErrors },
+  } = useRequisitesInfo({
+    TASK_ITEM_NEW_DOCUMENT,
+    permits: [],
+    tabItemState,
+    setTabItemState,
+    documentState: tabState,
+    setDocumentState: setTabState,
+  })
+  //todo обсудить необходимость делать через validator
+
   const documentHandlers = useMemo(
     () => ({
       save: {
         handler: async () => {
+          if (Object.keys(validationErrors)?.length) {
+            return setTabState({
+              submitFailed: true,
+              formHasSubmitted: true,
+              validationErrors,
+            })
+          }
+
           try {
             const { status } = await api.post(URL_DOCUMENT_UPDATE, {
               values: refValues.current,
@@ -363,9 +392,11 @@ const Document = () => {
       reloadData,
       remoteSideBarUpdater,
       setComponent,
+      setTabState,
       type,
       updateCurrentTabChildrenStates,
       updateTabStateUpdaterByName,
+      validationErrors,
     ],
   )
 
