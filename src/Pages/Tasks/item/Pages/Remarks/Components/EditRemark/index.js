@@ -5,9 +5,8 @@ import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
-import { URL_ENTITY_LIST, URL_REMARK_UPDATE } from '@/ApiList'
+import { URL_REMARK_UPDATE } from '@/ApiList'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
@@ -68,7 +67,6 @@ const EditRemark = ({
   ndtLinks = [],
   remarkId,
   remarkTypeId,
-  remarkType,
   permits: { editAuthor },
   remarkAuthor: { memberFullName, memberPosition, memberId },
 }) => {
@@ -148,6 +146,7 @@ const EditRemark = ({
       title="Откорректировать замечание"
       open={open}
       onClose={onClose}
+      index={1005}
     >
       <div className="flex flex-col overflow-hidden h-full">
         <div className="flex flex-col py-4 h-full">

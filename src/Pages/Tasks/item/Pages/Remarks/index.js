@@ -5,6 +5,7 @@ import {
   URL_ENTITY_LIST,
   URL_EXPORT,
   URL_EXPORT_FILE,
+  URL_REMARK_EDIT_SET_REMARK,
   URL_REMARK_LIST,
 } from '@/ApiList'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -16,6 +17,7 @@ import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import {
   exportColumnConfig,
+  OnSetRemarkActionContext,
   SetAnswerStateContext,
   ToggleContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
@@ -34,6 +36,7 @@ import Loading from '../../../../../Components/Loading'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 
@@ -177,6 +180,24 @@ const Remarks = () => {
     }
   }, [api, getNotification, id, sortQuery.direction, sortQuery.key, token])
 
+  const onSetRemark = useCallback(
+    ({ remarkIds, vault }) =>
+      async () => {
+        try {
+          const { status } = await api.post(URL_REMARK_EDIT_SET_REMARK, {
+            remarkIds,
+            vault,
+          })
+          getNotification(defaultFunctionsMap[status]())
+          setTabState(setUnFetchedState())
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          getNotification(defaultFunctionsMap[status](data))
+        }
+      },
+    [api, getNotification, setTabState],
+  )
+
   return (
     <SetAnswerStateContext.Provider value={setSelected}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
@@ -214,21 +235,23 @@ const Remarks = () => {
         ) : (
           <ScrollBar>
             <div className="flex flex-col">
-              <ToggleContext.Provider value={{ toggle, onToggle }}>
-                {stages.map((val) => (
-                  <WithToggle key={val.stageName} id={val.stageName}>
-                    {({ isDisplayed, toggleDisplayedFlag }) => {
-                      return (
-                        <IterationComponent
-                          isDisplayed={isDisplayed}
-                          toggleDisplayedFlag={toggleDisplayedFlag}
-                          {...val}
-                        />
-                      )
-                    }}
-                  </WithToggle>
-                ))}
-              </ToggleContext.Provider>
+              <OnSetRemarkActionContext.Provider value={onSetRemark}>
+                <ToggleContext.Provider value={{ toggle, onToggle }}>
+                  {stages.map((val) => (
+                    <WithToggle key={val.stageName} id={val.stageName}>
+                      {({ isDisplayed, toggleDisplayedFlag }) => {
+                        return (
+                          <IterationComponent
+                            isDisplayed={isDisplayed}
+                            toggleDisplayedFlag={toggleDisplayedFlag}
+                            {...val}
+                          />
+                        )
+                      }}
+                    </WithToggle>
+                  ))}
+                </ToggleContext.Provider>
+              </OnSetRemarkActionContext.Provider>
             </div>
           </ScrollBar>
         )}

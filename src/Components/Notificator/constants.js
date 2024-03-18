@@ -45,4 +45,8 @@ export const defaultFunctionsMap = {
       message: 'Ошибка интерфейса',
     }
   },
+  [undefined]: {
+    type: NOTIFICATION_TYPE_ERROR,
+    message: 'Не удалось отправить запрос',
+  },
 }

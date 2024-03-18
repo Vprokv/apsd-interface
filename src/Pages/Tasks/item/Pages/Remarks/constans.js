@@ -1,9 +1,7 @@
 import { createContext } from 'react'
 import { VALIDATION_RULE_MAX } from '@Components/Logic/Validator/constants'
 
-export const UpdateContext = createContext({
-  update: () => null,
-})
+export const OnSetRemarkActionContext = createContext(() => null)
 
 export const SetAnswerStateContext = createContext(() => null)
 

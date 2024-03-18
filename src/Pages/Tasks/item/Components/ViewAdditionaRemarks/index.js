@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import ScrollBar from '@Components/Components/ScrollBar'
 import {
+  OnSetRemarkActionContext,
   SetAnswerStateContext,
   ToggleContext,
 } from '@/Pages/Tasks/item/Pages/Remarks/constans'
@@ -13,7 +14,11 @@ import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnsw
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import { URL_TASK_COMPLETE } from '@/ApiList'
+import {
+  URL_REMARK_EDIT_SET_REMARK,
+  URL_REMARK_LIST,
+  URL_TASK_COMPLETE,
+} from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { LoadTasks } from '@/Pages/Main/constants'
@@ -37,7 +42,9 @@ const ViewAdditionsRemarks = ({
   taskId,
   reloadData,
   setComponent,
+  documentId,
 }) => {
+  const [remarksStages, setStages] = useState(stages)
   const api = useContext(ApiContext)
   const [toggle, onToggle] = useState({})
   const getNotification = useOpenNotification()
@@ -88,6 +95,42 @@ const ViewAdditionsRemarks = ({
     updateTabStateUpdaterByName,
   ])
 
+  const onSetRemark = useCallback(
+    ({ remarkIds, vault }) =>
+      async () => {
+        try {
+          const { status } = await api.post(URL_REMARK_EDIT_SET_REMARK, {
+            remarkIds,
+            vault,
+          })
+          getNotification(defaultFunctionsMap[status]())
+
+          const { data: { stages = [] } = {} } = await api.post(
+            URL_REMARK_LIST,
+            {
+              documentId,
+              filter: {
+                allStages: false,
+                allIteration: false,
+                isApprove: true,
+              },
+              sort: [
+                {
+                  direction: 'ASC',
+                  property: 'remarkCreationDate',
+                },
+              ],
+            },
+          )
+          setStages(stages)
+        } catch (e) {
+          const { response: { status, data } = {} } = e
+          getNotification(defaultFunctionsMap[status](data))
+        }
+      },
+    [api, documentId, getNotification],
+  )
+
   return (
     <StandardSizeModalWindow
       open={open}
@@ -95,12 +138,12 @@ const ViewAdditionsRemarks = ({
       title={'Замечания доп. согласующих'}
     >
       <div className="flex flex-col overflow-hidden h-full w-full">
-        <div className="flex flex-col overflow-hidden mb-6 h-full w-full">
-          <ScrollBar className=" w-full">
-            <SetAnswerStateContext.Provider value={setSelected}>
-              <div className="flex flex-col h-full">
+        <ScrollBar className="w-full">
+          <SetAnswerStateContext.Provider value={setSelected}>
+            <div className="flex flex-col h-full">
+              <OnSetRemarkActionContext.Provider value={onSetRemark}>
                 <ToggleContext.Provider value={{ toggle, onToggle }}>
-                  {stages.map((val) => (
+                  {remarksStages.map((val) => (
                     <WithToggle key={val.stageName} id={val.stageName}>
                       {({ isDisplayed, toggleDisplayedFlag }) => {
                         return (
@@ -114,11 +157,10 @@ const ViewAdditionsRemarks = ({
                     </WithToggle>
                   ))}
                 </ToggleContext.Provider>
-              </div>
-            </SetAnswerStateContext.Provider>
-          </ScrollBar>
-        </div>
-
+              </OnSetRemarkActionContext.Provider>
+            </div>
+          </SetAnswerStateContext.Provider>
+        </ScrollBar>
         <div className="flex w-full items-center justify-end">
           <UnderButtons
             leftLabel="Закрыть"
