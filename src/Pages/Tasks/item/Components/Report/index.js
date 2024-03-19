@@ -1,19 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import Icon from '@Components/Components/Icon'
+import ShevronIcon from '@/Icons/ShevronIcon'
 
 const Cont = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 8;
+  ${(props) => !props.hidden && '-webkit-line-clamp: 4 '}
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-  margin: 0 20px 0 20px;
   font-size: 12px;
-  background-color: var(--light-gray);
 `
 
 const Report = ({ previousTaskReport }) => {
-  return <Cont>{previousTaskReport?.dssReportText}</Cont>
+  const [hidden, onHidden] = useState(true)
+  return (
+    <div className="bg-light-gray mx-4 p-2 ">
+      <div className="flex  margin-inline-end w-full">
+        <button
+          type="button"
+          onClick={() => onHidden((prev) => !prev)}
+          className="ml-auto"
+        >
+          <Icon
+            icon={ShevronIcon}
+            className="rotate-270 color-text-secondary font-bold"
+            size={10}
+          />
+        </button>
+      </div>
+      <Cont hidden={hidden}>{previousTaskReport?.dssReportText}</Cont>
+    </div>
+  )
 }
 
 Report.propTypes = {}
