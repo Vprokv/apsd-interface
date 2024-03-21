@@ -32,6 +32,7 @@ import PropTypes from 'prop-types'
 import Loading from '../../../../../Components/Loading'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import { LevelStageWrapper } from './styles'
+import CheckBox from '@/Components/Inputs/CheckBox'
 
 const DotIcon = ({ className, onClick }) => (
   <Icon
@@ -61,6 +62,7 @@ const ApprovalSheet = () => {
   const documentId = useContext(DocumentIdContext)
   const documentType = useContext(DocumentTypeContext)
   const [state, setState] = useState(false)
+  const [allIteration, setAllIteration] = useState(false)
   const getNotification = useOpenNotification()
 
   useEffect(() => {
@@ -86,6 +88,7 @@ const ApprovalSheet = () => {
     try {
       const { data } = await api.post(URL_APPROVAL_SHEET, {
         id: documentId,
+        allIteration,
         type,
       })
 
@@ -95,7 +98,7 @@ const ApprovalSheet = () => {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
     }
-  }, [api, documentId, getNotification, type])
+  }, [allIteration, api, documentId, getNotification, type])
 
   const [{ data = [], loading, reloadData, shouldReloadData }, updateData] =
     useAutoReload(loadData, tabState, setTabState)
@@ -202,9 +205,13 @@ const ApprovalSheet = () => {
     <PermitDisableContext.Provider value={!permit}>
       <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
         <div className="flex items-center py-4 form-element-sizes-32">
+          <CheckBox
+            text={'Все итерации'}
+            onInput={() => setAllIteration((v) => !v)}
+          />
           <div className="flex items-center ml-auto">
-            <CreateTemplateWindow jsonData={data} />
-            <ApplyTemplateWindow />
+            {/*<CreateTemplateWindow jsonData={data} />*/}
+            {/*<ApplyTemplateWindow />*/}
             <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
                 className="color-text-secondary"
