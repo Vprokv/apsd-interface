@@ -1,22 +1,15 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext } from 'react'
 import { FormWindow } from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import deleteIcon from '@/Icons/deleteIcon'
-import Icon from '@Components/Components/Icon'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import {
   URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE,
-  URL_APPROVAL_SHEET_DELETE,
 } from '@/ApiList'
-import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/constans'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import Tips from '@/Components/Tips'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 
@@ -30,7 +23,7 @@ const customMessagesFuncMap = {
   },
 }
 
-const DeleteApprovalSheet = ({ approvers, closeAction, open }) => {
+const DeleteApprovalSheet = ({ approvers, onClose, open }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
@@ -55,12 +48,12 @@ const DeleteApprovalSheet = ({ approvers, closeAction, open }) => {
   }, [api, approvers, getNotification, updateCurrentTabChildrenStates])
 
   return (
-    <FormWindow open={open} onClose={closeAction}>
+    <FormWindow open={open} onClose={onClose}>
       <div className="text-center mt-4 mb-12">
         Вы действительно хотите удалить этап?
       </div>
       <UnderButtons
-        leftFunc={closeAction}
+        leftFunc={onClose}
         rightFunc={onDeleteAllApprovers}
         leftLabel="Нет"
         rightLabel="Да"
