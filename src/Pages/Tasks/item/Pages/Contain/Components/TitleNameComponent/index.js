@@ -150,10 +150,9 @@ const TitleNameComponent = ({
     try {
       setLoading(true)
       closeContextMenu()
-      const { status } = await api.post(
-        URL_TITLE_CONTAIN_ANNULMENT,
-        annulateIds,
-      )
+      const { status } = await api.post(URL_TITLE_CONTAIN_ANNULMENT, {
+        annulmentObjects: annulateIds,
+      })
       getNotification(customMessagesSendFuncMap[status]())
 
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
