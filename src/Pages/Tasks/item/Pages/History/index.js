@@ -97,16 +97,17 @@ const columns = [
     label: 'Исполнитель',
     component: ({
       ParentValue: {
-        performer: { lastName = '', firstName, middleName, position },
+        // performer: { lastName = '', firstName, middleName, position } = {},
+        performer,
       },
     }) => {
-      const fio = `${lastName} ${(firstName && `${firstName[0]}.`) || ''} ${
-        (middleName && `${middleName[0]}.`) || ''
-      }`
+      const fio = `${performer?.lastName} ${
+        (performer?.firstName && `${performer?.firstName[0]}.`) || ''
+      } ${(performer?.middleName && `${performer?.middleName[0]}.`) || ''}`
       return (
         <BaseSubCell
           value={fio}
-          subValue={position}
+          subValue={performer?.position}
           className="flex items-center"
         />
       )
