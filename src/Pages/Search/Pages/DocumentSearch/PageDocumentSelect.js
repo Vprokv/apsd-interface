@@ -4,7 +4,6 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { TabStateManipulation } from '@Components/Logic/Tab'
-import { useNavigate } from 'react-router-dom'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { SEARCH_PAGE_DOCUMENT } from '@/contants'
@@ -47,12 +46,11 @@ const baseSortQuery = {
 const PageDocumentSelect = () => {
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
 
-  const navigate = useNavigate()
   const handleDoubleClick = useCallback(
     ({ id, type }) =>
       () =>
-        openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
-    [navigate, openTabOrCreateNewTab],
+        openTabOrCreateNewTab(`/document/${id}/${type}`),
+    [openTabOrCreateNewTab],
   )
 
   const [
