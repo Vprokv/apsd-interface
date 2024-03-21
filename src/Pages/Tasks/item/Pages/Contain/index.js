@@ -19,7 +19,7 @@ import {
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Contain/styles'
 import ListTable from '@Components/Components/Tables/ListTable'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
-import { SingleSelect } from '@Components/Components/Tables/Plugins/selectable'
+import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import useTabItem from '@Components/Logic/Tab/TabItem'
@@ -78,7 +78,7 @@ const Contain = () => {
   const api = useContext(ApiContext)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const { id } = useParams()
-  const [selectState, setSelectState] = useState({})
+  const [selectState, setSelectState] = useState([])
   const [addDepartmentState, setAddDepartmentState] = useState({})
   const [addVolumeState, setAddVolumeState] = useState({})
   const [addLinkState, setAddLinkState] = useState({})
@@ -157,12 +157,13 @@ const Contain = () => {
 
   const deleteData = useCallback(async () => {
     try {
-      const { status } = await api.post(URL_TITLE_CONTAIN_DELETE, {
-        partId: selectState.id,
-      })
-
+      const response = await Promise.all(
+        selectState.map(({ id }) =>
+          api.post(URL_TITLE_CONTAIN_DELETE, { partId: id }),
+        ),
+      )
       const removeDeletedDocs = (acc, { id, childs, ...rest }) => {
-        if (selectState.id !== id) {
+        if (selectState.every((r) => r.id !== id)) {
           acc.push({
             id,
             ...rest,
@@ -173,8 +174,8 @@ const Contain = () => {
         return acc
       }
       updateData(data.reduce(removeDeletedDocs, []))
-      setSelectState({})
-      getNotification(customMessagesFuncMap[status]())
+      setSelectState([])
+      getNotification(customMessagesFuncMap[response[0].status]())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
@@ -203,7 +204,7 @@ const Contain = () => {
 
   const onShowExportWindow = useCallback(
     (value) => () => {
-      setSelectState(value)
+      setSelectState([value])
       setExportDocumentPreviewWindowState(true)
     },
     [],
@@ -308,10 +309,7 @@ const Contain = () => {
     [setTabState],
   )
 
-  const disabled = useMemo(
-    () => !selectState?.did_tom && !selectState?.content?.contentId,
-    [selectState],
-  )
+  const disabled = useMemo(() => !selectState[0]?.tomId, [selectState])
 
   const handleDoubleClick = useCallback(
     ({ tomId, type }) =>
@@ -322,19 +320,23 @@ const Contain = () => {
 
   const onShowContentByTypeButton = useCallback(
     (value) => () => {
-      setSelectState(value)
+      setSelectState((prevValue) => {
+        const prev = [...prevValue]
+        prev.splice(0, 0, value)
+        return prev
+      })
       setRenderPreviewWindowState(true)
     },
     [],
   )
 
   const closeWindow = useCallback(() => {
-    setSelectState({})
+    setSelectState([])
     setRenderPreviewWindowState(false)
   }, [])
 
   const closeExportWindow = useCallback(() => {
-    setSelectState({})
+    setSelectState([])
     setExportDocumentPreviewWindowState(false)
   }, [])
 
@@ -401,10 +403,10 @@ const Contain = () => {
               <Tips text="Посмотреть файл">
                 <ButtonForIcon
                   className="mr-2"
-                  onClick={useCallback(
-                    () => setRenderPreviewWindowState(true),
-                    [],
-                  )}
+                  onClick={useCallback(() => {
+                    setSelectState((prev) => [prev[0]])
+                    setRenderPreviewWindowState(true)
+                  }, [])}
                   disabled={disabled}
                 >
                   <Icon size={20} icon={ViewIcon} />
@@ -461,12 +463,12 @@ const Contain = () => {
                   component: LeafTableComponent,
                 },
                 selectPlugin: {
-                  driver: SingleSelect,
+                  driver: FlatSelect,
                   component: CheckBox,
                   style: { margin: 'auto 0' },
                   valueKey: 'id',
                   returnObjects: true,
-                  // nestedDataKey: 'childs',
+                  nestedDataKey: 'childs',
                 },
                 movePlugin: {
                   id: TASK_ITEM_STRUCTURE,
@@ -492,7 +494,6 @@ const Contain = () => {
             loading={loading}
             treePluginState={treePluginState}
             updateTreePluginState={updateTreePluginState}
-            // onTableInput
           />
         </ShowContentByTypeButtonContext.Provider>
         <ContentWindow //TODO объединить окна и сделать push ActionComponent
@@ -503,7 +504,7 @@ const Contain = () => {
         <ExportDocumentWindowContainWrapper
           open={ExportDocumentPreviewWindow}
           onClose={closeExportWindow}
-          {...selectState}
+          {...selectState[0]}
         />
       </div>
     </LoadContainChildrenContext.Provider>

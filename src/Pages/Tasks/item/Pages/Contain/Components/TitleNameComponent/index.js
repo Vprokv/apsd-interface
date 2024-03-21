@@ -91,24 +91,6 @@ const TitleNameComponent = ({
 
   const updateTabStateUpdaterByName = useUpdateCurrentTabChildrenStates()
 
-  // const parseArr = useCallback(({ status, childs, id, arr }) => {
-  //   if (status === 'Передан') {
-  //     arr.push(id)
-  //   }
-  //
-  //   if (childs?.length > 0) {
-  //     childs.forEach((val) => parseArr({ ...val, arr }))
-  //   }
-  // }, [])
-  //
-  // const approveIds = useMemo(() => {
-  //   const arr = []
-  //
-  //   parseArr({ ...ParentValue, arr })
-  //
-  //   return arr
-  // }, [ParentValue, parseArr])
-
   const onSend = useCallback(async () => {
     try {
       setLoading(true)
@@ -148,7 +130,7 @@ const TitleNameComponent = ({
   }, [])
 
   const annulateIds = useMemo(() => {
-    if (selectState?.id === ParentValue?.id) {
+    if (selectState.includes(({ id }) => id === ParentValue.id)) {
       const arr = []
 
       parseAnnulateArr({ ...ParentValue, arr })

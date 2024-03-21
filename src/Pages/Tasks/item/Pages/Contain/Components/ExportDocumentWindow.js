@@ -9,7 +9,6 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import Form from '@Components/Components/Forms'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Input from '@/Components/Fields/Input'
-import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
 import {
   NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_INFO,
@@ -42,7 +41,6 @@ const ExportDocumentContainWindow = ({
   fields,
   id,
   tomId,
-  type,
   rules,
 }) => {
   const { dss_email } = useRecoilValue(userAtom)

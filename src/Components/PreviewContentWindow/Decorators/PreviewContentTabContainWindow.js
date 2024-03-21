@@ -23,14 +23,14 @@ const PreviewContentTabContainWindow = (Component) => {
     const getContent = useCallback(async () => {
       try {
         return await api.get(
-          `${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${value?.content?.contentId}:${token}:dsc_content`,
+          `${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${value[0]?.content?.contentId}:${token}:dsc_content`,
           { responseType: 'blob' },
         )
       } catch (e) {
         const { response: { status = 0, data = '' } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
       }
-    }, [api, getNotification, token, value?.content?.contentId])
+    }, [api, getNotification, token, value])
 
     const parseUrlFunc = useCallback(
       async ({ mimeType, blob }) => {
@@ -45,7 +45,7 @@ const PreviewContentTabContainWindow = (Component) => {
             setUrl({ url, type: 'other' })
           }
         } else {
-          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value?.content?.contentId}:${token}`
+          const url = `${API_URL}${URL_ENTITY_PDF_FILE}ddt_document_content:${value[0]?.content?.contentId}:${token}`
           setUrl({ url, type: 'pdf' })
         }
       },
@@ -53,7 +53,7 @@ const PreviewContentTabContainWindow = (Component) => {
     )
 
     const onGetUrlByMimeType = useCallback(async () => {
-      const { content: { mimeType } = {} } = value
+      const [{ content: { mimeType } = {} }] = value
       if (mimeType) {
         return await parseUrlFunc({ mimeType })
       } else {
@@ -66,13 +66,13 @@ const PreviewContentTabContainWindow = (Component) => {
     }, [getContent, parseUrlFunc, value])
 
     useEffect(() => {
-      ;(async () => value?.tomId && open && (await onGetUrlByMimeType()))()
-    }, [api, onGetUrlByMimeType, open, value?.tomId])
+      ;(async () => value[0]?.tomId && open && (await onGetUrlByMimeType()))()
+    }, [api, onGetUrlByMimeType, open, value, value.tomId])
 
     const onDownLoad = useCallback(
       () =>
         window.open(
-          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${value?.content?.contentId}:${token}:dsc_content`,
+          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_document_content:${value[0]?.content?.contentId}:${token}:dsc_content`,
         ),
       [token, value],
     )

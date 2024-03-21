@@ -35,7 +35,7 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
     <>
       <Tips text="Удалить">
         <ButtonForIcon
-          disabled={!Object.keys(selectState)?.length || selectState?.tomId}
+          disabled={selectState?.length}
           onClick={changeModalState(true)}
           className="mr-2"
         >

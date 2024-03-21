@@ -28,8 +28,6 @@ const CreateVolume = ({ addVolumeState }) => {
   const [entities, setEntities] = useState([])
   const [selected, setSelected] = useState({})
 
-  console.log(selected, 'selected')
-
   const handleCancel = useCallback(() => {
     if (addVolumeState.onCancel) {
       addVolumeState.onCancel()
