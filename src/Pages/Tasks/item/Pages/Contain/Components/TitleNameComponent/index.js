@@ -120,7 +120,7 @@ const TitleNameComponent = ({
     if (tomId) {
       arr.push({
         documentType: type,
-        documentId: id,
+        documentId: tomId,
       })
     }
 
@@ -130,6 +130,8 @@ const TitleNameComponent = ({
   }, [])
 
   const annulateIds = useMemo(() => {
+    console.log(ParentValue, 'ParentValue')
+    console.log(selectState, 'ParentValue')
     if (selectState.includes(({ id }) => id === ParentValue.id)) {
       const arr = []
 
@@ -140,7 +142,7 @@ const TitleNameComponent = ({
       return [
         {
           documentType: ParentValue.type,
-          documentId: ParentValue.id,
+          documentId: ParentValue.tomId,
         },
       ]
     }
