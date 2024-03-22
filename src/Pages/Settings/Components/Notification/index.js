@@ -96,7 +96,11 @@ const NotificationItem = () => {
       />
       {openChannels}
       <ChannelContext.Provider
-        value={{ channels, loadFunction, documentType: filter?.typeDocument }}
+        value={{
+          channels,
+          loadFunction,
+          documentType: filter?.typeDocument,
+        }}
       >
         <ScrollBar className="m-4">
           <GridForm>

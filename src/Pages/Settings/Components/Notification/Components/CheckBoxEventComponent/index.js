@@ -5,11 +5,11 @@ import { useLoadFunction } from '@/Pages/Settings/Components/Notification/useLoa
 
 const CheckBoxEventComponent = (props) => {
   const api = useContext(ApiContext)
-  const [value, onInput] = useLoadFunction({ api, ...props })
+  const { value, onInput, disabled } = useLoadFunction({ api, ...props })
 
   return (
     <div className={'m-4 flex items-center justify-center'}>
-      <CheckBox value={value} onInput={onInput} />
+      <CheckBox value={value} onInput={onInput} disabled={disabled} />
     </div>
   )
 }

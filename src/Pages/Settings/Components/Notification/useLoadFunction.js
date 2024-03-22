@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import {
   URL_SUBSCRIPTION_USER_CREATE,
   URL_SUBSCRIPTION_USER_DELETE,
@@ -9,6 +9,7 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
+import { debounce } from 'lodash/function'
 
 const checkboxFunctions = {
   false:
@@ -35,6 +36,7 @@ const checkboxFunctions = {
 export const useLoadFunction = ({ api, name, channelId, events }) => {
   const getNotification = useOpenNotification()
   const { loadFunction, documentType } = useContext(ChannelContext)
+  const [disabled, onDisabled] = useState(false)
   const currentCheckBoxValue = useMemo(
     () =>
       events?.some(
@@ -57,8 +59,9 @@ export const useLoadFunction = ({ api, name, channelId, events }) => {
     const { [currentCheckBoxValue]: func = checkboxFunctions.default } =
       checkboxFunctions
 
-    return async () => {
+    return debounce(async () => {
       try {
+        onDisabled(true)
         await func(api)(loadFunction)({
           name,
           channelId,
@@ -72,10 +75,12 @@ export const useLoadFunction = ({ api, name, channelId, events }) => {
             : 'Подписка добавлена успешно',
         })
       } catch (e) {
-        const { response: { status, data } = {} } = e
+        const { response: { status = 0, data = '' } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
+      } finally {
+        onDisabled(false)
       }
-    }
+    }, 170)
   }, [
     api,
     channelId,
@@ -87,5 +92,9 @@ export const useLoadFunction = ({ api, name, channelId, events }) => {
     name,
   ])
 
-  return [currentCheckBoxValue, CheckBoxFunction]
+  return {
+    value: currentCheckBoxValue,
+    onInput: CheckBoxFunction,
+    disabled,
+  }
 }
