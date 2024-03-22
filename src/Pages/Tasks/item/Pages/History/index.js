@@ -95,12 +95,7 @@ const columns = [
   {
     id: 'performer',
     label: 'Исполнитель',
-    component: ({
-      ParentValue: {
-        // performer: { lastName = '', firstName, middleName, position } = {},
-        performer,
-      },
-    }) => {
+    component: ({ ParentValue: { performer } }) => {
       const fio = `${performer?.lastName} ${
         (performer?.firstName && `${performer?.firstName[0]}.`) || ''
       } ${(performer?.middleName && `${performer?.middleName[0]}.`) || ''}`

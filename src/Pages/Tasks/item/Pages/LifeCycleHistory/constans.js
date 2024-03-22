@@ -29,11 +29,7 @@ export const columnsLifeCycleHistory = [
   {
     id: 'performer',
     label: 'Исполнитель',
-    component: ({
-      ParentValue: {
-        performer,
-      },
-    }) => {
+    component: ({ ParentValue: { performer } }) => {
       const fio = `${performer?.lastName} ${
         (performer?.firstName && `${performer?.firstName[0]}.`) || ''
       } ${(performer?.middleName && `${performer?.middleName[0]}.`) || ''}`
