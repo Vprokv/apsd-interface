@@ -683,7 +683,9 @@ const Task = () => {
           <SideBar>
             <ScrollBar>
               {data && <DocumentInfoComponent {...data} />}
-              <Report previousTaskReport={previousTaskReport} />
+              {previousTaskReport && (
+                <Report previousTaskReport={previousTaskReport} />
+              )}
               <WrapperDocumentActions documentActions={wrappedTaskActions} />
               <WrapperDocumentActions
                 documentActions={wrappedDocumentActions}

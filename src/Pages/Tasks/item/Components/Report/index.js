@@ -13,7 +13,7 @@ const Cont = styled.div`
   font-size: 12px;
 `
 
-const Report = ({ previousTaskReport }) => {
+const Report = ({ previousTaskReport: { dssReportText } = {} }) => {
   const [hidden, onHidden] = useState(true)
   return (
     <div className="bg-light-gray mx-4 p-2 ">
@@ -30,7 +30,7 @@ const Report = ({ previousTaskReport }) => {
           />
         </button>
       </div>
-      <Cont hidden={hidden}>{previousTaskReport?.dssReportText}</Cont>
+      <Cont hidden={hidden}>{dssReportText}</Cont>
     </div>
   )
 }
