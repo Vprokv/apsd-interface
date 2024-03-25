@@ -4,7 +4,12 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import Input from '@/Components/Fields/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import { URL_ENTITY_LIST, URL_LINK_CREATE } from '@/ApiList'
-import { ApiContext, TASK_ITEM_LINK } from '@/contants'
+import {
+  ApiContext,
+  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+  DEFAULT_DATE_FORMAT_OTHER, PRESENT_DATE_FORMAT,
+  TASK_ITEM_LINK,
+} from '@/contants'
 import ScrollBar from 'react-perfect-scrollbar'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
@@ -34,6 +39,7 @@ import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plu
 import InputWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/InputWrapper'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import DatePickerWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/DatePickerWrapper'
+import dayjs from 'dayjs'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -171,6 +177,7 @@ const Files = (props) => {
             dsc_content,
             dss_content_name,
             linkType,
+            regDate,
             ...documentPayload
           }) => ({
             ...documentPayload,
@@ -180,6 +187,9 @@ const Files = (props) => {
             authorEmpl: userObject.r_object_id,
             authorName: userObject.dss_user_name,
             linkType: linkType.r_object_id,
+            regDate: dayjs(regDate, PRESENT_DATE_FORMAT).format(
+              DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
+            ),
           }),
         ),
       })
