@@ -207,6 +207,7 @@ const ApprovalSheet = () => {
         <div className="flex items-center py-4 form-element-sizes-32">
           <CheckBox
             text={'Все итерации'}
+            value={allIteration}
             onInput={() => setAllIteration((v) => !v)}
           />
           <div className="flex items-center ml-auto">
@@ -241,6 +242,7 @@ const ApprovalSheet = () => {
                           <Icon
                             icon={angleIcon}
                             size={10}
+                            onClick={() => toggleStage(type)}
                             className={`color-text-secondary ${
                               toggleNavigationData[type] ? '' : 'rotate-180'
                             }`}
