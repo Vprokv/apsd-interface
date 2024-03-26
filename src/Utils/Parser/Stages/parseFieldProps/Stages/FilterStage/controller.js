@@ -22,7 +22,9 @@ const getFilters = (state) => (fieldState) => (conf) => {
       }, new Map())
       .forEach((filters, type) => {
         // вызываем для каждого типа фильтра контроллер
-        filtersType[type](state)(fieldState)(filters, conf)
+        if (filtersType[type]) {
+          filtersType[type](state)(fieldState)(filters, conf)
+        }
       })
   }
 }
