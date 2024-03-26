@@ -20,6 +20,8 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import DeleteApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DeleteApprovalSheet'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import { useParams } from 'react-router-dom'
 
 const Row = styled.div`
   height: 48px;
@@ -51,7 +53,7 @@ const StageRowComponent = ({
   },
 }) => {
   const api = useContext(ApiContext)
-
+  const { type: documentType } = useParams()
   const getNotification = useOpenNotification()
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -70,14 +72,23 @@ const StageRowComponent = ({
   const onDelete = useCallback(async () => {
     try {
       await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
-        performersIds: mySelectedChildrenIds,
+        documentId,
+        documentType,
+        approvers: mySelectedChildrenIds,
       })
       setTabState(setUnFetchedState())
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 0, data = '' } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, getNotification, mySelectedChildrenIds, setTabState])
+  }, [
+    api,
+    documentId,
+    documentType,
+    getNotification,
+    mySelectedChildrenIds,
+    setTabState,
+  ])
 
   const info = useMemo(() => {
     if (!reworkInfo) {
@@ -95,7 +106,6 @@ const StageRowComponent = ({
     }
   }, [reworkInfo])
 
-  // const includeApprove = approvers.some(({ id }) => selectedState.has(id))
   return (
     <Row>
       <div className="flex h-full items-center">

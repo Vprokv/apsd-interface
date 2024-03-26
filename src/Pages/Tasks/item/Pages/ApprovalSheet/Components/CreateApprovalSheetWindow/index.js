@@ -171,9 +171,7 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
       documentId: id,
       stageType,
       autoApprove: false,
-      approvers: approvers?.map((val) => {
-        return { dsidApproverEmpl: val }
-      }),
+      performers: approvers,
     }
   }, [filterValue, id, stageType, visible])
 

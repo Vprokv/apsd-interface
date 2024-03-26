@@ -3,6 +3,7 @@ import { FormWindow } from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import {
+  URL_APPROVAL_SHEET_APPROVER_DELETE,
   URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE,
 } from '@/ApiList'
 import {
@@ -12,6 +13,8 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
+import { useParams } from 'react-router-dom'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -27,10 +30,14 @@ const DeleteApprovalSheet = ({ approvers, onClose, open }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
+  const documentId = useContext(DocumentIdContext)
+  const { type: documentType } = useParams()
 
   const onDeleteAllApprovers = useCallback(async () => {
     try {
-      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
+      await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
+        documentId,
+        documentType,
         approvers: approvers?.map(({ id }) => id),
       })
       getNotification({
@@ -42,10 +49,17 @@ const DeleteApprovalSheet = ({ approvers, onClose, open }) => {
         setUnFetchedState(),
       )
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 0, data = '' } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, approvers, getNotification, updateCurrentTabChildrenStates])
+  }, [
+    api,
+    approvers,
+    documentId,
+    documentType,
+    getNotification,
+    updateCurrentTabChildrenStates,
+  ])
 
   return (
     <FormWindow open={open} onClose={onClose}>

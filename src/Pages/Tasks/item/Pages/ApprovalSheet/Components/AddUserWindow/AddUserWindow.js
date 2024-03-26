@@ -85,9 +85,7 @@ const AddUserWindow = ({ stageId, documentId, stageType }) => {
         stageId,
         documentId,
         stageType,
-        approvers: filter.user?.map((val) => {
-          return { dsidApproverEmpl: val }
-        }),
+        performers: filter.user,
       })
       setTabState(SetUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())

@@ -14,12 +14,11 @@ import AdditionalApprover from '@/Pages/Tasks/item/Pages/ApprovalSheet/Component
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import CreatingAdditionalApproversWindowWrapper from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/AdditionalStage/Components/AddApprover'
 import {
-  NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import {
-  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE,
+  URL_APPROVAL_SHEET_APPROVER_DELETE,
   URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE,
   URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND,
 } from '@/ApiList'
@@ -109,8 +108,10 @@ const AdditionalStage = (props) => {
 
   const onDeleteApprover = useCallback(async () => {
     try {
-      await api.post(URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE, {
+      await api.post(URL_APPROVAL_SHEET_APPROVER_DELETE, {
         approvers: [selected.id],
+        documentId,
+        documentType,
       })
       getNotification({
         type: NOTIFICATION_TYPE_SUCCESS,
@@ -121,10 +122,17 @@ const AdditionalStage = (props) => {
         setUnFetchedState(),
       )
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 0, data = '' } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, getNotification, selected, updateCurrentTabChildrenStates])
+  }, [
+    api,
+    documentId,
+    documentType,
+    getNotification,
+    selected.id,
+    updateCurrentTabChildrenStates,
+  ])
 
   const onSendApprover = useCallback(async () => {
     try {
@@ -142,7 +150,7 @@ const AdditionalStage = (props) => {
         setUnFetchedState(),
       )
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 0, data = '' } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
@@ -170,7 +178,7 @@ const AdditionalStage = (props) => {
         setUnFetchedState(),
       )
     } catch (e) {
-      const { response: { status, data } = {} } = e
+      const { response: { status = 0, data = '' } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [

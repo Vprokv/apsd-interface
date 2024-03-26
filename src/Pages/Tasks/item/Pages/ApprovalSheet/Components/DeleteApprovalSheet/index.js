@@ -15,6 +15,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -32,7 +33,7 @@ const DeleteApprovalSheet = ({ node }) => {
   const getNotification = useOpenNotification()
   const [open, setOpenState] = useState(false)
   const permit = useContext(PermitDisableContext)
-
+  const documentId = useContext(DocumentIdContext)
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
   })
@@ -47,7 +48,8 @@ const DeleteApprovalSheet = ({ node }) => {
   const onDelete = useCallback(async () => {
     try {
       await api.post(URL_APPROVAL_SHEET_DELETE, {
-        id,
+        stageId: id,
+        documentId,
       })
       setTabState(setUnFetchedState())
       getNotification({

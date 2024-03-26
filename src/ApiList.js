@@ -75,18 +75,15 @@ export const URL_HANDOUTS_CREATE = '/apsd/original/accounting/create'
 
 // APPROVAL SHEET
 export const URL_APPROVAL_SHEET = '/apsd/business/stage/all'
-export const URL_APPROVAL_SHEET_DELETE = '/sedo/approve/stage/delete'
-export const URL_APPROVAL_SHEET_CREATE = '/sedo/approve/stage/create'
+export const URL_APPROVAL_SHEET_DELETE = '/apsd/business/stage/delete'
+export const URL_APPROVAL_SHEET_CREATE = '/apsd/business/stage/create'
 export const URL_APPROVAL_SHEET_UPDATE = '/apsd/business/stage/update'
 export const URL_APPROVAL_SHEET_CREATE_AND_START =
   '/sedo/approve/additional/create_and_start'
 export const URL_APPROVAL_CREATE = '/sedo/approve/approvers/create'
 export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT =
   '/apsd/business/start/additional'
-export const URL_APPROVAL_SHEET_APPROVER_DELETE =
-  '/sedo/approve/approver/delete'
-export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE =
-  '/apsd/business/approver/delete'
+export const URL_APPROVAL_SHEET_APPROVER_DELETE = '/apsd/approve/v2/delete'
 export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_SEND =
   '/apsd/business/additional/send'
 export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_REVOKE =
