@@ -41,7 +41,7 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   z-index: 10;
 `
 
-const AddUserWindow = ({ stageId, documentId, stageType }) => {
+const AddUserWindow = ({ stageId, documentId, stageType, ...other }) => {
   const [open, setOpenState] = useState(false)
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()

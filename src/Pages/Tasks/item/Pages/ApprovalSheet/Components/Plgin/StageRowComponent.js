@@ -20,7 +20,6 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import DeleteApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DeleteApprovalSheet'
-import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
 
 const Row = styled.div`
@@ -47,10 +46,13 @@ const StageRowComponent = ({
       reworkInfo,
       term,
       factTerm,
+      addApprover,
+      deleteApprover,
     },
     selectedState,
     options,
   },
+  node,
 }) => {
   const api = useContext(ApiContext)
   const { type: documentType } = useParams()
@@ -121,26 +123,25 @@ const StageRowComponent = ({
         <div className="ml-6">Срок (дней): {factTerm || term}</div>
         <div className="ml-12 font-medium">{info}</div>
         <div className="flex items-center ml-auto">
-          {editable && (
-            <>
-              <AddUserWindow
-                stageId={id}
-                documentId={documentId}
-                stageType={stageType}
-              />
-              <Tips text="Удалить согласующего">
-                <CustomButtonForIcon
-                  className="color-blue-1"
-                  onClick={onDelete}
-                  disabled={mySelectedChildrenIds.length === 0}
-                  // disabled={!permit && !includeApprove}
-                >
-                  <Icon icon={DeleteUserIcon} />
-                </CustomButtonForIcon>
-              </Tips>
-              <EditStageWindow {...options} />
-            </>
+          {addApprover && (
+            <AddUserWindow
+              stageId={id}
+              documentId={documentId}
+              stageType={stageType}
+            />
           )}
+          {deleteApprover && (
+            <Tips text="Удалить согласующего">
+              <CustomButtonForIcon
+                className="color-blue-1"
+                onClick={onDelete}
+                disabled={mySelectedChildrenIds.length === 0}
+              >
+                <Icon icon={DeleteUserIcon} />
+              </CustomButtonForIcon>
+            </Tips>
+          )}
+          {editable && <EditStageWindow {...options} />}
           {deletable && <DeleteApprovalSheet node={options} />}
         </div>
       </div>
