@@ -1,6 +1,5 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import EmptyInput from '../../../Input/style'
-import { SecondaryBlueButton } from '@/Components/Button'
+import { LoadableSecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_LINK } from '@/contants'
 import { useParams } from 'react-router-dom'
 import {
@@ -10,8 +9,10 @@ import {
   URL_LINK_CREATE_RELATION,
 } from '@/ApiList'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { TableForm } from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/EAXD/styles'
-import { EmptyInputWrapper } from '@Components/Components/Forms'
+import {
+  FilterRowForm,
+  TableForm,
+} from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/EAXD/styles'
 import Input from '@/Components/Fields/Input'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
@@ -22,29 +23,52 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 
 const fields = [
   {
     key: 'dssNumber',
-    title: 'Регистрационный номер',
+    id: 'dssNumber',
+    label: 'Регистрационный номер',
+    component: Input,
+    disabled: true,
   },
   {
     key: 'dssDescription',
-    title: 'Краткое содержание',
+    id: 'dssDescription',
+    label: 'Краткое содержание',
+    component: Input,
+    disabled: true,
   },
   {
     key: 'eehdBarcode',
-    title: 'Штрихкод',
+    id: 'eehdBarcode',
+    label: 'Штрихкод',
+    component: Input,
+    disabled: true,
   },
   {
     key: 'dsdtDocumentDate',
-    title: 'Дата регистрации',
+    id: 'dsdtDocumentDate',
+    label: 'Дата регистрации',
+    component: Input,
+    disabled: true,
   },
   {
     key: 'dssAuthorFio',
-    title: 'Автор документа',
+    id: 'dssAuthorFio',
+    label: 'Автор документа',
+    component: Input,
+    disabled: true,
   },
 ]
+
+const STATUS_NOT_EXIST = 'NOT_EXIST'
+
+const rules = {
+  linkType: [{ name: VALIDATION_RULE_REQUIRED }],
+}
 
 const DocumentEAXD = () => {
   const api = useContext(ApiContext)
@@ -52,17 +76,27 @@ const DocumentEAXD = () => {
   const parentId = useContext(DocumentIdContext)
   const [filter, setFilter] = useState({})
   const [search, setSearch] = useState('')
+  const [searchFields, setSearchFields] = useState([])
   const { r_object_id, dss_user_name } = useRecoilValue(userAtom)
   const close = useContext(StateContext)
   const getNotification = useOpenNotification()
 
   const onClick = useCallback(async () => {
     try {
-      const { data } = await api.post(URL_CONTENT_SEARCH, {
+      const {
+        data,
+        data: { status, message },
+      } = await api.post(URL_CONTENT_SEARCH, {
         eehdBarcode: search,
         documentId: id,
       })
+
+      if (status === STATUS_NOT_EXIST) {
+        return getNotification(defaultFunctionsMap[412](message))
+      }
+
       setFilter(data)
+      setSearchFields(fields)
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
@@ -76,29 +110,15 @@ const DocumentEAXD = () => {
   const formFields = useMemo(
     () => [
       {
-        id: '0',
-        component: EmptyInput,
-        value: 'Шифр/Рег.номер',
-        disabled: true,
-      },
-      {
-        id: 'reg2',
+        id: 'regNumber',
         component: Input,
-      },
-      {
-        id: '00',
-        component: EmptyInput,
-        disabled: true,
-      },
-      {
-        id: '1',
-        component: EmptyInput,
-        value: 'Тип связи *',
-        disabled: true,
+        label: 'Шифр/Рег.номер',
+        placeholder: 'Укажите шифр/Рег.номер',
       },
       {
         id: 'linkType',
         component: LoadableSelect,
+        label: 'Тип связи',
         placeholder: 'Укажите тип связи',
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
@@ -111,110 +131,73 @@ const DocumentEAXD = () => {
         },
       },
       {
-        id: '2',
-        component: EmptyInput,
-        disabled: true,
-      },
-      {
-        id: '3',
-        component: EmptyInput,
-        disabled: true,
-        value: 'Комментарий',
-      },
-      {
         id: 'comment',
         component: Input,
+        label: 'Комментарий',
         placeholder: 'Введите комментарий',
-      },
-      {
-        id: '4',
-        component: EmptyInput,
-        disabled: true,
       },
     ],
     [api],
   )
 
-  const disabledFields = useMemo(() => {
-    return (
-      !!Object.keys(filter).length && (
-        <>
-          <TableForm className="my-4">
-            {fields.map(({ key, title }) => {
-              if (filter[key]) {
-                return (
-                  <>
-                    <div className="flex items-center font-size-14 px-4">
-                      {title}
-                    </div>
-                    <Input disabled={true} value={filter[key]} />
-                    <div>{''}</div>
-                  </>
-                )
-              }
-            })}
-          </TableForm>
-          <TableForm
-            fields={formFields}
-            inputWrapper={EmptyInputWrapper}
-            value={filter}
-            onInput={setFilter}
-          />
-        </>
-      )
-    )
-  }, [filter, formFields])
-
   const create = useCallback(async () => {
-    const {
-      comment,
-      linkType,
-      eehdBarcode,
-      dssNumber,
-      eehdDocumentType,
-      eehdDocumentId,
-      dssDescription,
-      dsdtDocumentDate,
-      dssAuthorFio,
-      dssFilename,
-      content,
-      status,
-    } = filter
-    const {
-      data: { id: contentId },
-    } = await api.post(URL_LINK_CREATE_RELATION, {
-      eehdBarcode,
-      dssNumber,
-      eehdDocumentType,
-      eehdDocumentId,
-      dssDescription,
-      dsdtDocumentDate,
-      dssAuthorFio,
-      dssFilename,
-      content,
-      status,
-      documentId: parentId,
-      documentType: type,
-    })
+    try {
+      const {
+        comment,
+        linkType,
+        eehdBarcode,
+        dssNumber,
+        eehdDocumentType,
+        eehdDocumentId,
+        dssDescription,
+        dsdtDocumentDate,
+        dssAuthorFio,
+        dssFilename,
+        content,
+        status,
+      } = filter
+      const {
+        data: { id: contentId },
+      } = await api.post(URL_LINK_CREATE_RELATION, {
+        eehdBarcode,
+        dssNumber,
+        eehdDocumentType,
+        eehdDocumentId,
+        dssDescription,
+        dsdtDocumentDate,
+        dssAuthorFio,
+        dssFilename,
+        content,
+        status,
+        documentId: parentId,
+        documentType: type,
+      })
 
-    await api.post(URL_LINK_CREATE, {
-      linkObjects: [
-        {
-          parentId,
-          contentId,
-          documentType: eehdDocumentType,
-          regNumber: dssNumber,
-          regDate: dsdtDocumentDate,
-          description: dssDescription,
-          authorEmpl: r_object_id,
-          authorName: dss_user_name,
-          comment,
-          linkType,
-        },
-      ],
-    })
-    setTabState(setUnFetchedState())
-    close()
+      const { status: respStatus } = await api.post(URL_LINK_CREATE, {
+        linkObjects: [
+          {
+            parentId,
+            contentId,
+            documentType: eehdDocumentType,
+            regNumber: dssNumber,
+            regDate: dsdtDocumentDate,
+            description: dssDescription,
+            authorEmpl: r_object_id,
+            authorName: dss_user_name,
+            comment,
+            linkType,
+          },
+        ],
+      })
+
+      getNotification(defaultFunctionsMap[respStatus]())
+
+      setTabState(setUnFetchedState())
+      close()
+    } catch (e) {
+      const { response: { status = 0, data = '' } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
   }, [
     filter,
     api,
@@ -224,24 +207,35 @@ const DocumentEAXD = () => {
     dss_user_name,
     setTabState,
     close,
+    getNotification,
   ])
 
   return (
     <>
       <div className="flex flex-col overflow-hidden h-full">
         <div className="flex flex-col my-4">
-          <TableForm>
-            <div className="flex items-center font-size-14 px-4">
-              Штрихкод ЕЭХД
-            </div>
-            <Input value={search} onInput={setSearch} />
-            <div className="w-64 mr-auto">
-              <SecondaryBlueButton onClick={onClick} className="w-64">
-                Искать
-              </SecondaryBlueButton>
-            </div>
+          <TableForm className="form-element-sizes-32">
+            <InputWrapper label={'Штрихкод ЕЭХД'}>
+              <Input value={search} onInput={setSearch} />
+            </InputWrapper>
+            <LoadableSecondaryBlueButton
+              className="ml-4 w-64 h-min"
+              onClick={onClick}
+              disabled={!search}
+            >
+              Искать
+            </LoadableSecondaryBlueButton>
           </TableForm>
-          {disabledFields}
+          {!!Object.keys(filter).length && (
+            <FilterRowForm
+              className="my-4"
+              fields={[...searchFields, ...formFields]}
+              inputWrapper={InputWrapper}
+              value={filter}
+              onInput={setFilter}
+              rules={rules}
+            />
+          )}
         </div>
       </div>
       <UnderButtons leftFunc={close} rightLabel="Связать" rightFunc={create} />
