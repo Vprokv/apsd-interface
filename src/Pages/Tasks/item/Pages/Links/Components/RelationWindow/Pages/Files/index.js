@@ -93,10 +93,6 @@ export const validatorFiles = {
       if (formPayload.length) {
         const targetField =
           formPayload[Math.floor(index / 2.1)][fieldKey]?.dss_name
-        console.log(
-          fieldValue.includes(targetField),
-          'fieldValue.includes(targetField)',
-        )
         return fieldValue.includes(targetField)
       }
     },
