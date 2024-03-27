@@ -10,6 +10,7 @@ import CheckBox from '@/Components/Inputs/CheckBox'
 import Row from '@Components/Components/Tree/Row'
 import angleIcon from '@/Icons/angleIcon'
 import cloneDeep from 'lodash/_copyArray'
+import log from 'tailwindcss/lib/util/log'
 
 const CirclePlusIcon = ({ className, onClick }) => (
   <Icon
@@ -150,14 +151,19 @@ const Leaf = (props) => {
       } = refProps.current
 
       if (status === 'new') {
+        //индекс эл-та массива который дропаем
         const dropIndex = parent.findIndex(({ id }) => id === data.id)
+        ///индекс эл-та массива куда дропаем дропаем
         const pushIndex = parent.findIndex(({ id }) => id === droppedId)
+        //ищем левую и правую границу массива
         const [left, right] = [dropIndex, pushIndex].sort((a, b) => a - b)
+        //минимальный индекс в базе с бэка
         const [{ index: minIndexInRow }] = [
           parent[dropIndex],
           parent[pushIndex],
         ].sort((a, b) => a.index - b.index)
 
+        //массив в котором будут изменения
         const editArray = [...parent].slice(left, right + 1)
 
         editArray.splice(
@@ -169,6 +175,7 @@ const Leaf = (props) => {
           ({ ['id']: row }) => row === droppedId,
         )
 
+        //высчитываем индекс, куда вставлять, в зависимости от направления дропа снизу вверх/сверху-вниз
         const customIndex =
           droppingIndex === left
             ? dropIndex === left
@@ -180,28 +187,23 @@ const Leaf = (props) => {
 
         editArray.splice(customIndex, 0, data)
 
-        const { sendValue, indexMap } = editArray.reduce(
-          (acc, val, key) => {
-            acc.sendValue.push({
-              ...val,
-              index: minIndexInRow + key,
-            })
-            acc.indexMap[val.id] = minIndexInRow + key
-            return acc
-          },
-          { sendValue: [], indexMap: {} },
-        )
+        const indexMap = editArray.reduce((acc, val, key) => {
+          acc[val.id] = minIndexInRow + key
+          return acc
+        }, {})
 
         const renderValue = parent
-          .map((value) => ({
-            ...value,
-            index: indexMap[value.id] ? indexMap[value.id] : value.index,
-          }))
+          .map((value) => {
+            return {
+              ...value,
+              index: indexMap[value.id] ?? value.index,
+            }
+          })
           .sort((a, b) => a.index - b.index)
 
         onUpdateOptions(renderValue, 0, true)
 
-        const result = await dropEvent(sendValue)
+        const result = await dropEvent(renderValue)
         if (result instanceof Error) {
           onUpdateOptions(parent, 0, true)
         }
