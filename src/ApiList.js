@@ -80,7 +80,7 @@ export const URL_APPROVAL_SHEET_CREATE = '/apsd/business/stage/create'
 export const URL_APPROVAL_SHEET_UPDATE = '/apsd/business/stage/update'
 export const URL_APPROVAL_SHEET_CREATE_AND_START =
   '/sedo/approve/additional/create_and_start'
-export const URL_APPROVAL_CREATE = '/sedo/approve/approvers/create'
+export const URL_APPROVAL_CREATE = '/apsd/approve/v2/create'
 export const URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT =
   '/apsd/business/start/additional'
 export const URL_APPROVAL_SHEET_APPROVER_DELETE = '/apsd/approve/v2/delete'
