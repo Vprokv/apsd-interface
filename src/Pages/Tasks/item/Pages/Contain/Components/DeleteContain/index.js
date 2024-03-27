@@ -27,15 +27,15 @@ const DeleteContain = ({ selectState, onDeleteData }) => {
   )
 
   const handleConfirm = useCallback(async () => {
-    changeModalState(false)()
     await onDeleteData()
+    changeModalState(false)()
   }, [onDeleteData, changeModalState])
 
   return (
     <>
       <Tips text="Удалить">
         <ButtonForIcon
-          disabled={selectState?.length}
+          disabled={!selectState?.length}
           onClick={changeModalState(true)}
           className="mr-2"
         >

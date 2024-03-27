@@ -130,8 +130,6 @@ const TitleNameComponent = ({
   }, [])
 
   const annulateIds = useMemo(() => {
-    console.log(ParentValue, 'ParentValue')
-    console.log(selectState, 'ParentValue')
     if (selectState.includes(({ id }) => id === ParentValue.id)) {
       const arr = []
 
