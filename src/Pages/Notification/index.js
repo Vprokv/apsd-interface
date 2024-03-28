@@ -42,6 +42,7 @@ import { LoadNotificationContext } from '@/Pages/Main/constants'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import debounce from 'lodash/debounce'
 
 const FilterForm = styled(Form)`
   --form--elements_height: 32px;
@@ -165,38 +166,61 @@ const Notification = () => {
     defaultLimit: 10,
   })
 
-  const loadData = useCallback(async () => {
-    try {
-      const { limit, offset } = paginationState
-      const {
-        data: { total, content },
-      } = await api.post(URL_SUBSCRIPTION_NOTIFICATION_LIST, {
-        filter,
-        sort: [
+  const onUpdateFilterTabState = useMemo(
+    () => debounce((filter) => setTabState({ filter }), 1000),
+    [setTabState],
+  )
+
+  const [filterState, setFilterState] = useState(filter)
+  const onFilterInput = useCallback(
+    (filter) => {
+      setFilterState(filter)
+      onUpdateFilterTabState(filter)
+    },
+    [onUpdateFilterTabState],
+  )
+
+  const loadData = useCallback(
+    async ({ controller } = {}) => {
+      try {
+        const { limit, offset } = paginationState
+        const {
+          data: { total, content },
+        } = await api.post(
+          URL_SUBSCRIPTION_NOTIFICATION_LIST,
           {
-            property: sortQuery.key,
-            direction: sortQuery.direction,
+            filter,
+            sort: [
+              {
+                property: sortQuery.key,
+                direction: sortQuery.direction,
+              },
+            ],
+            limit,
+            offset,
           },
-        ],
-        limit,
-        offset,
-      })
-      return {
-        total,
-        content: content?.map((val, key) => ({ ...val, key: key + 1 })),
+          {
+            signal: controller.signal,
+          },
+        )
+        return {
+          total,
+          content: content?.map((val, key) => ({ ...val, key: key + 1 })),
+        }
+      } catch (e) {
+        const { response: { status, data } = {} } = e
+        getNotification(defaultFunctionsMap[status](data))
       }
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [
-    api,
-    filter,
-    getNotification,
-    paginationState,
-    sortQuery.direction,
-    sortQuery.key,
-  ])
+    },
+    [
+      api,
+      filter,
+      getNotification,
+      paginationState,
+      sortQuery.direction,
+      sortQuery.key,
+    ],
+  )
 
   const [{ data: { content = [], total = 0 } = {}, reloadData }] =
     useAutoReload(loadData, tabState, setTabState)
@@ -304,11 +328,8 @@ const Notification = () => {
         <FilterForm
           fields={filterFields}
           inputWrapper={emptyWrapper}
-          value={filter}
-          onInput={useCallback(
-            (filter) => setTabState({ filter }),
-            [setTabState],
-          )}
+          value={filterState}
+          onInput={onFilterInput}
         />
         <LoadableSecondaryBlueButton
           disabled={!selectState.length}
@@ -346,7 +367,6 @@ const Notification = () => {
           (sortQuery) => setTabState({ sortQuery }),
           [setTabState],
         )}
-        returnOb={true}
       />
       <Pagination
         className="mt-2"
