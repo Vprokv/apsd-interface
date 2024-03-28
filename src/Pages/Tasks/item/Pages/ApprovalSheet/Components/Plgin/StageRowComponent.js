@@ -48,11 +48,11 @@ const StageRowComponent = ({
       factTerm,
       addApprover,
       deleteApprover,
+      stageCurator,
     },
     selectedState,
     options,
   },
-  node,
 }) => {
   const api = useContext(ApiContext)
   const { type: documentType } = useParams()
@@ -112,7 +112,6 @@ const StageRowComponent = ({
     <Row>
       <div className="flex h-full items-center">
         <div className="mr-12 font-medium w-32 ml-2">{name}</div>
-        {/* <div className="mr-12 w-26">{`Срок (дней): ${term}`}</div>*/}
         <div>{`Дата завершения: ${
           finishDate === null
             ? ''
@@ -128,6 +127,7 @@ const StageRowComponent = ({
               stageId={id}
               documentId={documentId}
               stageType={stageType}
+              stageCurator={stageCurator}
             />
           )}
           {deleteApprover && (

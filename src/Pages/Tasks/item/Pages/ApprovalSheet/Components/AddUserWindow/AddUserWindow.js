@@ -41,7 +41,12 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   z-index: 10;
 `
 
-const AddUserWindow = ({ stageId, documentId, stageType, ...other }) => {
+const AddUserWindow = ({
+  stageId,
+  documentId,
+  stageType,
+  stageCurator = false,
+}) => {
   const [open, setOpenState] = useState(false)
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
@@ -67,6 +72,8 @@ const AddUserWindow = ({ stageId, documentId, stageType, ...other }) => {
       loadFunction: (api) => (filter) => async (query) => {
         const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
           stageId,
+          stageCurator,
+          documentId,
           filter: {
             ...filter,
             ...query,

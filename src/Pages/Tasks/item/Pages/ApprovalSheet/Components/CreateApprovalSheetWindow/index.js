@@ -10,7 +10,11 @@ import PropTypes from 'prop-types'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { CustomSizeModalWindow } from './styles'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
+import {
+  URL_ADDITIONAL_AGREEMENT_USER_LIST,
+  URL_APPROVAL_SHEET_CREATE,
+  URL_ENTITY_LIST,
+} from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -52,6 +56,7 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
   const getNotification = useOpenNotification()
   const ref = useRef(filterValue?.name)
   const [loading, setLoadingState] = useState(false)
+  const documentId = useContext(DocumentIdContext)
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_APPROVAL_SHEET,
@@ -61,7 +66,12 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
     const state = (typicalStage || []).find(({ dsb_default }) => dsb_default)
 
     if (state) {
-      return { name: state.dss_name, term: state.dsi_work_day }
+      const { dss_name, dsi_work_day, dsb_curator = false } = state
+      return {
+        name: dss_name,
+        term: dsi_work_day,
+        stageCurator: dsb_curator,
+      }
     }
     return {}
   }, [typicalStage])
@@ -91,7 +101,11 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
           ({ dss_name }) => dss_name === value.name,
         )
 
-        return { ...value, term: res?.dsi_work_day }
+        return {
+          ...value,
+          term: res?.dsi_work_day,
+          stageCurator: res.dsb_curator,
+        }
       })
     }
     ref.current = filterValue.name
@@ -147,6 +161,20 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
         {
           id: 'approvers',
           component: AdditionalAgreementOrgStructureComponent,
+          loadFunction: (api) => (filter) => async (query) => {
+            const { data } = await api.post(
+              URL_ADDITIONAL_AGREEMENT_USER_LIST,
+              {
+                stageCurator: filterValue.stageCurator,
+                documentId,
+                filter: {
+                  ...filter,
+                  ...query,
+                },
+              },
+            )
+            return data
+          },
           multiple: true,
           returnOption: false,
           className: 'font-size-12',
@@ -160,7 +188,7 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
           label: 'Укажите в рабочих днях',
         },
       ].filter(({ visible }) => visible !== false),
-    [api, typicalStage, visible],
+    [api, documentId, filterValue.stageCurator, typicalStage, visible],
   )
 
   const stage = useMemo(() => {

@@ -133,6 +133,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
         component: AdditionalAgreementOrgStructureComponent,
         loadFunction: (api) => (filter) => async (query) => {
           const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
+            documentId,
             approverParentId,
             filter: {
               ...filter,
