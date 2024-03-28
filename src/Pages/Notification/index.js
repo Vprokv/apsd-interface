@@ -167,7 +167,7 @@ const Notification = () => {
   })
 
   const onUpdateFilterTabState = useMemo(
-    () => debounce((filter) => setTabState({ filter }), 1000),
+    () => debounce((filter) => setTabState({ filter }), 500),
     [setTabState],
   )
 

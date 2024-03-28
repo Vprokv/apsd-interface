@@ -61,6 +61,7 @@ import axios from 'axios'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import debounce from 'lodash/debounce'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -235,6 +236,20 @@ function TaskList({ loadFunctionRest }) {
     setState: setTabState,
     defaultLimit: 10,
   })
+
+  const onUpdateFilterTabState = useMemo(
+    () => debounce((filter) => setTabState({ filter }), 500),
+    [setTabState],
+  )
+
+  const [filterState, setFilterState] = useState(filter)
+  const onFilterInput = useCallback(
+    (filter) => {
+      setFilterState(filter)
+      onUpdateFilterTabState(filter)
+    },
+    [onUpdateFilterTabState],
+  )
 
   const [selectState, setSelectState] = useState([])
   const getNotification = useOpenNotification()
@@ -473,17 +488,17 @@ function TaskList({ loadFunctionRest }) {
             className="pl-4"
             fields={fields}
             inputWrapper={emptyWrapper}
-            value={filter}
-            onInput={setFilter}
+            value={filterState}
+            onInput={onFilterInput}
           />
         )}
         <div className="flex items-center color-text-secondary ml-auto">
           <FilterWindowWrapper
             show={show}
             fields={fields}
-            filter={filter}
+            filter={filterState}
             onOpen={changeFilterWindowState(true)}
-            setFilterValue={setFilter}
+            setFilterValue={onFilterInput}
             open={filterWindowOpen}
             onClose={changeFilterWindowState(false)}
           />
