@@ -71,6 +71,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected }) => {
         loadFunction: (api) => (filter) => async (query) => {
           const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
             approverParentId,
+            documentId,
             filter: {
               ...filter,
               ...query,

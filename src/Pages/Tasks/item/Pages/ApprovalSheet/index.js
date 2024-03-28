@@ -22,8 +22,6 @@ import CreateApprovalSheetWindow, {
 import angleIcon from '@/Icons/angleIcon'
 import { DocumentIdContext, DocumentTypeContext } from '../../constants'
 import { DefaultChildIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Icons/DefaultChildIcon'
-import ApplyTemplateWindow from './Components/ApplyTemplateWindow'
-import CreateTemplateWindow from './Components/CreateTemplateWindow'
 import LeafComponent from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/LeafComponent'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
