@@ -16,6 +16,7 @@ import {
   URL_DOWNLOAD_FILE,
   URL_INTEGRATION_SEND_LETTER,
   URL_INTEGRATION_TOM_DOWNLOAD,
+  URL_TASK_LIST_BY_DOCUMENT,
   URL_TASK_PROMOTE,
 } from '@/ApiList'
 import { useParams } from 'react-router-dom'
@@ -69,6 +70,7 @@ import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
+import TaskListByDocument from '@/Pages/Tasks/item/Components/TaskListByDocument'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -101,7 +103,12 @@ const Document = () => {
         id,
         type,
       })
-      return data
+
+      const { data: taskData } = await api.post(URL_TASK_LIST_BY_DOCUMENT, {
+        documentId: id,
+      })
+
+      return { ...data, taskData }
     } catch (e) {
       const { response: { status } = {} } = e
       getNotification(defaultFunctionsMap[status]())
@@ -118,7 +125,7 @@ const Document = () => {
 
   const [
     {
-      data: { documentActions, documentTabs = [], values } = {},
+      data: { documentActions, documentTabs = [], taskData, values } = {},
       data,
       reloadData,
     },
@@ -413,6 +420,7 @@ const Document = () => {
         <Layout documentTabs={useDocumentTabs(documentTabs, defaultPages)}>
           <SideBar>
             <ScrollBar>
+              {taskData && <TaskListByDocument taskData={taskData} />}
               {data && <DocumentInfoComponent {...data} />}
               <DocumentActions documentActions={wrappedDocumentActions} />
             </ScrollBar>

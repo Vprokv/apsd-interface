@@ -14,6 +14,7 @@ export const URL_COLUMN_SETTINGS_UPDATE = '/sedo/pref/create_or_update'
 
 // TASK
 export const URL_TASK_LIST = '/sedo/task/list'
+export const URL_TASK_LIST_BY_DOCUMENT = '/apsd/task/v2/document'
 export const URL_DOCUMENT_ITEM = '/sedo/document/get'
 export const URL_TASK_ITEM = '/apsd/task/v2/get'
 export const URL_TASK_COMPLETE = '/sedo/task/complete'
