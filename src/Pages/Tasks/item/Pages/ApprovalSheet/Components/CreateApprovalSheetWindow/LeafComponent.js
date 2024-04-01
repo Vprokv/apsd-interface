@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import Icon from '@Components/Components/Icon'
 import {
@@ -80,7 +80,14 @@ const Leaf = (props) => {
   const rowKey =
     typeof childrenKey === 'string' ? childrenKey : childrenKey(level)
 
-  const { title, [rowKey]: rowData, [valueKey]: leafVal, editable } = options
+  const {
+    title,
+    [rowKey]: rowData,
+    [valueKey]: leafVal,
+    editable,
+    deleteApprover,
+  } = options
+  console.log(parent, 'parent')
 
   const onDraggable =
     draggable === 'boolean' ? draggable : draggable(options, level)
@@ -99,6 +106,11 @@ const Leaf = (props) => {
   const [expanded, setExpanded] = useState(defaultExpandAll)
 
   const toggleOpen = useCallback(() => setExpanded((v) => !v), [])
+
+  const isEditable = useMemo(
+    () => (editable || deleteApprover || parent?.deleteApprover) && level !== 2,
+    [deleteApprover, editable, level, parent?.deleteApprover],
+  )
 
   const onUpdateLeafOption = useCallback(
     (nextLeafValue) => {
@@ -298,17 +310,16 @@ const Leaf = (props) => {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        {editable &&
-          level !== 2 && ( // TODO хорды на правило появления чекбокса
-            <CheckBox
-              className="mr-1.5"
-              onInput={checkBoxInput}
-              value={getLeafSelectedStatus({
-                item: options,
-                childrenKey: rowKey,
-              })}
-            />
-          )}
+        {isEditable && ( // TODO хорды на правило появления чекбокса
+          <CheckBox
+            className="mr-1.5"
+            onInput={checkBoxInput}
+            value={getLeafSelectedStatus({
+              item: options,
+              childrenKey: rowKey,
+            })}
+          />
+        )}
         <Row
           level={level}
           title={title}
