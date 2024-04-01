@@ -370,7 +370,12 @@ const Contain = () => {
       responseType: 'blob',
     })
 
-    downloadFileWithReload(data, `Состав титула ${dss_code}.xlsx`)
+    const name = `Состав титула ${dss_code}_${dss_description}`
+
+    downloadFileWithReload(
+      data,
+      `${name > 180 ? name.slice(0, 179) : name}.xlsx`,
+    )
   }, [api, dss_code, dss_description, id, token])
 
   return (
