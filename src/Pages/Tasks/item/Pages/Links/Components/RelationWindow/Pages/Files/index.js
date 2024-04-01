@@ -7,9 +7,8 @@ import { URL_ENTITY_LIST, URL_LINK_CREATE } from '@/ApiList'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DEFAULT_DATE_FORMAT_OTHER,
   PRESENT_DATE_FORMAT,
-  TASK_ITEM_LINK,
+  TASK_ITEM_LINK_FILES,
 } from '@/contants'
 import ScrollBar from 'react-perfect-scrollbar'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -103,7 +102,7 @@ export const validatorFiles = {
 }
 const plugins = {
   movePlugin: {
-    id: TASK_ITEM_LINK,
+    id: TASK_ITEM_LINK_FILES,
     TableHeaderComponent: Header,
     driver: useBackendColumnSettingsState,
   },
@@ -136,7 +135,7 @@ const Files = (props) => {
   }, [])
 
   const { 1: setTabState } = useTabItem({
-    stateId: TASK_ITEM_LINK,
+    stateId: TASK_ITEM_LINK_FILES,
   })
 
   const onDeleteFile = useCallback(
