@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import TaskListByDocumentIcon from '../../Icons/TaskListByDocumentIcon.svg'
 import { StyledItem } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import { TabStateManipulation } from '@Components/Logic/Tab'
-import { useParams } from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import Tips from '@/Components/Tips'
 import { useRecoilState } from 'recoil'
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
@@ -41,7 +41,7 @@ const iconMap = {
 
 const TaskListByDocument = ({ taskData }) => {
   const [open, setOpen] = useState(false)
-  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
+  const navigate = useNavigate()
   const [target, setTarget] = useState({})
   const [sidebarExpanded = false] = useRecoilState(
     cachedLocalStorageValue('DocumentActionsState'),
@@ -64,7 +64,7 @@ const TaskListByDocument = ({ taskData }) => {
         {taskData.map(({ taskId, name }) => (
           <StyledItem
             key={taskId}
-            onClick={() => openTabOrCreateNewTab(`/task/${taskId}/${type}`)}
+            onClick={() => navigate(`/task/${taskId}/${type}`)}
             className="my-2 mx-4 font-size-12 w-max bg-white"
           >
             {name}
@@ -72,7 +72,7 @@ const TaskListByDocument = ({ taskData }) => {
         ))}
       </StyledContextMenu>
     ),
-    [openTabOrCreateNewTab, target, taskData, type],
+    [navigate, target, taskData, type],
   )
 
   return (
