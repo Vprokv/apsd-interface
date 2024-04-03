@@ -63,6 +63,7 @@ import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import log from 'tailwindcss/lib/util/log'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -228,6 +229,10 @@ function StorageList() {
   const [width, setWidth] = useState(ref.current?.clientWidth)
   const { token } = useContext(TokenContext)
   const { parentName, name, id } = useParams()
+  const decodeParentName = decodeURIComponent(parentName)
+  const decodeName = decodeURIComponent(name)
+
+  console.log(decodeParentName, 'decodeParentName')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_STORAGE_LIST,
@@ -247,8 +252,11 @@ function StorageList() {
 
   useSetTabName(
     useCallback(
-      () => (parentName ? `${parentName}/${name}` : name),
-      [name, parentName],
+      () =>
+        typeof decodeParentName === 'undefined'
+          ? `${decodeParentName}/${decodeName}`
+          : decodeName,
+      [decodeName, decodeParentName],
     ),
   )
 
