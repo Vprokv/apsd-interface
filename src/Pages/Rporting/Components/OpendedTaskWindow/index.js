@@ -10,7 +10,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import {ApiContext, NOTIFICATION, REPORTING_STATE} from '@/contants'
+import { ApiContext, REPORTING_STATE } from '@/contants'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
@@ -22,9 +22,9 @@ import ReloadIcon from '@/Icons/ReloadIcon'
 import Form from '@Components/Components/Forms'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import Header from "@Components/Components/Tables/ListTable/header";
-import {useBackendColumnSettingsState} from "@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState";
-import ColumnController from "@/Components/ListTableComponents/ColumnController";
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import ColumnController from '@/Components/ListTableComponents/ColumnController'
 
 const columns = [
   {
@@ -46,16 +46,22 @@ const columns = [
     sizes: baseCellSize,
   },
   {
+    id: 'createDate',
+    label: 'Дата создания отчёта',
+    component: BaseCell,
+    sizes: baseCellSize,
+  },
+  {
     id: 'startAt',
-    label: 'Начата',
+    label: 'Дата начала обработки',
     component: BaseCell,
     sizes: baseCellSize,
   },
   {
     id: 'endAt',
-    label: 'Завершена',
+    label: 'Дата завершения обработки',
     component: BaseCell,
-    sizes: baseCellSize,
+    sizes: 220,
   },
 ]
 
