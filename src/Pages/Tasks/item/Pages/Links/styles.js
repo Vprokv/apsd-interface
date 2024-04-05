@@ -9,6 +9,6 @@ export const FilterForm = styled(Form)`
 `
 export const CreateLinkComponent = styled(ModalWindow)`
   width: 65.25%;
-  height: 87.21%;
+  height: 60%;
   margin: auto;
 `

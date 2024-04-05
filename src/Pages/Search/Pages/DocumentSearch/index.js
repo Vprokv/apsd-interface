@@ -9,12 +9,7 @@ import {
   URL_SEARCH_LIST,
   URL_TYPE_CONFIG,
 } from '@/ApiList'
-import {
-  ApiContext,
-  SEARCH_PAGE,
-  SEARCH_PAGE_DOCUMENT,
-  TokenContext,
-} from '@/contants'
+import { ApiContext, SEARCH_PAGE, TokenContext } from '@/contants'
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryGreyButton,
@@ -213,6 +208,7 @@ const DocumentSearch = ({
   setLoading,
   children,
   options,
+  stateId,
 }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
@@ -220,14 +216,17 @@ const DocumentSearch = ({
   const [paginationStateComp, setPaginationStateComp] = useState({})
 
   const [tabState, setTabState] = useTabItem({
-    stateId: SEARCH_PAGE_DOCUMENT,
+    stateId,
   })
 
   const {
     renderTable = false,
     searchState: { total = 0 } = {},
+    searchState,
     sortQuery = baseSortQuery,
   } = tabState
+
+  console.log(searchState, 'sortQuery')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,
@@ -295,7 +294,6 @@ const DocumentSearch = ({
   )
 
   const onSearch = useCallback(async () => {
-    setTabState({ renderTable: true })
     setLoading(true)
     const { type, ...filters } = filter
     const { limit, offset } = paginationState
@@ -325,10 +323,14 @@ const DocumentSearch = ({
     paginationState,
     setLoading,
     setSearchState,
-    setTabState,
     sortQuery.direction,
     sortQuery.key,
   ])
+
+  const onSearchRequest = useCallback(async () => {
+    setTabState({ renderTable: true })
+    await onSearch()
+  }, [onSearch, setTabState])
 
   useEffect(onSearch, [sortQuery, paginationState])
 
@@ -374,7 +376,7 @@ const DocumentSearch = ({
   useEffect(() => {
     if (!renderTable) {
       const onKeyEnterDown = (e) => {
-        e.key === 'Enter' && onSearch()
+        e.key === 'Enter' && onSearchRequest()
       }
 
       document.addEventListener('keydown', onKeyEnterDown)
@@ -382,7 +384,7 @@ const DocumentSearch = ({
         document.removeEventListener('keydown', onKeyEnterDown)
       }
     }
-  }, [onSearch, renderTable])
+  }, [onSearchRequest, renderTable])
 
   return (
     <ExportContext.Provider value={'asas'}>
@@ -418,8 +420,7 @@ const DocumentSearch = ({
             <div className="flex flex-col">
               <LoadableSecondaryOverBlueButton
                 className="mb-5 w-64"
-                onClick={onSearch}
-                // disabled={isSearchDisabled}
+                onClick={onSearchRequest}
               >
                 Искать
               </LoadableSecondaryOverBlueButton>

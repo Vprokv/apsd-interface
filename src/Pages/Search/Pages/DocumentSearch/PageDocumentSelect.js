@@ -82,6 +82,7 @@ const PageDocumentSelect = () => {
       setFilter={updateTabState('filter')}
       setLoading={updateTabState('loading')}
       options={defaultOptions}
+      stateId={SEARCH_PAGE_DOCUMENT}
     >
       {(closeTable, onExport) => (
         <>

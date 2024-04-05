@@ -40,11 +40,11 @@ const InsideDocument = () => {
   const parentId = useContext(DocumentIdContext)
   const close = useContext(StateContext)
 
-  const [tabItemState, setTabState] = useTabItem({
+  const [tabState, setTabState] = useTabItem({
     stateId: INSIDE_DOCUMENT_WINDOW,
   })
 
-  const { selected = [], value = [] } = tabItemState
+  const { selectState = [], value = [] } = tabState
 
   const { 1: setPageTabState } = useTabItem({
     stateId: TASK_ITEM_LINK,
@@ -91,25 +91,22 @@ const InsideDocument = () => {
   }, [api, close, linkObjects, setPageTabState, updateTabState])
 
   const onSelect = useCallback(
-    () => updateTabState('value')(selected),
-    [selected, updateTabState],
+    () => updateTabState('value')(selectState),
+    [selectState, updateTabState],
   )
   const clear = useCallback(() => updateTabState('value')([]), [updateTabState])
 
   return (
     <>
       <div className="flex flex-col overflow-hidden h-full">
-        {!value.length && (
-          <SearchComponent
-            tabItemState={tabItemState}
-            updateTabState={updateTabState}
+        <SearchComponent tabState={tabState} setTabState={setTabState} />
+        {!!value.length && (
+          <CreateRelationTable
+            selected={selectState}
+            setLink={updateTabState('value')}
+            value={value}
           />
         )}
-        <CreateRelationTable
-          selected={selected}
-          setLink={updateTabState('value')}
-          value={value}
-        />
       </div>
       <Buttons
         value={!value.length}
