@@ -374,7 +374,7 @@ const Contain = () => {
 
     downloadFileWithReload(
       data,
-      `${name > 180 ? name.slice(0, 179) : name}.xlsx`,
+      `${name.length > 127 ? name.slice(0, 126) : name}.xlsx`,
     )
   }, [api, dss_code, dss_description, id, token])
 
