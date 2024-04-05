@@ -8,6 +8,7 @@ import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
   PRESENT_DATE_FORMAT,
+  TASK_ITEM_LINK,
   TASK_ITEM_LINK_FILES,
 } from '@/contants'
 import ScrollBar from 'react-perfect-scrollbar'
@@ -134,8 +135,8 @@ const Files = (props) => {
     })
   }, [])
 
-  const { 1: setTabState } = useTabItem({
-    stateId: TASK_ITEM_LINK_FILES,
+  const { 1: setTabItemLinkState } = useTabItem({
+    stateId: TASK_ITEM_LINK,
   })
 
   const onDeleteFile = useCallback(
@@ -191,7 +192,7 @@ const Files = (props) => {
           }),
         ),
       })
-      setTabState(setUnFetchedState())
+      setTabItemLinkState(setUnFetchedState())
       close()
       getNotification(customMessagesFuncMap[response.status]())
     } catch (e) {
@@ -203,7 +204,7 @@ const Files = (props) => {
     files,
     getNotification,
     api,
-    setTabState,
+    setTabItemLinkState,
     close,
     parentId,
     userObject.r_object_id,
