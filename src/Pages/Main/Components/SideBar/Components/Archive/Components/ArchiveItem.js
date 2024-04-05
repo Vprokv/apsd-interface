@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ApiContext } from '@/contants'
 import {
@@ -15,6 +15,12 @@ import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { ContextArchiveLoading } from '@/Pages/Main/Components/SideBar/Components/Archive/constants'
+import {
+  ItemContainer,
+  MarginContainer,
+  ShadowContainer,
+  StyledRowContainer,
+} from '@/Pages/Main/Components/SideBar/Components/Archive/Components/styles'
 
 const apisMap = {
   0: async ({ api, query }) => {
@@ -55,7 +61,9 @@ const ArchiveItem = ({
   const [items, setItems] = useState([])
   const getNotification = useOpenNotification()
   const api = useContext(ApiContext)
-  const { loading, setLoading } = useContext(ContextArchiveLoading)
+  const { loading, setLoading, lastSelected, setLastSelected } = useContext(
+    ContextArchiveLoading,
+  )
   const refTimeout = useRef()
   const refAbortController = useRef(null)
   useEffect(() => {
@@ -76,7 +84,11 @@ const ArchiveItem = ({
         const { response: { status, data } = {} } = e
         getNotification(defaultFunctionsMap[status](data))
       } finally {
-        setLoading()
+        setLoading((prev) => {
+          const nextVal = new Set(prev)
+          nextVal.delete(level >= 3 ? sectionId : id)
+          return nextVal
+        })
       }
     }, 1000)
   }, [api, level, id, sectionId, setItems, query, getNotification, setLoading])
@@ -89,48 +101,55 @@ const ArchiveItem = ({
     [],
   )
 
+  const addToSet = useCallback(
+    (id) => {
+      setLoading((prev) => {
+        const nextVal = new Set(prev)
+        nextVal.add(id)
+        return nextVal
+      })
+    },
+    [setLoading],
+  )
+
   return items.map(({ id: levelId, name, expand }) => (
     <WithToggleNavigationItem id={levelId} key={levelId}>
       {({ isDisplayed, toggleDisplayedFlag }) => (
-        <div className=" font-size-12 mt-2 ">
-          <div className="flex w-full py-1.5 justify-start">
-            {expand && (
-              <LevelToggleIcon
-                levelId={levelId}
-                loading={loading}
-                toggleDisplayedFlag={toggleDisplayedFlag}
-                isDisplayed={isDisplayed}
-              />
-            )}
-            <ButtonComponent
-              id={id}
-              key={id}
-              level={level}
-              width={width}
-              toggleChildrenRender={() => {
-                if (!isDisplayed) {
-                  setLoading(levelId)
-                  toggleDisplayedFlag()
-                } else {
-                  toggleDisplayedFlag()
-                }
-              }}
-              name={name}
-              sectionId={levelId}
-              parentName={parentName}
-              onOpenNewTab={(args) => {
-                if (isDisplayed) {
-                  toggleDisplayedFlag()
-                } else {
-                  setLoading(levelId)
+        <ItemContainer>
+          <StyledRowContainer isSelected={lastSelected === name}>
+            <MarginContainer level={level}>
+              {expand && (
+                <LevelToggleIcon
+                  levelId={levelId}
+                  loading={loading}
+                  toggleDisplayedFlag={() => {
+                    if (!isDisplayed) {
+                      addToSet(levelId)
+                      toggleDisplayedFlag()
+                    } else {
+                      toggleDisplayedFlag()
+                    }
+                  }}
+                  isDisplayed={isDisplayed}
+                />
+              )}
+              <ButtonComponent
+                id={id}
+                key={id}
+                level={level}
+                width={width}
+                name={name}
+                sectionId={levelId}
+                parentName={parentName}
+                onOpenNewTab={(args) => {
+                  setLastSelected(name)
                   onOpenNewTab(args)
-                  toggleDisplayedFlag()
-                }
-              }}
-            />
-          </div>
+                }}
+              />
+            </MarginContainer>
+          </StyledRowContainer>
           {isDisplayed && (
-            <div className="flex flex-col pl-4 ">
+            <div className="flex flex-col">
               <ChildrenComponent
                 level={level + 1}
                 width={width}
@@ -142,7 +161,7 @@ const ArchiveItem = ({
               />
             </div>
           )}
-        </div>
+        </ItemContainer>
       )}
     </WithToggleNavigationItem>
   ))

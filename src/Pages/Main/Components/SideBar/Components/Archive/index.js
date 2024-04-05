@@ -22,11 +22,12 @@ const ScrollBar = styled(SimpleBar)`
 
 const Archive = ({ onOpenNewTab, width, collapsedState }) => {
   const [query, setQuery] = useState()
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState(new Set())
+  const [lastSelected, setLastSelected] = useState()
 
   const archiveLoadingState = useMemo(
-    () => ({ loading, setLoading }),
-    [loading],
+    () => ({ loading, setLoading, lastSelected, setLastSelected }),
+    [lastSelected, loading],
   )
 
   return (

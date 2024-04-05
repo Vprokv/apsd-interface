@@ -16,7 +16,7 @@ import Loading from '@/Components/Loading'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
 
-const ArchiveButton = ({ name, onClick, key }) => {
+const ArchiveButton = ({ name, onClick, id }) => {
   const RefFullWidthContainer = useRef()
   const RefVisibleTextContainerRef = useRef()
   const containerWidth = useContext(ContextArchiveContainerWidth)
@@ -31,7 +31,7 @@ const ArchiveButton = ({ name, onClick, key }) => {
 
   const Container = renderTips ? Tips : React.Fragment
   return (
-    <Container key={key} text={name} className="max-w-lg text-center">
+    <Container key={id} text={name} className="max-w-lg text-center">
       <button
         type="button"
         className="flex text-left overflow-hidden"
@@ -58,11 +58,9 @@ ArchiveButton.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-export const FirstLevelArchiveButton = ({
-  name,
-  toggleChildrenRender,
-  key,
-}) => <ArchiveButton name={name} onClick={toggleChildrenRender} key={key} />
+export const FirstLevelArchiveButton = ({ name, id }) => (
+  <ArchiveButton name={name} onClick={() => null} id={id} />
+)
 
 FirstLevelArchiveButton.propTypes = {
   name: PropTypes.string.isRequired,
@@ -75,14 +73,14 @@ export const SecondArchiveButton = ({
   onOpenNewTab,
   parentName,
   sectionId,
-  key,
+  id,
 }) => {
   const handleClick = useCallback(() => {
     const encodeParentName = encodeURIComponent(parentName)
     const encodeName = encodeURIComponent(name)
     onOpenNewTab(`/task/list/${encodeParentName}/${encodeName}/${sectionId}`)
   }, [onOpenNewTab, parentName, name, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} key={key} />
+  return <ArchiveButton name={name} onClick={handleClick} id={id} />
 }
 
 SecondArchiveButton.propTypes = {
@@ -99,7 +97,6 @@ export const OthersLevelsArchiveButton = ({
   parentName,
   id,
   sectionId,
-  key,
 }) => {
   const handleClick = useCallback(() => {
     const encodeParentName = encodeURIComponent(parentName)
@@ -110,7 +107,7 @@ export const OthersLevelsArchiveButton = ({
       }`,
     )
   }, [onOpenNewTab, parentName, name, id, sectionId])
-  return <ArchiveButton name={name} onClick={handleClick} key={key} />
+  return <ArchiveButton name={name} onClick={handleClick} id={id} />
 }
 
 OthersLevelsArchiveButton.propTypes = {
@@ -130,11 +127,10 @@ export const LevelToggleIcon = ({
   levelId,
 }) => {
   const { loading } = useContext(ContextArchiveLoading)
-  const isLoad = useMemo(() => loading === levelId, [levelId, loading])
   return (
-    <button className="pl-2 mr-2 " type="button" onClick={toggleDisplayedFlag}>
-      {isLoad ? (
-        <Loading width={'20px'} height={'20px'} />
+    <button className="pl-2 mr-1 " type="button" onClick={toggleDisplayedFlag}>
+      {loading.has(levelId) ? (
+        <Loading width={'16px'} height={'16px'} />
       ) : (
         <Icon
           icon={angleIcon}

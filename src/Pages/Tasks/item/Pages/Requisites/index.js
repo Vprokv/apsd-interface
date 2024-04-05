@@ -8,6 +8,8 @@ import { CustomValuesContext } from './constants'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { TASK_ITEM_REQUISITES } from '@/contants'
+import {CurrentTabContext} from "@Components/Logic/Tab";
+import {useParams} from "react-router-dom";
 
 export const Requisites = ({ permits }) => {
   const docContextType = useContext(DocumentTypeContext)
@@ -18,6 +20,8 @@ export const Requisites = ({ permits }) => {
   const [tabItemState, setTabItemState] = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
   })
+
+  const { currentTabID } = useContext(CurrentTabContext)
 
   const {
     fieldsWithLoadedProps,
@@ -33,6 +37,8 @@ export const Requisites = ({ permits }) => {
     documentState,
     setDocumentState,
   })
+
+  // console.log(JSON.stringify(values), 'values', currentTabID, useParams() )
 
   const {
     touched,
