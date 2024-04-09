@@ -30,6 +30,27 @@ import ExportDocumentWindowWrapper from '@/Pages/Tasks/archiveList/Components/Ex
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import styled from 'styled-components'
+import Form from '../../../components_ocean/Components/Forms'
+import Input from '../../../components_ocean/Components/Inputs/Input'
+import searchIcon from '../../../Icons/searchIcon'
+import { Select } from '../../../Components/Inputs/Select'
+import DatePickerComponent from '../../../Components/Inputs/DatePicker'
+import { useFilterForm } from '@/Utils/hooks/useFilterForm'
+import { emptyWrapper } from '../item/Pages/Objects/Components/CreateObjectsWindow'
+
+export const FilterForm = styled(Form)`
+  --form--elements_height: 32px;
+  display: grid;
+  grid-template-columns: 200px 200px 200px 200px 200px 200px;
+  grid-column-gap: 0.5rem;
+  margin-right: 5px;
+`
+
+export const SearchInput = styled(Input)`
+  flex-direction: row-reverse;
+  padding-left: 0.625rem;
+`
 
 const columns = [
   {
@@ -175,11 +196,20 @@ const ArchiveList = () => {
         openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openTabOrCreateNewTab],
   )
-
   const [open, setOpen] = useState(false)
   const [activeDocumentState, setActiveDocumentState] = useState({})
-  const [{ sortQuery = defaultSortQuery, ...tabState }, setTabState] =
-    useTabItem({ stateId: TASK_LIST_ARCHIVE })
+  const defaultFilter = useMemo(
+    () => ({
+      titleId: id,
+      sectionId: sectionId || undefined,
+    }),
+    [id, sectionId],
+  )
+
+  const [
+    { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
+    setTabState,
+  ] = useTabItem({ stateId: TASK_LIST_ARCHIVE })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST_ARCHIVE,
@@ -188,13 +218,7 @@ const ArchiveList = () => {
     defaultLimit: 10,
   })
 
-  const filter = useMemo(
-    () => ({
-      titleId: id,
-      sectionId: sectionId || undefined,
-    }),
-    [id, sectionId],
-  )
+  const [filterState, setFilterState] = useFilterForm(filter, setTabState)
 
   const loadData = useCallback(async () => {
     try {
@@ -218,10 +242,76 @@ const ArchiveList = () => {
     }
   }, [api, filter, getNotification, paginationState, sortQuery])
 
-  const [{ data: { content, total = 0 } = {}, loading }] = useAutoReload(
-    loadData,
-    tabState,
-    setTabState,
+  const [
+    { data: { content, total = 0, typeTom, authors, status } = {}, loading },
+  ] = useAutoReload(loadData, tabState, setTabState)
+
+  const fields = useMemo(
+    () => [
+      {
+        id: 'name',
+        placeholder: 'Наименование тома',
+        component: SearchInput,
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+      {
+        id: 'typeTom',
+        component: Select,
+        multiple: true,
+        valueKey: 'value',
+        labelKey: 'label',
+        placeholder: 'Вид тома',
+        show: true,
+        options: typeTom || [],
+      },
+      {
+        id: 'regNumber',
+        placeholder: 'Код/Рег. номер',
+        component: SearchInput,
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+      {
+        id: 'dateCreate',
+        component: (props) => (
+          <DatePickerComponent dateFormat={'DD.MM.YYYY HH:mm:ss'} {...props} />
+        ),
+        range: false,
+        placeholder: 'Дата создания',
+      },
+      {
+        id: 'author',
+        component: Select,
+        multiple: true,
+        valueKey: 'value',
+        labelKey: 'label',
+        placeholder: 'Автор',
+        show: true,
+        options: authors || [],
+      },
+      {
+        id: 'status',
+        component: Select,
+        multiple: true,
+        valueKey: 'value',
+        labelKey: 'label',
+        placeholder: 'Статус',
+        show: true,
+        options: status || [],
+      },
+    ],
+    [authors, status, typeTom],
   )
 
   const changeModalState = useCallback(
@@ -260,21 +350,29 @@ const ArchiveList = () => {
   return (
     <OpenWindowContext.Provider value={{ open, setOpen: changeModalState }}>
       <div className="px-4 pb-4 overflow-hidden flex-container">
-        <div className="flex items-center mb-2">
-          <div className=" font-size-14 justify-start break-word">
+        <div className="mb-2">
+          <div className="font-size-14 justify-start break-word">
             <span>Титул: </span>
             <span className="font-medium">{decodeName}</span>
           </div>
-          <div className="w-64 ml-auto  flex">
-            <Tips text="Выгрузить в Excel">
-              <LoadableButtonForIcon
-                className="color-green  ml-auto"
-                onClick={onExportToExcel}
-              >
-                <Icon icon={XlsIcon} />
-              </LoadableButtonForIcon>
-            </Tips>
-            <ColumnController columns={columns} id={TASK_LIST_ARCHIVE} />
+          <div className="mt-7 flex items-center">
+            <FilterForm
+              fields={fields}
+              value={filterState}
+              onInput={setFilterState}
+              inputWrapper={emptyWrapper}
+            />
+            <div className="w-64 ml-auto flex">
+              <Tips text="Выгрузить в Excel">
+                <LoadableButtonForIcon
+                  className="color-green ml-auto"
+                  onClick={onExportToExcel}
+                >
+                  <Icon icon={XlsIcon} />
+                </LoadableButtonForIcon>
+              </Tips>
+              <ColumnController columns={columns} id={TASK_LIST_ARCHIVE} />
+            </div>
           </div>
         </div>
         <ListTable
