@@ -285,7 +285,7 @@ const ArchiveList = () => {
       {
         id: 'dateCreate',
         component: (props) => (
-          <DatePickerComponent dateFormat={'DD:MM-YYYY HH:mm:ss'} {...props} />
+          <DatePickerComponent dateFormat={'DD.MM.YYYY HH:mm:ss'} {...props} />
         ),
         range: false,
         placeholder: 'Дата создания',
