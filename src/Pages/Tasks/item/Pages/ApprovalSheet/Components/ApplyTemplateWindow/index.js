@@ -19,8 +19,8 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import Header from "@Components/Components/Tables/ListTable/header";
-import {useBackendColumnSettingsState} from "@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState";
+import Header from '@Components/Components/Tables/ListTable/header'
+import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -146,13 +146,13 @@ const ApplyTemplateWindow = () => {
 
   return (
     <>
-      {/*<SecondaryBlueButton*/}
+      {/* <SecondaryBlueButton*/}
       {/*  disabled={permit}*/}
       {/*  className="font-size-12"*/}
       {/*  onClick={getTemplates}*/}
-      {/*>*/}
+      {/* >*/}
       {/*  Применить шаблон*/}
-      {/*</SecondaryBlueButton>*/}
+      {/* </SecondaryBlueButton>*/}
       <StandardSizeModalWindow
         title="Выбор шаблона"
         open={open}

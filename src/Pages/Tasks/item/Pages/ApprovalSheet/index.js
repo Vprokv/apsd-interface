@@ -209,8 +209,8 @@ const ApprovalSheet = () => {
             onInput={() => setAllIteration((v) => !v)}
           />
           <div className="flex items-center ml-auto">
-            {/*<CreateTemplateWindow jsonData={data} />*/}
-            {/*<ApplyTemplateWindow />*/}
+            {/* <CreateTemplateWindow jsonData={data} />*/}
+            {/* <ApplyTemplateWindow />*/}
             <Tips text={!state ? 'Свернуть все' : 'Развернуть все'}>
               <ButtonForIcon
                 className="color-text-secondary"

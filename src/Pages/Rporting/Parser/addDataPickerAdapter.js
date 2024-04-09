@@ -11,7 +11,7 @@ const addDataPickerAdapter = () => (fieldState) => () => {
       range: true, // делаем датапикер всегда range
       onInput: useCallback(
         ([before, after]) => {
-          //отправляем объект с динамическими ключами
+          // отправляем объект с динамическими ключами
           onInput({ [beforeId]: before, [afterId]: after }, id)
         },
         [afterId, beforeId, id, onInput],

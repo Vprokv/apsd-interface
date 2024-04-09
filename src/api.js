@@ -1,16 +1,16 @@
 import axios from 'axios'
 
-//development
+// development
 // const API_URL = 'http://192.168.42.105/'
 
-//stage
-//export const API_URL = 'http://10.20.56.47/'
+// stage
+// export const API_URL = 'http://10.20.56.47/'
 // export const API_URL = 'http://10.20.56.50/'
 
 // production
 // export const API_URL = 'https://psd.moesk.ru'
 
-//LKP
+// LKP
 // export const API_URL = 'http://10.20.56.61/'
 
 // config for master branch
@@ -24,7 +24,7 @@ axios.defaults.baseURL = API_URL
 export default function ({ token, ...apiParams }) {
   const api = axios.create({
     baseURL: API_URL,
-    timeout: 600000, //todo поднят по просьбе. Уточнить необходимость
+    timeout: 600000, // todo поднят по просьбе. Уточнить необходимость
     ...apiParams,
   })
 

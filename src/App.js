@@ -16,13 +16,10 @@ import {
   URL_USER_CHANGE_PASSWORD,
   URL_USER_OBJECT,
 } from './ApiList'
-import useTokenStorage, {
-} from '@Components/Logic/UseTokenAndUserStorage'
+import useTokenStorage from '@Components/Logic/UseTokenAndUserStorage'
 import { ApiContext, TokenContext } from './contants'
 import { DocumentItem, TaskItem, TaskNewItem } from './Pages/Tasks/item'
-import {
-  CREATE_PASSWORD_PAGE_PATH,
-} from './routePaths'
+import { CREATE_PASSWORD_PAGE_PATH } from './routePaths'
 import Search from '@/Pages/Search'
 import NotificationBox from '@/Components/Notificator/NotificationBox'
 import CreatePassword from '@/Pages/CreatePassword'

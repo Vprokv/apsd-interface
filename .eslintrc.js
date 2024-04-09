@@ -7,17 +7,10 @@ module.exports = {
     node: true,
     jest: true,
   },
-  parser: '@babel/eslint-parser',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    requireConfigFile: false,
     ecmaVersion: 12,
     sourceType: 'module',
-    babelOptions: {
-      presets: ['@babel/preset-react', ['babel-preset-react-app', false]],
-    },
   },
   extends: [
     'eslint:recommended',
@@ -27,7 +20,20 @@ module.exports = {
     'plugin:import/react',
     'plugin:react-hooks/recommended',
   ],
-  plugins: ['react', 'import'],
+  plugins: ['@typescript-eslint'],
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      extends: [
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+      ],
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.json'],
+      },
+    },
+  ],
   settings: {
     react: {
       version: 'detect',
@@ -70,10 +76,5 @@ module.exports = {
         ignoreDeclarationSort: true,
       },
     ],
-    'import/no-unresolved': ['error', { commonjs: true, amd: true }],
-    'import/named': 'error',
-    'import/namespace': 'error',
-    'import/default': 'error',
-    'import/export': 'error',
   },
 }

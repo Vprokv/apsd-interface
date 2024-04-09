@@ -171,7 +171,9 @@ const CreateTitleDepartment = ({
             }`}
             onClick={() => setSelected(id)}
           >
-            <div className="text-left h-full flex items-center py-2 ">{name}</div>
+            <div className="text-left h-full flex items-center py-2 ">
+              {name}
+            </div>
           </NestedButton>
         ),
     [selected],

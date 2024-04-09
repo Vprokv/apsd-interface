@@ -10,6 +10,6 @@ export const DefaultChildIcon = {
         // fill: 'currentColor',
       },
       children: [],
-    }
+    },
   ],
 }

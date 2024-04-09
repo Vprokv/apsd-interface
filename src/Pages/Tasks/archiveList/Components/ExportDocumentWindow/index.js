@@ -2,10 +2,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import {
-  URL_DOWNLOAD_CONTENT,
-  URL_ENTITY_LIST,
-} from '@/ApiList'
+import { URL_DOWNLOAD_CONTENT, URL_ENTITY_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -94,7 +91,7 @@ const ExportDocumentWindow = ({
         message: 'Выгрузка поступит на эл. почту',
       })
 
-      //todo непонятно надо ли выпилить скачивание
+      // todo непонятно надо ли выпилить скачивание
 
       // try {
       //   const result = await api.post(

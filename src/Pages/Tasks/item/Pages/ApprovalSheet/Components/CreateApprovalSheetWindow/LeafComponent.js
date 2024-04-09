@@ -163,19 +163,19 @@ const Leaf = (props) => {
       } = refProps.current
 
       if (status === 'new') {
-        //индекс эл-та массива который дропаем
+        // индекс эл-та массива который дропаем
         const dropIndex = parent.findIndex(({ id }) => id === data.id)
-        ///индекс эл-та массива куда дропаем дропаем
+        // /индекс эл-та массива куда дропаем дропаем
         const pushIndex = parent.findIndex(({ id }) => id === droppedId)
-        //ищем левую и правую границу массива
+        // ищем левую и правую границу массива
         const [left, right] = [dropIndex, pushIndex].sort((a, b) => a - b)
-        //минимальный индекс в базе с бэка
+        // минимальный индекс в базе с бэка
         const [{ index: minIndexInRow }] = [
           parent[dropIndex],
           parent[pushIndex],
         ].sort((a, b) => a.index - b.index)
 
-        //массив в котором будут изменения
+        // массив в котором будут изменения
         const editArray = [...parent].slice(left, right + 1)
 
         editArray.splice(
@@ -187,7 +187,7 @@ const Leaf = (props) => {
           ({ ['id']: row }) => row === droppedId,
         )
 
-        //высчитываем индекс, куда вставлять, в зависимости от направления дропа снизу вверх/сверху-вниз
+        // высчитываем индекс, куда вставлять, в зависимости от направления дропа снизу вверх/сверху-вниз
         const customIndex =
           droppingIndex === left
             ? dropIndex === left

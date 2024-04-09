@@ -5,7 +5,16 @@ import { defaultTaskIcon } from '@/Pages/Tasks/item/constants'
 import DefaultIcon from '@/Pages/Tasks/item/Icons/DefaultIcon.svg'
 
 export default {
-  handler: async ({ id, type, api, name, reloadDocument, getNotification, messagesMap, updateTabStateUpdaterByName }) => {
+  handler: async ({
+    id,
+    type,
+    api,
+    name,
+    reloadDocument,
+    getNotification,
+    messagesMap,
+    updateTabStateUpdaterByName,
+  }) => {
     try {
       const { status } = await api.post(URL_TASK_PROMOTE, {
         id,

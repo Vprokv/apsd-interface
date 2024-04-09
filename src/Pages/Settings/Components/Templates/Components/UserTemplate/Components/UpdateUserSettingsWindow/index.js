@@ -7,10 +7,7 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import Input from '@/Components/Fields/Input'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import {
-  URL_CREATE_UPDATE,
-  URL_REPORTS_BRANCH,
-} from '@/ApiList'
+import { URL_CREATE_UPDATE, URL_REPORTS_BRANCH } from '@/ApiList'
 import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
 import UserSelect, {
   AddUserOptionsFullName,
