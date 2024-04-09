@@ -30,6 +30,25 @@ import ExportDocumentWindowWrapper from '@/Pages/Tasks/archiveList/Components/Ex
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import styled from 'styled-components'
+import Form from '../../../components_ocean/Components/Forms'
+import Input from '../../../components_ocean/Components/Inputs/Input'
+import searchIcon from '../../../Icons/searchIcon'
+import LoadableSelect, { Select } from '../../../Components/Inputs/Select'
+import DatePickerComponent from '../../../Components/Inputs/DatePicker'
+import debounce from 'lodash/debounce'
+
+export const FilterForm = styled(Form)`
+  --form--elements_height: 32px;
+  display: grid;
+  grid-template-columns: 200px 200px 200px 200px 200px 200px;
+  grid-column-gap: 0.5rem;
+`
+
+export const SearchInput = styled(Input)`
+  flex-direction: row-reverse;
+  padding-left: 0.625rem;
+`
 
 const columns = [
   {
@@ -178,8 +197,18 @@ const ArchiveList = () => {
 
   const [open, setOpen] = useState(false)
   const [activeDocumentState, setActiveDocumentState] = useState({})
-  const [{ sortQuery = defaultSortQuery, ...tabState }, setTabState] =
-    useTabItem({ stateId: TASK_LIST_ARCHIVE })
+  const defaultFilter = useMemo(
+    () => ({
+      titleId: id,
+      sectionId: sectionId || undefined,
+    }),
+    [id, sectionId],
+  )
+
+  const [
+    { sortQuery = defaultSortQuery, filter = defaultFilter, ...tabState },
+    setTabState,
+  ] = useTabItem({ stateId: TASK_LIST_ARCHIVE })
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_LIST_ARCHIVE,
@@ -188,12 +217,19 @@ const ArchiveList = () => {
     defaultLimit: 10,
   })
 
-  const filter = useMemo(
-    () => ({
-      titleId: id,
-      sectionId: sectionId || undefined,
-    }),
-    [id, sectionId],
+  const onUpdateFilterTabState = useMemo(
+    () => debounce((filter) => setTabState({ filter }), 500),
+    [setTabState],
+  )
+
+  const [filterState, setFilterState] = useState(filter)
+
+  const onFilterInput = useCallback(
+    (filter) => {
+      setFilterState(filter)
+      onUpdateFilterTabState(filter)
+    },
+    [onUpdateFilterTabState],
   )
 
   const loadData = useCallback(async () => {
@@ -218,10 +254,136 @@ const ArchiveList = () => {
     }
   }, [api, filter, getNotification, paginationState, sortQuery])
 
-  const [{ data: { content, total = 0 } = {}, loading }] = useAutoReload(
-    loadData,
-    tabState,
-    setTabState,
+  const [
+    {
+      data: {
+        content,
+        total = 0,
+        /* typeTom = [],
+        authors = [],
+        status = [],*/
+      } = {},
+      loading,
+    },
+  ] = useAutoReload(loadData, tabState, setTabState)
+
+  const fields = useMemo(
+    () => [
+      {
+        id: 'name',
+        placeholder: 'Наименование тома',
+        component: SearchInput,
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+      /*      {
+        id: 'typeTom',
+        component: Select,
+        multiple: true,
+        valueKey: 'value',
+        labelKey: 'label',
+        placeholder: 'Вид тома',
+        show: true,
+        options: typeTom,
+      },*/
+      {
+        id: 'typeTom',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Вид тома',
+        valueKey: 'value',
+        labelKey: 'label',
+        loadFunction: async () => {
+          const {
+            data: { typeTom },
+          } = await api.post(URL_STORAGE_DOCUMENT, {
+            filter,
+          })
+
+          return typeTom
+        },
+      },
+      {
+        id: 'regNumber',
+        placeholder: 'Код/Рег. номер',
+        component: SearchInput,
+        children: (
+          <Icon
+            icon={searchIcon}
+            size={10}
+            className="color-text-secondary mr-2.5"
+          />
+        ),
+      },
+      {
+        id: 'dateCreate',
+        component: (props) => (
+          <DatePickerComponent dateFormat={'DD-MM-YYYY HH:mm:ss'} {...props} />
+        ),
+        range: false,
+        placeholder: 'Дата создания',
+      },
+      /*         {
+        id: 'authors',
+        component: Select,
+        multiple: true,
+        valueKey: 'value',
+        labelKey: 'label',
+        placeholder: 'Автор',
+        show: true,
+        options: authors,
+      },*/
+      {
+        id: 'authors',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Автор',
+        valueKey: 'value',
+        labelKey: 'label',
+        loadFunction: async () => {
+          const {
+            data: { authors },
+          } = await api.post(URL_STORAGE_DOCUMENT, {
+            filter,
+          })
+
+          return authors
+        },
+      },
+      /* {
+        id: 'status',
+        component: Select,
+        multiple: true,
+        valueKey: 'value',
+        labelKey: 'label',
+        placeholder: 'Статус',
+        show: true,
+        options: status,
+      },*/
+      {
+        id: 'status',
+        component: LoadableSelect,
+        multiple: true,
+        placeholder: 'Статус',
+        valueKey: 'value',
+        labelKey: 'label',
+        loadFunction: async () => {
+          const {
+            data: { status },
+          } = await api.post(URL_STORAGE_DOCUMENT, {
+            filter,
+          })
+
+          return status
+        },
+      },
+    ],
+    [api, filter],
   )
 
   const changeModalState = useCallback(
@@ -261,9 +423,17 @@ const ArchiveList = () => {
     <OpenWindowContext.Provider value={{ open, setOpen: changeModalState }}>
       <div className="px-4 pb-4 overflow-hidden flex-container">
         <div className="flex items-center mb-2">
-          <div className=" font-size-14 justify-start break-word">
-            <span>Титул: </span>
-            <span className="font-medium">{decodeName}</span>
+          <div className="">
+            <div className="font-size-14 justify-start break-word">
+              <span>Титул: </span>
+              <span className="font-medium">{decodeName}</span>
+            </div>
+            <FilterForm
+              className="mt-3"
+              fields={fields}
+              value={filterState}
+              onInput={onFilterInput}
+            />
           </div>
           <div className="w-64 ml-auto  flex">
             <Tips text="Выгрузить в Excel">
