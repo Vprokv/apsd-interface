@@ -86,11 +86,8 @@ const Remarks = () => {
     }
   }, [api, id, filter, sortQuery, getNotification])
 
-  const [{ data: { stages = [], tabPermit } = {}, loading }] = useAutoReload(
-    loadData,
-    tabState,
-    setTabState,
-  )
+  const [{ data: { stages = [], tabPermit } = {}, loading }, updateData] =
+    useAutoReload(loadData, tabState, setTabState)
 
   useEffect(() => {
     return (
@@ -188,14 +185,14 @@ const Remarks = () => {
             remarkIds,
             vault,
           })
+          updateData(await loadData())
           getNotification(defaultFunctionsMap[status]())
-          setTabState(setUnFetchedState())
         } catch (e) {
           const { response: { status, data } = {} } = e
           getNotification(defaultFunctionsMap[status](data))
         }
       },
-    [api, getNotification, setTabState],
+    [api, getNotification, loadData, updateData],
   )
 
   return (

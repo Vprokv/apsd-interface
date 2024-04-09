@@ -116,55 +116,52 @@ const TitleNameComponent = ({
     updateTabStateUpdaterByName,
   ])
 
-  const parseAnnulateArr = useCallback(({ tomId, type, childs, id, arr }) => {
-    if (tomId) {
-      arr.push({
-        documentType: type,
-        documentId: tomId,
-      })
-    }
-
-    if (childs?.length > 0) {
-      childs.forEach((val) => parseAnnulateArr({ ...val, arr }))
-    }
-  }, [])
-
-  const annulateIds = useMemo(() => {
-    if (selectState.includes(({ id }) => id === ParentValue.id)) {
-      const arr = []
-
-      parseAnnulateArr({ ...ParentValue, arr })
-
-      return arr
-    } else {
+  const annulmentObjects = useMemo(() => {
+    if (!selectState.length) {
       return [
         {
           documentType: ParentValue.type,
           documentId: ParentValue.tomId,
         },
       ]
+    } else {
+      return selectState.map((val) => {
+        const {
+          action: { annulment },
+          tomId,
+          type,
+        } = val
+
+        return (
+          annulment &&
+          tomId && {
+            documentType: type,
+            documentId: tomId,
+          }
+        )
+      })
     }
-  }, [ParentValue, parseAnnulateArr, selectState])
+  }, [ParentValue, selectState])
 
   const onAnnulate = useCallback(async () => {
     try {
       setLoading(true)
       closeContextMenu()
       const { status } = await api.post(URL_TITLE_CONTAIN_ANNULMENT, {
-        annulmentObjects: annulateIds,
+        annulmentObjects,
       })
       getNotification(customMessagesSendFuncMap[status]())
 
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
     } catch (e) {
-      const { response: { status, data: { trace } } = {} } = e
+      const { response: { status = 0, data: { trace = '' } } = {} } = e
       getNotification(customMessagesSendFuncMap[status](trace))
       setLoading(false)
     } finally {
       setLoading(false)
     }
   }, [
-    annulateIds,
+    annulmentObjects,
     api,
     closeContextMenu,
     getNotification,
