@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { useParams } from 'react-router-dom'

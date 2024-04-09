@@ -135,7 +135,7 @@ const ViewAdditionsRemarks = ({
     <StandardSizeModalWindow
       open={open}
       onClose={onClose}
-      title={'Замечания доп. согласующих'}
+      title={'Ознакомьтесь с замечаниями'}
     >
       <div className="flex flex-col overflow-hidden h-full w-full">
         <ScrollBar className="w-full">

@@ -161,7 +161,6 @@ const Document = () => {
   }, [values])
 
   const {
-    formProps: { rules },
     documentState: { validationErrors },
   } = useRequisitesInfo({
     TASK_ITEM_NEW_DOCUMENT,
@@ -171,7 +170,7 @@ const Document = () => {
     documentState: tabState,
     setDocumentState: setTabState,
   })
-  //todo обсудить необходимость делать через validator
+  // todo обсудить необходимость делать через validator
 
   const documentHandlers = useMemo(
     () => ({

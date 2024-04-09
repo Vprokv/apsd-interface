@@ -107,7 +107,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
     documentState,
     setDocumentState,
   })
-  //todo обсудить необходимость делать через validator
+  // todo обсудить необходимость делать через validator
 
   // const errors = validator.validate(refValues.current, rules)
 

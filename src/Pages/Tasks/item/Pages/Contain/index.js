@@ -501,7 +501,7 @@ const Contain = () => {
             updateTreePluginState={updateTreePluginState}
           />
         </ShowContentByTypeButtonContext.Provider>
-        <ContentWindow //TODO объединить окна и сделать push ActionComponent
+        <ContentWindow // TODO объединить окна и сделать push ActionComponent
           open={renderPreviewWindow}
           onClose={closeWindow}
           value={selectState}

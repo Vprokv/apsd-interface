@@ -39,7 +39,7 @@ const Pagination = ({
   const buttons = useMemo(() => {
     const arr = []
     const nextPageValue = Math.ceil((total - page * limit) / limit) || 0
-    //ищем есть ли справа 2 значения от текущего положения
+    // ищем есть ли справа 2 значения от текущего положения
     // если есть оставляем 0, если нет
     // может нам надо проверить еще и, если есть справа налево два?
     const gap =
