@@ -37,6 +37,7 @@ import searchIcon from '../../../Icons/searchIcon'
 import LoadableSelect, { Select } from '../../../Components/Inputs/Select'
 import DatePickerComponent from '../../../Components/Inputs/DatePicker'
 import debounce from 'lodash/debounce'
+import { useFilterForm } from '@/Utils/hooks/useFilterForm'
 
 export const FilterForm = styled(Form)`
   --form--elements_height: 32px;
@@ -217,6 +218,9 @@ const ArchiveList = () => {
     defaultLimit: 10,
   })
 
+  // TODO заюзать отдельным компонентом FilterForm
+  useFilterForm()
+
   const onUpdateFilterTabState = useMemo(
     () => debounce((filter) => setTabState({ filter }), 500),
     [setTabState],
@@ -259,6 +263,7 @@ const ArchiveList = () => {
       data: {
         content,
         total = 0,
+        typeTom,
         /* typeTom = [],
         authors = [],
         status = [],*/
@@ -281,7 +286,7 @@ const ArchiveList = () => {
           />
         ),
       },
-      /*      {
+      {
         id: 'typeTom',
         component: Select,
         multiple: true,
@@ -290,23 +295,6 @@ const ArchiveList = () => {
         placeholder: 'Вид тома',
         show: true,
         options: typeTom,
-      },*/
-      {
-        id: 'typeTom',
-        component: LoadableSelect,
-        multiple: true,
-        placeholder: 'Вид тома',
-        valueKey: 'value',
-        labelKey: 'label',
-        loadFunction: async () => {
-          const {
-            data: { typeTom },
-          } = await api.post(URL_STORAGE_DOCUMENT, {
-            filter,
-          })
-
-          return typeTom
-        },
       },
       {
         id: 'regNumber',
@@ -383,7 +371,7 @@ const ArchiveList = () => {
         },
       },
     ],
-    [api, filter],
+    [api, filter, typeTom],
   )
 
   const changeModalState = useCallback(
