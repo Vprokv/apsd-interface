@@ -1,17 +1,14 @@
 import PropTypes from 'prop-types'
-import ValidationConsumer from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/ValidationConsumer'
 import DatePicker from '@/Components/Inputs/DatePicker'
+import LabelLessContainer from '@/Components/Forms/ValidationStateUi/LabelLessContainer'
 
-const DatePickerWrapper = (props) => {
-  return (
-    <ValidationConsumer path={`${props.rowIndex}.${props.id}`}>
-      <DatePicker {...props} />
-    </ValidationConsumer>
-  )
-}
+const DatePickerWrapper = (props) => (
+  <LabelLessContainer id={props.id}>
+    {(validationState) => <DatePicker {...props} {...validationState} />}
+  </LabelLessContainer>
+)
 
 DatePickerWrapper.propTypes = {
-  rowIndex: PropTypes.string,
   id: PropTypes.string,
 }
 

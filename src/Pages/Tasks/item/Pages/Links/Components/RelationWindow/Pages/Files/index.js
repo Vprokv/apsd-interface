@@ -25,15 +25,8 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { ContainerContext } from '@Components/constants'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
-import WithValidationHoc from '@Components/Logic/Validator'
-import {
-  VALIDATION_RULE_REQUIRED,
-  VALIDATION_RULE_REQUIRED_IF,
-} from '@Components/Logic/Validator/constants'
 import RowComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/RowComponent'
 import SelectWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/SelectWrapper'
-import { get } from '@Components/Utils/ObjectPath'
-import { FieldValidationStateContext } from '@/Components/InputWrapperRefactor/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
@@ -41,6 +34,10 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWind
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import DatePickerWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/DatePickerWrapper'
 import dayjs from 'dayjs'
+import { rules } from './configs'
+import { Validator } from '@Components/Logic/Validator/ValidatorNext'
+import ValidationConsumerRowComponent from '@/Components/Forms/Validation/ValidationConsumerRowComponent'
+import { useShowErrorAlertOnSubmitFailed } from '@/Components/Forms/useShowErrorAlertOnSubmitFailed'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -52,55 +49,6 @@ const customMessagesFuncMap = {
   },
 }
 
-const rules = {
-  '*.linkType': [{ name: VALIDATION_RULE_REQUIRED }],
-  '*.regNumber': [
-    {
-      name: VALIDATION_RULE_REQUIRED_IF,
-      args: {
-        fieldKey: 'linkType',
-        fieldValue: [
-          'Письмо о согласовании',
-          'Сопроводительное письмо',
-          'Свод замечаний',
-          'Ответ на замечание',
-        ],
-      },
-    },
-  ],
-  '*.regDate': [
-    {
-      name: VALIDATION_RULE_REQUIRED_IF,
-      args: {
-        fieldKey: 'linkType',
-        fieldValue: [
-          'Письмо о согласовании',
-          'Сопроводительное письмо',
-          'Свод замечаний',
-          'Ответ на замечание',
-        ],
-      },
-    },
-  ],
-}
-
-export const validatorFiles = {
-  [VALIDATION_RULE_REQUIRED_IF]: {
-    implicit: ({
-      args: { fieldKey, fieldValue },
-      formPayload = [],
-      index = 1,
-    }) => {
-      if (formPayload.length) {
-        const targetField =
-          formPayload[Math.floor(index / 2.1)][fieldKey]?.dss_name
-        return fieldValue.includes(targetField)
-      }
-    },
-    message: () => 'Заполните обязательные поля',
-    rule: VALIDATION_RULE_REQUIRED,
-  },
-}
 const plugins = {
   movePlugin: {
     id: TASK_ITEM_LINK_FILES,
@@ -109,8 +57,7 @@ const plugins = {
   },
 }
 
-const Files = (props) => {
-  const { validateForm, validationErrors } = props
+const Files = () => {
   const userObject = useRecoilValue(userAtom)
   const api = useContext(ApiContext)
   const close = useContext(StateContext)
@@ -118,6 +65,9 @@ const Files = (props) => {
   const context = useContext(ContainerContext)
   const [files, setFiles] = useState([])
   const getNotification = useOpenNotification()
+  const [validationState, setValidationState] = useState({})
+
+  useShowErrorAlertOnSubmitFailed(validationState)
 
   const onFileInput = useCallback((file) => {
     setFiles((prev) => {
@@ -150,23 +100,8 @@ const Files = (props) => {
     [],
   )
 
-  const getErrors = useCallback(
-    (path) => {
-      return get(path, validationErrors)[0] ?? ''
-    },
-    [validationErrors],
-  )
 
   const save = useCallback(async () => {
-    const res = validateForm(files)
-
-    // console.log(res, 'res')
-
-    if (res instanceof Error) {
-      return getNotification(
-        customMessagesFuncMap[412]('Заполните обязательные поля'),
-      )
-    }
     try {
       const response = await api.post(URL_LINK_CREATE, {
         linkObjects: files.map(
@@ -200,7 +135,6 @@ const Files = (props) => {
       getNotification(customMessagesFuncMap[status](data))
     }
   }, [
-    validateForm,
     files,
     getNotification,
     api,
@@ -298,20 +232,38 @@ const Files = (props) => {
           onInput={onFileInput}
         />
       </div>
-      <ScrollBar className="mt-8">
-        <FieldValidationStateContext.Provider value={getErrors}>
-          <ListTable
-            plugins={plugins}
-            rules={rules}
-            columns={columns}
-            onInput={setFiles}
-            value={files}
-            headerCellComponent={HeaderCell}
-            onSubmit={save}
-          />
-        </FieldValidationStateContext.Provider>
-      </ScrollBar>
-      <UnderButtons leftFunc={close} rightLabel="Cвязать" rightFunc={save} />
+      <Validator
+        rules={rules}
+        value={files}
+        onSubmit={save}
+        validationState={validationState}
+        setValidationState={useCallback(
+          (validationState) =>
+            setValidationState((s) => ({ ...s, ...validationState })),
+          [],
+        )}
+      >
+        {({ onSubmit }) => (
+          <>
+            <ScrollBar className="mt-8">
+              <ListTable
+                plugins={plugins}
+                columns={columns}
+                onInput={setFiles}
+                value={files}
+                headerCellComponent={HeaderCell}
+                onSubmit={save}
+                rowComponent={ValidationConsumerRowComponent}
+              />
+            </ScrollBar>
+            <UnderButtons
+              leftFunc={close}
+              rightLabel="Cвязать"
+              rightFunc={onSubmit}
+            />
+          </>
+        )}
+      </Validator>
     </>
   )
 }
@@ -320,13 +272,4 @@ Files.propTypes = {
   validationErrors: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   hasError: PropTypes.bool,
 }
-
-const WithValidationForm = WithValidationHoc(Files)
-export default (props) => (
-  <WithValidationForm
-    validators={validatorFiles}
-    {...props}
-    rules={rules}
-    value={[]}
-  />
-)
+export default Files

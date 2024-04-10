@@ -1,17 +1,14 @@
 import PropTypes from 'prop-types'
-import ValidationConsumer from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/ValidationConsumer'
+import LabelLessContainer from '@/Components/Forms/ValidationStateUi/LabelLessContainer'
 import Input from '@/Components/Fields/Input'
 
-const InputWrapper = (props) => {
-  return (
-    <ValidationConsumer path={`${props.rowIndex}.${props.id}`}>
-      <Input {...props} />
-    </ValidationConsumer>
-  )
-}
+const InputWrapper = (props) => (
+  <LabelLessContainer id={props.id}>
+    {(validationState) => <Input {...props} {...validationState} />}
+  </LabelLessContainer>
+)
 
 InputWrapper.propTypes = {
-  rowIndex: PropTypes.string,
   id: PropTypes.string,
 }
 
