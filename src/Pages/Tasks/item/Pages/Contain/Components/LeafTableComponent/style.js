@@ -18,7 +18,7 @@ export const StyledItem = styled.button.attrs({ type: 'button' })`
 `
 
 export const ThreeDotButton = styled.button`
-  height: 15px;APSD-1867 Улучшить визуальный вид кнопки "Передать состав титула" в ЛКП и АПСД
+  height: 15px;
   width: 15px;
   background-color: var(--blue-1);
   border-radius: 50%;
@@ -27,12 +27,9 @@ export const ThreeDotButton = styled.button`
 `
 
 export const ContHover = styled.div`
-  //position: absolute;
-  //z-index: 4;
   display: flex;
   height: 100%;
   transition: opacity ease-in-out 250ms;
-  //border: 2px solid red;
   opacity: var(--cont-hover-opacity, 0);
 
   :not(&:hover) {
