@@ -174,6 +174,8 @@ export const URL_BUSINESS_DOCUMENT_RECALL_FOR_REVISION =
 export const URL_BUSINESS_DOCUMENT_STAGE_CHANGE =
   'apsd/business/document/stage/change'
 export const URL_BUSINESS_DOCUMENT_CANCEL = '/apsd/business/document/cancel'
+export const URL_BUSINESS_DOCUMENT_ROUTE_CHANGE =
+  'apsd/business/document/rout/change'
 
 export const URL_PREVIEW_VERSION = 'preview/pdf/ddt_apsd_content_version'
 export const URL_PREVIEW_DOCUMENT = 'preview/pdf/ddt_document_content'

@@ -115,4 +115,5 @@ export const defaultTaskIcon = {
   on_consider: Repeat,
   print_card: PrintIcon,
   change_stage: ExchangeIcon,
+  change_rout: ExchangeIcon,
 }

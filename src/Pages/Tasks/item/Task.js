@@ -77,6 +77,7 @@ import useReadCurrentChildrenTabContext from '@/Pages/Tasks/item/DocumentHandler
 import ViewAdditionsRemarks from '@/Pages/Tasks/item/Components/ViewAdditionaRemarks'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
+import ChangeRouteWindow from '@/Pages/Tasks/item/Components/ChangeRouteWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -628,6 +629,15 @@ const Task = () => {
             ),
           }),
         icon: defaultTaskIcon['reject_approve'],
+      },
+      change_rout: {
+        icon: defaultTaskIcon['change_rout'],
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <ChangeRouteWindow {...props} reloadData={reloadData} />
+            ),
+          }),
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_BUSINESS_DOCUMENT_STAGE_CHANGE, URL_ENTITY_LIST } from '@/ApiList'
+import { URL_BUSINESS_DOCUMENT_ROUTE_CHANGE, URL_ENTITY_LIST } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -14,6 +14,7 @@ import ModalWindowWrapper from '@/Components/ModalWindow'
 import { Validation } from '@Components/Logic/Validator'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
+import CheckBox from '@/Components/Inputs/CheckBox'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -34,9 +35,9 @@ const rules = {
   stageId: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
-const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
+const ChangeRouteWindow = ({ open, onClose, documentId, reloadData }) => {
   const api = useContext(ApiContext)
-  const [filter, setFilter] = useState({})
+  const [filter, setFilter] = useState({ pdInIa: false })
   const getNotification = useOpenNotification()
   const [openSmall, setOpenSmall] = useState(false)
 
@@ -50,15 +51,20 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
   const fields = useMemo(
     () => [
       {
-        id: 'stageId',
-        label: 'Выберите нову стадию тома',
+        id: 'pdInIa',
+        component: CheckBox,
+        text: 'ПД в ИА',
+      },
+      {
+        id: 'branchId',
+        label: 'Филиал (Исполнителя)',
         placeholder: 'Выберите нову стадию тома',
         component: LoadableSelect,
         valueKey: 'r_object_id',
         labelKey: 'dss_name',
         loadFunction: async (query) => {
           const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_tom_stage',
+            type: 'ddt_branch',
             query,
           })
           return data
@@ -70,9 +76,9 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
 
   const onSave = useCallback(async () => {
     try {
-      const { status } = await api.post(URL_BUSINESS_DOCUMENT_STAGE_CHANGE, {
+      const { status } = await api.post(URL_BUSINESS_DOCUMENT_ROUTE_CHANGE, {
         documentId,
-        stageId: filter.stageId,
+        ...filter,
       })
       getNotification(customMessagesFuncMap[status]())
       reloadData()
@@ -81,10 +87,14 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
       const { response: { status = 500, data = '' } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
     }
-  }, [api, documentId, filter.stageId, getNotification, onClose, reloadData])
+  }, [api, documentId, filter, getNotification, onClose, reloadData])
 
   return (
-    <ModalWindow title="Смена стадии тома" open={open} onClose={onClose}>
+    <ModalWindow
+      title="Смена маршрута рассмотрения"
+      open={open}
+      onClose={onClose}
+    >
       <div className="flex flex-col overflow-hidden ">
         <Validation
           fields={fields}
@@ -116,7 +126,7 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
                 >
                   <>
                     <div className="flex flex-col overflow-hidden h-full mb-4">
-                      Вы уверены, что хотите сменить стадию тома ?
+                      Вы уверены, что хотите сменить маршрут согласования ?
                     </div>
                     <UnderButtons
                       className={'w-full'}
@@ -138,6 +148,6 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
   )
 }
 
-ChangeStageWindow.propTypes = {}
+ChangeRouteWindow.propTypes = {}
 
-export default ChangeStageWindow
+export default ChangeRouteWindow

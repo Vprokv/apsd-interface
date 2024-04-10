@@ -71,6 +71,7 @@ import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 import TaskListByDocument from '@/Pages/Tasks/item/Components/TaskListByDocument'
+import ChangeRouteWindow from '@/Pages/Tasks/item/Components/ChangeRouteWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -365,6 +366,15 @@ const Document = () => {
             ),
           }),
         icon: defaultTaskIcon['reject_approve'],
+      },
+      change_rout: {
+        icon: defaultTaskIcon['change_rout'],
+        handler: () =>
+          setComponent({
+            Component: (props) => (
+              <ChangeRouteWindow {...props} reloadData={reloadData} />
+            ),
+          }),
       },
       defaultHandler: ({ name }) => ({
         handler: async () => {
