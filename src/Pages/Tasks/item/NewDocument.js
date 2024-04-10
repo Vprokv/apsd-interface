@@ -1,4 +1,11 @@
-import { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import {
   ApiContext,
@@ -6,7 +13,11 @@ import {
   TASK_ITEM_REQUISITES,
 } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { URL_DOCUMENT_CLASSIFICATION, URL_DOCUMENT_CREATE } from '@/ApiList'
+import {
+  URL_DOCUMENT_CLASSIFICATION,
+  URL_DOCUMENT_CREATE,
+  URL_TITLE_CHECK_DOUBLE,
+} from '@/ApiList'
 import { defaultPages, DocumentTypeContext } from './constants'
 import { useNavigate, useParams } from 'react-router-dom'
 import Document from './Components/Layout'
@@ -28,6 +39,7 @@ import useTabInitialState from '@Components/Logic/Tab/useTabInitialState'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 import Validator from '@Components/Logic/Validator/Validator'
+import CheckDoubleWindow from '@/Pages/Tasks/item/Components/CheckDobleWindow'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -45,10 +57,14 @@ const customMessagesFuncMap = {
   },
 }
 
+const titleName = 'ddt_startup_complex_type_doc'
+
 export const NewTaskItem = ({ classificationId, type }) => {
   const api = useContext(ApiContext)
   const navigate = useNavigate()
   const getNotification = useOpenNotification()
+  const [ActionComponent, setActionComponent] = useState(null)
+  const closeAction = useCallback(() => setActionComponent(null), [])
   const validator = new Validator()
   const [tabItemState, setTabItemState] = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
@@ -107,7 +123,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
     documentState,
     setDocumentState,
   })
-  //todo обсудить необходимость делать через validator
+  // todo обсудить необходимость делать через validator
 
   // const errors = validator.validate(refValues.current, rules)
 
@@ -124,6 +140,27 @@ export const NewTaskItem = ({ classificationId, type }) => {
           }
 
           try {
+            if (type === titleName) {
+              const { data } = await api.post(URL_TITLE_CHECK_DOUBLE, {
+                sapCode: refValues.current.dss_ipr_number,
+              })
+
+              if (data.length) {
+                return setActionComponent({
+                  Component: (props) => (
+                    <CheckDoubleWindow
+                      {...props}
+                      data={data}
+                      values={refValues.current}
+                      type={type}
+                      initialState={initialState}
+                      setDocumentState={setDocumentState}
+                    />
+                  ),
+                })
+              }
+            }
+
             const {
               status,
               data: { id },
@@ -186,6 +223,9 @@ export const NewTaskItem = ({ classificationId, type }) => {
           <DocumentActions documentActions={wrappedDocumentActions} />
         </SideBar>
       </Document>
+      {ActionComponent && (
+        <ActionComponent.Component open={true} onClose={closeAction} />
+      )}
     </DocumentTypeContext.Provider>
   )
 }

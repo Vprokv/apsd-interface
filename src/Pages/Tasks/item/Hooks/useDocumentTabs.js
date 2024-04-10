@@ -19,7 +19,11 @@ const useDocumentTabs = (documentTabs, pages) =>
             </NavigationItem>,
           )
           acc.routes.push(
-            <Route key={path} path={path} element={<Component permits={permits} />} />,
+            <Route
+              key={path}
+              path={path}
+              element={<Component permits={permits} />}
+            />,
           )
         }
         return acc

@@ -8,8 +8,7 @@ import { CustomValuesContext } from './constants'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { TASK_ITEM_REQUISITES } from '@/contants'
-import {CurrentTabContext} from "@Components/Logic/Tab";
-import {useParams} from "react-router-dom";
+import { CurrentTabContext } from '@Components/Logic/Tab'
 
 export const Requisites = ({ permits }) => {
   const docContextType = useContext(DocumentTypeContext)

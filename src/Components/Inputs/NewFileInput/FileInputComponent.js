@@ -1,8 +1,5 @@
 import PropTypes from 'prop-types'
-import {
-  ModalSubmitButton,
-  RejectedFilesModalWindow,
-} from './style'
+import { ModalSubmitButton, RejectedFilesModalWindow } from './style'
 import { FILE_INPUT_ERROR_EXTENSION, FILE_INPUT_ERROR_SIZE } from './constants'
 import Option from './Option'
 import { useCallback } from 'react'

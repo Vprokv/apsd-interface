@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import {ApiContext, TASK_ITEM_LINK, TokenContext} from '@/contants'
+import { ApiContext, TASK_ITEM_LINK, TokenContext } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
-  URL_DOWNLOAD_FILE, URL_DOWNLOAD_GET_FILE,
+  URL_DOWNLOAD_GET_FILE,
   URL_ENTITY_LIST,
   URL_LINK_DELETE,
   URL_LINK_LIST,
@@ -25,7 +25,6 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import LinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow'
 import EditLinksWindow from '@/Pages/Tasks/item/Pages/Links/Components/EditLinksWindow'
 import DownloadIcon from '@/Icons/DownloadIcon'
-import downloadFile from '@/Utils/DownloadFile'
 import { FormWindow } from '@/Components/ModalWindow'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import ViewIcon from '@/Icons/ViewIcon'
@@ -46,7 +45,7 @@ import ColumnController from '@/Components/ListTableComponents/ColumnController'
 import ShareIcon from '@/Icons/ShareIcon'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
-import {API_URL} from "@/api";
+import { API_URL } from '@/api'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,

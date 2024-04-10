@@ -185,12 +185,12 @@ const Task = () => {
     stateId: TASK_ITEM_REQUISITES,
   })
 
-  //data
-  //taskId
-  //signal ?
-  //refValues.current
-  //type
-  //documentId
+  // data
+  // taskId
+  // signal ?
+  // refValues.current
+  // type
+  // documentId
   // data (task state)
 
   // actions
@@ -207,7 +207,7 @@ const Task = () => {
   // currentTabIndex
   // onClose - стейт модалки
 
-  //todo дополнить экшенами из окон
+  // todo дополнить экшенами из окон
 
   // task actions
   // reject_sap_prepare
@@ -242,7 +242,7 @@ const Task = () => {
     documentState: tabState,
     setDocumentState: setTabState,
   })
-  //todo обсудить необходимость делать через validator
+  // todo обсудить необходимость делать через validator
 
   const TaskHandlers = useMemo(
     () => ({

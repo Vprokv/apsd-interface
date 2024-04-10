@@ -34,15 +34,17 @@ import styled from 'styled-components'
 import Form from '../../../components_ocean/Components/Forms'
 import Input from '../../../components_ocean/Components/Inputs/Input'
 import searchIcon from '../../../Icons/searchIcon'
-import LoadableSelect, { Select } from '../../../Components/Inputs/Select'
+import { Select } from '../../../Components/Inputs/Select'
 import DatePickerComponent from '../../../Components/Inputs/DatePicker'
-import debounce from 'lodash/debounce'
+import { useFilterForm } from '@/Utils/hooks/useFilterForm'
+import { emptyWrapper } from '../item/Pages/Objects/Components/CreateObjectsWindow'
 
 export const FilterForm = styled(Form)`
   --form--elements_height: 32px;
   display: grid;
   grid-template-columns: 200px 200px 200px 200px 200px 200px;
   grid-column-gap: 0.5rem;
+  margin-right: 5px;
 `
 
 export const SearchInput = styled(Input)`
@@ -194,7 +196,6 @@ const ArchiveList = () => {
         openTabOrCreateNewTab(navigate(`/document/${id}/${type}`)),
     [navigate, openTabOrCreateNewTab],
   )
-
   const [open, setOpen] = useState(false)
   const [activeDocumentState, setActiveDocumentState] = useState({})
   const defaultFilter = useMemo(
@@ -217,20 +218,7 @@ const ArchiveList = () => {
     defaultLimit: 10,
   })
 
-  const onUpdateFilterTabState = useMemo(
-    () => debounce((filter) => setTabState({ filter }), 500),
-    [setTabState],
-  )
-
-  const [filterState, setFilterState] = useState(filter)
-
-  const onFilterInput = useCallback(
-    (filter) => {
-      setFilterState(filter)
-      onUpdateFilterTabState(filter)
-    },
-    [onUpdateFilterTabState],
-  )
+  const [filterState, setFilterState] = useFilterForm(filter, setTabState)
 
   const loadData = useCallback(async () => {
     try {
@@ -255,16 +243,7 @@ const ArchiveList = () => {
   }, [api, filter, getNotification, paginationState, sortQuery])
 
   const [
-    {
-      data: {
-        content,
-        total = 0,
-        /* typeTom = [],
-        authors = [],
-        status = [],*/
-      } = {},
-      loading,
-    },
+    { data: { content, total = 0, typeTom, authors, status } = {}, loading },
   ] = useAutoReload(loadData, tabState, setTabState)
 
   const fields = useMemo(
@@ -281,7 +260,7 @@ const ArchiveList = () => {
           />
         ),
       },
-      /*      {
+      {
         id: 'typeTom',
         component: Select,
         multiple: true,
@@ -289,24 +268,7 @@ const ArchiveList = () => {
         labelKey: 'label',
         placeholder: 'Вид тома',
         show: true,
-        options: typeTom,
-      },*/
-      {
-        id: 'typeTom',
-        component: LoadableSelect,
-        multiple: true,
-        placeholder: 'Вид тома',
-        valueKey: 'value',
-        labelKey: 'label',
-        loadFunction: async () => {
-          const {
-            data: { typeTom },
-          } = await api.post(URL_STORAGE_DOCUMENT, {
-            filter,
-          })
-
-          return typeTom
-        },
+        options: typeTom || [],
       },
       {
         id: 'regNumber',
@@ -323,39 +285,22 @@ const ArchiveList = () => {
       {
         id: 'dateCreate',
         component: (props) => (
-          <DatePickerComponent dateFormat={'DD-MM-YYYY HH:mm:ss'} {...props} />
+          <DatePickerComponent dateFormat={'DD.MM.YYYY HH:mm:ss'} {...props} />
         ),
         range: false,
         placeholder: 'Дата создания',
       },
-      /*         {
-        id: 'authors',
+      {
+        id: 'author',
         component: Select,
         multiple: true,
         valueKey: 'value',
         labelKey: 'label',
         placeholder: 'Автор',
         show: true,
-        options: authors,
-      },*/
-      {
-        id: 'authors',
-        component: LoadableSelect,
-        multiple: true,
-        placeholder: 'Автор',
-        valueKey: 'value',
-        labelKey: 'label',
-        loadFunction: async () => {
-          const {
-            data: { authors },
-          } = await api.post(URL_STORAGE_DOCUMENT, {
-            filter,
-          })
-
-          return authors
-        },
+        options: authors || [],
       },
-      /* {
+      {
         id: 'status',
         component: Select,
         multiple: true,
@@ -363,27 +308,10 @@ const ArchiveList = () => {
         labelKey: 'label',
         placeholder: 'Статус',
         show: true,
-        options: status,
-      },*/
-      {
-        id: 'status',
-        component: LoadableSelect,
-        multiple: true,
-        placeholder: 'Статус',
-        valueKey: 'value',
-        labelKey: 'label',
-        loadFunction: async () => {
-          const {
-            data: { status },
-          } = await api.post(URL_STORAGE_DOCUMENT, {
-            filter,
-          })
-
-          return status
-        },
+        options: status || [],
       },
     ],
-    [api, filter],
+    [authors, status, typeTom],
   )
 
   const changeModalState = useCallback(
@@ -422,29 +350,29 @@ const ArchiveList = () => {
   return (
     <OpenWindowContext.Provider value={{ open, setOpen: changeModalState }}>
       <div className="px-4 pb-4 overflow-hidden flex-container">
-        <div className="flex items-center mb-2">
-          <div className="">
-            <div className="font-size-14 justify-start break-word">
-              <span>Титул: </span>
-              <span className="font-medium">{decodeName}</span>
-            </div>
+        <div className="mb-2">
+          <div className="font-size-14 justify-start break-word">
+            <span>Титул: </span>
+            <span className="font-medium">{decodeName}</span>
+          </div>
+          <div className="mt-7 flex items-center">
             <FilterForm
-              className="mt-3"
               fields={fields}
               value={filterState}
-              onInput={onFilterInput}
+              onInput={setFilterState}
+              inputWrapper={emptyWrapper}
             />
-          </div>
-          <div className="w-64 ml-auto  flex">
-            <Tips text="Выгрузить в Excel">
-              <LoadableButtonForIcon
-                className="color-green  ml-auto"
-                onClick={onExportToExcel}
-              >
-                <Icon icon={XlsIcon} />
-              </LoadableButtonForIcon>
-            </Tips>
-            <ColumnController columns={columns} id={TASK_LIST_ARCHIVE} />
+            <div className="w-64 ml-auto flex">
+              <Tips text="Выгрузить в Excel">
+                <LoadableButtonForIcon
+                  className="color-green ml-auto"
+                  onClick={onExportToExcel}
+                >
+                  <Icon icon={XlsIcon} />
+                </LoadableButtonForIcon>
+              </Tips>
+              <ColumnController columns={columns} id={TASK_LIST_ARCHIVE} />
+            </div>
           </div>
         </div>
         <ListTable

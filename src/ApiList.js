@@ -23,6 +23,8 @@ export const URL_TASK_LIST_V2 = '/apsd/task/v2/list'
 export const URL_TASK_LIST_FILTERS = '/apsd/task/v2/filter'
 export const URL_TASK_STATISTIC = '/sedo/task/statistic'
 export const URL_TASK_PROMOTE = '/sedo/task/promote'
+export const URL_TITLE_CHECK_DOUBLE = 'apsd/title/check_for_double'
+
 // ITEM
 // TITLE CONTAIN
 export const URL_TITLE_CONTAIN = '/apsd/structure/list'
