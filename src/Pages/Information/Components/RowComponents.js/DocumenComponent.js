@@ -2,13 +2,13 @@ import React, { useCallback, useContext, useState } from 'react'
 import {
   ContHover,
   LeafContainer,
+  StyledContextMenu,
   StyledItem,
   ThreeDotButton,
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import Icon from '@Components/Components/Icon'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
-import { StyledContextMenu } from '@/Components/Tips/styles'
 import { SetActionContext } from '@/Pages/Information/constans'
 import DeleteWindow from '@/Pages/Information/Components/DeleteFolder'
 import MimeTypeIconComponent from '@/Pages/Information/Components/RowComponents.js/MimeTypeIconComponent'

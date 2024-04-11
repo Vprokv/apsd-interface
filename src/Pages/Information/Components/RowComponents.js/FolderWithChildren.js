@@ -4,12 +4,12 @@ import angleIcon from '@/Icons/angleIcon'
 import {
   ContHover,
   LeafContainer,
+  StyledContextMenu,
   StyledItem,
   ThreeDotButton,
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
-import { StyledContextMenu } from '@/Components/Tips/styles'
 import { SetActionContext } from '@/Pages/Information/constans'
 import CreateFolder from '@/Pages/Information/Components/CreateFolder'
 import DeleteWindow from '@/Pages/Information/Components/DeleteFolder'
@@ -25,7 +25,6 @@ const FolderWithChildrenComponent = ({
   parentId,
   level,
 }) => {
-  console.log(2)
   const [open, setOpen] = useState(false)
   const [target, setTarget] = useState({})
   const closeContextMenu = useCallback(() => {

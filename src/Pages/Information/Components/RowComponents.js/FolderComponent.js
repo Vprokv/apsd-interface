@@ -7,12 +7,12 @@ import DeleteWindow from '@/Pages/Information/Components/DeleteFolder'
 import {
   ContHover,
   LeafContainer,
+  StyledContextMenu,
   StyledItem,
   ThreeDotButton,
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
-import { StyledContextMenu } from '@/Components/Tips/styles'
 
 const FolderComponent = ({ name, id, parentId, level }) => {
   const [open, setOpen] = useState(false)
