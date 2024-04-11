@@ -33,39 +33,39 @@ const Information = () => {
 
   const loadData = useCallback(async () => {
     try {
-      // const { data } = await api.post(URL_INFORMATION_LIST)
-      // setReferences(data)
-      setReferences([
-        {
-          id: 'string1', //- id записи
-          parentId: 'string1', //- id родителя
-          contentId: '', // - id контента, используется для получения предпросмотра из таблицы ddt_information
-          name: 'level 1', //- имя папки или файла (зависит от заполнения contentId)
-          mimeType: 'other', // - mimeType файла
-          //[ - дочерние разделы
-          childs: [
-            {
-              id: 'string3', //- id записи
-              parentId: 'string', //- id родителя
-              contentId: 'string', // - id контента, используется для получения предпросмотра из таблицы ddt_information
-              name: 'level3', //- имя папки или файла (зависит от заполнения contentId)
-              mimeType: 'other', // - mimeType файла
-              //[ - дочерние разделы
-              childs: [
-                {
-                  id: 'string4',
-                  parentId: 'string',
-                  contentId: 'string',
-                  name: 'контент',
-                  mimeType: 'other',
-                  childs: [],
-                  token: 'string',
-                },
-              ],
-            },
-          ],
-        },
-      ])
+      const { data } = await api.post(URL_INFORMATION_LIST)
+      setReferences(data)
+      // setReferences([
+      //   {
+      //     id: 'string1', //- id записи
+      //     parentId: 'string1', //- id родителя
+      //     contentId: '', // - id контента, используется для получения предпросмотра из таблицы ddt_information
+      //     name: 'level 1', //- имя папки или файла (зависит от заполнения contentId)
+      //     mimeType: 'other', // - mimeType файла
+      //     //[ - дочерние разделы
+      //     childs: [
+      //       {
+      //         id: 'string3', //- id записи
+      //         parentId: 'string', //- id родителя
+      //         contentId: 'string', // - id контента, используется для получения предпросмотра из таблицы ddt_information
+      //         name: 'level3', //- имя папки или файла (зависит от заполнения contentId)
+      //         mimeType: 'other', // - mimeType файла
+      //         //[ - дочерние разделы
+      //         childs: [
+      //           {
+      //             id: 'string4',
+      //             parentId: 'string',
+      //             contentId: 'string',
+      //             name: 'контент',
+      //             mimeType: 'other',
+      //             childs: [],
+      //             token: 'string',
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // ])
       changeModalState(true)()
     } catch (e) {
       const { response: { status = 0, data = '' } = {} } = e
