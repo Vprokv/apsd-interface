@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { ButtonForIcon } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
 
 import xlsIcon from '@/Icons/DocumentType/xlsIcon.svg'
 import docIcon from '@/Icons/DocumentType/docIcon.svg'
@@ -12,8 +12,6 @@ import pngIcon from '@/Icons/DocumentType/pngIcon.svg'
 import pdfIcon from '@/Icons/DocumentType/pdfIcon.svg'
 import jpgIcon from '@/Icons/DocumentType/jpgIcon.svg'
 import anyTypeIcon from '@/Icons/DocumentType/anyTypeIcon.svg'
-import styled from 'styled-components'
-import { ShowContentByTypeButtonContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 
 const TYPE_XLS = 'application/vnd.ms-excel'
 const TYPE_XLSX =
@@ -54,44 +52,9 @@ export const typesMimeIconMap = {
   [TYPE_OTHER]: anyTypeIcon,
 }
 
-export const getMimeTypeIcon = (type) => {
-  const { [type]: Icon = anyTypeIcon } = typesMimeIconMap
-  console.log(Icon, 'Icon')
+const MimeTypeIconComponent = ({ mimeType }) => {
+  const { [mimeType]: Icon = anyTypeIcon } = typesMimeIconMap
   return <img src={Icon} alt="" className=" w-4 h-4" />
 }
 
-export const ButtonForIcon = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin-right: 4px;
-  //
-  //&:disabled {
-  //  background: var(--separator);
-  //  color: var(--text-secondary);
-  //}
-`
-
-const CustomIconComponent = (value) => {
-  const {
-    tomId,
-    content: { mimeType, contentId },
-  } = value
-
-  const showButton = useContext(ShowContentByTypeButtonContext)
-  const { [mimeType]: Icon = anyTypeIcon } = typesMimeIconMap
-  return (
-    tomId &&
-    contentId && (
-      <ButtonForIcon onClick={showButton(value)} className="">
-        {<img src={Icon} alt="" className=" w-4 h-4" />}
-      </ButtonForIcon>
-    )
-  )
-}
-
-CustomIconComponent.propTypes = {}
-
-export default CustomIconComponent
+export default MimeTypeIconComponent
