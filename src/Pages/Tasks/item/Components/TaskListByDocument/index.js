@@ -33,7 +33,7 @@ const iconMap = {
   ),
   false: () => (
     <SortButton>
-      <Icon icon={ListIcon} />
+      <Icon icon={ListIcon} height={19} width={19} />
     </SortButton>
   ),
 }
@@ -77,8 +77,13 @@ const TaskListByDocument = ({ taskData }) => {
   return (
     <div className="mx-4 mt-2">
       <Tips text="Список заданий по документу" className="w-40 content-center">
-        <button type="button" onClick={openContextMenu}>
+        <button
+          className="flex items-center"
+          type="button"
+          onClick={openContextMenu}
+        >
           <IconComponent />
+          <div className="font-semibold">Мои задания</div>
         </button>
         {open && taskList}
       </Tips>
