@@ -150,7 +150,7 @@ const TitleNameComponent = ({
       const { status } = await api.post(URL_TITLE_CONTAIN_ANNULMENT, {
         annulmentObjects,
       })
-      getNotification(de[status]())
+      getNotification(defaultFunctionsMap[status]())
 
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
     } catch (e) {
