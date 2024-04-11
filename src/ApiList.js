@@ -218,7 +218,7 @@ export const URL_BASKET_DELETE_DOCUMENT = '/apsd/basket/deleteDocument'
 // REFERENCE
 export const URL_INFORMATION_LIST = '/apsd/information/structure/list'
 export const URL_INFORMATION_FOLDER_CREATE = '/apsd/information/folder/create'
-export const URL_INFORMATION_FILE_ADD = ' /apsd/information/file/add'
+export const URL_INFORMATION_FILE_ADD = '/apsd/information/file/add'
 export const URL_INFORMATION_FOLDER_EDIT = '/apsd/information/folder/edit'
 export const URL_INFORMATION_DELETE = '/apsd/information/delete'
 

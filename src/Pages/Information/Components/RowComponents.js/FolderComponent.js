@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Icon from '@Components/Components/Icon'
 import { SetActionContext } from '@/Pages/Information/constans'
 import CreateFolder from '@/Pages/Information/Components/CreateFolder'
@@ -13,10 +13,19 @@ import {
 } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/style'
 import ThreeDotIcon from '@/Icons/ThreeDotIcon'
 import ContextMenu from '@Components/Components/ContextMenu'
+import { URL_INFORMATION_FILE_ADD } from '@/ApiList'
+import { defaultFunctionsMap } from '@/Components/Notificator/constants'
+import { ApiContext } from '@/contants'
+import { useOpenNotification } from '@/Components/Notificator'
+import NewFileInput from '@/Components/Inputs/NewFileInput'
+import CustomFileInputComponent from '@/Pages/Information/Components/CustomFileInputComponent'
 
-const FolderComponent = ({ name, id, parentId, level }) => {
+const FolderComponent = ({ name, id, parentId, level, loadData }) => {
   const [open, setOpen] = useState(false)
   const [target, setTarget] = useState({})
+  const api = useContext(ApiContext)
+  const getNotification = useOpenNotification()
+  const [values, setValues] = useState()
   const closeContextMenu = useCallback(() => {
     setOpen(false)
   }, [])
@@ -54,7 +63,27 @@ const FolderComponent = ({ name, id, parentId, level }) => {
     [id, setActionComponent],
   )
 
-  const addFile = useCallback(() => null, [])
+  const addFile = useCallback(async () => {
+    try {
+      if (values) {
+        await api.post(URL_INFORMATION_FILE_ADD, {
+          parentId,
+          files: values?.map(({ dsc_content, dss_content_name }) => ({
+            id: dsc_content,
+            name: dss_content_name,
+          })),
+        })
+        getNotification(defaultFunctionsMap[200]())
+        await loadData()
+        closeContextMenu()
+      }
+    } catch (e) {
+      const { response: { status = 0, data = '' } = {} } = e
+      getNotification(defaultFunctionsMap[status](data))
+    }
+  }, [api, closeContextMenu, getNotification, loadData, parentId, values])
+
+  useEffect(addFile, [addFile])
 
   return (
     <LeafContainer
@@ -80,9 +109,12 @@ const FolderComponent = ({ name, id, parentId, level }) => {
               <StyledItem className="mb-3 font-size-12" onClick={addFolder}>
                 Добавить папку
               </StyledItem>
-              <StyledItem className="mb-3 font-size-12" onClick={addFile}>
-                Добавить файл
-              </StyledItem>
+              <NewFileInput
+                value={values}
+                onInput={setValues}
+                inputComponent={CustomFileInputComponent}
+                multiple={true}
+              />
               <StyledItem className="mb-3 font-size-12" onClick={EditFolder}>
                 Редактировать
               </StyledItem>
