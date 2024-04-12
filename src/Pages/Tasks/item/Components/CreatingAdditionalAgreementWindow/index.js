@@ -40,6 +40,7 @@ import Form from '@Components/Components/Forms'
 import dayjs from 'dayjs'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import useAdditionalAgreementSettings from '@/Pages/Tasks/item/Components/CreatingAdditionalAgreementWindow/Hooks/useAdditionalAgreementSettings'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -75,54 +76,25 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
     dueDate = dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
   } = data
 
-  const [values, setValues] = useState({
-    dueDate: dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
-      PRESENT_DATE_FORMAT,
-    ),
-  })
+  const {
+    selectRestrictions,
+    getResultValueFunc,
+    format,
+    dueDateRules,
+    initialValue,
+  } = useAdditionalAgreementSettings({ dueDate })
 
-  const checkDate = useMemo(
-    () =>
-      dayjs(dueDate, 'DD.MM.YYYY').valueOf() -
-        dayjs(dayjs().format(PRESENT_DATE_FORMAT), 'DD.MM.YYYY').valueOf() >
-      0,
-    [dueDate],
-  )
+  console.log(initialValue, 'initialValue')
+  console.log(dueDate, 'dueDate')
+
+  const [values, setValues] = useState({ dueDate: initialValue })
 
   const rules = useMemo(
     () => ({
       performersEmpls: [{ name: VALIDATION_RULE_REQUIRED }],
-      dueDate: checkDate
-        ? [
-            {
-              name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-              args: {
-                format: 'DD.MM.YYYY',
-                after_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
-              },
-            },
-            {
-              name: VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
-              args: {
-                format: 'DD.MM.YYYY',
-                before_or_equal: dayjs(
-                  dueDate,
-                  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-                ).format(PRESENT_DATE_FORMAT),
-              },
-            },
-          ]
-        : [
-            {
-              name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-              args: {
-                format: 'DD.MM.YYYY',
-                after_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
-              },
-            },
-          ],
+      dueDate: dueDateRules,
     }),
-    [checkDate, dueDate],
+    [dueDateRules],
   )
 
   const fieldMap = useMemo(
@@ -154,26 +126,14 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
       {
         label: 'Укажите плановую дату доп. согласования',
         id: 'dueDate',
+        dateFormat: format,
         component: (props) => <DatePicker {...props} className="w-64" />,
-        selectRestrictions: {
-          minDate: dayjs().format(PRESENT_DATE_FORMAT),
-          maxDate:
-            checkDate &&
-            dueDate &&
-            dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
-              PRESENT_DATE_FORMAT,
-            ),
-        },
+        selectRestrictions,
         inputWrapper: DatePickerWrapper,
         placeholder: '',
       },
     ],
-    [approverParentId, checkDate, dueDate],
-  )
-
-  const time = useMemo(
-    () => dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format('HH:mm:ss'),
-    [dueDate],
+    [approverParentId, documentId, format, selectRestrictions],
   )
 
   const onSave = useCallback(async () => {
@@ -182,7 +142,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
         URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
         {
           ...values,
-          dueDate: `${values.dueDate} ${time}`,
+          dueDate: getResultValueFunc(values),
           parentPerformerId: approverId,
           documentType,
           documentId,
@@ -201,7 +161,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
   }, [
     api,
     values,
-    time,
+    getResultValueFunc,
     approverId,
     documentType,
     documentId,
