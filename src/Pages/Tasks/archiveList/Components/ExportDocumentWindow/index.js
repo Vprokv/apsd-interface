@@ -1,14 +1,10 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
+import Validator from '@Components/Logic/Validator'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import { URL_DOWNLOAD_CONTENT, URL_ENTITY_LIST } from '@/ApiList'
+import { URL_DOWNLOAD_CONTENT } from '@/ApiList'
 import { ApiContext } from '@/contants'
-import CheckBox from '@/Components/Inputs/CheckBox'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import Form from '@Components/Components/Forms'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import Input from '@/Components/Fields/Input'
 import { OpenWindowContext } from '@/Pages/Tasks/archiveList/constans'
 import {
   NOTIFICATION_TYPE_ERROR,
@@ -22,7 +18,8 @@ import {
 } from '@/Components/Button'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import { Validation } from '@Components/Logic/Validator'
+import { rulesMap, useColumnsMap } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -50,16 +47,6 @@ const fieldsMap = {
   ddt_project_calc_type_doc: ['email', 'exportType', 'archiveVersion'],
 }
 
-const rulesMap = {
-  ddt_startup_complex_type_doc: {
-    exportType: [{ name: VALIDATION_RULE_REQUIRED }],
-    email: [{ name: VALIDATION_RULE_REQUIRED }],
-  },
-  ddt_project_calc_type_doc: {
-    email: [{ name: VALIDATION_RULE_REQUIRED }],
-  },
-}
-
 const ExportDocumentWindow = ({
   title,
   open,
@@ -70,6 +57,7 @@ const ExportDocumentWindow = ({
   rules,
 }) => {
   const { dss_email } = useRecoilValue(userAtom)
+  const [validationState, setValidationState] = useState({})
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({
     archiveVersion: true,
@@ -122,16 +110,23 @@ const ExportDocumentWindow = ({
 
   return (
     <StandardSizeModalWindow title={title} open={open} onClose={onClose}>
-      <Validation
-        fields={fields}
-        value={filter}
-        onInput={setFilter}
+      <Validator
         rules={rules}
         onSubmit={onExport}
-        inputWrapper={InputWrapper}
+        value={filter}
+        validationState={validationState}
+        setValidationState={useCallback(
+          (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+          [],
+        )}
       >
-        {({ onSubmit, ...props }) => (
-          <FilterForm {...props}>
+        {({ onSubmit }) => (
+          <FilterForm
+            fields={fields}
+            value={filter}
+            onInput={setFilter}
+            inputWrapper={WithValidationStateInputWrapper}
+          >
             <div className="flex items-center justify-end mt-20">
               <SecondaryGreyButton
                 className="w-60 mr-4"
@@ -149,7 +144,7 @@ const ExportDocumentWindow = ({
             </div>
           </FilterForm>
         )}
-      </Validation>
+      </Validator>
     </StandardSizeModalWindow>
   )
 }
@@ -168,59 +163,7 @@ const ExportDocumentWindowWrapper = (props) => {
   const { type } = props
   const api = useContext(ApiContext)
 
-  const columnsMap = useMemo(
-    () => [
-      {
-        id: 'email',
-        label: 'Эл. почта',
-        placeholder: 'Введите данные',
-        component: Input,
-      },
-      {
-        id: 'exportType',
-        label: 'Тип содержимого',
-        placeholder: 'Введите значение',
-        component: Select,
-        valueKey: 'typeName',
-        labelKey: 'typeLabel',
-        options: [
-          {
-            typeName: 'files_export',
-            typeLabel: 'Файлы',
-          },
-          {
-            typeName: 'link_export',
-            typeLabel: 'Связные документы',
-          },
-          {
-            typeName: 'all_export',
-            typeLabel: 'Всё',
-          },
-        ],
-      },
-      {
-        id: 'statuses',
-        label: 'Статус томов',
-        component: LoadableSelect,
-        multiple: true,
-        valueKey: 'dss_name',
-        labelKey: 'dss_caption',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_document_status',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'archiveVersion',
-        component: CheckBox,
-        text: 'Включая архивные копии',
-      },
-    ],
-    [api],
-  )
+  const columnsMap = useColumnsMap(api)
   return (
     <ExportDocumentWindow
       {...props}

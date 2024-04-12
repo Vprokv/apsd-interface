@@ -1,19 +1,16 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   CreateTechnicalObjectsWindowComponent,
   FilterWindowForm,
 } from '@/Pages/Settings/Components/TechnicalObjects/styles'
+import Validator from '@Components/Logic/Validator'
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
-import { SearchInput } from '@/Pages/Tasks/list/styles'
-import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_CREATE } from '@/ApiList'
+import { URL_TECHNICAL_OBJECTS_CREATE } from '@/ApiList'
 import { ApiContext, SETTINGS_TECHNICAL_OBJECTS } from '@/contants'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -21,15 +18,8 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-
-const rules = {
-  name: [{ name: VALIDATION_RULE_REQUIRED }],
-  typeObjectId: [{ name: VALIDATION_RULE_REQUIRED }],
-  voltageId: [{ name: VALIDATION_RULE_REQUIRED }],
-  balKeeperId: [{ name: VALIDATION_RULE_REQUIRED }],
-  resId: [{ name: VALIDATION_RULE_REQUIRED }],
-  address: [{ name: VALIDATION_RULE_REQUIRED }],
-}
+import { rules, useGetFieldFormConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -44,101 +34,11 @@ const customMessagesFuncMap = {
 const CreateTechnicalObjectWindow = ({ onClose, ...props }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
+  const [validationState, setValidationState] = useState({})
   const getNotification = useOpenNotification()
   const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
 
-  const filterFormConfig = useMemo(
-    () => [
-      {
-        id: 'name',
-        component: SearchInput,
-        placeholder: 'Наименование',
-        label: 'Наименование',
-      },
-      {
-        id: 'code',
-        component: SearchInput,
-        placeholder: 'Код',
-        label: 'Код',
-      },
-      {
-        id: 'typeObjectId',
-        component: LoadableSelect,
-        placeholder: 'Тип объекта',
-        label: 'Тип объекта',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_tech_obj_type_catalog',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'voltageId',
-        component: LoadableSelect,
-        placeholder: 'Класс напряжения',
-        label: 'Класс напряжения',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_voltage',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'balKeeperId',
-        component: LoadableSelect,
-        placeholder: 'Балансодержатель',
-        label: 'Балансодержатель',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_branch',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'resId',
-        component: LoadableSelect,
-        placeholder: 'РЭС',
-        label: 'РЭС',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_res',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'address',
-        component: LoadableSelect,
-        placeholder: 'Адрес',
-        label: 'Адрес',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_tech_obj_type_catalog',
-            query,
-          })
-          return data
-        },
-      },
-    ],
-    [api],
-  )
+  const filterFormConfig = useGetFieldFormConfig(api)
 
   const onCreate = useCallback(async () => {
     try {
@@ -160,21 +60,38 @@ const CreateTechnicalObjectWindow = ({ onClose, ...props }) => {
         onClose={onClose}
         title="Добавление технического объекта"
       >
-        <FilterWindowForm
-          inputWrapper={DefaultWrapper}
-          fields={filterFormConfig}
-          value={filter}
-          onInput={setFilter}
+        <Validator
           rules={rules}
-        />
-        <div className="flex justify-end form-element-sizes-40 mt-4">
-          <SecondaryGreyButton className="ml-2 w-64" onClick={onClose}>
-            Отменить
-          </SecondaryGreyButton>
-          <LoadableSecondaryOverBlueButton className=" w-64" onClick={onCreate}>
-            Сохранить
-          </LoadableSecondaryOverBlueButton>
-        </div>
+          onSubmit={onCreate}
+          value={filter}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
+        >
+          {({ onSubmit }) => (
+            <>
+              <FilterWindowForm
+                inputWrapper={WithValidationStateInputWrapper}
+                fields={filterFormConfig}
+                value={filter}
+                onInput={setFilter}
+              />
+              <div className="flex justify-end form-element-sizes-40 mt-4">
+                <SecondaryGreyButton className="ml-2 w-64" onClick={onClose}>
+                  Отменить
+                </SecondaryGreyButton>
+                <LoadableSecondaryOverBlueButton
+                  className=" w-64"
+                  onClick={onSubmit}
+                >
+                  Сохранить
+                </LoadableSecondaryOverBlueButton>
+              </div>
+            </>
+          )}
+        </Validator>
       </CreateTechnicalObjectsWindowComponent>
     </div>
   )

@@ -11,7 +11,7 @@ import {
   TASK_ITEM_HANDOUTS,
 } from '@/contants'
 import { useParams } from 'react-router-dom'
-import { WithValidationForm } from '@Components/Components/Forms'
+import Form from '@Components/Components/Forms'
 import LoadableSelect, { Select } from '@/Components/Inputs/Select'
 import DatePickerComponent from '@Components/Components/Inputs/DatePicker'
 import UserSelect from '@/Components/Inputs/UserSelect'
@@ -24,9 +24,9 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -164,12 +164,12 @@ const CreateHandoutsWindow = () => {
         onClose={changeModalState(false)}
       >
         <div className="flex flex-col overflow-hidden h-full">
-          <WithValidationForm
+          <Form
             className="form-element-sizes-40"
             fields={fields}
             value={filterValue}
             onInput={setFilterValue}
-            inputWrapper={InputWrapper}
+            inputWrapper={DefaultInputWrapper}
           />
         </div>
         <div className="flex items-center justify-end mt-8">

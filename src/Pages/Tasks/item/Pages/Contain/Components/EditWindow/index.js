@@ -1,8 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import Input from '@/Components/Fields/Input'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import { MiniModalWindow } from '@/Pages/Tasks/item/Pages/Contain/Components/CreateTitleDepartment/Components/NewTitle'
-import { WithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TITLE_CONTAIN_SAVE } from '@/ApiList'
 import {
@@ -11,11 +10,11 @@ import {
 } from '@/Components/Notificator/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { useOpenNotification } from '@/Components/Notificator'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import CheckBox from '@/Components/Inputs/CheckBox'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import PropTypes from 'prop-types'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { fields, rules } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -27,33 +26,8 @@ const customMessagesFuncMap = {
   },
 }
 
-const fields = [
-  {
-    id: 'name',
-    label: 'Наименование',
-    placeholder: 'Введите наименование',
-    component: Input,
-  },
-  {
-    id: 'code',
-    label: 'Код',
-    placeholder: 'Введите код',
-    component: Input,
-  },
-  {
-    id: 'availableProjector',
-    component: CheckBox,
-    className: 'font-size-12',
-    text: 'Доступно проектировщику',
-  },
-]
-
-const rules = {
-  name: [{ name: VALIDATION_RULE_REQUIRED }],
-  code: [{ name: VALIDATION_RULE_REQUIRED }],
-}
-
 const EditLink = ({ addEditLinkState: { onCancel, onCreate, document } }) => {
+  const [validationState, setValidationState] = useState({})
   const [open, setOpenState] = useState(false)
   const api = useContext(ApiContext)
   const [value, onInput] = useState({})
@@ -105,25 +79,35 @@ const EditLink = ({ addEditLinkState: { onCancel, onCreate, document } }) => {
       onClose={handleCancel}
       title="Редактирование раздела"
     >
-      <>
-        <WithValidationForm
-          value={value}
-          onInput={onInput}
-          fields={fields}
-          inputWrapper={DefaultWrapper}
-          rules={rules}
-          onSubmit={handleClick}
-        >
-          <UnderButtons
-            // className="justify-around w-full"
-            leftStyle="width-min mr-2"
-            rightStyle="width-min"
-            leftFunc={handleCancel}
-            leftLabel="Отменить"
-            rightLabel="Сохранить"
-          />
-        </WithValidationForm>
-      </>
+      <Validator
+        rules={rules}
+        onSubmit={handleClick}
+        value={value}
+        validationState={validationState}
+        setValidationState={useCallback(
+          (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+          [],
+        )}
+      >
+        {({ onSubmit }) => (
+          <Form
+            value={value}
+            onInput={onInput}
+            fields={fields}
+            onSubmit={onSubmit}
+            inputWrapper={WithValidationStateInputWrapper}
+          >
+            <UnderButtons
+              // className="justify-around w-full"
+              leftStyle="width-min mr-2"
+              rightStyle="width-min"
+              leftFunc={handleCancel}
+              leftLabel="Отменить"
+              rightLabel="Сохранить"
+            />
+          </Form>
+        )}
+      </Validator>
     </MiniModalWindow>
   )
 }

@@ -1,7 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ModalWindowWrapper from '@/Components/ModalWindow'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_BUSINESS_DOCUMENT_STAGES, URL_TASK_COMPLETE } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
@@ -9,14 +10,12 @@ import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useNavigate, useParams } from 'react-router-dom'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { Validation } from '@Components/Logic/Validator'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-
+import { rules, useFormFieldsConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
   min-height: 22.65%;
@@ -33,6 +32,7 @@ const RejectApproveWindow = ({
   signal,
   stageTypes,
 }) => {
+  const [validationState, setValidationState] = useState({})
   const [options, setOptions] = useState([])
   const navigate = useNavigate()
   const api = useContext(ApiContext)
@@ -124,63 +124,39 @@ const RejectApproveWindow = ({
     updateTabStateUpdaterByName,
   ])
 
-  const rules = {
-    stage: [{ name: VALIDATION_RULE_REQUIRED }],
-  }
-
-  const fields = useMemo(
-    () => [
-      {
-        id: 'stage',
-        label: 'Этап',
-        placeholder: 'Выберите этап',
-        component: LoadableSelect,
-        returnObjects: true,
-        valueKey: 'id',
-        labelKey: 'name',
-        options,
-        loadFunction: async () => {
-          const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
-            stageTypes,
-            documentId,
-          })
-          return data
-        },
-      },
-    ],
-    [api, documentId, options, stageTypes],
-  )
+  const fields = useFormFieldsConfig(api, documentId, options, stageTypes)
 
   return (
     <StandardSizeModalWindow open={open} onClose={onClose} title={title}>
       <div className="flex flex-col overflow-hidden ">
         <ScrollBar>
           <div className="flex flex-col py-4">
-            <Validation
-              fields={fields}
-              value={selected}
-              onInput={setSelected}
+            <Validator
               rules={rules}
               onSubmit={complete}
+              value={selected}
+              validationState={validationState}
+              setValidationState={useCallback(
+                (s) =>
+                  setValidationState((prevState) => ({ ...prevState, ...s })),
+                [],
+              )}
             >
-              {(validationProps) => {
-                return (
-                  <>
-                    <FilterForm
-                      className="form-element-sizes-40"
-                      {...validationProps}
-                    />
-                    <div className="mt-10">
-                      <UnderButtons
-                        disabled={!validationProps.formValid}
-                        rightFunc={validationProps.onSubmit}
-                        leftFunc={onClose}
-                      />
-                    </div>
-                  </>
-                )
-              }}
-            </Validation>
+              {({ onSubmit }) => (
+                <>
+                  <Form
+                    className="form-element-sizes-40 grid"
+                    value={selected}
+                    fields={fields}
+                    onInput={setSelected}
+                    inputWrapper={WithValidationStateInputWrapper}
+                  />
+                  <div className="mt-10">
+                    <UnderButtons rightFunc={onSubmit} leftFunc={onClose} />
+                  </div>
+                </>
+              )}
+            </Validator>
           </div>
         </ScrollBar>
       </div>

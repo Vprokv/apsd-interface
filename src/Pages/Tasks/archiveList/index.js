@@ -31,13 +31,14 @@ import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 import styled from 'styled-components'
-import Form from '../../../components_ocean/Components/Forms'
+import Form, {
+  EmptyInputWrapper,
+} from '../../../components_ocean/Components/Forms'
 import Input from '../../../components_ocean/Components/Inputs/Input'
 import searchIcon from '../../../Icons/searchIcon'
 import { Select } from '../../../Components/Inputs/Select'
 import DatePickerComponent from '../../../Components/Inputs/DatePicker'
 import { useFilterForm } from '@/Utils/hooks/useFilterForm'
-import { emptyWrapper } from '../item/Pages/Objects/Components/CreateObjectsWindow'
 
 export const FilterForm = styled(Form)`
   --form--elements_height: 32px;
@@ -360,7 +361,7 @@ const ArchiveList = () => {
               fields={fields}
               value={filterState}
               onInput={setFilterState}
-              inputWrapper={emptyWrapper}
+              inputWrapper={EmptyInputWrapper}
             />
             <div className="w-64 ml-auto flex">
               <Tips text="Выгрузить в Excel">

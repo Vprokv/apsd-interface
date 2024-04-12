@@ -1,86 +1,94 @@
 import {
-  VALIDATION_RULE_ACCEPTED,
-  VALIDATION_RULE_DATE,
-  VALIDATION_RULE_DATE_AFTER,
-  VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-  VALIDATION_RULE_DATE_BEFORE,
-  VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
-  VALIDATION_RULE_DIGITS_AND_INTEGER,
-  VALIDATION_RULE_INTEGER,
-  VALIDATION_RULE_MAX,
-  VALIDATION_RULE_MIN,
-  VALIDATION_RULE_NULL_IF,
-  VALIDATION_RULE_REGEX,
-  VALIDATION_RULE_REQUIRED,
-  VALIDATION_RULE_REQUIRED_IF,
-  VALIDATION_RULE_REQUIRED_IF_EVERY,
-  VALIDATION_RULE_REQUIRED_WITH_ALL,
-  VALIDATION_RULE_REQUIRED_WITHOUT,
-  VALIDATION_RULE_REQUIRED_WITHOUT_ALL,
-  VALIDATION_RULE_SIZE,
-} from '@Components/Logic/Validator/constants'
+  accepted as acceptedValidator,
+  dateAfter,
+  dateBefore,
+  digitsInIntegerValue,
+  emptyIfOtherFieldHasValue,
+  ifAllTargetsEmpty,
+  ifAllTargetsFilled,
+  ifEveryTargetEqualValue,
+  ifSomeTargetsEmpty,
+  ifTargetFieldEqualValue,
+  integer as integerValidator,
+  isDateAfterOrEqual,
+  isDateBeforeOrEqual,
+  isDateValid,
+  maxLength,
+  minLength,
+  required as requiredValidator,
+  size as sizeValidator,
+  testRegex,
+} from '@Components/Logic/Validator'
 import createRegExpFromString from '@Components/Utils/createRegExpFromString'
 import { DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
 
-export const accepted = () => ({ name: VALIDATION_RULE_ACCEPTED })
-export const size = (size) => ({ name: VALIDATION_RULE_SIZE, args: { size } })
+export const accepted = () => ({ validatorObject: acceptedValidator })
+export const size = (size) => ({
+  validatorObject: sizeValidator,
+  args: { size },
+})
 export const digits = (digits) => ({
-  name: VALIDATION_RULE_DIGITS_AND_INTEGER,
+  validatorObject: digitsInIntegerValue,
   args: { digits },
 })
-export const integer = () => ({ name: VALIDATION_RULE_INTEGER })
-export const min = (min) => ({ name: VALIDATION_RULE_MIN, args: { min } })
-export const max = (max) => ({ name: VALIDATION_RULE_MAX, args: { max } })
+export const integer = () => ({ validatorObject: integerValidator })
+export const min = (min) => ({ validatorObject: minLength, args: { min } })
+export const max = (max) => ({ validatorObject: maxLength, args: { max } })
 export const null_if = (fieldKey, fieldValue) => ({
-  name: VALIDATION_RULE_NULL_IF,
+  validatorObject: emptyIfOtherFieldHasValue,
   args: { fieldKey, fieldValue },
 })
 export const regex = (regex) => ({
-  name: VALIDATION_RULE_REGEX,
+  validatorObject: testRegex,
   args: { regex: createRegExpFromString(regex) },
 })
-export const date = (date) => ({ name: VALIDATION_RULE_DATE, args: { date } })
+export const date = (date) => ({ validatorObject: isDateValid, args: { date } })
 export const before = (before) => ({
-  name: VALIDATION_RULE_DATE_BEFORE,
+  validatorObject: dateBefore,
   args: { before, format: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss },
 })
 export const before_or_equal = (before_or_equal) => ({
-  name: VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
+  validatorObject: isDateBeforeOrEqual,
   args: { before_or_equal, format: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss },
 })
 export const after = (after) => ({
-  name: VALIDATION_RULE_DATE_AFTER,
+  validatorObject: dateAfter,
   args: { after, format: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss },
 })
 export const after_or_equal = (after_or_equal) => ({
-  name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
+  validatorObject: isDateAfterOrEqual,
   args: { after_or_equal, format: DATE_FORMAT_DD_MM_YYYY_HH_mm_ss },
 })
-export const required = () => ({ name: VALIDATION_RULE_REQUIRED })
+export const required = () => ({ validatorObject: requiredValidator })
 export const required_if = (fieldKey, fieldValue) => ({
-  name: VALIDATION_RULE_REQUIRED_IF,
-  args: { fieldKey, fieldValue },
+  validatorObject: requiredValidator,
+  ruleGuard: ifTargetFieldEqualValue,
+  ruleGuardArgs: { fieldKey, fieldValue },
 })
-export const required_with_all = (...fieldsKeys) => ({
-  name: VALIDATION_RULE_REQUIRED_WITH_ALL,
-  args: { fieldsKeys },
+export const required_with_all = (...fieldKey) => ({
+  validatorObject: requiredValidator,
+  ruleGuard: ifAllTargetsFilled,
+  ruleGuardArgs: { fieldKey },
 })
-export const required_without_all = (...fieldsKeys) => ({
-  name: VALIDATION_RULE_REQUIRED_WITHOUT_ALL,
-  args: { fieldsKeys },
+export const required_without_all = (...fieldKey) => ({
+  validatorObject: requiredValidator,
+  ruleGuard: ifAllTargetsEmpty,
+  ruleGuardArgs: { fieldKey },
 })
-export const required_without = (...fieldsKeys) => ({
-  name: VALIDATION_RULE_REQUIRED_WITHOUT,
-  args: { fieldsKeys },
+export const required_without = (...fieldKey) => ({
+  validatorObject: requiredValidator,
+  ruleGuard: ifSomeTargetsEmpty,
+  ruleGuardArgs: { fieldKey },
 })
 
-export const required_if_every = (...fieldsKeys) => {
-  const fieldKeysCopy = [...fieldsKeys]
+export const required_if_every = (...fieldKey) => {
+  const fieldKeysCopy = [...fieldKey]
   const params = fieldKeysCopy.splice(-2, 2) // отрезаем название функции и значение
   return {
-    name: VALIDATION_RULE_REQUIRED_IF_EVERY,
-    args: {
-      fieldsKeys: fieldKeysCopy,
+    validatorObject: requiredValidator,
+    ruleGuard: ifEveryTargetEqualValue,
+    ruleGuardArgs: {
+      fieldKeys: fieldKeysCopy,
       targetValue: params[0] === 'empty' ? '' : params[0],
     },
   }
@@ -90,8 +98,9 @@ export const defaultForJson = (values) => {
   const { attribute, filter } = (values && JSON.parse(values)) || {}
 
   return {
-    name: VALIDATION_RULE_REQUIRED_IF,
-    args: { fieldKey: attribute, fieldValue: filter },
+    validatorObject: requiredValidator,
+    ruleGuard: ifTargetFieldEqualValue,
+    ruleGuardArgs: { fieldKey: attribute, fieldValue: filter },
   }
 }
 

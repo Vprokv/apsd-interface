@@ -178,12 +178,6 @@ function App() {
               ) : (
                 <Route element={<Main initUrl={routePath.TASK_LIST_PATH} />}>
                   <Route
-                    path={routePath.CREATE_PASSWORD_PAGE_PATH}
-                    element={
-                      <CreatePassword loginRequest={createPasswordRequest} />
-                    }
-                  />
-                  <Route
                     path={routePath.DOCUMENT_ITEM_PATH}
                     element={<DocumentItem />}
                   />

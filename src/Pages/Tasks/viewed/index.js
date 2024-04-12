@@ -24,7 +24,7 @@ import ListTable from '@Components/Components/Tables/ListTable'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Icon from '@Components/Components/Icon'
 import { useOpenNotification } from '@/Components/Notificator'
@@ -282,7 +282,7 @@ const ViewedTask = () => {
           <FilterForm
             className="pl-4"
             fields={fields}
-            inputWrapper={emptyWrapper}
+            inputWrapper={EmptyInputWrapper}
             value={filter}
             onInput={setFilter}
           />

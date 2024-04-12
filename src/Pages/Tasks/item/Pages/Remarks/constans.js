@@ -1,5 +1,4 @@
 import { createContext } from 'react'
-import { VALIDATION_RULE_MAX } from '@Components/Logic/Validator/constants'
 
 export const OnSetRemarkActionContext = createContext(() => null)
 
@@ -11,17 +10,12 @@ export const ToggleContext = createContext({
 })
 
 export const remarkValidator = {
-  [VALIDATION_RULE_MAX]: {
-    resolver: ({ value, args: { max } }) =>
-      typeof value === 'string' && max - value.length >= 0,
-    message: ({
-      args: { text = 'Преышено допустимое количество символов' },
-    }) => {
-      return text
-    },
+  resolver: ({ value, args: { max } }) =>
+    typeof value === 'string' && max - value.length >= 0,
+  message: ({ args: { text = 'Преышено допустимое количество символов' } }) => {
+    return text
   },
 }
-
 export const exportColumnConfig = [
   {
     componentType: 'DescriptionTableColumn',

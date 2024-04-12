@@ -1,5 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING, TokenContext } from '@/contants'
+import Validator from '@Components/Logic/Validator'
 import { useParams } from 'react-router-dom'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
@@ -14,19 +15,18 @@ import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LoadableSecondaryOverBlueButton } from '@/Components/Button'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import { Validation } from '@Components/Logic/Validator'
 import useParseConfig from '@/Utils/Parser'
 import reportParserStages from './Parser'
 import attrubutesAdapter from './Parser/attrubutesAdapter'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 import SearchTemplateWindowList from '@/Pages/Search/Pages/DocumentSearch/Components/SearchTemplateWindowList'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const defaultFilter = {}
 
@@ -83,7 +83,7 @@ const Reporting = () => {
 
   useSetTabName(useCallback(() => name, [name]))
 
-  const formProps = useParseConfig({
+  const { rules, ...formProps } = useParseConfig({
     value: filter,
     fieldsDesign: useMemo(
       () => parameters.map(attrubutesAdapter),
@@ -126,16 +126,21 @@ const Reporting = () => {
         <span className="text-2xl font-medium">{name}</span>
       </div>
       <ScrollBar className="m-4">
-        <Validation
+        <Validator
+          rules={rules}
           value={filter}
-          onInput={setFilter}
           onSubmit={onBuild}
-          inputWrapper={DefaultWrapper}
-          {...formProps}
+          validationState={tabState}
+          setValidationState={setTabState}
         >
-          {(validationProps) => (
+          {({ onSubmit }) => (
             <>
-              <ReportsForm {...validationProps} />
+              <ReportsForm
+                value={filter}
+                onInput={setFilter}
+                inputWrapper={WithValidationStateInputWrapper}
+                {...formProps}
+              />
               <div className="flex items-center justify-end my-4 col-span-1 col-span-2">
                 <LoadableSecondaryOverBlueButton
                   onClick={changeUseTemplateWindowState(true)}
@@ -150,7 +155,7 @@ const Reporting = () => {
                   Сохранить шаблон
                 </LoadableSecondaryOverBlueButton>
                 <LoadableSecondaryOverBlueButton
-                  onClick={validationProps.onSubmit}
+                  onClick={onSubmit}
                   className="ml-2"
                 >
                   Сформировать
@@ -158,7 +163,7 @@ const Reporting = () => {
               </div>
             </>
           )}
-        </Validation>
+        </Validator>
       </ScrollBar>
       <CreateWindow
         open={openCreateTemplateWindow}

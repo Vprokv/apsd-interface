@@ -11,7 +11,6 @@ import InputComponent from '@Components/Components/Inputs/Input'
 import Form from '@Components/Components/Forms'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import PropTypes from 'prop-types'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -20,6 +19,7 @@ import { PermitDisableContext } from '@/Pages/Tasks/item/Pages/ApprovalSheet/con
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -114,7 +114,7 @@ const CreateTemplateWindow = ({ jsonData }) => {
       >
         <Form
           className="mb-10"
-          inputWrapper={InputWrapper}
+          inputWrapper={DefaultInputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}

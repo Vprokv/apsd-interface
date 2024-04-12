@@ -2,9 +2,8 @@ import {
   FilterObjectsWindowComponent,
   FilterWindowForm,
 } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow/styled'
-import React from 'react'
 import PropTypes from 'prop-types'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import Icon from '@Components/Components/Icon'
 import {
   ButtonForIcon,
@@ -19,7 +18,7 @@ const FilterWindow = ({ filter, setFilterValue, fields, onClose }) => (
     <div className="flex overflow-hidden w-full h-full">
       <FilterWindowForm
         fields={fields}
-        inputWrapper={emptyWrapper}
+        inputWrapper={EmptyInputWrapper}
         value={filter}
         onInput={setFilterValue}
       />

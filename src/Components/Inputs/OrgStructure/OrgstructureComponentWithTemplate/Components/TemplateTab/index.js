@@ -12,11 +12,10 @@ import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
-  SEARCH_PAGE,
   SETTINGS_TEMPLATES,
 } from '@/contants'
 import styled from 'styled-components'
-import Form from '@Components/Components/Forms'
+import Form, { EmptyInputWrapper } from '@Components/Components/Forms'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
@@ -26,7 +25,6 @@ import searchIcon from '@/Icons/searchIcon'
 import { URL_TEMPLATE_LIST } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import Pagination from '@/Components/Pagination'
@@ -318,7 +316,7 @@ const SearchTemplateWindowList = ({
           <div className="flex form-element-sizes-32">
             <FilterForm
               fields={filterFields}
-              inputWrapper={emptyWrapper}
+              inputWrapper={EmptyInputWrapper}
               value={filter}
               onInput={useCallback(
                 (filter) => setTabState({ filter }),

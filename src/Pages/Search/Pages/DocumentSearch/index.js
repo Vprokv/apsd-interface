@@ -15,7 +15,7 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
+import RowInputWrapper from '@/Components/Forms/ValidationStateUi/RowInputWrapper'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import { API_URL } from '@/api'
@@ -225,8 +225,6 @@ const DocumentSearch = ({
     searchState,
     sortQuery = baseSortQuery,
   } = tabState
-
-  console.log(searchState, 'sortQuery')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: SEARCH_PAGE,

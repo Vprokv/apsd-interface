@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_LIFE_CYCLE_HISTORY } from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useOpenNotification } from '@/Components/Notificator'

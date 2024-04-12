@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { ApiContext, SETTINGS_TECHNICAL_OBJECTS, TASK_LIST } from '@/contants'
+import { ApiContext, SETTINGS_TECHNICAL_OBJECTS } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import usePagination from '@Components/Logic/usePagination'
 import {
@@ -22,6 +22,7 @@ import { useOpenNotification } from '@/Components/Notificator'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import LoadableSelect from '@/Components/Inputs/Select'
@@ -30,7 +31,6 @@ import Button, { ButtonForIcon } from '@/Components/Button'
 import Tips from '@/Components/Tips'
 import DeleteIcon from '@/Icons/deleteIcon'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -310,7 +310,7 @@ const TechnicalObjectsSettings = () => {
         {show && (
           <FilterForm
             fields={filterFields}
-            inputWrapper={emptyWrapper}
+            inputWrapper={EmptyInputWrapper}
             value={filter}
             onInput={setFilterValue}
           />

@@ -13,7 +13,7 @@ import {
   SecondaryBlueButton,
   SecondaryGreyButton,
 } from '@/Components/Button'
-import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
+import RowInputWrapper from '@/Components/Forms/ValidationStateUi/RowInputWrapper'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'

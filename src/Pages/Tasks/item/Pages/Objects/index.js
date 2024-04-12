@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import BaseCell from '../../../../../Components/ListTableComponents/BaseCell'
 import ModifiedSortCellComponent from '../../../../../Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
@@ -102,8 +103,6 @@ const columns = [
     sizes: 300,
   },
 ]
-
-const emptyWrapper = ({ children }) => children
 
 const Objects = () => {
   const api = useContext(ApiContext)
@@ -263,7 +262,7 @@ const Objects = () => {
         {show && (
           <FilterForm
             fields={filterFormConfig}
-            inputWrapper={emptyWrapper}
+            inputWrapper={EmptyInputWrapper}
             value={filter}
             onInput={setFilterValue}
           />

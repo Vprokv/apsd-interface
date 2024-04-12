@@ -1,40 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { WithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import Form from '@Components/Components/Forms'
 import Button from '@/Components/Button'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { Link } from 'react-router-dom'
-import { LoginInput } from './styles'
+import { fieldMap, rules } from './configs'
+import Validator from '@Components/Logic/Validator'
 
 import { RESET_PASSWORD_PAGE_PATH } from '@/routePaths'
 import LoginTemplate from './LoginTemplate'
-import {
-  NOTIFICATION_TYPE_ERROR,
-  useOpenNotification,
-} from '@/Components/Notificator'
-import { API_URL } from '@/api'
-
-export const fieldMap = [
-  {
-    label: 'Логин',
-    id: 'login',
-    component: LoginInput,
-    placeholder: 'Введите свой логин',
-  },
-  {
-    label: 'Пароль',
-    id: 'password',
-    type: 'password',
-    component: LoginInput,
-    placeholder: 'Введите свой пароль',
-  },
-]
-
-const rules = {
-  login: [{ name: VALIDATION_RULE_REQUIRED }],
-  password: [{ name: VALIDATION_RULE_REQUIRED }],
-}
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 // const notifyMap = {
 //   'https://psd.moesk.ru': 'http://10.42.226.32:7777/psd/',
@@ -46,6 +20,7 @@ const rules = {
 
 function Login({ loginRequest }) {
   const [state, setState] = useState({})
+  const [validationState, setValidationState] = useState({})
 
   // const getNotification = useOpenNotification()
   //
@@ -69,27 +44,39 @@ function Login({ loginRequest }) {
 
   return (
     <LoginTemplate backgroundUrlPath="./login_bg.png">
-      <WithValidationForm
-        className="mb-4"
-        value={state}
-        onInput={setState}
-        fields={fieldMap}
-        inputWrapper={DefaultWrapper}
+      <Validator
         rules={rules}
         onSubmit={loginRequest}
+        value={state}
+        validationState={validationState}
+        setValidationState={useCallback(
+          (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+          [],
+        )}
       >
-        <div className="flex flex-col">
-          <Link
-            className="color-blue-1 font-size-14 ml-auto font-medium mb-9"
-            to={RESET_PASSWORD_PAGE_PATH}
+        {({ onSubmit }) => (
+          <Form
+            className="mb-4"
+            onSubmit={onSubmit}
+            value={state}
+            onInput={setState}
+            fields={fieldMap}
+            inputWrapper={WithValidationStateInputWrapper}
           >
-            Смена пароля
-          </Link>
-          <Button className="bg-blue-1 text-white" type="submit">
-            Вход
-          </Button>
-        </div>
-      </WithValidationForm>
+            <div className="flex flex-col">
+              <Link
+                className="color-blue-1 font-size-14 ml-auto font-medium mb-9"
+                to={RESET_PASSWORD_PAGE_PATH}
+              >
+                Смена пароля
+              </Link>
+              <Button className="bg-blue-1 text-white" type="submit">
+                Вход
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Validator>
     </LoginTemplate>
   )
 }

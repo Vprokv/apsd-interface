@@ -1,7 +1,8 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_BUSINESS_DOCUMENT_STAGE_CHANGE, URL_ENTITY_LIST } from '@/ApiList'
+import { URL_BUSINESS_DOCUMENT_STAGE_CHANGE } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -11,10 +12,8 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { MiniModalWindow } from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { Validation } from '@Components/Logic/Validator'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-
+import { rules, useFormFieldsConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
   200: () => {
@@ -30,13 +29,10 @@ export const ModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const rules = {
-  stageId: [{ name: VALIDATION_RULE_REQUIRED }],
-}
-
 const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
+  const [validationState, setValidationState] = useState({})
   const getNotification = useOpenNotification()
   const [openSmall, setOpenSmall] = useState(false)
 
@@ -47,26 +43,7 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
     [],
   )
 
-  const fields = useMemo(
-    () => [
-      {
-        id: 'stageId',
-        label: 'Выберите нову стадию тома',
-        placeholder: 'Выберите нову стадию тома',
-        component: LoadableSelect,
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_tom_stage',
-            query,
-          })
-          return data
-        },
-      },
-    ],
-    [api],
-  )
+  const fields = useFormFieldsConfig(api())
 
   const onSave = useCallback(async () => {
     try {
@@ -86,53 +63,54 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
   return (
     <ModalWindow title="Смена стадии тома" open={open} onClose={onClose}>
       <div className="flex flex-col overflow-hidden ">
-        <Validation
-          fields={fields}
+        <Validator
           value={filter}
-          onInput={setFilter}
           rules={rules}
           onSubmit={changeModalState(true)}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
         >
-          {(validationProps) => {
-            return (
-              <>
-                <FilterForm
-                  className="form-element-sizes-40"
-                  {...validationProps}
-                />
-                <div className="mt-10">
+          {({ onSubmit }) => (
+            <>
+              <Form
+                className="form-element-sizes-40 grid"
+                value={filter}
+                onInput={setFilter}
+                fields={fields}
+                inputWrapper={WithValidationStateInputWrapper}
+              />
+              <div className="mt-10">
+                <UnderButtons rightFunc={onSubmit} leftFunc={onClose} />
+              </div>
+              <MiniModalWindow
+                сlassName="font-size-14"
+                open={openSmall}
+                onClose={changeModalState(false)}
+                title=""
+                index={10000}
+              >
+                <>
+                  <div className="flex flex-col overflow-hidden h-full mb-4">
+                    Вы уверены, что хотите сменить стадию тома ?
+                  </div>
                   <UnderButtons
-                    disabled={!validationProps.formValid}
-                    rightFunc={validationProps.onSubmit}
-                    leftFunc={onClose}
+                    className={'w-full'}
+                    rightFunc={onSave}
+                    rightLabel={'Да'}
+                    leftFunc={changeModalState(false)}
+                    leftLabel={'Нет'}
+                    rightStyle={'w-full'}
+                    leftStyle={'w-full mr-4'}
                   />
-                </div>
-                <MiniModalWindow
-                  сlassName="font-size-14"
-                  open={openSmall}
-                  onClose={changeModalState(false)}
-                  title=""
-                  index={10000}
-                >
-                  <>
-                    <div className="flex flex-col overflow-hidden h-full mb-4">
-                      Вы уверены, что хотите сменить стадию тома ?
-                    </div>
-                    <UnderButtons
-                      className={'w-full'}
-                      rightFunc={onSave}
-                      rightLabel={'Да'}
-                      leftFunc={changeModalState(false)}
-                      leftLabel={'Нет'}
-                      rightStyle={'w-full'}
-                      leftStyle={'w-full mr-4'}
-                    />
-                  </>
-                </MiniModalWindow>
-              </>
-            )
-          }}
-        </Validation>
+                </>
+              </MiniModalWindow>
+            </>
+          )}
+          }
+        </Validator>
       </div>
     </ModalWindow>
   )

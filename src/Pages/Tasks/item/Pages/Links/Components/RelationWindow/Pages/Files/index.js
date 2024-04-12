@@ -26,18 +26,18 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { ContainerContext } from '@Components/constants'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import RowComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/RowComponent'
-import SelectWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/SelectWrapper'
+import LoadableSelect from '@/Components/Inputs/Select'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/InputWrapper'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-import DatePickerWrapper from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/Files/Components/DatePickerWrapper'
 import dayjs from 'dayjs'
 import { rules } from './configs'
-import { Validator } from '@Components/Logic/Validator/ValidatorNext'
+import Validator from '@Components/Logic/Validator'
 import ValidationConsumerRowComponent from '@/Components/Forms/Validation/ValidationConsumerRowComponent'
 import { useShowErrorAlertOnSubmitFailed } from '@/Components/Forms/useShowErrorAlertOnSubmitFailed'
+import LabelLessValidationUi from '@/Components/Forms/ValidationStateUi/LabelLessValidationUi'
+import DatePicker from '@/Components/Inputs/DatePicker'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -99,7 +99,6 @@ const Files = () => {
     },
     [],
   )
-
 
   const save = useCallback(async () => {
     try {
@@ -164,7 +163,9 @@ const Files = () => {
           alignItems: 'center',
           marginRight: '0.5rem',
         },
-        component: InputWrapper,
+        component: (props) => (
+          <LabelLessValidationUi inputComponent={Input} {...props} />
+        ),
         sizes: 200,
       },
       {
@@ -174,7 +175,9 @@ const Files = () => {
           alignItems: 'center',
           marginRight: '0.5rem',
         },
-        component: DatePickerWrapper,
+        component: (props) => (
+          <LabelLessValidationUi inputComponent={DatePicker} {...props} />
+        ),
         sizes: 200,
       },
       {
@@ -185,19 +188,24 @@ const Files = () => {
           marginRight: '0.5rem',
         },
         component: (props) => (
-          <SelectWrapper
+          <LabelLessValidationUi
             {...props}
+            inputComponent={LoadableSelect}
             valueKey="r_object_id"
             labelKey="dss_name"
             returnObjects={true}
             placeholder="Выберите тип файла"
-            loadFunction={async (query) => {
-              const { data } = await api.post(URL_ENTITY_LIST, {
-                type: 'ddt_dict_link_type',
-                query,
-              })
-              return data
-            }}
+            /* eslint-disable-next-line react-hooks/rules-of-hooks */
+            loadFunction={useCallback(
+              () => async (query) => {
+                const { data } = await api.post(URL_ENTITY_LIST, {
+                  type: 'ddt_dict_link_type',
+                  query,
+                })
+                return data
+              },
+              [],
+            )}
           />
         ),
         sizes: 200,

@@ -1,54 +1,23 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { FilterForm } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import { AutoLoadableSelect } from '@/Components/Inputs/Select'
-import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
-import { URL_ENTITY_LIST, URL_REMARK_ANSWER } from '@/ApiList'
-import { useRecoilValue } from 'recoil'
-import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
-import {
-  VALIDATION_RULE_MAX,
-  VALIDATION_RULE_REQUIRED,
-} from '@Components/Logic/Validator/constants'
+import { URL_REMARK_ANSWER } from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import UserSelect from '@/Components/Inputs/UserSelect'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import { returnChildren } from '@Components/Components/Forms'
-import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
-import { Validation } from '@Components/Logic/Validator'
-import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-
-const rules = {
-  solutionId: [{ name: VALIDATION_RULE_REQUIRED }],
-  text: [
-    {
-      name: VALIDATION_RULE_MAX,
-      args: {
-        max: 2048,
-        text: 'Превышено допустимое количество символов для ответа замечания ',
-      },
-    },
-    { name: VALIDATION_RULE_REQUIRED },
-  ],
-  member: [{ name: VALIDATION_RULE_REQUIRED }],
-  // 'ndtLinks.*.id': [{ name: VALIDATION_RULE_REQUIRED }],
-  // 'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
-  // ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
-}
+import { rules, useFormFieldsConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -65,6 +34,7 @@ const CreateAnswer = ({
   setSelected,
   ...filter
 }) => {
+  const [validationState, setValidationState] = useState({})
   const { member, remarkId } = filter
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
@@ -73,60 +43,7 @@ const CreateAnswer = ({
     stateId: TASK_ITEM_REMARKS,
   })
 
-  const fields = useMemo(
-    () => [
-      {
-        id: 'remarkText',
-        component: CustomInput,
-        placeholder: 'Введите текст замечания',
-        label: 'Текст замечания',
-        disabled: true,
-      },
-      {
-        id: 'member',
-        label: 'Автор',
-        disabled: !editAuthor,
-        returnOption: true,
-        returnObjects: true,
-        component: UserSelect,
-      },
-      {
-        id: 'solutionId',
-        component: AutoLoadableSelect,
-        placeholder: 'Выберите тип',
-        isRequired: false,
-        label: 'Решение',
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_dict_status_solution',
-            query,
-          })
-          return data
-        },
-      },
-      {
-        id: 'text',
-        label: 'Текст ответа',
-        isRequired: true,
-        inputWrapper: RemarkWrapper,
-        className: '',
-        component: CustomInput,
-        max: 100,
-        placeholder: 'Введите текст ответа',
-      },
-      {
-        id: 'ndtLinks',
-        label: 'Ссылка нa НТД',
-        component: LinkNdt,
-        placeholder: 'Выберите значение',
-        inputWrapper: returnChildren,
-        InputUiContext: NdtLinkWrapper,
-      },
-    ],
-    [api, editAuthor],
-  )
+  const fields = useFormFieldsConfig(api, editAuthor)
 
   const onClose = useCallback(() => {
     setSelected()
@@ -163,41 +80,40 @@ const CreateAnswer = ({
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4 h-full grow">
             <ScrollBar>
-              <Validation
-                fields={fields}
-                value={filter}
-                onInput={setSelected}
+              <Validator
                 rules={rules}
+                value={filter}
                 onSubmit={onSave}
-                validators={remarkValidator}
+                validationState={validationState}
+                setValidationState={useCallback(
+                  (s) =>
+                    setValidationState((prevState) => ({ ...prevState, ...s })),
+                  [],
+                )}
               >
-                {(validationProps) => {
-                  return (
-                    <>
-                      <FilterForm
-                        className="form-element-sizes-40"
-                        inputWrapper={InputWrapper}
-                        {...validationProps}
-                      />
-                      <div className="mt-10">
-                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
-                          Скачать шаблон таблицы
+                {({ onSubmit }) => (
+                  <>
+                    <Form
+                      className="form-element-sizes-40 grid"
+                      value={filter}
+                      onInput={setSelected}
+                      fields={fields}
+                      inputWrapper={WithValidationStateInputWrapper}
+                    />
+                    <div className="mt-10">
+                      <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
+                        Скачать шаблон таблицы
+                      </SecondaryBlueButton>
+                      <div className="flex items-center">
+                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
+                          Импорт значений
                         </SecondaryBlueButton>
-                        <div className="flex items-center">
-                          <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
-                            Импорт значений
-                          </SecondaryBlueButton>
-                          <UnderButtons
-                            disabled={!validationProps.formValid}
-                            leftFunc={onClose}
-                            rightFunc={validationProps.onSubmit}
-                          />
-                        </div>
+                        <UnderButtons leftFunc={onClose} rightFunc={onSubmit} />
                       </div>
-                    </>
-                  )
-                }}
-              </Validation>
+                    </div>
+                  </>
+                )}
+              </Validator>
             </ScrollBar>
           </div>
         </div>

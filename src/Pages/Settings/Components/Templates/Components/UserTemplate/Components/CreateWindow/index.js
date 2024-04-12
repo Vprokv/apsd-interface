@@ -1,14 +1,12 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { WithValidationForm } from '@Components/Components/Forms'
+import { useCallback, useContext, useState } from 'react'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect, { Select } from '@/Components/Inputs/Select'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import Input from '@/Components/Fields/Input'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
+import { rules, useGetFieldFormConfig } from './configs/formConfig'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { URL_CREATE_TEMPLATE, URL_REPORTS_BRANCH } from '@/ApiList'
+
 import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
-import UserSelect from '@/Components/Inputs/UserSelect'
+
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -17,6 +15,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import styled from 'styled-components'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -26,11 +25,6 @@ const customMessagesFuncMap = {
       message: 'Шаблон создан успешно',
     }
   },
-}
-
-const rules = {
-  dssName: [{ name: VALIDATION_RULE_REQUIRED }],
-  privateAccess: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const funcMap = {
@@ -56,89 +50,14 @@ const CreateWindow = ({
   type,
   createFunc,
 }) => {
+  const [validationState, setValidationState] = useState({})
   const [filter, setFilter] = useState({})
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
 
   const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
 
-  const fields = useMemo(
-    () =>
-      [
-        {
-          id: 'dssName',
-          component: Input,
-          label: 'Наименование',
-          show: true,
-        },
-        {
-          id: 'dssNote',
-          component: Input,
-          label: 'Примечание',
-          show: true,
-        },
-        {
-          id: 'privateAccess',
-          component: Select,
-          multiple: false,
-          label: 'Доступ к шаблону',
-          valueKey: 'typeName',
-          labelKey: 'typeLabel',
-          show: true,
-          options: [
-            {
-              typeName: 'user',
-              typeLabel: 'Только для автора',
-            },
-            {
-              typeName: 'organization',
-              typeLabel: 'Всей организации',
-            },
-            {
-              typeName: 'department',
-              typeLabel: 'Филиалу',
-            },
-            {
-              typeName: 'employee',
-              typeLabel: 'Сотруднику',
-            },
-          ],
-        },
-        {
-          label: 'Филиал',
-          id: 'branchesAccess',
-          component: LoadableSelect,
-          valueKey: 'id',
-          labelKey: 'name',
-          placeholder: 'Тип файла',
-          multiple: true,
-          loadFunction: async (query) => {
-            const {
-              data: { content },
-            } = await api.post(URL_REPORTS_BRANCH, {
-              type: 'branch_list',
-              filter: {
-                query,
-                useAllFilter: true,
-              },
-            })
-            return content
-          },
-          show: filter?.privateAccess === 'department',
-        },
-        {
-          id: 'usersAccess',
-          component: UserSelect,
-          // WindowComponent: OrgStructureComponentWithTemplateWindowWrapper, //todo
-          multiple: true,
-          className: 'font-size-12',
-          placeholder: 'Выборите сотрудников',
-          label: 'Выбор сотрудников',
-          show: filter?.privateAccess === 'employee',
-        },
-      ].filter(({ show }) => show),
-    [api, filter],
-  )
+  const fields = useGetFieldFormConfig(api, filter)
 
   const onCreate = useCallback(async () => {
     try {
@@ -182,26 +101,35 @@ const CreateWindow = ({
         open={open}
         onClose={changeModalState(false)}
       >
-        <>
-          <WithValidationForm
-            value={filter}
-            onInput={setFilter}
-            fields={fields}
-            inputWrapper={InputWrapper}
-            rules={rules}
-            // onSubmit={handleClick}
-          >
-            <UnderButtons
-              // className="justify-around w-full"
-              leftStyle="width-min mr-2"
-              rightStyle="width-min"
-              leftFunc={handleClick}
-              leftLabel="Отменить"
-              rightLabel="Сохранить"
-              rightFunc={onCreate}
-            />
-          </WithValidationForm>
-        </>
+        <Validator
+          rules={rules}
+          onSubmit={onCreate}
+          value={filter}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
+        >
+          {({ onSubmit }) => (
+            <Form
+              value={filter}
+              onInput={setFilter}
+              fields={fields}
+              inputWrapper={WithValidationStateInputWrapper}
+            >
+              <UnderButtons
+                // className="justify-around w-full"
+                leftStyle="width-min mr-2"
+                rightStyle="width-min"
+                leftFunc={handleClick}
+                leftLabel="Отменить"
+                rightLabel="Сохранить"
+                rightFunc={onSubmit}
+              />
+            </Form>
+          )}
+        </Validator>
       </StandardSizeModalWindow>
     </div>
   )

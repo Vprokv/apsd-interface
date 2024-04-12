@@ -1,19 +1,15 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext } from '@/contants'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import { useOpenNotification } from '@/Components/Notificator'
-import {
-  URL_BUSINESS_DOCUMENT_RECALL_FOR_REVISION,
-  URL_BUSINESS_DOCUMENT_STAGES,
-} from '@/ApiList'
+import { URL_BUSINESS_DOCUMENT_RECALL_FOR_REVISION } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import LoadableSelect from '@/Components/Inputs/Select'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { Validation } from '@Components/Logic/Validator'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { StandardSizeModalWindow } from '@/Pages/Tasks/item/Components/RejectApproveWindow'
-
+import { rules, useFormFieldsConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 const RecallForRevisionWindow = ({
   open,
   onClose,
@@ -23,6 +19,7 @@ const RecallForRevisionWindow = ({
 }) => {
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
+  const [validationState, setValidationState] = useState({})
 
   const [selected, setSelected] = useState({})
 
@@ -53,61 +50,39 @@ const RecallForRevisionWindow = ({
     }
   }, [api, documentId, getNotification, onClose, reloadData, settings])
 
-  const rules = {
-    stage: [{ name: VALIDATION_RULE_REQUIRED }],
-  }
-
-  const fields = useMemo(
-    () => [
-      {
-        id: 'stage',
-        label: 'Этап',
-        placeholder: 'Выберите этап',
-        component: LoadableSelect,
-        returnObjects: true,
-        valueKey: 'id',
-        labelKey: 'name',
-        loadFunction: async () => {
-          const { data } = await api.post(URL_BUSINESS_DOCUMENT_STAGES, {
-            documentId,
-          })
-          return data
-        },
-      },
-    ],
-    [api, documentId],
-  )
+  const fields = useFormFieldsConfig(api, documentId)
 
   return (
     <StandardSizeModalWindow open={open} onClose={onClose} title={title}>
       <div className="flex flex-col overflow-hidden ">
         <ScrollBar>
           <div className="flex flex-col py-4">
-            <Validation
-              fields={fields}
-              value={selected}
-              onInput={setSelected}
+            <Validator
               rules={rules}
               onSubmit={complete}
+              value={selected}
+              validationState={validationState}
+              setValidationState={useCallback(
+                (s) =>
+                  setValidationState((prevState) => ({ ...prevState, ...s })),
+                [],
+              )}
             >
-              {(validationProps) => {
-                return (
-                  <>
-                    <FilterForm
-                      className="form-element-sizes-40"
-                      {...validationProps}
-                    />
-                    <div className="mt-10">
-                      <UnderButtons
-                        disabled={!validationProps.formValid}
-                        rightFunc={validationProps.onSubmit}
-                        leftFunc={onClose}
-                      />
-                    </div>
-                  </>
-                )
-              }}
-            </Validation>
+              {({ onSubmit }) => (
+                <>
+                  <Form
+                    className="form-element-sizes-40 grid"
+                    value={selected}
+                    onInput={setSelected}
+                    fields={fields}
+                    inputWrapper={WithValidationStateInputWrapper}
+                  />
+                  <div className="mt-10">
+                    <UnderButtons rightFunc={onSubmit} leftFunc={onClose} />
+                  </div>
+                </>
+              )}
+            </Validator>
           </div>
         </ScrollBar>
       </div>

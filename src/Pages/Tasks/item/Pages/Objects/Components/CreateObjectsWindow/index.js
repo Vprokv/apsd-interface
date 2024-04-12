@@ -1,5 +1,6 @@
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { useCallback, useContext, useMemo, useState } from 'react'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import {
   ApiContext,
   SETTINGS_TECHNICAL_OBJECTS,
@@ -110,8 +111,6 @@ const columns = [
     sizes: 300,
   },
 ]
-
-export const emptyWrapper = ({ children }) => children
 
 const CreateObjectsWindow = ({ onClose }) => {
   const id = useContext(DocumentIdContext)
@@ -296,7 +295,7 @@ const CreateObjectsWindow = ({ onClose }) => {
           <div className="flex items-center py-4">
             <FilterForm
               fields={filterFormConfig}
-              inputWrapper={emptyWrapper}
+              inputWrapper={EmptyInputWrapper}
               value={filter}
               onInput={useCallback(
                 (filter) => setTabState({ filter }),

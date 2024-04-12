@@ -20,7 +20,7 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Form from '@Components/Components/Forms'
-import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
+import RowInputWrapper from '@/Components/Forms/ValidationStateUi/RowInputWrapper'
 import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,

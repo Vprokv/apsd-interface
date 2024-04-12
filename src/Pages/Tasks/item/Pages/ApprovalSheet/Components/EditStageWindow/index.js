@@ -6,8 +6,9 @@ import {
   useRef,
   useState,
 } from 'react'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import Icon from '@Components/Components/Icon'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Button, { LoadableBaseButton } from '@/Components/Button'
 import editIcon from '@/Icons/editIcon'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
@@ -17,22 +18,14 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { URL_APPROVAL_SHEET_UPDATE, URL_ENTITY_LIST } from '@/ApiList'
-import LoadableSelect from '@/Components/Inputs/Select'
-import { SearchInput } from '@/Pages/Tasks/list/styles'
-import NumericInput from '@Components/Components/Inputs/NumericInput'
-import {
-  CustomSizeModalWindow,
-  FilterForm,
-} from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/styles'
-import {
-  VALIDATION_RULE_INTEGER,
-  VALIDATION_RULE_REQUIRED,
-} from '@Components/Logic/Validator/constants'
+import { CustomSizeModalWindow } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CreateApprovalSheetWindow/styles'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { rules, useFormFieldsConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -42,11 +35,6 @@ const customMessagesFuncMap = {
       message: 'Этап изменен успешно',
     }
   },
-}
-
-const rules = {
-  name: [{ name: VALIDATION_RULE_REQUIRED }],
-  term: [{ name: VALIDATION_RULE_INTEGER }, { name: VALIDATION_RULE_REQUIRED }],
 }
 
 const NAME = 'Указать наименование этапа вручную'
@@ -60,6 +48,7 @@ export const AddUserOptionsFullName = (v = {}) => ({
 
 const EditStageWindow = (props) => {
   const api = useContext(ApiContext)
+  const [validationState, setValidationState] = useState({})
   const [open, setOpenState] = useState(false)
   const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
@@ -124,43 +113,7 @@ const EditStageWindow = (props) => {
 
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
-  const fields = useMemo(
-    () =>
-      [
-        {
-          id: 'name',
-          label: 'Наименование',
-          component: LoadableSelect,
-          placeholder: 'Наименование этапа',
-          valueKey: 'dss_name',
-          labelKey: 'dss_name',
-          options: typicalStage,
-          loadFunction: async (query) => {
-            const { data } = await api.post(URL_ENTITY_LIST, {
-              type: 'ddt_dict_typical_stage',
-              query,
-            })
-            return data
-          },
-        },
-        {
-          id: 'show',
-          component: SearchInput,
-          visible: visible,
-          multiple: true,
-          returnOption: false,
-          placeholder: 'Наименование этапа',
-          label: 'Наименование этапа',
-        },
-        {
-          id: 'term',
-          component: NumericInput,
-          placeholder: 'Срок в рабочих днях',
-          label: 'Укажите в рабочих днях',
-        },
-      ].filter(({ visible }) => visible !== false),
-    [api, typicalStage, visible],
-  )
+  const fields = useFormFieldsConfig(api, typicalStage, visible)
 
   const onSave = useCallback(async () => {
     const { name, show, term, id } = filterValue
@@ -207,38 +160,51 @@ const EditStageWindow = (props) => {
         open={open}
         onClose={changeModalState(false)}
       >
-        <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex py-4">
-            <FilterForm
-              className="form-element-sizes-40"
-              fields={fields}
-              value={filterValue}
-              onInput={setFilterValue}
-              inputWrapper={InputWrapper}
-              rules={rules}
-            />
-          </div>
-          <div className="mt-2">
-            Контрольный срок согласования для томов ПД, РД:
-            <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
-            Согласование куратора филиала - 1 раб. дн. <br />* Согласование
-            куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
-          </div>
-        </div>
-        <div className="flex items-center justify-end mt-8">
-          <Button
-            className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
-            onClick={onClose}
-          >
-            Закрыть
-          </Button>
-          <LoadableBaseButton
-            className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
-            onClick={onSave}
-          >
-            Сохранить
-          </LoadableBaseButton>
-        </div>
+        <Validator
+          rules={rules}
+          value={filterValue}
+          onSubmit={onSave}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
+        >
+          {({ onSubmit }) => (
+            <>
+              <div className="flex flex-col overflow-hidden h-full">
+                <Form
+                  className="flex py-4form-element-sizes-40"
+                  fields={fields}
+                  value={filterValue}
+                  onInput={setFilterValue}
+                  inputWrapper={WithValidationStateInputWrapper}
+                ></Form>
+                <div className="mt-2">
+                  Контрольный срок согласования для томов ПД, РД:
+                  <br className="ml-6" />* Согласование служб - 3 раб. дн.{' '}
+                  <br />* Согласование куратора филиала - 1 раб. дн. <br />*
+                  Согласование куратора ИА - 1 раб. дн. <br />* Визирование - 10
+                  раб. дн
+                </div>
+              </div>
+              <div className="flex items-center justify-end mt-8">
+                <Button
+                  className="bg-light-gray flex items-center w-60 rounded-lg mr-4 font-weight-normal justify-center"
+                  onClick={onClose}
+                >
+                  Закрыть
+                </Button>
+                <LoadableBaseButton
+                  className="text-white bg-blue-1 flex items-center w-60 rounded-lg justify-center font-weight-normal"
+                  onClick={onSubmit}
+                >
+                  Сохранить
+                </LoadableBaseButton>
+              </div>
+            </>
+          )}
+        </Validator>
       </CustomSizeModalWindow>
     </div>
   )

@@ -7,8 +7,7 @@ import searchIcon from '@/Icons/searchIcon'
 import { ApiContext } from '@/contants'
 import { URL_TASK_LIST_FILTERS } from '@/ApiList'
 import CheckBox from '@/Components/Inputs/CheckBox'
-
-const emptyWrapper = ({ children }) => children
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 
 function Filter({ value, onInput, className }) {
   const api = useContext(ApiContext)
@@ -115,7 +114,7 @@ function Filter({ value, onInput, className }) {
     <FilterForm
       className={className}
       fields={fields}
-      inputWrapper={emptyWrapper}
+      inputWrapper={EmptyInputWrapper}
       value={value}
       onInput={onInput}
     />

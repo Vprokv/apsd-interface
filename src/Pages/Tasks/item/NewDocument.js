@@ -38,7 +38,6 @@ import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import useTabInitialState from '@Components/Logic/Tab/useTabInitialState'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
-import Validator from '@Components/Logic/Validator/Validator'
 import CheckDoubleWindow from '@/Pages/Tasks/item/Components/CheckDobleWindow'
 
 const customMessagesFuncMap = {
@@ -65,7 +64,6 @@ export const NewTaskItem = ({ classificationId, type }) => {
   const getNotification = useOpenNotification()
   const [ActionComponent, setActionComponent] = useState(null)
   const closeAction = useCallback(() => setActionComponent(null), [])
-  const validator = new Validator()
   const [tabItemState, setTabItemState] = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
   })

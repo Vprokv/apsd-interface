@@ -1,21 +1,15 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
+import Validator from '@Components/Logic/Validator'
 import PropTypes from 'prop-types'
-import InputComponent from '@Components/Components/Inputs/Input'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DEFAULT_DATE_FORMAT,
-  ITEM_TASK,
   PRESENT_DATE_FORMAT,
   TASK_ITEM_APPROVAL_SHEET,
 } from '@/contants'
-import {
-  URL_ADDITIONAL_AGREEMENT_USER_LIST,
-  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
-} from '@/ApiList'
+import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -27,19 +21,12 @@ import ScrollBar from '@Components/Components/ScrollBar'
 
 import styled from 'styled-components'
 import ModalWindowWrapper from '../../../../../Components/ModalWindow'
-import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
-import {
-  VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-  VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
-  VALIDATION_RULE_REQUIRED,
-} from '@Components/Logic/Validator/constants'
-import { Validation } from '@Components/Logic/Validator'
 import Form from '@Components/Components/Forms'
 import dayjs from 'dayjs'
-import DatePicker from '@/Components/Inputs/DatePicker'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import DefaultWrapper from '@/Components/Forms/ValidationStateUi/StyledInputWrapper'
+import { useFormFieldsConfig, useFormRules } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -68,6 +55,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
   const { type: documentType } = useParams()
   const updateCurrentTabChildrenStates = updateTabChildrenStates()
   const getNotification = useOpenNotification()
+  const [validationState, setValidationState] = useState({})
 
   const {
     approverId,
@@ -88,87 +76,12 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
       0,
     [dueDate],
   )
-
-  const rules = useMemo(
-    () => ({
-      performersEmpls: [{ name: VALIDATION_RULE_REQUIRED }],
-      dueDate: checkDate
-        ? [
-            {
-              name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-              args: {
-                format: 'DD.MM.YYYY',
-                after_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
-              },
-            },
-            {
-              name: VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
-              args: {
-                format: 'DD.MM.YYYY',
-                before_or_equal: dayjs(
-                  dueDate,
-                  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-                ).format(PRESENT_DATE_FORMAT),
-              },
-            },
-          ]
-        : [
-            {
-              name: VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-              args: {
-                format: 'DD.MM.YYYY',
-                after_or_equal: dayjs().format(PRESENT_DATE_FORMAT),
-              },
-            },
-          ],
-    }),
-    [checkDate, dueDate],
-  )
-
-  const fieldMap = useMemo(
-    () => [
-      {
-        label: 'Доп. согласующий',
-        id: 'performersEmpls',
-        component: AdditionalAgreementOrgStructureComponent,
-        loadFunction: (api) => (filter) => async (query) => {
-          const { data } = await api.post(URL_ADDITIONAL_AGREEMENT_USER_LIST, {
-            documentId,
-            approverParentId,
-            filter: {
-              ...filter,
-              ...query,
-            },
-          })
-          return data
-        },
-        placeholder: 'Введите данные',
-        multiple: true,
-      },
-      {
-        label: 'Комментарий',
-        id: 'performerComment',
-        component: InputComponent,
-        placeholder: 'Введите данные',
-      },
-      {
-        label: 'Укажите плановую дату доп. согласования',
-        id: 'dueDate',
-        component: (props) => <DatePicker {...props} className="w-64" />,
-        selectRestrictions: {
-          minDate: dayjs().format(PRESENT_DATE_FORMAT),
-          maxDate:
-            checkDate &&
-            dueDate &&
-            dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
-              PRESENT_DATE_FORMAT,
-            ),
-        },
-        inputWrapper: DatePickerWrapper,
-        placeholder: '',
-      },
-    ],
-    [approverParentId, checkDate, dueDate],
+  const rules = useFormRules(checkDate, dueDate)
+  const fields = useFormFieldsConfig(
+    approverParentId,
+    checkDate,
+    dueDate,
+    documentId,
   )
 
   const time = useMemo(
@@ -213,32 +126,31 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
   return (
     <div className="flex flex-col overflow-hidden ">
       <ScrollBar className="flex flex-col py-4">
-        <Validation
-          fields={fieldMap}
-          value={values}
-          onInput={setValues}
+        <Validator
           rules={rules}
           onSubmit={onSave}
+          value={values}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
         >
-          {({ onSubmit, formValid, ...props }) => {
-            return (
-              <>
-                <Form
-                  className="form-element-sizes-40"
-                  inputWrapper={DefaultWrapper}
-                  {...props}
-                />
-                <div className="mt-10">
-                  <UnderButtons
-                    // disabled={!formValid}
-                    rightFunc={onSubmit}
-                    leftFunc={onClose}
-                  />
-                </div>
-              </>
-            )
-          }}
-        </Validation>
+          {({ onSubmit }) => (
+            <>
+              <Form
+                className="form-element-sizes-40"
+                value={values}
+                onInput={setValues}
+                fields={fields}
+                inputWrapper={WithValidationStateInputWrapper}
+              />
+              <div className="mt-10">
+                <UnderButtons rightFunc={onSubmit} leftFunc={onClose} />
+              </div>
+            </>
+          )}
+        </Validator>
       </ScrollBar>
     </div>
   )

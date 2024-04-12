@@ -57,13 +57,11 @@ import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import LoadableSelect from '@/Components/Inputs/Select'
 import searchIcon from '@/Icons/searchIcon'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
-import sortIcon from '@/Pages/Tasks/list/icons/sortIcon'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
-import log from 'tailwindcss/lib/util/log'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -231,8 +229,6 @@ function StorageList() {
   const { parentName, name, id } = useParams()
   const decodeParentName = decodeURIComponent(parentName)
   const decodeName = decodeURIComponent(name)
-
-  console.log(decodeParentName, 'decodeParentName')
 
   const { setLimit, setPage, paginationState } = usePagination({
     stateId: TASK_STORAGE_LIST,
@@ -466,7 +462,7 @@ function StorageList() {
           <FilterForm
             className="pl-4"
             fields={fields}
-            inputWrapper={emptyWrapper}
+            inputWrapper={EmptyInputWrapper}
             value={filter}
             onInput={setFilter}
           />

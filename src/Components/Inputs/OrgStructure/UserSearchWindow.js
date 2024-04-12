@@ -29,7 +29,8 @@ import {
 } from '@/ApiList'
 import UserCard from './Components/UserCard'
 import closeIcon from '../../../Icons/closeIcon'
-import LoadableSelect, { AutoLoadableSelect } from '../Select'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
+import { AutoLoadableSelect } from '../Select'
 import Pagination from '../../Pagination'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
@@ -75,8 +76,6 @@ const columns = [
     sizes: 180,
   },
 ]
-
-const emptyWrapper = ({ children }) => children
 
 export const OrgStructureWindow = (props) => {
   const {
@@ -330,7 +329,7 @@ export const OrgStructureWindow = (props) => {
           <div className="flex items-center py-4">
             <FilterForm
               fields={fields}
-              inputWrapper={emptyWrapper}
+              inputWrapper={EmptyInputWrapper}
               value={filter}
               onInput={setFilter}
             />

@@ -1,59 +1,30 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { CustomInput } from './styles'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_CREATE } from '@/ApiList'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import UserSelect from '@/Components/Inputs/UserSelect'
-import {
-  VALIDATION_RULE_MAX,
-  VALIDATION_RULE_REQUIRED,
-} from '@Components/Logic/Validator/constants'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
-import Form, { returnChildren } from '@Components/Components/Forms'
 import {
   defaultFunctionsMap,
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import {
-  RowInputWrapperRefactor,
-  ValidationProvider,
-} from '@/Components/InputWrapperRefactor'
 import useTabItem from '@Components/Logic/Tab/TabItem'
-import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
-import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
-import { Validation } from '@Components/Logic/Validator'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { rules, useFormFieldsConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;
 `
-
-const rules = {
-  member: [{ name: VALIDATION_RULE_REQUIRED }],
-  text: [
-    {
-      name: VALIDATION_RULE_MAX,
-      args: {
-        max: 2048,
-        text: 'Превышено допустимое количество символов для замечания ',
-      },
-    },
-    { name: VALIDATION_RULE_REQUIRED },
-  ],
-  'ndtLinks.*.ndtId': [{ name: VALIDATION_RULE_REQUIRED }],
-  // 'ndtLinks.*.comment': [{ name: VALIDATION_RULE_REQUIRED }],
-  ndtLinks: [{ name: VALIDATION_RULE_REQUIRED }],
-}
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;
@@ -72,9 +43,8 @@ const customMessagesFuncMap = {
   },
 }
 
-export const NdtLinkWrapper = ValidationProvider(RowInputWrapperRefactor)
-
 const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
+  const [validationState, setValidationState] = useState({})
   const api = useContext(ApiContext)
   const id = useContext(DocumentIdContext)
   const [open, setOpenState] = useState(false)
@@ -143,36 +113,6 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
     }
   }, [filter.remarkTypeId, remarkType])
 
-  const fields = useMemo(
-    () => [
-      {
-        id: 'member',
-        label: 'Автор',
-        disabled: !editAuthor,
-        returnOption: true,
-        returnObjects: true,
-        options: [initialUserValue.member],
-        component: UserSelect,
-      },
-      {
-        id: 'text',
-        label: 'Текст замечания',
-        inputWrapper: RemarkWrapper,
-        component: CustomInput,
-        placeholder: 'Введите текст замечания',
-      },
-      {
-        id: 'ndtLinks',
-        label: 'Ссылка нa НТД',
-        component: LinkNdt,
-        placeholder: 'Выберите значение',
-        inputWrapper: returnChildren,
-        InputUiContext: NdtLinkWrapper,
-      },
-    ],
-    [api, editAuthor, initialUserValue.member, options],
-  )
-
   const changeModalState = useCallback(
     (nextState) => () => {
       setOpenState(nextState)
@@ -213,6 +153,8 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
     setFilterValue(initialUserValue)
   }, [changeModalState, initialUserValue])
 
+  const fields = useFormFieldsConfig(api, editAuthor, initialUserValue, options)
+
   // todo поправить верстку
   return (
     <div>
@@ -231,41 +173,40 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         <div className="flex flex-col overflow-hidden h-full">
           <div className="flex flex-col py-4 h-full grow">
             <ScrollBar className="grow">
-              <Validation
-                fields={fields}
-                value={filter}
-                onInput={setFilterValue}
+              <Validator
                 rules={rules}
+                value={filter}
                 onSubmit={onSave}
-                validators={remarkValidator}
+                validationState={validationState}
+                setValidationState={useCallback(
+                  (s) =>
+                    setValidationState((prevState) => ({ ...prevState, ...s })),
+                  [],
+                )}
               >
-                {(validationProps) => {
-                  return (
-                    <>
-                      <Form
-                        className="form-element-sizes-40"
-                        inputWrapper={InputWrapper}
-                        {...validationProps}
-                      />
-                      <div className="mt-10">
-                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
-                          Скачать шаблон таблицы
+                {({ onSubmit }) => (
+                  <>
+                    <Form
+                      className="form-element-sizes-40"
+                      value={filter}
+                      onInput={setFilterValue}
+                      fields={fields}
+                      inputWrapper={WithValidationStateInputWrapper}
+                    />
+                    <div className="mt-10">
+                      <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
+                        Скачать шаблон таблицы
+                      </SecondaryBlueButton>
+                      <div className="flex items-center">
+                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
+                          Импорт значений
                         </SecondaryBlueButton>
-                        <div className="flex items-center">
-                          <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
-                            Импорт значений
-                          </SecondaryBlueButton>
-                          <UnderButtons
-                            disabled={!validationProps.formValid}
-                            leftFunc={onClose}
-                            rightFunc={validationProps.onSubmit}
-                          />
-                        </div>
+                        <UnderButtons leftFunc={onClose} rightFunc={onSubmit} />
                       </div>
-                    </>
-                  )
-                }}
-              </Validation>
+                    </div>
+                  </>
+                )}
+              </Validator>
             </ScrollBar>
           </div>
         </div>

@@ -1,11 +1,10 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import { WithValidationForm } from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { StandardSizeModalWindow } from '@/Pages/Tasks/item/Components/RejectPrepareWindow'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import Input from '@/Components/Fields/Input'
+
 import { URL_BUSINESS_DOCUMENT_CANCEL } from '@/ApiList'
 import {
   defaultFunctionsMap,
@@ -17,6 +16,8 @@ import { useOpenNotification } from '@/Components/Notificator'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import { LoadTasks } from '@/Pages/Main/constants'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { fields, rules } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -28,33 +29,17 @@ const customMessagesFuncMap = {
   },
 }
 
-const rules = {
-  description: [{ name: VALIDATION_RULE_REQUIRED }],
-}
-
 const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({})
   const getNotification = useOpenNotification()
-
+  const [validationState, setValidationState] = useState({})
   const { 1: setTabState } = useTabItem({
     stateId: ITEM_DOCUMENT,
   })
 
   const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
   const reloadSidebarTaskCounters = useContext(LoadTasks)
-
-  const fields = useMemo(
-    () => [
-      {
-        id: 'description',
-        label: 'Причина аннулирования',
-        placeholder: 'Укажите причину аннулирования',
-        component: Input,
-      },
-    ],
-    [],
-  )
 
   const complete = useCallback(async () => {
     try {
@@ -92,23 +77,34 @@ const CancelWindow = ({ open, onClose, documentId, documentType, signal }) => {
       onClose={onClose}
       title="Причина аннулирования"
     >
-      <div className="flex flex-col overflow-hidden ">
-        <WithValidationForm
-          className="mb-4"
-          value={filter}
-          onInput={setFilter}
-          fields={fields}
-          inputWrapper={DefaultWrapper}
-          rules={rules}
-          onSubmit={complete}
-        >
-          <UnderButtons
-            leftLabel="Отменить"
-            rightLabel="Аннулировать"
-            leftFunc={onClose}
-          />
-        </WithValidationForm>
-      </div>
+      <Validator
+        value={filter}
+        validationState={validationState}
+        setValidationState={useCallback(
+          (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+          [],
+        )}
+        fields={fields}
+        rules={rules}
+        onSubmit={complete}
+      >
+        {({ onSubmit }) => (
+          <Form
+            className="flex flex-col overflow-hidden mb-4"
+            value={filter}
+            onInput={setFilter}
+            fields={fields}
+            onSubmit={onSubmit}
+            inputWrapper={WithValidationStateInputWrapper}
+          >
+            <UnderButtons
+              leftLabel="Отменить"
+              rightLabel="Аннулировать"
+              leftFunc={onClose}
+            />
+          </Form>
+        )}
+      </Validator>
     </StandardSizeModalWindow>
   )
 }

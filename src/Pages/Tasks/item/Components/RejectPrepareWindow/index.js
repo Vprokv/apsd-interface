@@ -1,5 +1,7 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
@@ -9,17 +11,13 @@ import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useParams } from 'react-router-dom'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
-import Input from '@/Components/Fields/Input'
-import NewFileInput from '@/Components/Inputs/NewFileInput'
-import { ContainerContext } from '@Components/constants'
+
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { Validation } from '@Components/Logic/Validator'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { fields, rules } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
@@ -29,11 +27,11 @@ export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
 
 const RejectPrepareWindow = ({ open, onClose, signal }) => {
   const api = useContext(ApiContext)
+  const [validationState, setValidationState] = useState({})
   const { onCloseTab } = useContext(TabStateManipulation)
   const { currentTabIndex } = useContext(CurrentTabContext)
   const getNotification = useOpenNotification()
   const reloadSidebarTaskCounters = useContext(LoadTasks)
-  const context = useContext(ContainerContext)
   const { id } = useParams()
   const [selected, setSelected] = useState({})
   const updateTabStateUpdaterByName = UseTabStateUpdaterByName()
@@ -74,22 +72,6 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
     updateTabStateUpdaterByName,
   ])
 
-  const rules = {
-    reportText: [{ name: VALIDATION_RULE_REQUIRED }],
-  }
-
-  const fields = useMemo(
-    () => [
-      {
-        id: 'reportText',
-        label: 'Причина отклонения',
-        placeholder: 'Укажите причину отклонения',
-        component: Input,
-      },
-    ],
-    [],
-  )
-
   return (
     <StandardSizeModalWindow
       open={open}
@@ -99,34 +81,37 @@ const RejectPrepareWindow = ({ open, onClose, signal }) => {
       <div className="flex flex-col overflow-hidden ">
         <ScrollBar>
           <div className="flex flex-col py-4">
-            <Validation
-              fields={fields}
-              value={selected}
-              onInput={setSelected}
+            <Validator
               rules={rules}
               onSubmit={complete}
+              value={selected}
+              validationState={validationState}
+              setValidationState={useCallback(
+                (s) =>
+                  setValidationState((prevState) => ({ ...prevState, ...s })),
+                [],
+              )}
             >
-              {(validationProps) => {
-                return (
-                  <>
-                    <FilterForm
-                      inputWrapper={DefaultWrapper}
-                      className="form-element-sizes-40"
-                      {...validationProps}
+              {({ onSubmit }) => (
+                <>
+                  <Form
+                    className="form-element-sizes-40"
+                    fields={fields}
+                    value={selected}
+                    onInput={setSelected}
+                    inputWrapper={WithValidationStateInputWrapper}
+                  />
+                  <div className="mt-10">
+                    <UnderButtons
+                      leftLabel="Отменить"
+                      rightLabel="Отклонить"
+                      rightFunc={onSubmit}
+                      leftFunc={onClose}
                     />
-                    <div className="mt-10">
-                      <UnderButtons
-                        leftLabel="Отменить"
-                        rightLabel="Отклонить"
-                        disabled={!validationProps.formValid}
-                        rightFunc={validationProps.onSubmit}
-                        leftFunc={onClose}
-                      />
-                    </div>
-                  </>
-                )
-              }}
-            </Validation>
+                  </div>
+                </>
+              )}
+            </Validator>
           </div>
         </ScrollBar>
       </div>

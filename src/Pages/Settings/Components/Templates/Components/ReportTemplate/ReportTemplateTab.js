@@ -1,10 +1,5 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import {
-  ApiContext,
-  REPORTING,
-  REPORTING_STATE,
-  SETTINGS_TEMPLATES,
-} from '@/contants'
+import { ApiContext, REPORTING_STATE } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import {
@@ -24,7 +19,7 @@ import attrubutesAdapter from '@/Pages/Rporting/Parser/attrubutesAdapter'
 import reportParserStages from '@/Pages/Rporting/Parser'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import Form from '@Components/Components/Forms'
-import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
+import RowInputWrapper from '@/Components/Forms/ValidationStateUi/RowInputWrapper'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'

@@ -1,11 +1,5 @@
 import styled from 'styled-components'
-import Validation from '@Components/Logic/Validator/V'
-import Form, { WithValidationForm } from '@Components/Components/Forms'
-import InputWrapper, {
-  InputLabel,
-  InputLabelStart,
-} from '@Components/Components/Forms/InputWrapper'
-
+import Form from '@Components/Components/Forms'
 export const ContHover = styled.div`
   display: flex;
   height: 100%;
@@ -41,19 +35,4 @@ export const ReportsForm = styled(Form)`
   padding: 0.5rem;
   --form-elements-indent: 0px;
   grid-row-gap: 20px;
-`
-
-export default styled(InputWrapper)`
-  font-size: 14px;
-  font-weight: 400;
-
-  ${InputLabel} {
-    margin-bottom: 4px;
-    color: #232832;
-  }
-
-  ${InputLabelStart} {
-    color: #1c60e0;
-    font-weight: 500;
-  }
 `

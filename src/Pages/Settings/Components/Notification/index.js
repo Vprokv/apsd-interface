@@ -6,13 +6,13 @@ import {
   URL_TYPE_CONFIG,
 } from '@/ApiList'
 import { ApiContext } from '@/contants'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { GridForm } from '@/Pages/Settings/Components/Notification/styles'
 import ChannelItemComponent from '@/Pages/Settings/Components/Notification/Components/ChannelItemComponent'
 import { ChannelContext } from '@/Pages/Settings/Components/Notification/constans'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import ScrollBar from '../../../../components_ocean/Components/ScrollBar'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 const NotificationItem = () => {
   const api = useContext(ApiContext)
@@ -90,7 +90,7 @@ const NotificationItem = () => {
     <div className="m-4 w-full pb-8 flex flex-col">
       <GridForm
         fields={fields}
-        inputWrapper={InputWrapper}
+        inputWrapper={WithValidationStateInputWrapper}
         value={filter}
         onInput={setFilter}
       />

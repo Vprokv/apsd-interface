@@ -1,7 +1,8 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import LoadableSelect from '@/Components/Inputs/Select'
-import { URL_BUSINESS_DOCUMENT_ROUTE_CHANGE, URL_ENTITY_LIST } from '@/ApiList'
+import { URL_BUSINESS_DOCUMENT_ROUTE_CHANGE } from '@/ApiList'
 import { ApiContext } from '@/contants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -11,11 +12,8 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { MiniModalWindow } from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { Validation } from '@Components/Logic/Validator'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
-import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import CheckBox from '@/Components/Inputs/CheckBox'
-
+import { rules, useFormFieldConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
   200: () => {
@@ -31,13 +29,10 @@ export const ModalWindow = styled(ModalWindowWrapper)`
   margin: auto;
 `
 
-const rules = {
-  stageId: [{ name: VALIDATION_RULE_REQUIRED }],
-}
-
 const ChangeRouteWindow = ({ open, onClose, documentId, reloadData }) => {
   const api = useContext(ApiContext)
   const [filter, setFilter] = useState({ pdInIa: false })
+  const [validationState, setValidationState] = useState({})
   const getNotification = useOpenNotification()
   const [openSmall, setOpenSmall] = useState(false)
 
@@ -48,31 +43,7 @@ const ChangeRouteWindow = ({ open, onClose, documentId, reloadData }) => {
     [],
   )
 
-  const fields = useMemo(
-    () => [
-      {
-        id: 'pdInIa',
-        component: CheckBox,
-        text: 'ПД в ИА',
-      },
-      {
-        id: 'branchId',
-        label: 'Филиал (Исполнителя)',
-        placeholder: 'Выберите нову стадию тома',
-        component: LoadableSelect,
-        valueKey: 'r_object_id',
-        labelKey: 'dss_name',
-        loadFunction: async (query) => {
-          const { data } = await api.post(URL_ENTITY_LIST, {
-            type: 'ddt_branch',
-            query,
-          })
-          return data
-        },
-      },
-    ],
-    [api],
-  )
+  const fields = useFormFieldConfig(api())
 
   const onSave = useCallback(async () => {
     try {
@@ -96,26 +67,28 @@ const ChangeRouteWindow = ({ open, onClose, documentId, reloadData }) => {
       onClose={onClose}
     >
       <div className="flex flex-col overflow-hidden ">
-        <Validation
-          fields={fields}
+        <Validator
           value={filter}
-          onInput={setFilter}
           rules={rules}
           onSubmit={changeModalState(true)}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
         >
-          {(validationProps) => {
+          {({ onSubmit }) => {
             return (
               <>
-                <FilterForm
-                  className="form-element-sizes-40"
-                  {...validationProps}
+                <Form
+                  className="form-element-sizes-40 grid"
+                  onInput={setFilter}
+                  value={filter}
+                  fields={fields}
+                  inputWrapper={WithValidationStateInputWrapper}
                 />
                 <div className="mt-10">
-                  <UnderButtons
-                    disabled={!validationProps.formValid}
-                    rightFunc={validationProps.onSubmit}
-                    leftFunc={onClose}
-                  />
+                  <UnderButtons rightFunc={onSubmit} leftFunc={onClose} />
                 </div>
                 <MiniModalWindow
                   сlassName="font-size-14"
@@ -142,7 +115,7 @@ const ChangeRouteWindow = ({ open, onClose, documentId, reloadData }) => {
               </>
             )
           }}
-        </Validation>
+        </Validator>
       </div>
     </ModalWindow>
   )

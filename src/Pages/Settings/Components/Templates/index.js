@@ -2,10 +2,8 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
-  ITEM_TASK,
   PRESENT_DATE_FORMAT,
   SETTINGS_TEMPLATES,
-  TASK_LIST,
 } from '@/contants'
 import BaseCell, {
   sizes as baseCellSize,
@@ -19,7 +17,6 @@ import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import UserSelect from '@/Components/Inputs/UserSelect'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import { ButtonForIcon, SecondaryBlueButton } from '@/Components/Button'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -32,7 +29,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import styled from 'styled-components'
-import Form from '@Components/Components/Forms'
+import Form, { EmptyInputWrapper } from '@Components/Components/Forms'
 import Tips from '@/Components/Tips'
 import DeleteIcon from '@/Icons/deleteIcon'
 import EditIcon from '@/Icons/editIcon'
@@ -302,7 +299,7 @@ const Templates = () => {
       <div className="flex form-element-sizes-32">
         <FilterForm
           fields={filterFields}
-          inputWrapper={emptyWrapper}
+          inputWrapper={EmptyInputWrapper}
           value={filter}
           onInput={useCallback(
             (filter) => setTabState({ filter }),

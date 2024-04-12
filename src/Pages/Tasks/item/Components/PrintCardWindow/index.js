@@ -1,33 +1,23 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, TokenContext } from '@/contants'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
-import { useParams } from 'react-router-dom'
-import {
-  NOTIFICATION_TYPE_ERROR,
-  useOpenNotification,
-} from '@/Components/Notificator'
+import { useOpenNotification } from '@/Components/Notificator'
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import {
-  URL_DOWNLOAD_FILE,
-  URL_REPORTS_DOCUMENT_PRINT,
-  URL_REPORTS_GET,
-} from '@/ApiList'
+import { URL_REPORTS_DOCUMENT_PRINT, URL_REPORTS_GET } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import downloadFile from '@/Utils/DownloadFile'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
+import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
+import Form from '@Components/Components/Forms'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 450px;
   height: 400px;
   margin: auto;
 `
-export const CustomFilterForm = styled(FilterForm)`
+export const CustomFilterForm = styled(Form)`
   display: grid;
   --form-elements-indent: 15px;
   height: 100%;
@@ -128,7 +118,7 @@ const PrintCardWindow = ({ open, onClose }) => {
     >
       <div className="flex flex-col overflow-hidden ">
         <CustomFilterForm
-          inputWrapper={DefaultWrapper}
+          inputWrapper={DefaultInputWrapper}
           fields={fields}
           value={filter}
           onInput={setFilter}

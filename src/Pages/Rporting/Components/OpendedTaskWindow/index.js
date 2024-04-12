@@ -5,7 +5,6 @@ import {
   SecondaryOverBlueButton,
 } from '@/Components/Button'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import CheckBox from '@/Components/Inputs/CheckBox'
@@ -19,7 +18,7 @@ import { URL_REPORTS_STATISTIC } from '@/ApiList'
 import Tips from '@/Components/Tips'
 import Icon from '@Components/Components/Icon'
 import ReloadIcon from '@/Icons/ReloadIcon'
-import Form from '@Components/Components/Forms'
+import Form, { EmptyInputWrapper } from '@Components/Components/Forms'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import Header from '@Components/Components/Tables/ListTable/header'
@@ -133,7 +132,7 @@ const OpenedTaskWindow = () => {
                 ],
                 [],
               )}
-              inputWrapper={emptyWrapper}
+              inputWrapper={EmptyInputWrapper}
               value={filter}
               onInput={useCallback(
                 (filter) => setTabState({ filter }),

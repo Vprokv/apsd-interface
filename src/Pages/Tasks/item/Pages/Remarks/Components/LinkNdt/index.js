@@ -18,8 +18,8 @@ import styled from 'styled-components'
 import closeIcon from '@/Icons/closeIcon'
 import pureDeleteItems from '@Components/Utils/Arrays/PureDeleteItems'
 import pureUpdateArrayItems from '@Components/Utils/Arrays/PureUpdateArrayItems'
-import { returnChildren } from '@Components/Components/Forms'
-import { ValidationConsumer } from '@/Components/InputWrapperRefactor'
+import { useFieldValidationStateConsumer } from '@/Components/Forms/Validation/useFieldValidationStateConsumer'
+import LabelLessValidationUi from '@/Components/Forms/ValidationStateUi/LabelLessValidationUi'
 
 export const DocumentButton = styled.button.attrs({ type: 'button' })`
   border-radius: 6px;
@@ -38,9 +38,8 @@ export const DocumentButton = styled.button.attrs({ type: 'button' })`
 `
 const baseFieldValue = {}
 const Field = ({
+  id,
   onInput,
-  onFocus,
-  onBlur,
   value = baseFieldValue,
   index,
   valueIndex,
@@ -48,46 +47,59 @@ const Field = ({
   className,
   options,
 }) => {
-  const api = useContext(ApiContext)
-
   return (
     <LinkContainer className={className}>
-      <ValidationConsumer path={`${valueIndex}.ndtId`}>
-        <LoadableSelect
-          options={options}
-          placeholder="Выберите значение"
-          id={`${index}_ndtId`}
-          value={value.ndtId}
-          onInput={onInput('ndtId')}
-          onFocus={onFocus('ndtId')}
-          onBlur={onBlur('ndtId')}
-          valueKey="r_object_id"
-          labelKey="dss_name"
-          refKey="ddt_dict_ndt"
-          loadFunction={useCallback(
-            async (query) => {
-              const { data } = await api.post(URL_ENTITY_LIST, {
-                type: 'ddt_dict_ndt',
-                query,
-              })
-              return data
-            },
-            [api],
-          )}
-        />
-      </ValidationConsumer>
+      <LabelLessValidationUi
+        inputComponent={useCallback(
+          (props) => {
+            /* eslint-disable-next-line react-hooks/rules-of-hooks */
+            const api = useContext(ApiContext)
+            return (
+              <LoadableSelect
+                {...props}
+                options={options}
+                placeholder="Выберите значение"
+                id={`${index}_ndtId`}
+                value={value.ndtId}
+                onInput={onInput('ndtId')}
+                valueKey="r_object_id"
+                labelKey="dss_name"
+                refKey="ddt_dict_ndt"
+                /* eslint-disable-next-line react-hooks/rules-of-hooks */
+                loadFunction={useCallback(
+                  async (query) => {
+                    const { data } = await api.post(URL_ENTITY_LIST, {
+                      type: 'ddt_dict_ndt',
+                      query,
+                    })
+                    return data
+                  },
+                  [api],
+                )}
+              />
+            )
+          },
+          [index, onInput, options, value.ndtId],
+        )}
+        id={`${id}.${valueIndex}.ndtId`}
+      />
       <div className="flex">
-        <ValidationConsumer path={`${valueIndex}.comment`}>
-          <Input
-            id={`${index}_comment`}
-            placeholder="Раздел/Статья/Пункт НТД"
-            value={value.comment}
-            className="ml-2"
-            onInput={onInput('comment')}
-            onFocus={onFocus('comment')}
-            onBlur={onBlur('comment')}
-          />
-        </ValidationConsumer>
+        <LabelLessValidationUi
+          inputComponent={useCallback(
+            (props) => (
+              <Input
+                {...props}
+                id={`${index}_comment`}
+                placeholder="Раздел/Статья/Пункт НТД"
+                value={value.comment}
+                className="ml-2"
+                onInput={onInput('comment')}
+              />
+            ),
+            [index, onInput, value.comment],
+          )}
+          id={`${id}.${valueIndex}.comment`}
+        />
         {index !== 0 && (
           <DocumentButton onClick={deleteLink} className="ml-2 bg-color-red">
             <Icon icon={closeIcon} />
@@ -104,28 +116,20 @@ Field.propTypes = {
   options: PropTypes.array,
   value: PropTypes.object,
   index: PropTypes.string,
+  id: PropTypes.string,
   valueIndex: PropTypes.object,
   deleteLink: PropTypes.func,
-  onFocus: PropTypes.func,
-  onBlur: PropTypes.func,
 }
 Field.defaultProps = {
   value: {},
 }
 const baseValue = []
-const emptyFunction = () => null
-const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
-  const {
-    onInput,
-    value = baseValue,
-    id,
-    options,
-    onFocus = emptyFunction,
-    onBlur = emptyFunction,
-  } = props
+const LinkNdt = (props) => {
+  const { onInput, value = baseValue, id, options } = props
   const [fields, setFields] = useState(1)
   const [isTouchedFieldMap, setTouchedState] = useState({})
   const valueRef = useRef()
+  const { onBlur, onFocus } = useFieldValidationStateConsumer(id)
 
   const handleInput = useCallback(
     (v) => {
@@ -140,12 +144,12 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
   const updateTouchedValidationState = useCallback(
     (nextVal) => {
       // в ручную пересоздаем состояние полей к которым дотронулся пользователь, чтобы избежать случайных подсветок
-      const touchedMap = nextVal.map(({ id, comment }) => ({
-        id: !!id,
-        comment: !!comment,
-      }))
-      onFocus(touchedMap)
-      onBlur(touchedMap)
+      nextVal.forEach(({ id, comment }, index) => {
+        onFocus(!!id, `${id}.${index}.id`)
+        onBlur(!!id, `${id}.${index}.id`)
+        onFocus(!!comment, `${id}.${index}.comment`)
+        onBlur(!!comment, `${id}.${index}.comment`)
+      })
     },
     [onBlur, onFocus],
   )
@@ -155,7 +159,7 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
       if (valueIndex !== undefined) {
         const nextValue = pureDeleteItems(value, valueIndex)
         handleInput(nextValue)
-        updateTouchedValidationState
+        updateTouchedValidationState(nextValue)
         setTouchedState(({ [index]: _, ...nextState }) => nextState)
       }
       setTouchedState((prevState) => {
@@ -209,67 +213,45 @@ const LinkNdt = ({ InputUiContext = returnChildren, ...props }) => {
     [handleInput, updateTouchedValidationState, value],
   )
 
-  const handleFieldFocus = useCallback(
-    (valueIndex) => (key) => () => {
-      if (valueIndex !== undefined) {
-        onFocus({ [valueIndex]: { [key]: true } })
-      }
-    },
-    [onFocus],
-  )
-
-  const handleFieldBlur = useCallback(
-    (valueIndex) => (key) => () => {
-      if (valueIndex !== undefined) {
-        onBlur({ [valueIndex]: { [key]: true } })
-      }
-    },
-    [onBlur],
-  )
-
-  const renderFields = useMemo(() => {
-    const arr = []
-    let vIndex = 0
-
-    for (let i = 0; i < fields; i++) {
-      let v
-      let valueIndex
-      if (isTouchedFieldMap[i]) {
-        v = value[vIndex]
-        valueIndex = vIndex
-        vIndex += 1
-      }
-      arr.push(
-        <Field
-          options={options}
-          className={i !== fields - 1 ? 'mb-6' : ''}
-          deleteLink={deleteLink(i, valueIndex)}
-          index={i}
-          onInput={handleFieldInput(i, valueIndex, vIndex)}
-          onFocus={handleFieldFocus(valueIndex)}
-          onBlur={handleFieldBlur(valueIndex)}
-          value={v}
-          valueIndex={valueIndex}
-          key={i}
-        />,
-      )
-    }
-
-    return arr
-  }, [
-    deleteLink,
-    fields,
-    handleFieldBlur,
-    handleFieldFocus,
-    handleFieldInput,
-    isTouchedFieldMap,
-    options,
-    value,
-  ])
-
   return (
     <div className="w-full">
-      <InputUiContext {...props}>{renderFields}</InputUiContext>
+      {useMemo(() => {
+        const arr = []
+        let vIndex = 0
+
+        for (let i = 0; i < fields; i++) {
+          let v
+          let valueIndex
+          if (isTouchedFieldMap[i]) {
+            v = value[vIndex]
+            valueIndex = vIndex
+            vIndex += 1
+          }
+          arr.push(
+            <Field
+              id={id}
+              options={options}
+              className={i !== fields - 1 ? 'mb-6' : ''}
+              deleteLink={deleteLink(i, valueIndex)}
+              index={i}
+              onInput={handleFieldInput(i, valueIndex, vIndex)}
+              value={v}
+              valueIndex={valueIndex}
+              key={i}
+            />,
+          )
+        }
+
+        return arr
+      }, [
+        deleteLink,
+        fields,
+        handleFieldInput,
+        id,
+        isTouchedFieldMap,
+        options,
+        value,
+      ])}
       <div className="flex ml-auto mt-4">
         <SecondaryBlueButton
           onClick={addLink}

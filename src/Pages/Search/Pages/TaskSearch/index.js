@@ -8,7 +8,7 @@ import {
   URL_SEARCH_LIST,
 } from '@/ApiList'
 import Form from '@Components/Components/Forms'
-import RowInputWrapper from '@/Components/ListTableComponents/RowInputWrapper'
+import RowInputWrapper from '@/Components/Forms/ValidationStateUi/RowInputWrapper'
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryBlueButton,

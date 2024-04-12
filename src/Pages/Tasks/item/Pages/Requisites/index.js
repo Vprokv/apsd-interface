@@ -1,14 +1,14 @@
-import { useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import ScrollBar from '@Components/Components/ScrollBar'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { RequisitesForm } from './styles'
 import { DocumentTypeContext } from '../../constants'
 import { CustomValuesContext } from './constants'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import { TASK_ITEM_REQUISITES } from '@/contants'
-import { CurrentTabContext } from '@Components/Logic/Tab'
+import Validator from '@Components/Logic/Validator'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 export const Requisites = ({ permits }) => {
   const docContextType = useContext(DocumentTypeContext)
@@ -20,14 +20,12 @@ export const Requisites = ({ permits }) => {
     stateId: TASK_ITEM_REQUISITES,
   })
 
-  const { currentTabID } = useContext(CurrentTabContext)
-
   const {
     fieldsWithLoadedProps,
     onFormInput,
     values,
     valuesCustom,
-    formProps,
+    formProps: { rules, ...formProps },
   } = useRequisitesInfo({
     docContextType,
     permits,
@@ -39,32 +37,37 @@ export const Requisites = ({ permits }) => {
 
   // console.log(JSON.stringify(values), 'values', currentTabID, useParams() )
 
-  const {
-    touched,
-    changed,
-    submitFailed,
-    formHasSubmitted,
-    validationErrors,
-    backendValidationErrors,
-  } = documentState
-
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
-        <RequisitesForm
-          touched={touched}
-          changed={changed}
-          submitFailed={submitFailed}
-          formHasSubmitted={formHasSubmitted}
-          onUpdateValidateState={setDocumentState}
-          validationErrors={validationErrors}
-          backendValidationErrors={backendValidationErrors}
-          inputWrapper={DefaultWrapper}
+        <Validator
+          rules={rules}
           value={values}
-          onInput={onFormInput}
-          {...formProps}
-          fields={fieldsWithLoadedProps}
-        />
+          validationState={useMemo(() => {
+            const { validationState, backendValidationErrors } = documentState
+            return backendValidationErrors
+              ? Object.entries(backendValidationErrors).reduce(
+                  (acc, [key, error]) => {
+                    acc.errors[key] = [error, ...(acc.errors[key] || [])]
+                    return acc
+                  },
+                  { ...validationState, errors: { ...validationState.errors } },
+                )
+              : validationState
+          }, [documentState])}
+          setValidationState={useCallback(
+            (validationState) => setDocumentState({ validationState }),
+            [setDocumentState],
+          )}
+        >
+          <RequisitesForm
+            inputWrapper={WithValidationStateInputWrapper}
+            value={values}
+            onInput={onFormInput}
+            fields={fieldsWithLoadedProps}
+            {...formProps}
+          />
+        </Validator>
       </CustomValuesContext.Provider>
     </ScrollBar>
   )

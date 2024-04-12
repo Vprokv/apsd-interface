@@ -17,13 +17,13 @@ import {
 } from '@/ApiList'
 import ScrollBar from '@Components/Components/ScrollBar'
 import Form from '@Components/Components/Forms'
-import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import PropTypes from 'prop-types'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import useReadDataState from '@Components/Logic/Tab/useReadDataState'
+import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -89,7 +89,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected }) => {
         placeholder: 'Введите данные',
       },
     ]
-  }, [approverParentId])
+  }, [approverParentId, documentId])
 
   const onSave = useCallback(async () => {
     try {
@@ -127,7 +127,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected }) => {
       <ScrollBar className="flex grow flex-col">
         <Form
           className="mb-10"
-          inputWrapper={DefaultWrapper}
+          inputWrapper={DefaultInputWrapper}
           value={values}
           onInput={setValues}
           fields={fieldMap}

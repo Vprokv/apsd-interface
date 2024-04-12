@@ -7,33 +7,23 @@ import {
   useState,
 } from 'react'
 import PropTypes from 'prop-types'
+import Form from '@Components/Components/Forms'
+import Validator from '@Components/Logic/Validator'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
 import { CustomSizeModalWindow } from './styles'
-import { SearchInput } from '@/Pages/Tasks/list/styles'
-import {
-  URL_ADDITIONAL_AGREEMENT_USER_LIST,
-  URL_APPROVAL_SHEET_CREATE,
-  URL_ENTITY_LIST,
-} from '@/ApiList'
+import { URL_APPROVAL_SHEET_CREATE, URL_ENTITY_LIST } from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import {
-  VALIDATION_RULE_INTEGER,
-  VALIDATION_RULE_REQUIRED,
-} from '@Components/Logic/Validator/constants'
-import LoadableSelect from '@/Components/Inputs/Select'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
-import NumericInput from '@Components/Components/Inputs/NumericInput'
 import ScrollBar from 'react-perfect-scrollbar'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import { WithValidationForm } from '@Components/Components/Forms'
 import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
+import { useFormFieldsConfig, useFormRulesConfig } from './configs/formConfig'
+import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
 export { CustomSizeModalWindow }
 const customMessagesFuncMap = {
@@ -50,6 +40,7 @@ const NAME = 'Указать наименование этапа вручную'
 
 const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
   const api = useContext(ApiContext)
+  const [validationState, setValidationState] = useState({})
   const id = useContext(DocumentIdContext)
   const [typicalStage, setTypicalStage] = useState()
   const [filterValue, setFilterValue] = useState({})
@@ -113,82 +104,13 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
 
   const visible = useMemo(() => filterValue?.name === NAME, [filterValue?.name])
 
-  const rules = useMemo(() => {
-    const rules = {
-      name: [{ name: VALIDATION_RULE_REQUIRED }],
-      term: [
-        { name: VALIDATION_RULE_INTEGER },
-        { name: VALIDATION_RULE_REQUIRED },
-      ],
-    }
-    if (visible) {
-      rules['show'] = [{ name: VALIDATION_RULE_REQUIRED }]
-    }
-    return rules
-  }, [visible])
-
-  const fields = useMemo(
-    () =>
-      [
-        {
-          id: 'name',
-          label: 'Наименование',
-          component: LoadableSelect,
-          required: true,
-          placeholder: 'Наименование этапа',
-          valueKey: 'dss_name',
-          labelKey: 'dss_name',
-          className: 'font-size-12',
-          options: typicalStage,
-          loadFunction: async (query) => {
-            const { data } = await api.post(URL_ENTITY_LIST, {
-              type: 'ddt_dict_typical_stage',
-              query,
-            })
-            return data
-          },
-        },
-        {
-          id: 'show',
-          component: SearchInput,
-          visible: visible,
-          multiple: true,
-          returnOption: false,
-          className: 'font-size-12',
-          placeholder: 'Наименование этапа',
-          label: 'Наименование этапа',
-        },
-        {
-          id: 'approvers',
-          component: AdditionalAgreementOrgStructureComponent,
-          loadFunction: (api) => (filter) => async (query) => {
-            const { data } = await api.post(
-              URL_ADDITIONAL_AGREEMENT_USER_LIST,
-              {
-                stageCurator: filterValue.stageCurator,
-                documentId,
-                filter: {
-                  ...filter,
-                  ...query,
-                },
-              },
-            )
-            return data
-          },
-          multiple: true,
-          returnOption: false,
-          className: 'font-size-12',
-          placeholder: 'Выберите участников',
-          label: 'Участники',
-        },
-        {
-          id: 'term',
-          component: NumericInput,
-          placeholder: 'Срок в рабочих днях',
-          label: 'Укажите в рабочих днях',
-        },
-      ].filter(({ visible }) => visible !== false),
-    [api, documentId, filterValue.stageCurator, typicalStage, visible],
+  const rules = useFormRulesConfig(visible)
+  const fields = useFormFieldsConfig(
+    api,
+    documentId,
+    filterValue,
+    typicalStage,
+    visible,
   )
 
   const stage = useMemo(() => {
@@ -223,30 +145,44 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
     <div className="flex flex-col overflow-hidden h-full grow">
       <ScrollBar>
         <div className="flex py-4">
-          <WithValidationForm
-            className="form-element-sizes-40 w-full "
-            fields={fields}
-            value={filterValue}
-            onInput={setFilterValue}
-            inputWrapper={InputWrapper}
+          <Validator
             rules={rules}
             onSubmit={onSave}
+            value={filterValue}
+            validationState={validationState}
+            setValidationState={useCallback(
+              (s) =>
+                setValidationState((prevState) => ({ ...prevState, ...s })),
+              [],
+            )}
           >
-            <div className="mt-2 font-size-12">
-              Контрольный срок согласования для томов ПД, РД:
-              <br className="ml-6" />* Согласование служб - 3 раб. дн. <br />*
-              Согласование куратора филиала - 1 раб. дн. <br />* Согласование
-              куратора ИА - 1 раб. дн. <br />* Визирование - 10 раб. дн
-            </div>
-            <div className="flex items-center justify-end mt-4">
-              <UnderButtons
-                leftLabel="Закрыть"
-                leftFunc={onClose}
-                rightLabel="Сохранить"
-                disabled={loading}
-              />
-            </div>
-          </WithValidationForm>
+            {({ onSubmit }) => (
+              <Form
+                className="form-element-sizes-40 w-full "
+                value={filterValue}
+                onInput={setFilterValue}
+                fields={fields}
+                onSubmit={onSubmit}
+                inputWrapper={WithValidationStateInputWrapper}
+              >
+                <div className="mt-2 font-size-12">
+                  Контрольный срок согласования для томов ПД, РД:
+                  <br className="ml-6" />* Согласование служб - 3 раб. дн.{' '}
+                  <br />* Согласование куратора филиала - 1 раб. дн. <br />*
+                  Согласование куратора ИА - 1 раб. дн. <br />* Визирование - 10
+                  раб. дн
+                </div>
+                <div className="flex items-center justify-end mt-4">
+                  <UnderButtons
+                    leftLabel="Закрыть"
+                    leftFunc={onClose}
+                    rightLabel="Сохранить"
+                    disabled={loading}
+                  />
+                </div>
+              </Form>
+            )}
+          </Validator>
         </div>
       </ScrollBar>
     </div>

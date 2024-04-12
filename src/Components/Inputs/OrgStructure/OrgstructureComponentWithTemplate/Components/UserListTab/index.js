@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useContext,
   useEffect,
@@ -6,8 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import PropTypes from 'prop-types'
-import { ApiContext, SETTINGS_TEMPLATES, WINDOW_ADD_EMPLOYEE } from '@/contants'
+import { ApiContext, WINDOW_ADD_EMPLOYEE } from '@/contants'
 import useDefaultFilter from '@/Components/Inputs/OrgStructure/useDefaultFilter'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
@@ -39,6 +38,7 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 
 const columns = [
   {
@@ -72,8 +72,6 @@ const columns = [
     sizes: 180,
   },
 ]
-
-const emptyWrapper = ({ children }) => children
 
 const UserListTab = (props) => {
   const {
@@ -335,7 +333,7 @@ const UserListTab = (props) => {
       <div className="flex items-center py-4">
         <FilterForm
           fields={fields}
-          inputWrapper={emptyWrapper}
+          inputWrapper={EmptyInputWrapper}
           value={filter}
           onInput={setFilter}
         />

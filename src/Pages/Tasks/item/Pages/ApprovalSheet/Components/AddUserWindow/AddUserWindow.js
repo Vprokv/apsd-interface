@@ -12,7 +12,6 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import Form from '@Components/Components/Forms'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -22,6 +21,7 @@ import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -135,7 +135,7 @@ const AddUserWindow = ({
       >
         <Form
           className="mb-10"
-          inputWrapper={InputWrapper}
+          inputWrapper={DefaultInputWrapper}
           value={filter}
           onInput={setFilter}
           fields={fieldMap}

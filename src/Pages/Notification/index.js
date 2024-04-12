@@ -1,5 +1,5 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import { ApiContext, NOTIFICATION, TASK_LIST } from '@/contants'
+import { ApiContext, NOTIFICATION } from '@/contants'
 import useTabItem from '@Components/Logic/Tab/TabItem'
 import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
@@ -19,7 +19,6 @@ import {
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
@@ -35,7 +34,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { LoadableSecondaryBlueButton } from '@/Components/Button'
 import styled from 'styled-components'
-import Form from '@Components/Components/Forms'
+import Form, { EmptyInputWrapper } from '@Components/Components/Forms'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import { LoadNotificationContext } from '@/Pages/Main/constants'
@@ -327,7 +326,7 @@ const Notification = () => {
       <div className="flex form-element-sizes-32">
         <FilterForm
           fields={filterFields}
-          inputWrapper={emptyWrapper}
+          inputWrapper={EmptyInputWrapper}
           value={filterState}
           onInput={onFilterInput}
         />

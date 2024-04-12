@@ -27,7 +27,7 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import Tips from '@/Components/Tips'
 import { LoadableButtonForIcon } from '@/Components/Button'
@@ -430,7 +430,7 @@ const DeputyList = () => {
           <FilterForm
             className="pl-4"
             fields={fields}
-            inputWrapper={emptyWrapper}
+            inputWrapper={EmptyInputWrapper}
             value={filter}
             onInput={setFilter}
           />

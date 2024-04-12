@@ -30,12 +30,8 @@ import XlsIcon from '@/Icons/XlsIcon'
 import Pagination from '../../../Components/Pagination'
 import RowComponent from './Components/RowComponent'
 import CheckBox from '../../../Components/Inputs/CheckBox'
-import {
-  URL_EXPORT,
-  URL_EXPORT_FILE,
-  URL_TASK_LIST_FILTERS,
-  URL_TASK_LIST_V2,
-} from '@/ApiList'
+import { URL_EXPORT, URL_EXPORT_FILE, URL_TASK_LIST_V2 } from '@/ApiList'
+import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ApiContext, TASK_LIST, TokenContext } from '@/contants'
 import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
@@ -52,16 +48,14 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
-import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
-import LoadableSelect from '@/Components/Inputs/Select'
-import searchIcon from '@/Icons/searchIcon'
-import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
+import { FilterForm } from '@/Pages/Tasks/list/styles'
 import AppointedExecutor from '@/Pages/Tasks/list/Components/AppointedExecutor'
 import axios from 'axios'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
-import { useFilterForm } from '../../../Utils/hooks/useFilterForm'
+import { useFilterForm } from '@/Utils/hooks/useFilterForm'
+import { useFormFields } from '@/Pages/Tasks/list/configs/useFormFields'
 
 const tableCheckBoxStyles = { margin: 'auto 0', paddingLeft: '1rem' }
 
@@ -380,93 +374,7 @@ function TaskList({ loadFunctionRest }) {
 
   const show = useMemo(() => width > 1200, [width])
 
-  const fields = useMemo(
-    () => [
-      {
-        id: 'readTask',
-        component: CheckBox,
-        text: 'Непросмотренные',
-      },
-      {
-        id: 'taskTypes',
-        component: LoadableSelect,
-        multiple: true,
-        placeholder: 'Тип задания',
-        valueKey: 'dss_name',
-        labelKey: 'dss_name',
-        loadFunction: async () => {
-          const {
-            data: { taskTypes },
-          } = await api.post(URL_TASK_LIST_FILTERS, {
-            filter: { ...filter, readTask: !filter.readTask },
-          })
-
-          return taskTypes.map((val) => {
-            return { dss_name: val }
-          })
-        },
-      },
-      {
-        id: 'stageNames',
-        component: LoadableSelect,
-        placeholder: 'Этап',
-        multiple: true,
-        valueKey: 'dss_name',
-        labelKey: 'dss_name',
-        loadFunction: async () => {
-          const { stageNames: item, ...other } = filter
-          const {
-            data: { stageNames },
-          } = await api.post(URL_TASK_LIST_FILTERS, {
-            ...other,
-          })
-
-          return stageNames.map((val) => {
-            return { dss_name: val }
-          })
-        },
-      },
-      {
-        id: 'documentStatus',
-        component: LoadableSelect,
-        placeholder: 'Статус',
-        multiple: true,
-        valueKey: 'dss_name',
-        labelKey: 'dss_name',
-        loadFunction: async () => {
-          const { documentStatus: item, ...other } = filter
-
-          const {
-            data: { documentStatus },
-          } = await api.post(URL_TASK_LIST_FILTERS, {
-            ...other,
-          })
-
-          return documentStatus.map((val) => {
-            return { dss_name: val }
-          })
-        },
-      },
-      {
-        id: 'searchQuery',
-        component: SearchInput,
-        placeholder: 'Поиск',
-        children: (
-          <Icon
-            icon={searchIcon}
-            size={10}
-            className="color-text-secondary mr-2.5"
-          />
-        ),
-      },
-    ],
-    [api, filter],
-  )
-
-  const setFilter = useCallback(
-    (filter) => setTabState({ filter }),
-    [setTabState],
-  )
+  const fields = useFormFields(api, filter)
 
   return (
     <div className="flex-container pr-4 w-full overflow-hidden">
@@ -475,7 +383,7 @@ function TaskList({ loadFunctionRest }) {
           <FilterForm
             className="pl-4"
             fields={fields}
-            inputWrapper={emptyWrapper}
+            inputWrapper={EmptyInputWrapper}
             value={filterState}
             onInput={setFilterState}
           />
