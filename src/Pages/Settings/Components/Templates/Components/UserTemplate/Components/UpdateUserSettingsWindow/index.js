@@ -18,9 +18,8 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import styled from 'styled-components'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useReadDataState } from '@Components/Logic/Tab'
 import { parseSettingsFuncMap } from '@/Pages/Settings/Components/Templates/constans'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -49,7 +48,7 @@ const UpdateSettingsWindow = ({ onClose, open, type, data }) => {
 
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
-  const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TEMPLATES })
+  const { 1: setTabState } = useReadDataState(SETTINGS_TEMPLATES)
 
   const reverseParseFromBackend = useMemo(() => {
     const { branchesAccess, usersAccess, dsb_private } = data
