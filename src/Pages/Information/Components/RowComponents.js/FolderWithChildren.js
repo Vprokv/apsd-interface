@@ -98,7 +98,7 @@ const FolderWithChildrenComponent = ({
         subRow={level}
         className="flex flex-col w-full border-b-2"
       >
-        <div className="flex">
+        <div className="flex items-center">
           <button
             type="button"
             className="flex items-center min-h-12 py-2 "
