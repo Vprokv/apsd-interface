@@ -36,7 +36,6 @@ export const Requisites = ({ permits }) => {
   })
 
   // console.log(JSON.stringify(values), 'values', currentTabID, useParams() )
-
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
@@ -44,20 +43,33 @@ export const Requisites = ({ permits }) => {
           rules={rules}
           value={values}
           validationState={useMemo(() => {
-            const { validationState, backendValidationErrors } = documentState
+            const { validationState = {}, backendValidationErrors } =
+              documentState
             return backendValidationErrors
               ? Object.entries(backendValidationErrors).reduce(
                   (acc, [key, error]) => {
                     acc.errors[key] = [error, ...(acc.errors[key] || [])]
                     return acc
                   },
-                  { ...validationState, errors: { ...validationState.errors } },
+                  {
+                    ...validationState,
+                    errors: { ...validationState?.errors },
+                  },
                 )
               : validationState
-          }, [documentState])}
+          }, [
+            documentState?.validationState,
+            documentState.backendValidationErrors,
+          ])}
           setValidationState={useCallback(
-            (validationState) => setDocumentState({ validationState }),
-            [setDocumentState],
+            (validationState) =>
+              setDocumentState({
+                validationState: {
+                  ...documentState?.validationState,
+                  ...validationState,
+                },
+              }),
+            [documentState?.validationState, setDocumentState],
           )}
         >
           <RequisitesForm

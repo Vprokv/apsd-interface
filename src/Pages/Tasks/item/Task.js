@@ -434,7 +434,7 @@ const Task = () => {
           if (Object.keys(validationErrors)?.length) {
             return setTabState({
               submitFailed: true,
-              formHasSubmitted: true,
+              hasSubmitted: true,
               validationErrors,
             })
           }

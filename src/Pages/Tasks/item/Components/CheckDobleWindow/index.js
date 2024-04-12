@@ -65,8 +65,10 @@ const CheckDoubleWindow = ({
         getNotification(customMessagesFuncMap[status](data, responseError))
 
         setDocumentState({
-          submitFailed: true,
-          formHasSubmitted: true,
+          validationState: {
+            submitFailed: true,
+            hasSubmitted: true,
+          },
           backendValidationErrors: responseError
             .split(',')
             .reduce((acc, key) => {

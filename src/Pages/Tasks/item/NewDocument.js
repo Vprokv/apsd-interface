@@ -111,8 +111,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
   const remoteTabUpdater = useTabStateUpdaterByName()
 
   const {
-    formProps: { rules },
-    documentState: { validationErrors },
+    documentState: { validationState },
   } = useRequisitesInfo({
     TASK_ITEM_NEW_DOCUMENT,
     permits: [],
@@ -129,11 +128,15 @@ export const NewTaskItem = ({ classificationId, type }) => {
     () => ({
       save: {
         handler: async () => {
-          if (Object.keys(validationErrors)?.length) {
+          if (
+            Object.keys(validationState?.errors)?.every((v) => v.length === 0)
+          ) {
             return setDocumentState({
-              submitFailed: true,
-              formHasSubmitted: true,
-              validationErrors,
+              validationState: {
+                submitFailed: true,
+                hasSubmitted: true,
+                ...validationState,
+              },
             })
           }
 
@@ -180,8 +183,11 @@ export const NewTaskItem = ({ classificationId, type }) => {
               )
 
               setDocumentState({
-                submitFailed: true,
-                formHasSubmitted: true,
+                validationState: {
+                  ...validationState,
+                  submitFailed: true,
+                  hasSubmitted: true,
+                },
                 backendValidationErrors: responseError
                   .split(',')
                   .reduce((acc, key) => {
@@ -200,12 +206,12 @@ export const NewTaskItem = ({ classificationId, type }) => {
     [
       api,
       getNotification,
-      initialState?.parentTabName,
+      initialState,
       navigate,
       remoteTabUpdater,
       setDocumentState,
       type,
-      validationErrors,
+      validationState,
     ],
   )
 

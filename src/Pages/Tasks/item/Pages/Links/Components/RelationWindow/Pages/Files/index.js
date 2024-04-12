@@ -187,27 +187,41 @@ const Files = () => {
           alignItems: 'center',
           marginRight: '0.5rem',
         },
-        component: (props) => (
-          <LabelLessValidationUi
-            {...props}
-            inputComponent={LoadableSelect}
-            valueKey="r_object_id"
-            labelKey="dss_name"
-            returnObjects={true}
-            placeholder="Выберите тип файла"
-            /* eslint-disable-next-line react-hooks/rules-of-hooks */
-            loadFunction={useCallback(
-              () => async (query) => {
-                const { data } = await api.post(URL_ENTITY_LIST, {
-                  type: 'ddt_dict_link_type',
-                  query,
-                })
-                return data
-              },
-              [],
-            )}
-          />
-        ),
+        component: (props) => {
+          /* eslint-disable-next-line react-hooks/rules-of-hooks */
+          const api = useContext(ApiContext)
+          /* eslint-disable-next-line react-hooks/rules-of-hooks */
+          const loadFunction = useCallback(
+            async (query) => {
+              const { data } = await api.post(URL_ENTITY_LIST, {
+                type: 'ddt_dict_link_type',
+                query,
+              })
+              return data
+            },
+            [api],
+          )
+          return (
+            <LabelLessValidationUi
+              {...props}
+              /* eslint-disable-next-line react-hooks/rules-of-hooks */
+              inputComponent={useCallback(
+                (props) => (
+                  <LoadableSelect
+                    {...props}
+                    valueKey="r_object_id"
+                    labelKey="dss_name"
+                    returnObjects={true}
+                    placeholder="Выберите тип файла"
+                    /* eslint-disable-next-line react-hooks/rules-of-hooks */
+                    loadFunction={loadFunction}
+                  />
+                ),
+                [loadFunction],
+              )}
+            />
+          )
+        },
         sizes: 200,
       },
       {

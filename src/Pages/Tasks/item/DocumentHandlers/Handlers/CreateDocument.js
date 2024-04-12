@@ -34,7 +34,7 @@ export default {
         const { 1: responseError } = data.split(' - ')
         setDocumentState({
           submitFailed: true,
-          formHasSubmitted: true,
+          hasSubmitted: true,
           backendValidationErrors: responseError
             .split(',')
             .reduce((acc, key) => {
