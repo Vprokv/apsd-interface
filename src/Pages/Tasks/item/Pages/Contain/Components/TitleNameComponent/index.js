@@ -65,10 +65,16 @@ const customMessagesApproveFuncMap = {
 
 const TitleNameComponent = ({
   onInput,
-  ParentValue: { tomId, expand, send, name, action },
+  ParentValue: { tomId, expand, send, name, action, parentId },
   ParentValue,
 }) => {
-  const { valueKey, nestedDataKey, onChange } = useContext(TreeStateContext)
+  const {
+    valueKey,
+    nestedDataKey,
+    defaultOpen,
+    onChange,
+    state: { [ParentValue[valueKey]]: expanded = defaultOpen } = {},
+  } = useContext(TreeStateContext)
 
   const closeContextMenu = useCallback(() => {
     setOpen(false)
@@ -274,10 +280,13 @@ const TitleNameComponent = ({
         />
       )}
       <CustomIconComponent {...ParentValue} />
-
       <>
         <button onClick={() => expand && onOpenNestedTable()}>
-          <div className="font-size-12 font-normal flex text-left items-center break-words min-h-10 h-full">
+          <div
+            className={`font-size-12 font-normal flex text-left items-center break-words min-h-10 h-full ${
+              !parentId ? 'font-semibold' : ''
+            } ${!parentId && expanded ? 'color-blue-1' : ''}`}
+          >
             {name}
           </div>
         </button>

@@ -12,6 +12,7 @@ import pngIcon from '@/Icons/DocumentType/pngIcon.svg'
 import pdfIcon from '@/Icons/DocumentType/pdfIcon.svg'
 import jpgIcon from '@/Icons/DocumentType/jpgIcon.svg'
 import anyTypeIcon from '@/Icons/DocumentType/anyTypeIcon.svg'
+import NoneTypeIcon from '@/Icons/DocumentType/noneTypeIcon.svg'
 import styled from 'styled-components'
 import { ShowContentByTypeButtonContext } from '@/Pages/Tasks/item/Pages/Contain/constants'
 
@@ -56,7 +57,6 @@ export const typesMimeIconMap = {
 
 export const getMimeTypeIcon = (type) => {
   const { [type]: Icon = anyTypeIcon } = typesMimeIconMap
-  console.log(Icon, 'Icon')
   return <img src={Icon} alt="" className=" w-4 h-4" />
 }
 
@@ -64,9 +64,9 @@ export const ButtonForIcon = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin-right: 4px;
+  //width: 32px;
+  //height: 32px;
+  margin-right: 8px;
   //
   //&:disabled {
   //  background: var(--separator);
@@ -83,10 +83,13 @@ const CustomIconComponent = (value) => {
   const showButton = useContext(ShowContentByTypeButtonContext)
   const { [mimeType]: Icon = anyTypeIcon } = typesMimeIconMap
   return (
-    tomId &&
-    contentId && (
+    tomId && (
       <ButtonForIcon onClick={showButton(value)} className="">
-        {<img src={Icon} alt="" className=" w-4 h-4" />}
+        <img
+          src={contentId ? Icon : NoneTypeIcon}
+          alt=""
+          className=" w-4 h-4"
+        />
       </ButtonForIcon>
     )
   )
