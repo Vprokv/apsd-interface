@@ -38,7 +38,9 @@ export const useFormFieldsConfig = (api, editAuthor, initialUserValue) =>
       {
         id: 'text',
         label: 'Текст замечания',
-        inputWrapper: RemarkWrapper,
+        inputWrapper: (props) => (
+          <RemarkWrapper {...props} max={rules.text[0].args.max} />
+        ),
         component: CustomInput,
         placeholder: 'Введите текст замечания',
       },

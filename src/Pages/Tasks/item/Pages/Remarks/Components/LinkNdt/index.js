@@ -47,57 +47,37 @@ const Field = ({
   className,
   options,
 }) => {
+  const api = useContext(ApiContext)
   return (
     <LinkContainer className={className}>
       <LabelLessValidationUi
-        inputComponent={useCallback(
-          (props) => {
-            /* eslint-disable-next-line react-hooks/rules-of-hooks */
-            const api = useContext(ApiContext)
-            return (
-              <LoadableSelect
-                {...props}
-                options={options}
-                placeholder="Выберите значение"
-                id={`${index}_ndtId`}
-                value={value.ndtId}
-                onInput={onInput('ndtId')}
-                valueKey="r_object_id"
-                labelKey="dss_name"
-                refKey="ddt_dict_ndt"
-                /* eslint-disable-next-line react-hooks/rules-of-hooks */
-                loadFunction={useCallback(
-                  async (query) => {
-                    const { data } = await api.post(URL_ENTITY_LIST, {
-                      type: 'ddt_dict_ndt',
-                      query,
-                    })
-                    return data
-                  },
-                  [api],
-                )}
-              />
-            )
-          },
-          [index, onInput, options, value.ndtId],
-        )}
+        value={value.ndtId}
+        options={options}
+        placeholder="Выберите значение"
+        onInput={onInput('ndtId')}
+        valueKey="r_object_id"
+        labelKey="dss_name"
+        refKey="ddt_dict_ndt"
         id={`${id}.${valueIndex}.ndtId`}
+        loadFunction={useCallback(
+          async (query) => {
+            const { data } = await api.post(URL_ENTITY_LIST, {
+              type: 'ddt_dict_ndt',
+              query,
+            })
+            return data
+          },
+          [api],
+        )}
+        inputComponent={LoadableSelect}
       />
       <div className="flex">
         <LabelLessValidationUi
-          inputComponent={useCallback(
-            (props) => (
-              <Input
-                {...props}
-                id={`${index}_comment`}
-                placeholder="Раздел/Статья/Пункт НТД"
-                value={value.comment}
-                className="ml-2"
-                onInput={onInput('comment')}
-              />
-            ),
-            [index, onInput, value.comment],
-          )}
+          value={value.comment}
+          placeholder="Раздел/Статья/Пункт НТД"
+          className="ml-2"
+          onInput={onInput('comment')}
+          inputComponent={Input}
           id={`${id}.${valueIndex}.comment`}
         />
         {index !== 0 && (
@@ -130,7 +110,6 @@ const LinkNdt = (props) => {
   const [isTouchedFieldMap, setTouchedState] = useState({})
   const valueRef = useRef()
   const { onBlur, onFocus } = useFieldValidationStateConsumer(id)
-
   const handleInput = useCallback(
     (v) => {
       onInput(v, id)

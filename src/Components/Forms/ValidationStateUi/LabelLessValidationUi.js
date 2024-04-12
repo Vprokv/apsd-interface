@@ -23,7 +23,6 @@ const LabelLessValidationUi = ({
   const { onBlur, onFocus, ...validationState } =
     useFieldValidationStateConsumer(props.id)
   const { error } = validationState
-
   return (
     <InputContainer className="relative flex" hasError={!!error}>
       <InputComponent

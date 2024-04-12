@@ -12,7 +12,9 @@ export const ToggleContext = createContext({
 export const remarkValidator = {
   resolver: ({ value, args: { max } }) =>
     typeof value === 'string' && max - value.length >= 0,
-  message: ({ args: { text = 'Преышено допустимое количество символов' } }) => {
+  message: ({
+    args: { text = 'Превышено допустимое количество символов' },
+  }) => {
     return text
   },
 }

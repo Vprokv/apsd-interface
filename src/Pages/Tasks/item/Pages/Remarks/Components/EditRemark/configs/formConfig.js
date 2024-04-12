@@ -24,6 +24,7 @@ export const rules = {
   'ndtLinks.*.comment': [{ validatorObject: required }],
   ndtLinks: [{ validatorObject: required }],
 }
+
 export const useFormFieldsConfig = (editAuthor, ndtLinks) =>
   useMemo(
     () => [
@@ -38,7 +39,9 @@ export const useFormFieldsConfig = (editAuthor, ndtLinks) =>
       {
         id: 'text',
         label: 'Текст замечания',
-        inputWrapper: RemarkWrapper,
+        inputWrapper: (props) => (
+          <RemarkWrapper {...props} max={rules.text[0].args.max} />
+        ),
         component: CustomInput,
         placeholder: 'Введите текст замечания',
       },

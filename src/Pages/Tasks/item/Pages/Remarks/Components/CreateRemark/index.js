@@ -154,7 +154,6 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
   }, [changeModalState, initialUserValue])
 
   const fields = useFormFieldsConfig(api, editAuthor, initialUserValue, options)
-
   // todo поправить верстку
   return (
     <div>

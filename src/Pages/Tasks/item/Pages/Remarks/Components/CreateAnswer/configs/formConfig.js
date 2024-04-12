@@ -64,8 +64,9 @@ export const useFormFieldsConfig = (api, editAuthor) =>
         id: 'text',
         label: 'Текст ответа',
         isRequired: true,
-        inputWrapper: RemarkWrapper,
-        className: '',
+        inputWrapper: (props) => (
+          <RemarkWrapper {...props} max={rules.text[0].args.max} />
+        ),
         component: CustomInput,
         max: 100,
         placeholder: 'Введите текст ответа',

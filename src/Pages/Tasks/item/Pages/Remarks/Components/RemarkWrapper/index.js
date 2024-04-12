@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   InputContainer,
@@ -8,6 +8,7 @@ import {
   InputRemarkErrorContainer,
   InputWrapperContainer,
 } from './styles'
+import { useFieldValidationStateConsumer } from '@/Components/Forms/Validation/useFieldValidationStateConsumer'
 
 export {
   InputWrapperContainer,
@@ -20,62 +21,50 @@ export {
 const RemarkWrapper = React.forwardRef(
   (
     {
+      inputComponent: InputComponent,
       className,
       style,
-      withoutLabel,
       id,
       label,
-      validationErrors,
-      children,
-      hasError,
-      isRequired,
-      formPayload: { text = '' },
-      validationRules,
+      value = '',
+      max,
       ...props
     },
     ref,
   ) => {
-    const { max } = useMemo(
-      () =>
-        validationRules.reduce((acc, { name, args }) => {
-          if (name === 'max') {
-            acc = args
-          }
-          return acc
-        }, {}),
-      [validationRules],
-    )
-
-    const errorKey = useMemo(() => text.length > max, [max, text.length])
+    const { onFocus, onBlur, error, isRequired } =
+      useFieldValidationStateConsumer(id)
+    const errorKey = useMemo(() => value.length > max, [max, value.length])
 
     return (
       <InputWrapperContainer
         className={`${className} flex items-center `}
         style={style}
         ref={ref}
-        hasError={errorKey || hasError}
+        hasError={errorKey || !!error}
       >
-        {!withoutLabel && (
-          <InputLabel htmlFor={id}>
-            {label} {isRequired && <InputLabelStart>*</InputLabelStart>}
-          </InputLabel>
-        )}
+        <InputLabel htmlFor={id}>
+          {label} {isRequired && <InputLabelStart>*</InputLabelStart>}
+        </InputLabel>
         <InputContainer className="flex flex-col flex-auto relative w-full">
-          {children}
+          <InputComponent
+            {...props}
+            onFocus={useCallback((e) => onFocus(e, id), [onFocus, id])}
+            onBlur={useCallback((e) => onBlur(e, id), [onBlur, id])}
+            value={value}
+            id={id}
+          />
           <div className="flex">
-            {hasError && (
-              <InputRemarkErrorContainer
-                hasError={hasError}
-                className={'mr-auto'}
-              >
-                {validationErrors[0]}
+            {!!error && (
+              <InputRemarkErrorContainer hasError className={'mr-auto'}>
+                {error}
               </InputRemarkErrorContainer>
             )}
             <InputRemarkErrorContainer
               hasError={errorKey}
               className={'ml-auto'}
             >
-              {`${text.length}/${max}`}
+              {`${value.length}/${max}`}
             </InputRemarkErrorContainer>
           </div>
         </InputContainer>
@@ -85,21 +74,13 @@ const RemarkWrapper = React.forwardRef(
 )
 
 RemarkWrapper.propTypes = {
-  withoutLabel: PropTypes.bool,
-  suffix: PropTypes.string,
   label: PropTypes.string,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
-  validationErrors: PropTypes.array,
+  inputComponent: PropTypes.func.isRequired,
+  value: PropTypes.string,
+  max: PropTypes.number.isRequired,
   className: PropTypes.string,
   style: PropTypes.object,
-  hasError: PropTypes.bool,
-  isRequired: PropTypes.bool,
-  formPayload: PropTypes.object,
-  validationRules: PropTypes.array,
 }
 
 RemarkWrapper.defaultProps = {
