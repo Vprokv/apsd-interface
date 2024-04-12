@@ -16,9 +16,11 @@ export const Requisites = ({ permits }) => {
   const [documentState, setDocumentState] = useTabItem({
     stateId: docContextType,
   })
+
   const [tabItemState, setTabItemState] = useTabItem({
     stateId: TASK_ITEM_REQUISITES,
   })
+
 
   const { currentTabID } = useContext(CurrentTabContext)
 
@@ -36,6 +38,8 @@ export const Requisites = ({ permits }) => {
     documentState,
     setDocumentState,
   })
+
+  console.log(valuesCustom, 'valuesCustom')
 
   const {
     touched,

@@ -12,6 +12,7 @@ const useRequisitesInfo = ({
   documentState,
   setDocumentState,
   permits,
+  docContextType,
 }) => {
   const api = useContext(ApiContext)
   const { type: documentType } = useParams()
@@ -20,7 +21,7 @@ const useRequisitesInfo = ({
   const [
     { data: documentData, data: { values = {}, valuesCustom = {} } = {} },
     setDocumentData,
-  ] = useReadDataState(documentState, setDocumentState)
+  ] = useReadDataState(docContextType)
 
   const onFormInput = useCallback(
     (formData) =>
