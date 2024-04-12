@@ -31,6 +31,7 @@ const FolderWithChildrenComponent = ({
   parentId,
   level,
   loadData,
+  permit,
 }) => {
   const [open, setOpen] = useState(false)
   const [target, setTarget] = useState({})
@@ -113,16 +114,18 @@ const FolderWithChildrenComponent = ({
             />
             <span>{name}</span>
           </button>
-          <ContHover>
-            <ThreeDotButton>
-              <Icon
-                icon={ThreeDotIcon}
-                size={14}
-                className="color-white cursor-pointer "
-                onClick={openContextMenu}
-              />
-            </ThreeDotButton>
-          </ContHover>
+          {permit && (
+            <ContHover>
+              <ThreeDotButton>
+                <Icon
+                  icon={ThreeDotIcon}
+                  size={14}
+                  className="color-white cursor-pointer "
+                  onClick={openContextMenu}
+                />
+              </ThreeDotButton>
+            </ContHover>
+          )}
           {open && (
             <ContextMenu width={130} target={target} onClose={closeContextMenu}>
               <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">

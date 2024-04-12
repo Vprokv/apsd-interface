@@ -19,7 +19,7 @@ import CreateFolder from '@/Pages/Information/Components/CreateFolder'
 
 const Information = () => {
   const [open, setOpenState] = useState(false)
-  const [references, setReferences] = useState([])
+  const [{ information = [], permit = false }, setReferences] = useState({})
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const [ActionComponent, setActionComponent] = useState(null)
@@ -54,6 +54,7 @@ const Information = () => {
           <WithToggleNavigationItem id={id} key={id}>
             {({ isDisplayed, toggleDisplayedFlag }) => (
               <FolderWithChildrenComponent
+                permit={permit}
                 loadData={loadData}
                 renderEntities={renderEntities}
                 toggleDisplayedFlag={toggleDisplayedFlag}
@@ -70,16 +71,17 @@ const Information = () => {
             id={id}
             level={level}
             loadData={loadData}
+            permit={permit}
             {...data}
           />
         )
       },
-    [loadData],
+    [loadData, permit],
   )
 
   const renderedEntities = useMemo(
-    () => references.map(renderEntities()),
-    [references, renderEntities],
+    () => information?.map(renderEntities()),
+    [information, renderEntities],
   )
 
   const addFolder = useCallback(
@@ -109,11 +111,11 @@ const Information = () => {
             {renderedEntities}
           </SetActionContext.Provider>
         </ScrollBar>
-        <div>
-          <SecondaryBlueButton onClick={addFolder}>
+        {permit && (
+          <SecondaryBlueButton onClick={addFolder} className="w-48">
             Добавить папку
           </SecondaryBlueButton>
-        </div>
+        )}
         {ActionComponent && (
           <ActionComponent.Component
             open={true}
