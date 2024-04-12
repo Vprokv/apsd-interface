@@ -1,8 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
-import { FilterForm } from '../../styles'
 import DatePickerComponent from '@/Components/Inputs/DatePicker'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
@@ -22,7 +21,6 @@ import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
 import dayjs from 'dayjs'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
 import Header from '@Components/Components/Tables/ListTable/header'
