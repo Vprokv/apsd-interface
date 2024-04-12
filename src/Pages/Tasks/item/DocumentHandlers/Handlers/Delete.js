@@ -1,6 +1,6 @@
 import { URL_BASKET_ADD } from '@/ApiList'
 import { TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import DeleteIcon from '@/Pages/Tasks/item/Icons/DeleteIcon.svg'
 
 export default {

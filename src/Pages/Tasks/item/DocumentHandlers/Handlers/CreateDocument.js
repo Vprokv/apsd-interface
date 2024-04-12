@@ -1,5 +1,5 @@
 import { URL_DOCUMENT_CREATE } from '@/ApiList'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 
 export default {

@@ -13,13 +13,12 @@ import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import { LoadTasks } from '@/Pages/Main/constants'
 import Input from '@/Components/Fields/Input'
-import NewFileInput from '@/Components/Inputs/NewFileInput'
 import { ContainerContext } from '@Components/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { Validation } from '@Components/Logic/Validator'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;

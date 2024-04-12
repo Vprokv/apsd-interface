@@ -20,7 +20,7 @@ import {
   URL_TASK_COMPLETE,
 } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'

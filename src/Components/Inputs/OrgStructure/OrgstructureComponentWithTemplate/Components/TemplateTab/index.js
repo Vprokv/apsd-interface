@@ -15,7 +15,6 @@ import {
 } from '@/contants'
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
-import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
 import { SearchInput } from '@/Pages/Tasks/list/styles'

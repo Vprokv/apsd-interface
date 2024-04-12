@@ -10,7 +10,7 @@ import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { FlatSelect } from '@/components_ocean/Components/Tables/Plugins/selectable'
-import useTabItem from '@/components_ocean/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import {
   URL_SUBSCRIPTION_DELETE,
   URL_SUBSCRIPTION_EVENTS,
@@ -38,7 +38,6 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import ShowLineRowComponent from '@/Components/ShowLineRowComponent'
 import Tips from '@/Components/Tips'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
