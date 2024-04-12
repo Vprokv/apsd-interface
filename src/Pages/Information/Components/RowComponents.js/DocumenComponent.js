@@ -62,7 +62,7 @@ const DocumentComponent = ({ name, id, mimeType, contentId, level }) => {
     >
       <button
         type="button"
-        className="flex items-center w-full pb-2"
+        className="flex items-center w-full h-full min-h-10 py-2"
         onDoubleClick={onPreviewComponent}
       >
         <div className="flex items-center">
