@@ -40,9 +40,9 @@ const FolderComponent = ({ name, id, parentId, level, loadData }) => {
   const addFolder = useCallback(
     () =>
       setActionComponent({
-        Component: (props) => <CreateFolder {...props} parentId={parentId} />,
+        Component: (props) => <CreateFolder {...props} parentId={id} />,
       }),
-    [parentId, setActionComponent],
+    [id, setActionComponent],
   )
 
   const EditFolder = useCallback(

@@ -50,10 +50,10 @@ const FolderWithChildrenComponent = ({
 
   const addFolder = useCallback(() => {
     setActionComponent({
-      Component: (props) => <CreateFolder {...props} parentId={parentId} />,
+      Component: (props) => <CreateFolder {...props} parentId={id} />,
     })
     closeContextMenu()
-  }, [closeContextMenu, parentId, setActionComponent])
+  }, [closeContextMenu, id, setActionComponent])
 
   const EditFolder = useCallback(() => {
     setActionComponent({
