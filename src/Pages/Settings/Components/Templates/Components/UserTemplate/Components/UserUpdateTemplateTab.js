@@ -19,10 +19,9 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import OrgStructureComponentWithTemplateWindowWrapper from '@/Components/Inputs/OrgStructure/OrgstructureComponentWithTemplate'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const UserUpdateTemplateTab = ({
   dss_name,

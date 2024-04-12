@@ -4,7 +4,7 @@ import {
   NavigationItem,
 } from '@/Components/DocumentNavigation'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import { useSetTabName } from '@Components/Logic/Tab'
 import NotificationItem from './Components/Notification'
 import Templates from '@/Pages/Settings/Components/Templates'
 import { TemplateTabStateContext } from '@/Pages/Settings/Components/Templates/constans'

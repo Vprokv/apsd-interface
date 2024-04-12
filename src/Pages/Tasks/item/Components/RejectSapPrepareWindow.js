@@ -5,13 +5,16 @@ import { useCallback, useContext } from 'react'
 import { ApiContext, TASK_LIST } from '@/contants'
 import { URL_TASK_COMPLETE } from '@/ApiList'
 import { useParams } from 'react-router-dom'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import {
+  CurrentTabContext,
+  setUnFetchedState,
+  TabStateManipulation,
+} from '@Components/Logic/Tab'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;

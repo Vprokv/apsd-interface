@@ -5,7 +5,11 @@ import {
   SETTINGS_TECHNICAL_OBJECTS,
   TASK_ITEM_OBJECTS,
 } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  setUnFetchedState,
+  useAutoReload,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import {
   URL_ENTITY_LIST,
   URL_TECHNICAL_OBJECTS_ADD,
@@ -33,11 +37,9 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
 import usePagination from '@Components/Logic/usePagination'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import Pagination from '@/Components/Pagination'
 import LoadableSelect from '@/Components/Inputs/Select'
-import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 
@@ -242,7 +244,7 @@ const CreateObjectsWindow = ({ onClose }) => {
         techObjectIds: selectState,
       })
       getNotification(customMessagesFuncMap[response.status]())
-      setItemObjectState(SetUnFetchedState())
+      setItemObjectState(setUnFetchedState())
       onClose()
     } catch (e) {
       const { response: { status, data } = {} } = e

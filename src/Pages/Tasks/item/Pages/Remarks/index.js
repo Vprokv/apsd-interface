@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_REMARKS, TokenContext } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useTabItem } from '@Components/Logic/Tab'
 import {
   URL_ENTITY_LIST,
   URL_EXPORT,
@@ -8,7 +8,6 @@ import {
   URL_REMARK_EDIT_SET_REMARK,
   URL_REMARK_LIST,
 } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
@@ -36,7 +35,6 @@ import Loading from '../../../../../Components/Loading'
 import CreateAnswer from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const WithToggle = ToggleNavigationItemWrapper(WithToggleNavigationItem)
 

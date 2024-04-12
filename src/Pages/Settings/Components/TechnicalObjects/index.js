@@ -6,8 +6,8 @@ import {
   useRef,
   useState,
 } from 'react'
-import { ApiContext, SETTINGS_TECHNICAL_OBJECTS, TASK_LIST } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { ApiContext, SETTINGS_TECHNICAL_OBJECTS } from '@/contants'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import usePagination from '@Components/Logic/usePagination'
 import {
   URL_ENTITY_LIST,
@@ -19,7 +19,6 @@ import {
   NOTIFICATION_TYPE_ERROR,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'

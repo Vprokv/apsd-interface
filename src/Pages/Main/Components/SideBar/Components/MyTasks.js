@@ -15,12 +15,11 @@ import {
   TabNames,
 } from '@/Pages/Tasks/list/constants'
 import { useStatistic } from '@/Pages/Tasks/helper'
-import { CurrentTabContext } from '@Components/Logic/Tab'
 import { TASK_LIST } from '@/contants'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 import Tips from '@/Components/Tips'
 import CounterContainer from '@/Components/Counter'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { CurrentTabContext, setUnFetchedState } from '@Components/Logic/Tab'
 
 const MyTasks = ({ onOpenNewTab, onChangeActiveTab, task, collapsedState }) => {
   const { tabs } = useContext(CurrentTabContext)

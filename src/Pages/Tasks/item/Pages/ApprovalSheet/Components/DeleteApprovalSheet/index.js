@@ -12,9 +12,8 @@ import {
 } from '@/Components/Notificator'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import Tips from '@/Components/Tips'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 
 const customMessagesFuncMap = {

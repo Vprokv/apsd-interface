@@ -18,10 +18,9 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import Tips from '@/Components/Tips'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
-import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -94,7 +93,7 @@ const AddUserWindow = ({
         stageType,
         performers: filter.user,
       })
-      setTabState(SetUnFetchedState())
+      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[response.status]())
       changeModalState(false)()
     } catch (e) {

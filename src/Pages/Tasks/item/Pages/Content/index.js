@@ -13,9 +13,8 @@ import {
   URL_DELETE_VERSION,
   URL_DOWNLOAD_GET_FILE,
 } from '@/ApiList'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import { ApiContext, TASK_ITEM_CONTENT, TokenContext } from '@/contants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'

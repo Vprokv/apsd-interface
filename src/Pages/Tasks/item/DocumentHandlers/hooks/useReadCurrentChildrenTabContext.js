@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useTabItem } from '@Components/Logic/Tab'
 import {
   TASK_ITEM_APPROVAL_SHEET,
   TASK_ITEM_CONTENT,

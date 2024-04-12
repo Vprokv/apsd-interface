@@ -30,9 +30,8 @@ import {
 } from '@Components/Logic/Validator/constants'
 import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/CustomButtonForIcon'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import Tips from '@/Components/Tips'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,

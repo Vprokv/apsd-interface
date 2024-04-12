@@ -27,9 +27,8 @@ import {
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import styled from 'styled-components'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { Validation } from '@Components/Logic/Validator'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`

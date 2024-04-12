@@ -28,8 +28,14 @@ import {
   TASK_ITEM_REQUISITES,
   TASK_LIST,
 } from '@/contants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  CurrentTabContext,
+  setUnFetchedState,
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultPages,
@@ -45,7 +51,6 @@ import useDocumentActions from './Hooks/useDocumentActions'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import { FormWindow } from '@/Components/ModalWindow'
 import { SecondaryGreyButton } from '@/Components/Button'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
   NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_SUCCESS,
@@ -63,10 +68,8 @@ import ReCancelIcon from '@/Pages/Tasks/item/Icons/ReCancelIcon.svg'
 import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoComponent'
 import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import TitleDeleteWindow from '@/Pages/Tasks/item/Components/TitleDeleteWindow'
 import RecallForRevisionWindow from '@/Pages/Tasks/item/Components/RecallForRevisionWindow'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'

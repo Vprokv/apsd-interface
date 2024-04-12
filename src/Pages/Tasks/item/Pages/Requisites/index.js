@@ -6,7 +6,7 @@ import { RequisitesForm } from './styles'
 import { DocumentTypeContext } from '../../constants'
 import { CustomValuesContext } from './constants'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useTabItem } from '@Components/Logic/Tab'
 import { TASK_ITEM_REQUISITES } from '@/contants'
 import { CurrentTabContext } from '@Components/Logic/Tab'
 
@@ -36,8 +36,6 @@ export const Requisites = ({ permits }) => {
     documentState,
     setDocumentState,
   })
-
-  // console.log(JSON.stringify(values), 'values', currentTabID, useParams() )
 
   const {
     touched,

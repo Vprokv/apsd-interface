@@ -29,10 +29,9 @@ import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapp
 import NumericInput from '@Components/Components/Inputs/NumericInput'
 import ScrollBar from 'react-perfect-scrollbar'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { WithValidationForm } from '@Components/Components/Forms'
-import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 
 export { CustomSizeModalWindow }
@@ -207,7 +206,7 @@ const CreateApprovalSheetWindow = ({ stageType, onClose }) => {
     try {
       setLoadingState(true)
       const response = await api.post(URL_APPROVAL_SHEET_CREATE, { stage })
-      setTabState(SetUnFetchedState())
+      setTabState(setUnFetchedState())
       onClose()
       setFilterValue(initialFilterState)
       getNotification(customMessagesFuncMap[response.status]())

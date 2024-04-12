@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
 import {
   CreateTechnicalObjectsWindowComponent,
   FilterWindowForm,
@@ -7,15 +6,10 @@ import {
 import {
   LoadableSecondaryOverBlueButton,
   SecondaryGreyButton,
-  SecondaryOverBlueButton,
 } from '@/Components/Button'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
-import LoadableSelect, { AutoLoadableSelect } from '@/Components/Inputs/Select'
-import {
-  URL_ENTITY_LIST,
-  URL_TECHNICAL_OBJECTS_CREATE,
-  URL_TECHNICAL_OBJECTS_UPDATE,
-} from '@/ApiList'
+import { AutoLoadableSelect } from '@/Components/Inputs/Select'
+import { URL_ENTITY_LIST, URL_TECHNICAL_OBJECTS_UPDATE } from '@/ApiList'
 import { ApiContext, SETTINGS_TECHNICAL_OBJECTS } from '@/contants'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
@@ -24,8 +18,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 const rules = {
   name: [{ name: VALIDATION_RULE_REQUIRED }],

@@ -29,8 +29,12 @@ import {
   TASK_ITEM_REQUISITES,
   TASK_LIST,
 } from '@/contants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  setUnFetchedState,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import useDocumentTabs from './Hooks/useDocumentTabs'
 import {
   defaultPages,
@@ -41,7 +45,7 @@ import {
 import DefaultIcon from './Icons/DefaultIcon.svg'
 import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+
 import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 import Report from '@/Pages/Tasks/item/Components/Report'
@@ -70,7 +74,6 @@ import DocumentInfoComponent from '@/Pages/Tasks/item/Components/DocumentInfoCom
 import ScrollBar from '@Components/Components/ScrollBar'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
 import RejectSapPrepareWindow from './Components/RejectSapPrepareWindow'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import PrintCardWindow from '@/Pages/Tasks/item/Components/PrintCardWindow'
 import ChangeStageWindow from '@/Pages/Tasks/item/Components/ChangeStageWindow'
 import useReadCurrentChildrenTabContext from '@/Pages/Tasks/item/DocumentHandlers/hooks/useReadCurrentChildrenTabContext'

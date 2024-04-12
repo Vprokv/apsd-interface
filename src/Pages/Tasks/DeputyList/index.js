@@ -7,12 +7,15 @@ import {
   useState,
 } from 'react'
 import { ApiContext, TASK_DEPUTY_LIST, TokenContext } from '@/contants'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useParams } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import usePagination from '@Components/Logic/usePagination'
 import { useOpenNotification } from '@/Components/Notificator'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
   URL_DEPUTY_TASK_LIST,
   URL_EXPORT,
@@ -22,7 +25,6 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'

@@ -5,8 +5,7 @@ import { useParams } from 'react-router-dom'
 import { ApiContext, ITEM_DOCUMENT } from '@/contants'
 import { useOpenNotification } from '@/Components/Notificator'
 import Document from '@/Pages/Tasks/item/Document'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 
 const DocumentWatchWrapper = () => {
   const { id, type } = useParams()

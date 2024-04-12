@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext, TASK_ITEM_LINK, TokenContext } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_DOWNLOAD_GET_FILE,
   URL_ENTITY_LIST,
@@ -8,7 +7,6 @@ import {
   URL_LINK_LIST,
   URL_LINK_USER_LIST,
 } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import LoadableSelect from '@/Components/Inputs/Select'
 import { FilterForm } from './styles'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
@@ -43,7 +41,11 @@ import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
 import ShareIcon from '@/Icons/ShareIcon'
-import { TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '@/api'
 

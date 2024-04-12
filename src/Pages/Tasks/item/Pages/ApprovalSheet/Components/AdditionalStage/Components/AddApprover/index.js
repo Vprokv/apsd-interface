@@ -20,10 +20,12 @@ import Form from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import PropTypes from 'prop-types'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  setUnFetchedState,
+  useReadDataState,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;

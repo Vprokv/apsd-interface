@@ -26,8 +26,7 @@ import {
   TemplateTabStateContext,
 } from '@/Pages/Settings/Components/Templates/constans'
 import { useNavigate } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 const defaultOptions = [
   {

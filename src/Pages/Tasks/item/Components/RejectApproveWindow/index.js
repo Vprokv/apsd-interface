@@ -5,7 +5,11 @@ import LoadableSelect from '@/Components/Inputs/Select'
 import { URL_BUSINESS_DOCUMENT_STAGES, URL_TASK_COMPLETE } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  CurrentTabContext,
+  setUnFetchedState,
+  TabStateManipulation,
+} from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -15,7 +19,6 @@ import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdate
 import ScrollBar from '@Components/Components/ScrollBar'
 import { Validation } from '@Components/Logic/Validator'
 import { FilterForm } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateAnswer/styles'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 31.6%;
