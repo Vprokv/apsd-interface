@@ -16,7 +16,14 @@ import PreviewContentWindow from '@/Components/PreviewContentWindow'
 import { InformationWindowWrapper } from '@/Components/PreviewContentWindow/Decorators'
 
 const ContentWindow = InformationWindowWrapper(PreviewContentWindow)
-const DocumentComponent = ({ name, id, mimeType, contentId, level }) => {
+const DocumentComponent = ({
+  name,
+  id,
+  mimeType,
+  contentId,
+  level,
+  permit,
+}) => {
   const [open, setOpen] = useState(false)
   const [target, setTarget] = useState({})
 
@@ -68,16 +75,18 @@ const DocumentComponent = ({ name, id, mimeType, contentId, level }) => {
         <div className="flex items-center">
           <MimeTypeIconComponent mimeType={mimeType} />
           <span className="ml-2">{name}</span>
-          <ContHover>
-            <ThreeDotButton>
-              <Icon
-                icon={ThreeDotIcon}
-                size={14}
-                className="color-white cursor-pointer "
-                onClick={openContextMenu}
-              />
-            </ThreeDotButton>
-          </ContHover>
+          {permit && (
+            <ContHover>
+              <ThreeDotButton>
+                <Icon
+                  icon={ThreeDotIcon}
+                  size={14}
+                  className="color-white cursor-pointer "
+                  onClick={openContextMenu}
+                />
+              </ThreeDotButton>
+            </ContHover>
+          )}
           {open && (
             <ContextMenu width={130} target={target} onClose={closeContextMenu}>
               <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
