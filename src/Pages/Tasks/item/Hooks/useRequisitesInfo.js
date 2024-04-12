@@ -18,7 +18,7 @@ const useRequisitesInfo = ({
   const [customFieldsState, setCustomFieldsState] = useState({})
 
   const [
-    { data: documentData, data: { values, valuesCustom } = {} },
+    { data: documentData, data: { values = {}, valuesCustom = {} } = {} },
     setDocumentData,
   ] = useReadDataState(documentState, setDocumentState)
 
