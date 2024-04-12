@@ -73,7 +73,7 @@ const FolderWithChildrenComponent = ({
     try {
       if (values) {
         await api.post(URL_INFORMATION_FILE_ADD, {
-          parentId,
+          parentId: id,
           files: values?.map(({ dsc_content, dss_content_name }) => ({
             id: dsc_content,
             name: dss_content_name,
@@ -87,7 +87,7 @@ const FolderWithChildrenComponent = ({
       const { response: { status = 0, data = '' } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [api, closeContextMenu, getNotification, loadData, parentId, values])
+  }, [api, closeContextMenu, getNotification, id, loadData, values])
 
   useEffect(addFile, [addFile])
 
