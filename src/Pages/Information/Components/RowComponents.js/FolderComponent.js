@@ -91,7 +91,7 @@ const FolderComponent = ({ name, id, parentId, level, loadData }) => {
       subRow={level}
       className={'flex flex-col w-full  border-b-2'}
     >
-      <button type="button" className="flex h-full items-center min-h-10 py-2">
+      <button type="button" className="flex h-full items-center min-h-12 py-2">
         <span>{name}</span>
         <ContHover>
           <ThreeDotButton>

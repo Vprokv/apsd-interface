@@ -101,7 +101,7 @@ const FolderWithChildrenComponent = ({
         <div className="flex">
           <button
             type="button"
-            className="flex items-center min-h-10 py-2 "
+            className="flex items-center min-h-12 py-2 "
             onClick={toggleDisplayedFlag}
           >
             <Icon
