@@ -96,14 +96,12 @@ const FolderWithChildrenComponent = ({
       <LeafContainer
         key={id}
         subRow={level}
-        className={`flex flex-col w-full border-b-2 ${
-          isDisplayed ? '' : 'mb-4'
-        }`}
+        className="flex flex-col w-full border-b-2"
       >
         <div className="flex">
           <button
             type="button"
-            className="flex items-center pb-2 "
+            className="flex items-center min-h-10 py-2 "
             onClick={toggleDisplayedFlag}
           >
             <Icon
@@ -149,7 +147,7 @@ const FolderWithChildrenComponent = ({
         </div>
       </LeafContainer>
       {isDisplayed && (
-        <div className="flex flex-col mt-4">
+        <div className="flex flex-col">
           {childs.map(renderEntities(level + 1))}
         </div>
       )}

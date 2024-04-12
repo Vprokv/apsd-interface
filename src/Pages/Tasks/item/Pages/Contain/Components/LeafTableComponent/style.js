@@ -42,7 +42,7 @@ export const ContHover = styled.div`
 `
 
 export const LeafContainer = styled.div`
-  padding-left: ${({ subRow }) => subRow * 15}px;
+  padding-left: ${({ subRow }) => subRow * 30}px;
 
   &:hover {
     ${ContHover} {
