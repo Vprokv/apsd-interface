@@ -91,13 +91,9 @@ const Contain = () => {
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
-  const [documentState, setDocumentState] = useTabItem({
-    stateId: ITEM_DOCUMENT,
-  })
-
   const [
     { data: { values: { dss_code = '', dss_description = '' } = {} } = {} },
-  ] = useReadDataState(documentState, setDocumentState)
+  ] = useReadDataState(ITEM_DOCUMENT)
 
   const [
     { defaultOpen, treePluginState, sortQuery, filter, ...tabState },

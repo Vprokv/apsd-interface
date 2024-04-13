@@ -103,8 +103,6 @@ const ApprovalSheet = () => {
   const [{ data = [], loading, reloadData, shouldReloadData }, updateData] =
     useAutoReload(loadData, tabState, setTabState)
 
-  const [{ data: pageData }] = useReadDataState(tabState, setTabState)
-
   useEffect(() => {
     // заставляем перезагрузить данные на первом рендере, в случаее если ранее данные для этой вкладки
     // были загруженны и теперь мы на нее повторно вернулись

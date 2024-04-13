@@ -55,14 +55,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected }) => {
 
   const getNotification = useOpenNotification()
 
-  const [documentState, setDocumentState] = useTabItem({
-    stateId: ITEM_TASK,
-  })
-
-  const [{ data: { approverParentId } = {} }] = useReadDataState(
-    documentState,
-    setDocumentState,
-  )
+  const [{ data: { approverParentId } = {} }] = useReadDataState(ITEM_TASK)
 
   const fieldMap = useMemo(() => {
     return [

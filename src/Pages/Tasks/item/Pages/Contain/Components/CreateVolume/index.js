@@ -9,20 +9,13 @@ import { URL_DOCUMENT_APSD_CREATION_OPTIONS } from '@/ApiList'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
 import Icon from '@Components/Components/Icon'
 import angleIcon from '@/Icons/angleIcon'
-import {
-  TabStateManipulation,
-  useReadDataState,
-  useTabItem,
-} from '@Components/Logic/Tab'
+import { TabStateManipulation, useReadDataState } from '@Components/Logic/Tab'
 import { NestedButton } from '../../styles'
 import { DocumentTypeContext } from '../../../../constants'
 
 const CreateVolume = ({ addVolumeState }) => {
   const documentType = useContext(DocumentTypeContext)
-  const [tabState, setTabState] = useTabItem({
-    stateId: documentType,
-  })
-  const [{ data = {} }] = useReadDataState(tabState, setTabState)
+  const [{ data = {} }] = useReadDataState(documentType)
   const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
   const api = useContext(ApiContext)
   const { id } = useParams()
