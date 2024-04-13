@@ -21,7 +21,6 @@ import ScrollBar from 'react-perfect-scrollbar'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { useFormFieldsConfig, useFormRulesConfig } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 

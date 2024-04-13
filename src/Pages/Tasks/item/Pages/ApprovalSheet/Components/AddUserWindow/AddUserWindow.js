@@ -20,7 +20,6 @@ import ModalWindowWrapper from '@/Components/ModalWindow'
 import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import Tips from '@/Components/Tips'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
-import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
 
 const customMessagesFuncMap = {

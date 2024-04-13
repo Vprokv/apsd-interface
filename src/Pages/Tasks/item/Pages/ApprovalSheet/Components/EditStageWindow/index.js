@@ -23,7 +23,6 @@ import { CustomButtonForIcon } from '@/Pages/Tasks/item/Pages/ApprovalSheet/Comp
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import Tips from '@/Components/Tips'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { rules, useFormFieldsConfig } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 

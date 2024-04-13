@@ -8,7 +8,6 @@ import { required } from '@Components/Logic/Validator'
 
 export const rules = {
   versionDate: [{ validatorObject: required }],
-  // regNumber: [{ validatorObject: required }],
   author: [{ validatorObject: required }],
   contentTypeId: [{ validatorObject: required }],
 }

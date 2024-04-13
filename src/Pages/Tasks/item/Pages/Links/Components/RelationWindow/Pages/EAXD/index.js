@@ -18,7 +18,6 @@ import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { rules, useFormFieldsConfig } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 

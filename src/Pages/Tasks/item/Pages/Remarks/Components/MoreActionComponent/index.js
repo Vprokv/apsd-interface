@@ -18,7 +18,6 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { onOpenModalComponent } from '../../constans'
 
 export const ThreeDotButton = styled.button`

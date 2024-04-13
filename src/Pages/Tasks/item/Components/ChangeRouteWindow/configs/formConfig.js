@@ -5,7 +5,7 @@ import { URL_ENTITY_LIST } from '@/ApiList'
 import { required } from '@Components/Logic/Validator'
 
 export const rules = {
-  stageId: [{ validatorObject: required }],
+  branchId: [{ validatorObject: required }],
 }
 
 export const useFormFieldConfig = (api) =>

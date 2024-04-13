@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  PRESENT_DATE_FORMAT,
   TASK_ITEM_APPROVAL_SHEET,
 } from '@/contants'
 import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '@/ApiList'
@@ -19,27 +18,14 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import ScrollBar from '@Components/Components/ScrollBar'
-
-import styled from 'styled-components'
-import ModalWindowWrapper from '../../../../../Components/ModalWindow'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import Form from '@Components/Components/Forms'
 import dayjs from 'dayjs'
-import DefaultWrapper from '@/Components/Forms/ValidationStateUi/StyledInputWrapper'
-import { useFormFieldsConfig, useFormRules } from './configs/formConfig'
+import { useLessNullConfig } from './configs/LessNullConfig'
+import { useMoreTheOneConfig } from './configs/moreThenOneConfig'
+import { useLessOneMoreConfig } from './configs/LessOneMoreNullConfig'
+import { LESS__NULL, LESS_ONE_MORE_NULL, MORE__ONE } from './contants'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
-import useAdditionalAgreementSettings from '@/Pages/Tasks/item/Components/CreatingAdditionalAgreementWindow/Hooks/useAdditionalAgreementSettings'
-
-export const ModalWindow = styled(ModalWindowWrapper)`
-  width: 40%;
-  min-height: 45%;
-  margin: auto;
-  max-height: 95%;
-`
-
-export const DatePickerWrapper = styled(DefaultWrapper)`
-  --width-input: 200px;
-`
+import { ModalWindow } from './styles'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,
@@ -49,6 +35,12 @@ const customMessagesFuncMap = {
       message: 'Дополнительное согласование создано успешно',
     }
   },
+}
+
+const config = {
+  [MORE__ONE]: useMoreTheOneConfig,
+  [LESS_ONE_MORE_NULL]: useLessOneMoreConfig,
+  [LESS__NULL]: useLessNullConfig,
 }
 
 const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
@@ -65,27 +57,29 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
     dueDate = dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
   } = data
 
+  const checkDate = useMemo(() => {
+    const diff = dayjs(dueDate).diff(
+      dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
+      'day',
+      true,
+    )
+
+    return diff >= 1 ? MORE__ONE : diff > 0 ? LESS_ONE_MORE_NULL : LESS__NULL
+  }, [dueDate])
+
   const {
-    selectRestrictions,
+    rules,
+    fields,
+    state: [values, setValues],
     getResultValueFunc,
-    format,
-    dueDateRules,
-    initialValue,
-  } = useAdditionalAgreementSettings({ dueDate })
-
-  const [values, setValues] = useState({ dueDate: initialValue })
-
-  const rules = useFormRules(dueDateRules)
-  const fields = useFormFieldsConfig(
-    approverParentId,
-    selectRestrictions,
-    format,
+  } = config[checkDate](
+    dueDate,
+    useMemo(
+      () => dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format('HH:mm:ss'),
+      [dueDate],
+    ),
     documentId,
-  )
-
-  const time = useMemo(
-    () => dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format('HH:mm:ss'),
-    [dueDate],
+    approverParentId,
   )
 
   const onSave = useCallback(async () => {
