@@ -32,7 +32,7 @@ export const ModalWindow = styled(ModalWindowWrapper)`
 `
 
 const rules = {
-  stageId: [{ name: VALIDATION_RULE_REQUIRED }],
+  branchId: [{ name: VALIDATION_RULE_REQUIRED }],
 }
 
 const ChangeRouteWindow = ({ open, onClose, documentId, reloadData }) => {

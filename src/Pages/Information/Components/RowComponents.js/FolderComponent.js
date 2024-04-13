@@ -20,7 +20,7 @@ import { useOpenNotification } from '@/Components/Notificator'
 import NewFileInput from '@/Components/Inputs/NewFileInput'
 import CustomFileInputComponent from '@/Pages/Information/Components/CustomFileInputComponent'
 
-const FolderComponent = ({ name, id, parentId, level, loadData }) => {
+const FolderComponent = ({ name, id, parentId, level, loadData, permit }) => {
   const [open, setOpen] = useState(false)
   const [target, setTarget] = useState({})
   const api = useContext(ApiContext)
@@ -91,18 +91,20 @@ const FolderComponent = ({ name, id, parentId, level, loadData }) => {
       subRow={level}
       className={'flex flex-col w-full  border-b-2'}
     >
-      <button type="button" className="flex h-full items-center min-h-12 py-2">
+      <button type="button" className="flex h-full items-center min-h-10 py-2">
         <span>{name}</span>
-        <ContHover>
-          <ThreeDotButton>
-            <Icon
-              icon={ThreeDotIcon}
-              size={14}
-              className="color-white cursor-pointer "
-              onClick={openContextMenu}
-            />
-          </ThreeDotButton>
-        </ContHover>
+        {permit && (
+          <ContHover>
+            <ThreeDotButton>
+              <Icon
+                icon={ThreeDotIcon}
+                size={14}
+                className="color-white cursor-pointer "
+                onClick={openContextMenu}
+              />
+            </ThreeDotButton>
+          </ContHover>
+        )}
         {open && (
           <ContextMenu width={130} target={target} onClose={closeContextMenu}>
             <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
