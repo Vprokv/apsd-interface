@@ -1,5 +1,3 @@
-import React from 'react'
-
 import xlsIcon from '@/Icons/DocumentType/xlsIcon.svg'
 import docIcon from '@/Icons/DocumentType/docIcon.svg'
 import zipIcon from '@/Icons/DocumentType/zipIcon.svg'
