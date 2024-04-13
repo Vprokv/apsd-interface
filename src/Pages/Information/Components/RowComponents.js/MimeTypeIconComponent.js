@@ -1,5 +1,4 @@
 import React from 'react'
-import { ButtonForIcon } from '@/Pages/Tasks/item/Pages/Contain/Components/LeafTableComponent/CustomIconComponent'
 
 import xlsIcon from '@/Icons/DocumentType/xlsIcon.svg'
 import docIcon from '@/Icons/DocumentType/docIcon.svg'

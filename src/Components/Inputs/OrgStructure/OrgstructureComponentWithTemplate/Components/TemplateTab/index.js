@@ -35,7 +35,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
-import {useAutoReload, useTabItem} from "@Components/Logic/Tab";
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 
 const plugins = {
   outerSortPlugin: {

@@ -6,9 +6,8 @@ import { RequisitesForm } from './styles'
 import { DocumentTypeContext } from '../../constants'
 import { CustomValuesContext } from './constants'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
-import { useTabItem } from '@Components/Logic/Tab'
 import { TASK_ITEM_REQUISITES } from '@/contants'
-import { CurrentTabContext } from '@Components/Logic/Tab'
+import { CurrentTabContext, useTabItem } from '@Components/Logic/Tab'
 
 export const Requisites = ({ permits }) => {
   const docContextType = useContext(DocumentTypeContext)
@@ -21,9 +20,7 @@ export const Requisites = ({ permits }) => {
     stateId: TASK_ITEM_REQUISITES,
   })
 
-
   const { currentTabID } = useContext(CurrentTabContext)
-
   const {
     fieldsWithLoadedProps,
     onFormInput,

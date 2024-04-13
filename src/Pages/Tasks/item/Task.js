@@ -30,7 +30,9 @@ import {
   TASK_LIST,
 } from '@/contants'
 import {
+  CurrentTabContext,
   setUnFetchedState,
+  TabStateManipulation,
   useAutoReload,
   useSetTabName,
   useTabItem,
@@ -45,8 +47,6 @@ import {
 import DefaultIcon from './Icons/DefaultIcon.svg'
 import SendASUD from './Icons/SendASUD.svg'
 import useDocumentActions from './Hooks/useDocumentActions'
-
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
 import UploadDoc from '@/Pages/Tasks/item/Icons/UploadDoc.svg'
 import Report from '@/Pages/Tasks/item/Components/Report'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
