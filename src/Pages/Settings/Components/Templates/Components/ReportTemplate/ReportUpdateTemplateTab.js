@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext, REPORTING_STATE } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -27,7 +27,6 @@ import {
   SecondaryGreyButton,
   SecondaryOverBlueButton,
 } from '@/Components/Button'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const ReportUpdateTemplateTab = ({
   dss_name,

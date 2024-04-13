@@ -2,7 +2,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING, TokenContext } from '@/contants'
 import Validator from '@Components/Logic/Validator'
 import { useParams } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useSetTabName, useTabItem } from '@Components/Logic/Tab'
 import {
   URL_CREATE_TEMPLATE,
   URL_REPORTS_BUILD,
@@ -10,8 +10,6 @@ import {
   URL_REPORTS_ITEM,
   URL_TEMPLATE_LIST,
 } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { ReportsForm } from '@/Pages/Rporting/styled'
 import ScrollBar from '@Components/Components/ScrollBar'
 import { LoadableSecondaryOverBlueButton } from '@/Components/Button'

@@ -24,6 +24,7 @@ import { SETTINGS_PATH } from '@/routePaths'
 import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
 import { cachedLocalStorageValue } from '@Components/Logic/Storages/localStorageCache'
+import Information from '@/Pages/Information'
 
 const MIN_SIDEBAR_WIDTH = { width: 240, margin: 70 }
 const MAX_SIDEBAR_WIDTH = { width: 800, margin: 630 }
@@ -166,6 +167,7 @@ const Header = ({ children }) => {
             </ButtonForIcon>
           </Tips>
           <Reports />
+          <Information />
         </IconsGroup>
         <div className="pl-10 flex items-center">
           <div className="text-right mr-4 font-medium">

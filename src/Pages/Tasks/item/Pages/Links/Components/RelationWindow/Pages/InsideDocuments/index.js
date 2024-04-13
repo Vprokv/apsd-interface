@@ -11,12 +11,11 @@ import {
 } from '@/contants'
 import { URL_LINK_CREATE } from '@/ApiList'
 import SearchComponent from '@/Pages/Tasks/item/Pages/Links/Components/RelationWindow/Pages/InsideDocuments/Сomponents/SearchComponent'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import dayjs from 'dayjs'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 // todo есть дубликат этого компонента в DocumentASUD
 const Buttons = ({ value, onSelect, clear, onCreate, close }) =>

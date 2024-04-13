@@ -20,12 +20,15 @@ import {
   URL_TASK_COMPLETE,
 } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  CurrentTabContext,
+  setUnFetchedState,
+  TabStateManipulation,
+} from '@Components/Logic/Tab'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 70%;

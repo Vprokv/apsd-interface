@@ -10,6 +10,7 @@ import {
 import { URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT } from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -27,6 +28,7 @@ import dayjs from 'dayjs'
 import DefaultWrapper from '@/Components/Forms/ValidationStateUi/StyledInputWrapper'
 import { useFormFieldsConfig, useFormRules } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
+import useAdditionalAgreementSettings from '@/Pages/Tasks/item/Components/CreatingAdditionalAgreementWindow/Hooks/useAdditionalAgreementSettings'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
   width: 40%;
@@ -63,24 +65,21 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
     dueDate = dayjs().format(DATE_FORMAT_DD_MM_YYYY_HH_mm_ss),
   } = data
 
-  const [values, setValues] = useState({
-    dueDate: dayjs(dueDate, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss).format(
-      PRESENT_DATE_FORMAT,
-    ),
-  })
+  const {
+    selectRestrictions,
+    getResultValueFunc,
+    format,
+    dueDateRules,
+    initialValue,
+  } = useAdditionalAgreementSettings({ dueDate })
 
-  const checkDate = useMemo(
-    () =>
-      dayjs(dueDate, 'DD.MM.YYYY').valueOf() -
-        dayjs(dayjs().format(PRESENT_DATE_FORMAT), 'DD.MM.YYYY').valueOf() >
-      0,
-    [dueDate],
-  )
-  const rules = useFormRules(checkDate, dueDate)
+  const [values, setValues] = useState({ dueDate: initialValue })
+
+  const rules = useFormRules(dueDateRules)
   const fields = useFormFieldsConfig(
     approverParentId,
-    checkDate,
-    dueDate,
+    selectRestrictions,
+    format,
     documentId,
   )
 
@@ -95,7 +94,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
         URL_APPROVAL_SHEET_CREATE_ADDITIONAL_AGREEMENT,
         {
           ...values,
-          dueDate: `${values.dueDate} ${time}`,
+          dueDate: getResultValueFunc(values),
           parentPerformerId: approverId,
           documentType,
           documentId,
@@ -114,7 +113,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
   }, [
     api,
     values,
-    time,
+    getResultValueFunc,
     approverId,
     documentType,
     documentId,

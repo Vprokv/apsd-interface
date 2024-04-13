@@ -19,10 +19,8 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import Form from '@Components/Components/Forms'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import PropTypes from 'prop-types'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useReadDataState } from '@Components/Logic/Tab'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
-import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import { DefaultInputWrapper } from '@/Components/Forms/ValidationStateUi/DefaultInputWrapper'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
@@ -53,14 +51,7 @@ const CreatingAdditionalAgreementWindow = ({ onClose, selected }) => {
 
   const getNotification = useOpenNotification()
 
-  const [documentState, setDocumentState] = useTabItem({
-    stateId: ITEM_TASK,
-  })
-
-  const [{ data: { approverParentId } = {} }] = useReadDataState(
-    documentState,
-    setDocumentState,
-  )
+  const [{ data: { approverParentId } = {} }] = useReadDataState(ITEM_TASK)
 
   const fieldMap = useMemo(() => {
     return [

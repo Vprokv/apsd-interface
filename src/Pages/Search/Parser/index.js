@@ -4,10 +4,7 @@ import UserSelect from '@/Components/Inputs/UserSelect'
 import BaseUserSelect from '@/Components/Inputs/OrgStructure/BaseUserSelect'
 import DatePicker from '@/Components/Inputs/DatePicker'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import {
-  AutoLoadableSelect,
-  WithAutoLoadableAlwaysRenderValuesSelect,
-} from '@/Components/Inputs/Select'
+import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import Input from '@Components/Components/Inputs/Input'
 import TextArea from '@Components/Components/Inputs/TextArea'
 import parseFieldProps from '@/Utils/Parser/Stages/parseFieldProps/controller'

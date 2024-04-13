@@ -14,11 +14,10 @@ import {
   TASK_ITEM_APPROVAL_SHEET,
 } from '@/contants'
 import { URL_APPROVAL_SHEET_APPROVER_DELETE } from '@/ApiList'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import DeleteApprovalSheet from '@/Pages/Tasks/item/Pages/ApprovalSheet/Components/DeleteApprovalSheet'
 import { useParams } from 'react-router-dom'
 

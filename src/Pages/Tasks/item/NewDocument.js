@@ -12,7 +12,6 @@ import {
   TASK_ITEM_NEW_DOCUMENT,
   TASK_ITEM_REQUISITES,
 } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_DOCUMENT_CLASSIFICATION,
   URL_DOCUMENT_CREATE,
@@ -25,8 +24,13 @@ import useDocumentTabs from './Hooks/useDocumentTabs'
 import DocumentActions from '@/Pages/Tasks/item/Components/DocumentActions'
 import useDocumentActions from './Hooks/useDocumentActions'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
+  setUnFetchedState,
+  useAutoReload,
+  useSetTabName,
+  useTabInitialState,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_ERROR,
   NOTIFICATION_TYPE_SUCCESS,
@@ -35,8 +39,6 @@ import {
 import { useTabStateUpdaterByName } from '@/Utils/TabStateUpdaters'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import SideBar from '@/Pages/Tasks/item/Components/SideBar'
-import useTabInitialState from '@Components/Logic/Tab/useTabInitialState'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import useRequisitesInfo from '@/Pages/Tasks/item/Hooks/useRequisitesInfo'
 import CheckDoubleWindow from '@/Pages/Tasks/item/Components/CheckDobleWindow'
 

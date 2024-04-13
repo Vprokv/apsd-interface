@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import { URL_DOCUMENT_CREATE } from '@/ApiList'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import { ApiContext } from '@/contants'
 import {
   NOTIFICATION_TYPE_ERROR,

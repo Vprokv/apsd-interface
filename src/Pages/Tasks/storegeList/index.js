@@ -35,24 +35,21 @@ import {
   URL_KNOWLEDGE_TASKS,
   URL_TASK_LIST_FILTERS,
 } from '@/ApiList'
-import {
-  ApiContext,
-  TASK_LIST,
-  TASK_STORAGE_LIST,
-  TokenContext,
-} from '@/contants'
-import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
+import { ApiContext, TASK_STORAGE_LIST, TokenContext } from '@/contants'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import ModifiedSortCellComponent from '../../../Components/ListTableComponents/ModifiedSortCellComponent'
-import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import { TabStateManipulation } from '@Components/Logic/Tab'
+import { LoadableButtonForIcon } from '@/Components/Button'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import LoadableSelect from '@/Components/Inputs/Select'

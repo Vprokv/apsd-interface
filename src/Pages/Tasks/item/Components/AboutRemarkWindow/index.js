@@ -5,17 +5,19 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  CurrentTabContext,
+  setUnFetchedState,
+  TabStateManipulation,
+} from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LoadTasks } from '@/Pages/Main/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 18%;
-  //height: 22.65%;
   margin: auto;
 `
 

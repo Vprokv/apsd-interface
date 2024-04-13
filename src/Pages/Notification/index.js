@@ -1,8 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, NOTIFICATION } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { useAutoReload, useSetTabName, useTabItem } from '@Components/Logic/Tab'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'

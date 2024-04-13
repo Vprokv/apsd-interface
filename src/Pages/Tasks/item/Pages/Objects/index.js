@@ -12,7 +12,7 @@ import ModifiedSortCellComponent from '../../../../../Components/ListTableCompon
 import { FlatSelect } from '../../../../../components_ocean/Components/Tables/Plugins/selectable'
 import CheckBox from '../../../../../Components/Inputs/CheckBox'
 import { ApiContext, TASK_ITEM_OBJECTS } from '@/contants'
-import useTabItem from '../../../../../components_ocean/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import {
   URL_ENTITY_LIST,
   URL_TECHNICAL_OBJECTS_DELETE,
@@ -34,7 +34,6 @@ import { SearchInput } from '@/Pages/Tasks/list/styles'
 import searchIcon from '@/Icons/searchIcon'
 import LoadableSelect from '../../../../../Components/Inputs/Select'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import Header from '@Components/Components/Tables/ListTable/header'

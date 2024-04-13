@@ -8,9 +8,8 @@ import {
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import { URL_CREATE_DELETE, URL_TEMPLATE_LIST } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { Select } from '@/Components/Inputs/Select'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
 import Icon from '@Components/Components/Icon'

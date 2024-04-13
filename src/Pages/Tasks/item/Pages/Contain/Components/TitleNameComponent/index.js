@@ -28,7 +28,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 import Loading from '@/Components/Loading'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 
 const customMessagesSendFuncMap = {
   ...defaultFunctionsMap,
@@ -65,10 +65,16 @@ const customMessagesApproveFuncMap = {
 
 const TitleNameComponent = ({
   onInput,
-  ParentValue: { tomId, expand, send, name, action },
+  ParentValue: { tomId, expand, send, name, action, parentId },
   ParentValue,
 }) => {
-  const { valueKey, nestedDataKey, onChange } = useContext(TreeStateContext)
+  const {
+    valueKey,
+    nestedDataKey,
+    defaultOpen,
+    onChange,
+    state: { [ParentValue[valueKey]]: expanded = defaultOpen } = {},
+  } = useContext(TreeStateContext)
 
   const closeContextMenu = useCallback(() => {
     setOpen(false)
@@ -150,7 +156,7 @@ const TitleNameComponent = ({
       const { status } = await api.post(URL_TITLE_CONTAIN_ANNULMENT, {
         annulmentObjects,
       })
-      getNotification(customMessagesSendFuncMap[status]())
+      getNotification(defaultFunctionsMap[status]())
 
       updateTabStateUpdaterByName([TASK_ITEM_STRUCTURE], setUnFetchedState())
     } catch (e) {
@@ -274,10 +280,13 @@ const TitleNameComponent = ({
         />
       )}
       <CustomIconComponent {...ParentValue} />
-
       <>
         <button onClick={() => expand && onOpenNestedTable()}>
-          <div className="font-size-12 font-normal flex text-left items-center break-words min-h-10 h-full">
+          <div
+            className={`font-size-12 font-normal flex text-left items-center break-words min-h-10 h-full ${
+              !parentId ? 'font-semibold' : ''
+            } ${!parentId && expanded ? 'color-blue-1' : ''}`}
+          >
             {name}
           </div>
         </button>

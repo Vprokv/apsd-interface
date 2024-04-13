@@ -1,25 +1,25 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ButtonForIcon } from '@/Pages/Main/Components/Header/Components/styles'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
-import { ApiContext, ITEM_TASK } from '@/contants'
+import { ApiContext } from '@/contants'
 import ScrollBar from '@Components/Components/ScrollBar'
-import { useNavigate } from 'react-router-dom'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import { LeafContainer } from '@/Pages/Rporting/styled'
 import Tips from '@/Components/Tips'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import OpenedTaskWindow from '@/Pages/Rporting/Components/OpendedTaskWindow'
 import WithToggleNavigationItem from '@/Pages/Main/Components/SideBar/Components/withToggleNavigationItem'
-import SelectorRowComponent from '@/Pages/Reference/Components/RowComponents.js/SelectorRowComponent'
-import FolderWithChildrenComponent from '@/Pages/Reference/Components/RowComponents.js/FolderWithChildren'
-import { SetActionContext } from '@/Pages/Reference/constans'
+import SelectorRowComponent from '@/Pages/Information/Components/RowComponents.js/SelectorRowComponent'
+import FolderWithChildrenComponent from '@/Pages/Information/Components/RowComponents.js/FolderWithChildren'
+import { SetActionContext } from '@/Pages/Information/constans'
+import { URL_INFORMATION_LIST } from '@/ApiList'
+import { SecondaryBlueButton } from '@/Components/Button'
+import informationIcon from '@/Icons/Information'
+import Icon from '@Components/Components/Icon'
+import CreateFolder from '@/Pages/Information/Components/CreateFolder'
 
-const Reference = () => {
+const Information = () => {
   const [open, setOpenState] = useState(false)
-  const [references, setReferences] = useState([])
-  const navigate = useNavigate()
-  const { openTabOrCreateNewTab } = useContext(TabStateManipulation)
+  const [{ information = [], permit = false }, setReferences] = useState({})
   const api = useContext(ApiContext)
   const getNotification = useOpenNotification()
   const [ActionComponent, setActionComponent] = useState(null)
@@ -33,75 +33,70 @@ const Reference = () => {
 
   const loadData = useCallback(async () => {
     try {
-      // const { data } = await api.post(URL_REPORTS_LIST)
-      // setReferences(data)
+      const { data } = await api.post(URL_INFORMATION_LIST)
+      setReferences(data)
       changeModalState(true)()
     } catch (e) {
       const { response: { status = 0, data = '' } = {} } = e
       getNotification(defaultFunctionsMap[status](data))
     }
-  }, [changeModalState, getNotification])
+  }, [api, changeModalState, getNotification])
 
   const onOpen = useCallback(async () => {
-    try {
-      await loadData
-      changeModalState(true)()
-    } catch (e) {
-      const { response: { status, data } = {} } = e
-      getNotification(defaultFunctionsMap[status](data))
-    }
-  }, [changeModalState, getNotification, loadData])
-
-  const onClick = useCallback(
-    (id) => {
-      openTabOrCreateNewTab(navigate(`/report/${id}`))
-      changeModalState(false)()
-    },
-    [changeModalState, navigate, openTabOrCreateNewTab],
-  )
+    await loadData()
+    changeModalState(true)()
+  }, [changeModalState, loadData])
 
   const renderEntities = useCallback(
     (level = 1) =>
-      ({ childs, id, ...data }) =>
-        childs.length > 0 ? (
+      ({ childs, id, ...data }) => {
+        return childs.length > 0 ? (
           <WithToggleNavigationItem id={id} key={id}>
             {({ isDisplayed, toggleDisplayedFlag }) => (
               <FolderWithChildrenComponent
+                permit={permit}
+                loadData={loadData}
                 renderEntities={renderEntities}
                 toggleDisplayedFlag={toggleDisplayedFlag}
                 isDisplayed={isDisplayed}
                 childs={childs}
+                level={level}
                 id={id}
                 {...data}
               />
             )}
           </WithToggleNavigationItem>
         ) : (
-          <SelectorRowComponent id={id} {...data} />
-        ),
-    [],
+          <SelectorRowComponent
+            id={id}
+            level={level}
+            loadData={loadData}
+            permit={permit}
+            {...data}
+          />
+        )
+      },
+    [loadData, permit],
   )
 
   const renderedEntities = useMemo(
-    () => references.map(renderEntities()),
-    [references, renderEntities],
+    () => information?.map(renderEntities()),
+    [information, renderEntities],
+  )
+
+  const addFolder = useCallback(
+    () =>
+      setActionComponent({
+        Component: (props) => <CreateFolder {...props} />,
+      }),
+    [setActionComponent],
   )
 
   return (
     <LeafContainer>
-      <Tips text="Отчёты">
-        <ButtonForIcon className="bg-blue-1" onClick={onOpen}>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect x="1.5" y="1.5" width="3" height="13" rx="1" fill="white" />
-            <rect x="6.5" y="6.5" width="3" height="8" rx="1" fill="white" />
-            <rect x="11.5" y="8.5" width="3" height="6" rx="1" fill="white" />
-          </svg>
+      <Tips text="Справка">
+        <ButtonForIcon onClick={onOpen}>
+          <Icon size="22" icon={informationIcon} />
         </ButtonForIcon>
       </Tips>
       <StandardSizeModalWindow
@@ -116,7 +111,11 @@ const Reference = () => {
             {renderedEntities}
           </SetActionContext.Provider>
         </ScrollBar>
-        <OpenedTaskWindow />
+        {permit && (
+          <SecondaryBlueButton onClick={addFolder} className="w-48">
+            Добавить папку
+          </SecondaryBlueButton>
+        )}
         {ActionComponent && (
           <ActionComponent.Component
             open={true}
@@ -129,4 +128,4 @@ const Reference = () => {
   )
 }
 
-export default Reference
+export default Information

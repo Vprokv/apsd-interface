@@ -26,14 +26,13 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import Pagination from '@/Components/Pagination'
 import usePagination from '@Components/Logic/usePagination'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import useParseConfig from '@/Utils/Parser'
 import { searchParserStages } from '@/Pages/Search/Parser'
 import attributesAdapter from '@/Pages/Search/Parser/attributesAdapter'
 import buildSearchQuery from '@/Pages/Search/Utils/buildSearchRequest'
 import CreateWindow from '@/Pages/Settings/Components/Templates/Components/UserTemplate/Components/CreateWindow'
 import SearchTemplateWindowList from '@/Pages/Search/Pages/DocumentSearch/Components/SearchTemplateWindowList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 
 export const tableConfig = [
   {

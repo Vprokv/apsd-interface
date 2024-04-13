@@ -7,7 +7,11 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { URL_TASK_COMPLETE } from '@/ApiList'
 import { ApiContext, TASK_LIST } from '@/contants'
 import styled from 'styled-components'
-import { CurrentTabContext, TabStateManipulation } from '@Components/Logic/Tab'
+import {
+  CurrentTabContext,
+  setUnFetchedState,
+  TabStateManipulation,
+} from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useParams } from 'react-router-dom'
@@ -15,7 +19,6 @@ import { LoadTasks } from '@/Pages/Main/constants'
 
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
 import ScrollBar from '@Components/Components/ScrollBar'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { fields, rules } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 

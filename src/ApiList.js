@@ -215,6 +215,13 @@ export const URL_BASKET_RESTORE_DELETED = '/apsd/basket/delete'
 export const URL_BASKET_ADD = '/apsd/basket/add'
 export const URL_BASKET_DELETE_DOCUMENT = '/apsd/basket/deleteDocument'
 
+// REFERENCE
+export const URL_INFORMATION_LIST = '/apsd/information/structure/list'
+export const URL_INFORMATION_FOLDER_CREATE = '/apsd/information/folder/create'
+export const URL_INFORMATION_FILE_ADD = '/apsd/information/file/add'
+export const URL_INFORMATION_FOLDER_EDIT = '/apsd/information/folder/edit'
+export const URL_INFORMATION_DELETE = '/apsd/information/delete'
+
 // DEPUTY
 export const URL_DEPUTY_USERS_LIST = '/sedo/deputy/task/users'
 export const URL_DEPUTY_TASK_LIST = '/apsd/task/v2/deputy/list'

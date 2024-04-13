@@ -2,16 +2,13 @@ import { useCallback, useContext } from 'react'
 import { FormWindow } from '@/Components/ModalWindow'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import {
-  URL_APPROVAL_SHEET_APPROVER_DELETE,
-  URL_APPROVAL_SHEET_CREATE_ADDITIONAL_DELETE,
-} from '@/ApiList'
+import { URL_APPROVAL_SHEET_APPROVER_DELETE } from '@/ApiList'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import { updateTabChildrenStates } from '@/Utils/TabStateUpdaters'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'

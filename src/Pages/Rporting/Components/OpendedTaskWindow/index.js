@@ -8,12 +8,11 @@ import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import { ApiContext, REPORTING_STATE } from '@/contants'
 import BaseCell, {
   sizes as baseCellSize,
 } from '@/Components/ListTableComponents/BaseCell'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { URL_REPORTS_STATISTIC } from '@/ApiList'
 import Tips from '@/Components/Tips'
 import Icon from '@Components/Components/Icon'

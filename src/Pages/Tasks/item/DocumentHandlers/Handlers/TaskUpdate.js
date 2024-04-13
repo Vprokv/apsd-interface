@@ -1,5 +1,5 @@
 import { TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import SaveIcon from '@/Pages/Tasks/item/Icons/SaveIcon.svg'
 import DocumentUpdate from './DocumentUpdate'
 

@@ -33,20 +33,22 @@ import CheckBox from '../../../Components/Inputs/CheckBox'
 import { URL_EXPORT, URL_EXPORT_FILE, URL_TASK_LIST_V2 } from '@/ApiList'
 import { EmptyInputWrapper } from '@Components/Components/Forms'
 import { ApiContext, TASK_LIST, TokenContext } from '@/contants'
-import useTabItem from '../../../components_ocean/Logic/Tab/TabItem'
 import usePagination from '../../../components_ocean/Logic/usePagination'
 import { TabNames } from './constants'
 import ModifiedSortCellComponent from '../../../Components/ListTableComponents/ModifiedSortCellComponent'
 import { LoadableButtonForIcon } from '@/Components/Button'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import PropTypes from 'prop-types'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
 import Tips from '@/Components/Tips'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import { FilterForm } from '@/Pages/Tasks/list/styles'
 import AppointedExecutor from '@/Pages/Tasks/list/Components/AppointedExecutor'

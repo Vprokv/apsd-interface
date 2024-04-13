@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Form from '@Components/Components/Forms'
 import Validator from '@Components/Logic/Validator'
@@ -13,7 +13,7 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import ScrollBar from '@Components/Components/ScrollBar'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { rules, useFormFieldsConfig } from './configs/formConfig'

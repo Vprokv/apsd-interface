@@ -1,4 +1,5 @@
 import { useCallback, useContext, useState } from 'react'
+import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
 import Validator from '@Components/Logic/Validator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
@@ -10,7 +11,6 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { MiniModalWindow } from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteContain'
-import styled from 'styled-components'
 import ModalWindowWrapper from '@/Components/ModalWindow'
 import { rules, useFormFieldConfig } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'

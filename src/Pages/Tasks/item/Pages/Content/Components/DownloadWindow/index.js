@@ -21,9 +21,8 @@ import {
 } from '@/Components/Notificator'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import styled from 'styled-components'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { rules, useFormFieldsConfig } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 

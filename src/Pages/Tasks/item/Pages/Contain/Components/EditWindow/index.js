@@ -10,9 +10,8 @@ import {
 } from '@/Components/Notificator/constants'
 import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import PropTypes from 'prop-types'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import { fields, rules } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 

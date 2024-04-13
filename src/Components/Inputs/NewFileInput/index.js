@@ -28,8 +28,8 @@ const NewFileInput = (props) => {
   return (
     <FileInputComponent
       uploadFunction={uploadFunction}
-      {...props}
       inputComponent={BaseFileInputComponent}
+      {...props}
     />
   )
 }

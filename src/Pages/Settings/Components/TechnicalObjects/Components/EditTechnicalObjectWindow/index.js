@@ -16,8 +16,7 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import { rules, useGetFieldFormConfig } from './configs/formConfig'
 import { WithValidationStateInputWrapper } from '@/Components/Forms/ValidationStateUi/WithValidationStateInputWrapper'
 
@@ -38,7 +37,7 @@ const EditTechnicalObjectWindow = ({ onClose, selected, ...props }) => {
   const getNotification = useOpenNotification()
   const { 1: setTabState } = useTabItem({ stateId: SETTINGS_TECHNICAL_OBJECTS })
 
-  const filterFormConfig = useGetFieldFormConfig(api())
+  const filterFormConfig = useGetFieldFormConfig(api)
 
   const onUpdate = useCallback(async () => {
     try {

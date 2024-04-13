@@ -1,21 +1,23 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, TASK_LIST_ARCHIVE, TokenContext } from '@/contants'
 import { useNavigate, useParams } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import { URL_EXPORT, URL_EXPORT_FILE, URL_STORAGE_DOCUMENT } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ListTable from '@Components/Components/Tables/ListTable'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import BaseCell from '@/Components/ListTableComponents/BaseCell'
 import usePagination from '@Components/Logic/usePagination'
 import Pagination from '@/Components/Pagination'
 import BaseSubCell from '@/Components/ListTableComponents/BaseSubCell'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import { LoadableButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'

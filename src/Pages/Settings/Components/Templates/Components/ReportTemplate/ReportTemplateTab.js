@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { ApiContext, REPORTING_STATE } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import {
   URL_CREATE_TEMPLATE,
@@ -8,7 +8,6 @@ import {
   URL_REPORTS_LIST,
 } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import ScrollBar from '@Components/Components/ScrollBar'
 import {
   SecondaryGreyButton,

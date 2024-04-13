@@ -10,7 +10,7 @@ import ContextMenu from '@Components/Components/ContextMenu'
 import styled from 'styled-components'
 import { URL_REMARK_DELETE } from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 import {
   NOTIFICATION_TYPE_SUCCESS,
