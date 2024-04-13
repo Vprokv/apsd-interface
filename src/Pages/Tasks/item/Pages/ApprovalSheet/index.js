@@ -6,11 +6,7 @@ import {
   URL_APPROVAL_SHEET,
   URL_BUSINESS_PERMIT,
 } from '@/ApiList'
-import {
-  useAutoReload,
-  useReadDataState,
-  useTabItem,
-} from '@Components/Logic/Tab'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import Icon from '@Components/Components/Icon'
 import Button, { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'

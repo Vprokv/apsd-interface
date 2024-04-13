@@ -20,11 +20,7 @@ import Form from '@Components/Components/Forms'
 import DefaultWrapper from '@/Components/Fields/DefaultWrapper'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
 import PropTypes from 'prop-types'
-import {
-  setUnFetchedState,
-  useReadDataState,
-  useTabItem,
-} from '@Components/Logic/Tab'
+import { setUnFetchedState, useReadDataState } from '@Components/Logic/Tab'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 
 export const ModalWindow = styled(ModalWindowWrapper)`
