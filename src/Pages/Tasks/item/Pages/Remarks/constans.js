@@ -4,6 +4,8 @@ export const OnSetRemarkActionContext = createContext(() => null)
 
 export const SetAnswerStateContext = createContext(() => null)
 
+export const onOpenModalComponent = createContext(() => undefined)
+
 export const ToggleContext = createContext({
   toggle: new Map(),
   onToggle: () => null,

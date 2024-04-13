@@ -17,6 +17,7 @@ import Icon from '@Components/Components/Icon'
 import CreateRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
 import {
   exportColumnConfig,
+  onOpenModalComponent,
   OnSetRemarkActionContext,
   SetAnswerStateContext,
   ToggleContext,
@@ -48,6 +49,7 @@ const defaultSortQuery = {
 const defaultFilter = { allStages: true, allIteration: true }
 
 const Remarks = () => {
+  const [ModalComponent, setModalComponent] = useState()
   const id = useContext(DocumentIdContext)
   const api = useContext(ApiContext)
   const [toggle, onToggle] = useState({})
@@ -196,65 +198,70 @@ const Remarks = () => {
   )
 
   return (
-    <SetAnswerStateContext.Provider value={setSelected}>
-      <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
-        <div className="flex items-center  py-4 justify-between">
-          <FilterForm
-            className="mr-2"
-            value={filter}
-            onInput={useCallback(
-              (filter) => setTabState({ filter }),
-              [setTabState],
-            )}
-            fields={fields}
-            inputWrapper={EmptyInputWrapper}
-          />
-          <div className="flex items-center ml-auto">
-            <CreateRemark tabPermit={tabPermit} />
-            <LoadableSecondaryBlueButton
-              className="ml-2"
-              onClick={onExportRemarks}
-            >
-              Выгрузить свод замечаний
-            </LoadableSecondaryBlueButton>
-            <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
-              <ButtonForIcon
-                onClick={ChangeAllToggls}
-                className="ml-2 color-text-secondary"
+    <onOpenModalComponent.Provider value={setModalComponent}>
+      <SetAnswerStateContext.Provider value={setSelected}>
+        <div className="px-4 pb-4 overflow-hidden  w-full flex-container">
+          <div className="flex items-center  py-4 justify-between">
+            <FilterForm
+              className="mr-2"
+              value={filter}
+              onInput={useCallback(
+                (filter) => setTabState({ filter }),
+                [setTabState],
+              )}
+              fields={fields}
+              inputWrapper={EmptyInputWrapper}
+            />
+            <div className="flex items-center ml-auto">
+              <CreateRemark tabPermit={tabPermit} />
+              <LoadableSecondaryBlueButton
+                className="ml-2"
+                onClick={onExportRemarks}
               >
-                <Icon icon={SortIcon} />
-              </ButtonForIcon>
-            </Tips>
-          </div>
-        </div>
-        {loading ? (
-          <Loading />
-        ) : (
-          <ScrollBar>
-            <div className="flex flex-col">
-              <OnSetRemarkActionContext.Provider value={onSetRemark}>
-                <ToggleContext.Provider value={{ toggle, onToggle }}>
-                  {stages.map((val) => (
-                    <WithToggle key={val.stageName} id={val.stageName}>
-                      {({ isDisplayed, toggleDisplayedFlag }) => {
-                        return (
-                          <IterationComponent
-                            isDisplayed={isDisplayed}
-                            toggleDisplayedFlag={toggleDisplayedFlag}
-                            {...val}
-                          />
-                        )
-                      }}
-                    </WithToggle>
-                  ))}
-                </ToggleContext.Provider>
-              </OnSetRemarkActionContext.Provider>
+                Выгрузить свод замечаний
+              </LoadableSecondaryBlueButton>
+              <Tips text={!open ? 'Свернуть все' : 'Развернуть все'}>
+                <ButtonForIcon
+                  onClick={ChangeAllToggls}
+                  className="ml-2 color-text-secondary"
+                >
+                  <Icon icon={SortIcon} />
+                </ButtonForIcon>
+              </Tips>
             </div>
-          </ScrollBar>
-        )}
-        <CreateAnswer {...selected} setSelected={setSelected} />
-      </div>
-    </SetAnswerStateContext.Provider>
+          </div>
+          {loading ? (
+            <Loading />
+          ) : (
+            <ScrollBar>
+              <div className="flex flex-col">
+                <OnSetRemarkActionContext.Provider value={onSetRemark}>
+                  <ToggleContext.Provider value={{ toggle, onToggle }}>
+                    {stages.map((val) => (
+                      <WithToggle key={val.stageName} id={val.stageName}>
+                        {({ isDisplayed, toggleDisplayedFlag }) => {
+                          return (
+                            <IterationComponent
+                              isDisplayed={isDisplayed}
+                              toggleDisplayedFlag={toggleDisplayedFlag}
+                              {...val}
+                            />
+                          )
+                        }}
+                      </WithToggle>
+                    ))}
+                  </ToggleContext.Provider>
+                </OnSetRemarkActionContext.Provider>
+              </div>
+            </ScrollBar>
+          )}
+          <CreateAnswer {...selected} setSelected={setSelected} />
+          {ModalComponent && (
+            <ModalComponent onClose={() => setModalComponent()} />
+          )}
+        </div>
+      </SetAnswerStateContext.Provider>
+    </onOpenModalComponent.Provider>
   )
 }
 

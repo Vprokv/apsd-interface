@@ -76,9 +76,9 @@ const EditRemark = ({
         })),
         ...other,
       })
-      setTabState(setUnFetchedState())
       getNotification(customMessagesFuncMap[status]())
       onClose()
+      setTabState(setUnFetchedState())
     } catch (e) {
       const { response: { status, data } = {} } = e
       getNotification(customMessagesFuncMap[status](data))
@@ -90,39 +90,35 @@ const EditRemark = ({
       title="Откорректировать замечание"
       open={open}
       onClose={onClose}
-      index={1005}
     >
-      <div className="flex flex-col overflow-hidden h-full">
-        <div className="flex flex-col py-4 h-full">
-          <ScrollBar>
-            <Validator
-              rules={rules}
-              onSubmit={onSave}
-              value={filter}
-              validationState={validationState}
-              setValidationState={useCallback(
-                (s) =>
-                  setValidationState((prevState) => ({ ...prevState, ...s })),
-                [],
-              )}
-            >
-              {({ onSubmit }) => (
+      <div className="flex flex-col overflow-hidden h-full py-4 flex-auto">
+        <Validator
+          rules={rules}
+          onSubmit={onSave}
+          value={filter}
+          validationState={validationState}
+          setValidationState={useCallback(
+            (s) => setValidationState((prevState) => ({ ...prevState, ...s })),
+            [],
+          )}
+        >
+          {({ onSubmit }) => (
+            <>
+              <ScrollBar className="h-full">
                 <Form
-                  className="form-element-sizes-40 grid"
+                  className="form-element-sizes-40 h-full mb-10"
                   value={filter}
                   onInput={setFilterValue}
                   fields={fields}
-                  onSubmit={onSubmit}
                   inputWrapper={WithValidationStateInputWrapper}
-                >
-                  <div className="mt-10">
-                    <UnderButtons leftFunc={onClose} />
-                  </div>
-                </Form>
-              )}
-            </Validator>
-          </ScrollBar>
-        </div>
+                />
+              </ScrollBar>
+              <div className="mt-auto">
+                <UnderButtons leftFunc={onClose} rightFunc={onSubmit} />
+              </div>
+            </>
+          )}
+        </Validator>
       </div>
     </StandardSizeModalWindow>
   )

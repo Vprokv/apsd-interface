@@ -29,7 +29,7 @@ const ScrollBar = styled(SimpleBar)`
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;
   min-height: 60.65%;
-  //max-height: 80vh;
+  max-height: 72.65%;
   margin: auto;
 `
 
@@ -115,6 +115,7 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
 
   const changeModalState = useCallback(
     (nextState) => () => {
+      setValidationState({})
       setOpenState(nextState)
     },
     [],
@@ -169,45 +170,43 @@ const CreateRemark = ({ tabPermit: { createRemark, editAuthor } = {} }) => {
         open={open}
         onClose={onClose}
       >
-        <div className="flex flex-col overflow-hidden h-full">
-          <div className="flex flex-col py-4 h-full grow">
-            <ScrollBar className="grow">
-              <Validator
-                rules={rules}
-                value={filter}
-                onSubmit={onSave}
-                validationState={validationState}
-                setValidationState={useCallback(
-                  (s) =>
-                    setValidationState((prevState) => ({ ...prevState, ...s })),
-                  [],
-                )}
-              >
-                {({ onSubmit }) => (
-                  <>
-                    <Form
-                      className="form-element-sizes-40"
-                      value={filter}
-                      onInput={setFilterValue}
-                      fields={fields}
-                      inputWrapper={WithValidationStateInputWrapper}
-                    />
-                    <div className="mt-10">
-                      <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
-                        Скачать шаблон таблицы
-                      </SecondaryBlueButton>
-                      <div className="flex items-center">
-                        <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
-                          Импорт значений
-                        </SecondaryBlueButton>
-                        <UnderButtons leftFunc={onClose} rightFunc={onSubmit} />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </Validator>
-            </ScrollBar>
-          </div>
+        <div className="flex flex-col overflow-hidden h-full py-4 flex-auto">
+          <Validator
+            rules={rules}
+            value={filter}
+            onSubmit={onSave}
+            validationState={validationState}
+            setValidationState={useCallback(
+              (s) =>
+                setValidationState((prevState) => ({ ...prevState, ...s })),
+              [],
+            )}
+          >
+            {({ onSubmit }) => (
+              <>
+                <ScrollBar className="grow h-full">
+                  <Form
+                    className="form-element-sizes-40 h-full mb-10"
+                    value={filter}
+                    onInput={setFilterValue}
+                    fields={fields}
+                    inputWrapper={WithValidationStateInputWrapper}
+                  />
+                </ScrollBar>
+                <div className="mt-auto">
+                  <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-64 mb-2">
+                    Скачать шаблон таблицы
+                  </SecondaryBlueButton>
+                  <div className="flex items-center">
+                    <SecondaryBlueButton className="ml-4 form-element-sizes-32 w-48 mr-auto">
+                      Импорт значений
+                    </SecondaryBlueButton>
+                    <UnderButtons leftFunc={onClose} rightFunc={onSubmit} />
+                  </div>
+                </div>
+              </>
+            )}
+          </Validator>
         </div>
       </StandardSizeModalWindow>
     </div>

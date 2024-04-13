@@ -19,6 +19,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
 import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { onOpenModalComponent } from '../../constans'
 
 export const ThreeDotButton = styled.button`
   height: 20px;
@@ -47,20 +48,13 @@ const MoreActionComponent = (props) => {
   } = props
   const api = useContext(ApiContext)
   const [open, setOpen] = useState(false)
-  const [openEditWindow, setOpenEditWindow] = useState(false)
   const [target, setTarget] = useState({})
   const getNotification = useOpenNotification()
+  const openModalComponent = useContext(onOpenModalComponent)
 
   const { 1: setTabState } = useTabItem({
     stateId: TASK_ITEM_REMARKS,
   })
-
-  const changeModalState = useCallback(
-    (nextState) => () => {
-      setOpenEditWindow(nextState)
-    },
-    [],
-  )
 
   const openContextMenu = useCallback((event) => {
     setTarget(event.target)
@@ -89,6 +83,12 @@ const MoreActionComponent = (props) => {
     },
     [api, getNotification, remarkId, setTabState],
   )
+  const openEditRemarkWindow = useCallback(() => {
+    openModalComponent(() => ({ onClose }) => (
+      <EditRemark open={true} onClose={onClose} disabled={edit} {...props} />
+    ))
+    // openModalComponent()
+  }, [edit, openModalComponent, props])
 
   return (
     <div className="flex items-center w-full justify-start">
@@ -109,7 +109,7 @@ const MoreActionComponent = (props) => {
         <ContextMenu width={200} target={target} onClose={closeContextMenu}>
           <StyledContextMenu className="bg-white rounded w-full px-4 pt-4 ">
             <StyledItem
-              onClick={changeModalState(true)}
+              onClick={openEditRemarkWindow}
               disabled={!edit}
               className="mb-3 font-size-12"
             >
@@ -134,12 +134,6 @@ const MoreActionComponent = (props) => {
           </StyledContextMenu>
         </ContextMenu>
       )}
-      <EditRemark
-        open={openEditWindow}
-        onClose={changeModalState(false)}
-        disabled={edit}
-        {...props}
-      />
     </div>
   )
 }
