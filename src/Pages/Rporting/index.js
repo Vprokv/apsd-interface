@@ -77,16 +77,15 @@ const Reporting = () => {
     }
   }, [api, id, setFilter, getNotification])
 
-  const [
-    { data: { name, parameters = [], id: reportId, dss_def_format } = {} },
-  ] = useAutoReload(loadData, tabState, setTabState)
+  const [{ data: { name, parameters, id: reportId, dss_def_format } = {} }] =
+    useAutoReload(loadData, tabState, setTabState)
 
   useSetTabName(useCallback(() => name, [name]))
 
   const { rules, ...formProps } = useParseConfig({
     value: filter,
     fieldsDesign: useMemo(
-      () => parameters.map(attrubutesAdapter),
+      () => (parameters || []).map(attrubutesAdapter),
       [parameters],
     ),
     stages: reportParserStages,

@@ -128,9 +128,7 @@ export const NewTaskItem = ({ classificationId, type }) => {
     () => ({
       save: {
         handler: async () => {
-          if (
-            Object.keys(validationState?.errors)?.every((v) => v.length === 0)
-          ) {
+          if (!validationState?.formValid) {
             return setDocumentState({
               validationState: {
                 submitFailed: true,

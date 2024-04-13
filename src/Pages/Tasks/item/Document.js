@@ -162,7 +162,7 @@ const Document = () => {
   }, [values])
 
   const {
-    documentState: { validationErrors },
+    documentState: { validationState },
   } = useRequisitesInfo({
     TASK_ITEM_NEW_DOCUMENT,
     permits: [],
@@ -177,11 +177,13 @@ const Document = () => {
     () => ({
       save: {
         handler: async () => {
-          if (Object.keys(validationErrors)?.length) {
+          if (!validationState?.formValid) {
             return setTabState({
-              submitFailed: true,
-              hasSubmitted: true,
-              validationErrors,
+              validationState: {
+                submitFailed: true,
+                hasSubmitted: true,
+                ...validationState,
+              },
             })
           }
 
@@ -412,7 +414,7 @@ const Document = () => {
       type,
       updateCurrentTabChildrenStates,
       updateTabStateUpdaterByName,
-      validationErrors,
+      validationState?.errors,
     ],
   )
 

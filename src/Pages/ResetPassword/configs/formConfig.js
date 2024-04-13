@@ -42,9 +42,9 @@ export const rules = {
     },
   ],
   confirmation_password: [
-    { validatorObject: same },
+    { validatorObject: required },
     {
-      validatorObject: required,
+      validatorObject: same,
       args: { fieldKey: 'new_password', fieldKeyLabel: 'пароль' },
     },
   ],

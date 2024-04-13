@@ -1,6 +1,11 @@
 import { useMemo } from 'react'
 // парсер, работает с полями, values требуются для рантаймовых пропсов формы, stages - плагины для подготовки полей
-const useParseConfig = ({ value = {}, stages, fieldsDesign = [] }) => {
+const defaultFieldDesign = []
+const useParseConfig = ({
+  value = {},
+  stages,
+  fieldsDesign = defaultFieldDesign,
+}) => {
   const { fields, formProps, formPropsHooks } = useMemo(() => {
     const initStageState = {
       fields: new Map(), // поля в формате мап, для удобной работы в рантайме

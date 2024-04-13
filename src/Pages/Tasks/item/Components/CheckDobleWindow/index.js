@@ -72,7 +72,7 @@ const CheckDoubleWindow = ({
           backendValidationErrors: responseError
             .split(',')
             .reduce((acc, key) => {
-              acc[key.trim()] = 'Поле заполненно неверно'
+              acc[key.trim()] = 'Поле заполнено неверно'
               return acc
             }, {}),
         })
@@ -100,11 +100,8 @@ const CheckDoubleWindow = ({
       <div className="flex flex-col overflow-hidden h-full w-full">
         <ScrollBar className="w-full">
           <div>В Системе существуют документы с заданными реквизитами:</div>
-          {data.map(({ titleCode, sapCode, titleName }) => (
-            <div
-              key={titleCode}
-              className="mt-2  mb-4 flex flex-col font-size-12"
-            >
+          {data.map(({ titleCode, sapCode, titleName }, i) => (
+            <div key={i} className="mt-2  mb-4 flex flex-col font-size-12">
               <div className="color-blue-1">{`Код Sap: ${sapCode}`}</div>
               <div className="color-text-secondary">{`Код титула: ${titleCode}`}</div>
               <div className="color-blue-1">{`Наименование: ${titleName}`}</div>
