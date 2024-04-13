@@ -22,13 +22,17 @@ import ModifiedSortCellComponent from '@/Components/ListTableComponents/Modified
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useReadDataState,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import { ButtonForIcon, LoadableButtonForIcon } from '@/Components/Button'
 import Icon from '@Components/Components/Icon'
 import XlsIcon from '@/Icons/XlsIcon'
 import SortIcon from './Icons/SortIcon'
 import { EmptyInputWrapper } from '@Components/Components/Forms/index'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { useParams } from 'react-router-dom'
 import CreateTitleDepartment from './Components/CreateTitleDepartment'
 import LeafTableComponent from './Components/LeafTableComponent'
@@ -42,7 +46,6 @@ import DeleteContain from '@/Pages/Tasks/item/Pages/Contain/Components/DeleteCon
 import ViewIcon from '@/Icons/ViewIcon'
 import PreviewContentWindow from '@/Components/PreviewContentWindow/index'
 import RowComponent from '@/Pages/Tasks/item/Pages/Contain/Components/RowComponent'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -55,7 +58,6 @@ import EditLink from '@/Pages/Tasks/item/Pages/Contain/Components/EditWindow'
 import ReloadIcon from '@/Icons/ReloadIcon'
 import { API_URL } from '@/api'
 import downloadFileWithReload from '@/Utils/DownloadFileWithReload'
-import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import { columns } from './configs'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
@@ -89,13 +91,9 @@ const Contain = () => {
   const getNotification = useOpenNotification()
   const { token } = useContext(TokenContext)
 
-  const [documentState, setDocumentState] = useTabItem({
-    stateId: ITEM_DOCUMENT,
-  })
-
   const [
     { data: { values: { dss_code = '', dss_description = '' } = {} } = {} },
-  ] = useReadDataState(documentState, setDocumentState)
+  ] = useReadDataState(ITEM_DOCUMENT)
 
   const [
     { defaultOpen, treePluginState, sortQuery, filter, ...tabState },

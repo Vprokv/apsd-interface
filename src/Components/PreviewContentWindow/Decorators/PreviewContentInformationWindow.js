@@ -23,7 +23,7 @@ const PreviewContentInformationWindow = (Component) => {
     const getContent = useCallback(async () => {
       try {
         return await api.get(
-          `${URL_DOWNLOAD_GET_FILE}/ddt_information:${id}:${token}:dsc_content`,
+          `${API_URL}${URL_DOWNLOAD_GET_FILE}ddt_information:${id}:${token}:dsc_content`,
           {
             responseType: 'blob',
           },
@@ -37,7 +37,7 @@ const PreviewContentInformationWindow = (Component) => {
     const onDownLoad = useCallback(
       () =>
         window.open(
-          `${API_URL}/${URL_DOWNLOAD_GET_FILE}/ddt_information:${id}:${token}:dsc_content`,
+          `${API_URL}${URL_DOWNLOAD_GET_FILE}ddt_information:${id}:${token}:dsc_content`,
         ),
       [id, token],
     )

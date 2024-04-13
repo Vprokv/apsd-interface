@@ -28,7 +28,7 @@ import {
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import useUpdateCurrentTabChildrenStates from '@/Utils/TabStateUpdaters/useUpdateTabChildrenStates'
 import Loading from '@/Components/Loading'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 
 const customMessagesSendFuncMap = {
   ...defaultFunctionsMap,

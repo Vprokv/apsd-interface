@@ -1,5 +1,4 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import CheckBox from '@/Components/Inputs/CheckBox'
@@ -12,12 +11,10 @@ import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
-  SEARCH_PAGE,
   SETTINGS_TEMPLATES,
 } from '@/contants'
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -25,7 +22,6 @@ import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { URL_TEMPLATE_LIST } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
@@ -39,6 +35,7 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 
 const plugins = {
   outerSortPlugin: {

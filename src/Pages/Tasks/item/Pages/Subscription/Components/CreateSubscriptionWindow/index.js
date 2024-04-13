@@ -13,12 +13,15 @@ import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import { useRecoilValue } from 'recoil'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import { URL_SUBSCRIPTION_CREATE, URL_SUBSCRIPTION_EVENTS } from '@/ApiList'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  setUnFetchedState,
+  useAutoReload,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import {
   ApiContext,
   PRESENT_DATE_FORMAT,
   TASK_ITEM_SUBSCRIPTION,
-  TASK_LIST,
   WINDOW_ADD_SUBSCRIPTION,
 } from '@/contants'
 import dayjs from 'dayjs'
@@ -32,7 +35,6 @@ import { EmailContext, SedoContext } from './constans'
 import SendSystem from './Components/CheckBox/SendSystem'
 import SendEmail from './Components/CheckBox/SendEmail'
 import PropTypes from 'prop-types'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
@@ -42,7 +44,6 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import UseTabStateUpdaterByName from '@/Utils/TabStateUpdaters/useTabStateUpdaterByName'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import { useParams } from 'react-router-dom'
 
 const plugins = {

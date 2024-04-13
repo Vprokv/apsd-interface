@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { SecondaryBlueButton } from '@/Components/Button'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
@@ -8,8 +8,6 @@ import UnderButtons from '@/Components/Inputs/UnderButtons'
 import { AutoLoadableSelect } from '@/Components/Inputs/Select'
 import LinkNdt from '@/Pages/Tasks/item/Pages/Remarks/Components/LinkNdt'
 import { URL_ENTITY_LIST, URL_REMARK_ANSWER } from '@/ApiList'
-import { useRecoilValue } from 'recoil'
-import { userAtom } from '@Components/Logic/UseTokenAndUserStorage'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { CustomInput } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark/styles'
 import {
@@ -25,12 +23,11 @@ import {
 import { useOpenNotification } from '@/Components/Notificator'
 import { returnChildren } from '@Components/Components/Forms'
 import { NdtLinkWrapper } from '@/Pages/Tasks/item/Pages/Remarks/Components/CreateRemark'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 import { Validation } from '@Components/Logic/Validator'
 import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import ScrollBar from '@Components/Components/ScrollBar'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const rules = {
   solutionId: [{ name: VALIDATION_RULE_REQUIRED }],

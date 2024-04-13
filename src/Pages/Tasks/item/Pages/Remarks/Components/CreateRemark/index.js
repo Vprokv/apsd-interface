@@ -28,11 +28,10 @@ import {
   RowInputWrapperRefactor,
   ValidationProvider,
 } from '@/Components/InputWrapperRefactor'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import { remarkValidator } from '@/Pages/Tasks/item/Pages/Remarks/constans'
 import RemarkWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/RemarkWrapper'
 import { Validation } from '@Components/Logic/Validator'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const ScrollBar = styled(SimpleBar)`
   min-height: 400px;

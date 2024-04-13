@@ -40,9 +40,9 @@ const FolderComponent = ({ name, id, parentId, level, loadData, permit }) => {
   const addFolder = useCallback(
     () =>
       setActionComponent({
-        Component: (props) => <CreateFolder {...props} parentId={parentId} />,
+        Component: (props) => <CreateFolder {...props} parentId={id} />,
       }),
-    [parentId, setActionComponent],
+    [id, setActionComponent],
   )
 
   const EditFolder = useCallback(
@@ -91,7 +91,7 @@ const FolderComponent = ({ name, id, parentId, level, loadData, permit }) => {
       subRow={level}
       className={'flex flex-col w-full  border-b-2'}
     >
-      <button type="button" className="flex h-full items-center min-h-12 py-2">
+      <button type="button" className="flex h-full items-center min-h-10 py-2">
         <span>{name}</span>
         {permit && (
           <ContHover>

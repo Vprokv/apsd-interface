@@ -20,10 +20,9 @@ import {
   useOpenNotification,
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import Tips from '@/Components/Tips'
 import PropTypes from 'prop-types'
-import SetUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
 import ModalWindow from '@/Components/ModalWindow'
@@ -159,7 +158,7 @@ const EditLinksWindow = ({ value }) => {
       getNotification(customMessagesFuncMap[status]())
 
       changeModalState(false)()
-      setTabState(SetUnFetchedState())
+      setTabState(setUnFetchedState())
     } catch (e) {
       const { response: { status = 0, data = '' } = {} } = e
 

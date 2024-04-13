@@ -1,21 +1,18 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import {
-  ApiContext,
-  BASKET,
-  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  TASK_LIST,
-} from '@/contants'
-import { TabStateManipulation } from '@Components/Logic/Tab'
+import { ApiContext, BASKET, DATE_FORMAT_DD_MM_YYYY_HH_mm_ss } from '@/contants'
 import { useLocation } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import usePagination from '@Components/Logic/usePagination'
 import {
   URL_BASKET_DELETED,
   URL_BASKET_LIST,
   URL_BASKET_RESTORE_DELETED,
 } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
 import {
   DELETED_1,
   DELETED_3,

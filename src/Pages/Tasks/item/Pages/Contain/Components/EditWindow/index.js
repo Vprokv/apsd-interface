@@ -13,9 +13,8 @@ import { ApiContext, TASK_ITEM_STRUCTURE } from '@/contants'
 import { useOpenNotification } from '@/Components/Notificator'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import CheckBox from '@/Components/Inputs/CheckBox'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import PropTypes from 'prop-types'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,

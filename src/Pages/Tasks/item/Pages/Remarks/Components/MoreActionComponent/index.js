@@ -10,7 +10,7 @@ import ContextMenu from '@Components/Components/ContextMenu'
 import styled from 'styled-components'
 import { URL_REMARK_DELETE } from '@/ApiList'
 import { ApiContext, TASK_ITEM_REMARKS } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import EditRemark from '@/Pages/Tasks/item/Pages/Remarks/Components/EditRemark'
 import {
   NOTIFICATION_TYPE_SUCCESS,
@@ -18,7 +18,6 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import PropTypes from 'prop-types'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 export const ThreeDotButton = styled.button`
   height: 20px;

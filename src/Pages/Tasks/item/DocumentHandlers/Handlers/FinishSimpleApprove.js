@@ -1,6 +1,6 @@
 import { URL_TASK_COMPLETE } from '@/ApiList'
-import { TASK_ITEM_APPROVAL_SHEET, TASK_LIST } from '@/contants'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { TASK_LIST } from '@/contants'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import AboutRemarkWindow from '@/Pages/Tasks/item/Components/AboutRemarkWindow'
 import { defaultTaskIcon } from '@/Pages/Tasks/item/constants'
 import DefaultIcon from '@/Pages/Tasks/item/Icons/DefaultIcon.svg'

@@ -21,14 +21,11 @@ import {
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
 import ListTable from '@Components/Components/Tables/ListTable'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { FilterForm, SearchInput } from '@/Pages/Tasks/list/styles'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import CheckBox from '@/Components/Inputs/CheckBox'
 import Icon from '@Components/Components/Icon'
 import { useOpenNotification } from '@/Components/Notificator'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import usePagination from '@Components/Logic/usePagination'
 import FilterWindowWrapper from '@/Pages/Tasks/item/Components/FilterWindow'
 import ColumnController from '@/Components/ListTableComponents/ColumnController'
@@ -42,7 +39,12 @@ import ModifiedSortCellComponent from '@/Components/ListTableComponents/Modified
 import { FlatSelect } from '@Components/Components/Tables/Plugins/selectable'
 import Header from '@Components/Components/Tables/ListTable/header'
 import { useBackendColumnSettingsState } from '@Components/Components/Tables/Plugins/MovePlugin/driver/useBackendCoumnSettingsState'
-import useSetTabName from '@Components/Logic/Tab/useSetTabName'
+import {
+  TabStateManipulation,
+  useAutoReload,
+  useSetTabName,
+  useTabItem,
+} from '@Components/Logic/Tab'
 import searchIcon from '@/Icons/searchIcon'
 import { Select } from '@/Components/Inputs/Select'
 import TypeLabelComponent from '@/Pages/Tasks/viewed/Components/DocumentTypeLabel'

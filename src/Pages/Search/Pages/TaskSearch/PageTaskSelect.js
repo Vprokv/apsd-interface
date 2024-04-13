@@ -1,7 +1,6 @@
 import { useCallback, useContext, useMemo } from 'react'
-import { TabStateManipulation } from '@Components/Logic/Tab'
 import { useNavigate } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { TabStateManipulation, useTabItem } from '@Components/Logic/Tab'
 import { SEARCH_PAGE } from '@/contants'
 import RowComponent from '@/Pages/Tasks/list/Components/RowComponent'
 import ScrollBar from '@Components/Components/ScrollBar'

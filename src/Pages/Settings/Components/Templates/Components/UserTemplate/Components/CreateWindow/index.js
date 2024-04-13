@@ -6,7 +6,7 @@ import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import Input from '@/Components/Fields/Input'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import ModalWindowWrapper from '@/Components/ModalWindow'
-import { URL_CREATE_TEMPLATE, URL_REPORTS_BRANCH } from '@/ApiList'
+import { URL_REPORTS_BRANCH } from '@/ApiList'
 import { ApiContext, SETTINGS_TEMPLATES } from '@/contants'
 import UserSelect from '@/Components/Inputs/UserSelect'
 import {
@@ -15,8 +15,7 @@ import {
 } from '@/Components/Notificator'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import styled from 'styled-components'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 const customMessagesFuncMap = {
   ...defaultFunctionsMap,

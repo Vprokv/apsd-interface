@@ -4,9 +4,6 @@ import InputComponent from '@Components/Components/Inputs/Input'
 import {
   ApiContext,
   DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-  DEFAULT_DATE_FORMAT,
-  ITEM_TASK,
-  PRESENT_DATE_FORMAT,
   TASK_ITEM_APPROVAL_SHEET,
 } from '@/contants'
 import {
@@ -15,7 +12,7 @@ import {
 } from '@/ApiList'
 import { DocumentIdContext } from '@/Pages/Tasks/item/constants'
 import { useParams } from 'react-router-dom'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState } from '@Components/Logic/Tab'
 import {
   NOTIFICATION_TYPE_SUCCESS,
   useOpenNotification,
@@ -27,12 +24,8 @@ import ScrollBar from '@Components/Components/ScrollBar'
 
 import styled from 'styled-components'
 import ModalWindowWrapper from '../../../../../Components/ModalWindow'
-import useReadDataState from '@Components/Logic/Tab/useReadDataState'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 import AdditionalAgreementOrgStructureComponent from '@/Components/Inputs/OrgStructure/AdditionalAgreementOrgStructureComponent'
 import {
-  VALIDATION_RULE_DATE_AFTER_OR_EQUAL,
-  VALIDATION_RULE_DATE_BEFORE_OR_EQUAL,
   VALIDATION_RULE_REQUIRED,
 } from '@Components/Logic/Validator/constants'
 import { Validation } from '@Components/Logic/Validator'
@@ -83,9 +76,6 @@ const CreatingAdditionalAgreementWindow = ({ onClose, data }) => {
     dueDateRules,
     initialValue,
   } = useAdditionalAgreementSettings({ dueDate })
-
-  console.log(initialValue, 'initialValue')
-  console.log(dueDate, 'dueDate')
 
   const [values, setValues] = useState({ dueDate: initialValue })
 

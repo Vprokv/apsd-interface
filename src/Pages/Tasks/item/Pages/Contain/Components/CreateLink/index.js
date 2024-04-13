@@ -15,9 +15,8 @@ import {
   NOTIFICATION_TYPE_SUCCESS,
 } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 import PropTypes from 'prop-types'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
 
 const StandardSizeModalWindow = styled(ModalWindowWrapper)`
   width: 61.6%;

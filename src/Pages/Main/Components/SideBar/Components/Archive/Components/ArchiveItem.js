@@ -18,7 +18,6 @@ import { ContextArchiveLoading } from '@/Pages/Main/Components/SideBar/Component
 import {
   ItemContainer,
   MarginContainer,
-  ShadowContainer,
   StyledRowContainer,
 } from '@/Pages/Main/Components/SideBar/Components/Archive/Components/styles'
 

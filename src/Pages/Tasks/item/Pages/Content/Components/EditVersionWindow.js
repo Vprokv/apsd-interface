@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import PropTypes from 'prop-types'
 import InputComponent from '@Components/Components/Inputs/Input'
@@ -15,12 +15,10 @@ import ScrollBar from '@Components/Components/ScrollBar'
 import InputWrapper from '@/Pages/Tasks/item/Pages/Remarks/Components/InputWrapper'
 import { VALIDATION_RULE_REQUIRED } from '@Components/Logic/Validator/constants'
 import UnderButtons from '@/Components/Inputs/UnderButtons'
-import useTabItem from '@Components/Logic/Tab/TabItem'
-import setUnFetchedState from '@Components/Logic/Tab/setUnFetchedState'
+import { setUnFetchedState, useTabItem } from '@Components/Logic/Tab'
 
 const rules = {
   versionDate: [{ name: VALIDATION_RULE_REQUIRED }],
-  // regNumber: [{ name: VALIDATION_RULE_REQUIRED }],
   author: [{ name: VALIDATION_RULE_REQUIRED }],
   contentTypeId: [{ name: VALIDATION_RULE_REQUIRED }],
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import {
   ContHover,
   LeafContainer,
@@ -69,7 +69,7 @@ const DocumentComponent = ({
     >
       <button
         type="button"
-        className="flex items-center w-full h-full min-h-12 py-2"
+        className="flex items-center w-full h-full min-h-10 py-2"
         onDoubleClick={onPreviewComponent}
       >
         <div className="flex items-center">

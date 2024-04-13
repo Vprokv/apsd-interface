@@ -1,13 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ApiContext, TASK_ITEM_APPROVAL_SHEET } from '@/contants'
-import useTabItem from '@Components/Logic/Tab/TabItem'
 import {
   URL_ADDITIONAL_AGREEMENT_STAGE_MOVE,
   URL_APPROVAL_SHEET,
   URL_BUSINESS_PERMIT,
 } from '@/ApiList'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import Icon from '@Components/Components/Icon'
 import Button, { ButtonForIcon } from '@/Components/Button'
 import OtherIcon from './Components/icons/Other'
@@ -28,7 +27,6 @@ import { defaultFunctionsMap } from '@/Components/Notificator/constants'
 import { useOpenNotification } from '@/Components/Notificator'
 import PropTypes from 'prop-types'
 import Loading from '../../../../../Components/Loading'
-import useReadDataState from '@Components/Logic/Tab/useReadDataState'
 import { LevelStageWrapper } from './styles'
 import CheckBox from '@/Components/Inputs/CheckBox'
 
@@ -100,8 +98,6 @@ const ApprovalSheet = () => {
 
   const [{ data = [], loading, reloadData, shouldReloadData }, updateData] =
     useAutoReload(loadData, tabState, setTabState)
-
-  const [{ data: pageData }] = useReadDataState(tabState, setTabState)
 
   useEffect(() => {
     // заставляем перезагрузить данные на первом рендере, в случаее если ранее данные для этой вкладки

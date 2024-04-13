@@ -51,10 +51,10 @@ const FolderWithChildrenComponent = ({
 
   const addFolder = useCallback(() => {
     setActionComponent({
-      Component: (props) => <CreateFolder {...props} parentId={parentId} />,
+      Component: (props) => <CreateFolder {...props} parentId={id} />,
     })
     closeContextMenu()
-  }, [closeContextMenu, parentId, setActionComponent])
+  }, [closeContextMenu, id, setActionComponent])
 
   const EditFolder = useCallback(() => {
     setActionComponent({
@@ -102,7 +102,7 @@ const FolderWithChildrenComponent = ({
         <div className="flex items-center">
           <button
             type="button"
-            className="flex items-center min-h-12 py-2 "
+            className="flex items-center min-h-10 py-2 "
             onClick={toggleDisplayedFlag}
           >
             <Icon

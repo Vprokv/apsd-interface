@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useState } from 'react'
-import PropTypes from 'prop-types'
 import { StandardSizeModalWindow } from '@/Components/ModalWindow'
 import ModifiedSortCellComponent from '@/Components/ListTableComponents/ModifiedSortCellComponent'
 import { SingleSelect } from '@Components/Components/Tables/Plugins/selectable'
@@ -13,13 +12,12 @@ import {
   ApiContext,
   DEFAULT_DATE_FORMAT,
   PRESENT_DATE_FORMAT,
-  SEARCH_PAGE,
   SETTINGS_TEMPLATES,
   TASK_LIST,
 } from '@/contants'
 import styled from 'styled-components'
 import Form from '@Components/Components/Forms'
-import useTabItem from '@Components/Logic/Tab/TabItem'
+import { useAutoReload, useTabItem } from '@Components/Logic/Tab'
 import { useOpenNotification } from '@/Components/Notificator'
 import usePagination from '@Components/Logic/usePagination'
 import { SearchInput } from '@/Pages/Tasks/list/styles'
@@ -27,7 +25,6 @@ import Icon from '@Components/Components/Icon'
 import searchIcon from '@/Icons/searchIcon'
 import { URL_TEMPLATE_LIST } from '@/ApiList'
 import { defaultFunctionsMap } from '@/Components/Notificator/constants'
-import useAutoReload from '@Components/Logic/Tab/useAutoReload'
 import { emptyWrapper } from '@/Pages/Tasks/item/Pages/Objects/Components/CreateObjectsWindow'
 import ListTable from '@Components/Components/Tables/ListTable'
 import HeaderCell from '@/Components/ListTableComponents/HeaderCell'
