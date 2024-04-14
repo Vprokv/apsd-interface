@@ -37,7 +37,6 @@ export const Requisites = ({ permits }) => {
     setDocumentState,
   })
 
-  console.log(valuesCustom, 'valuesCustom')
   return (
     <ScrollBar className="w-full">
       <CustomValuesContext.Provider value={valuesCustom}>
