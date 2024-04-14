@@ -52,7 +52,7 @@ export const useDefaultFormFieldsConfig = (
         label: 'Укажите плановую дату доп. согласования',
         id: 'dueDate',
         dateFormat,
-        component: (props) => <DatePicker {...props} className="w-64" />,
+        component: (props) => <DatePicker className="w-64" {...props} />,
         selectRestrictions,
         inputWrapper: DatePickerWrapper,
         placeholder: '',

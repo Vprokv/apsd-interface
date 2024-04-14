@@ -43,7 +43,7 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
     [],
   )
 
-  const fields = useFormFieldsConfig(api())
+  const fields = useFormFieldsConfig(api)
 
   const onSave = useCallback(async () => {
     try {
@@ -109,7 +109,6 @@ const ChangeStageWindow = ({ open, onClose, documentId, reloadData }) => {
               </MiniModalWindow>
             </>
           )}
-          }
         </Validator>
       </div>
     </ModalWindow>
