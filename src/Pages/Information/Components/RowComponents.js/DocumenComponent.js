@@ -53,7 +53,7 @@ const DocumentComponent = ({
           <ContentWindow
             {...props}
             id={contentId}
-            namwe={contentId}
+            name={contentId}
             mimeType={mimeType}
           />
         ),
